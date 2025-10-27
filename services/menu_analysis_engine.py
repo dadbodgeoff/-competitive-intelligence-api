@@ -146,7 +146,7 @@ class MenuAnalysisEngine:
         for competitor in competitors:
             try:
                 # Use our existing extraction service
-                menu_data = await self.extraction_service.extract_menu(competitor)
+                menu_data = await self.extraction_service.extract_competitor_menu(competitor)
                 if menu_data and self.utils.validate_menu_quality(menu_data):
                     extracted_menus.append({
                         "competitor_name": competitor.get("name", "Unknown"),

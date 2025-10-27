@@ -80,6 +80,7 @@ class AnalysisResponse(BaseModel):
     tier: str = Field(..., description="Analysis tier used")
     competitors: List[Dict[str, Any]] = Field(..., description="Competitor information")
     insights: List[Dict[str, Any]] = Field(..., description="Analysis insights")
+    evidence_reviews: Optional[Dict[str, Any]] = Field(None, description="Evidence reviews used for analysis, categorized by sentiment")
     metadata: Dict[str, Any] = Field(..., description="Analysis metadata including cost and features")
     created_at: str = Field(..., description="Creation timestamp")
     completed_at: Optional[str] = Field(None, description="Completion timestamp")

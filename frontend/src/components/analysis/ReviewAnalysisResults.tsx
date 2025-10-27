@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { CompetitorsTable } from './CompetitorsTable';
 import { InsightsGridWrapper } from './InsightsGridWrapper';
 import { ReviewEvidenceSection } from './ReviewEvidenceSection';
+import { EvidenceReviewsDisplay } from './EvidenceReviewsDisplay';
 import { ExportButton } from './ExportButton';
 import { PageLoadingSkeleton } from '@/components/ui/LoadingSkeleton';
 import { reviewAnalysisAPI } from '@/services/ReviewAnalysisAPIService';
@@ -161,7 +162,14 @@ export function ReviewAnalysisResults({ analysisId }: ReviewAnalysisResultsProps
         </TabsContent>
 
         <TabsContent value="evidence" className="mt-6">
-          <ReviewEvidenceSection insights={analysis.insights} />
+          {analysis.evidence_reviews ? (
+            <EvidenceReviewsDisplay 
+              evidenceReviews={analysis.evidence_reviews}
+              restaurantName={analysis.restaurant_name}
+            />
+          ) : (
+            <ReviewEvidenceSection insights={analysis.insights} />
+          )}
         </TabsContent>
       </Tabs>
     </div>

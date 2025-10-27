@@ -1,0 +1,46 @@
+```json
+{
+  "actionable_insights": [
+    {
+      "category": "opportunity",
+      "title": "Inconsistent Food Quality at Bellingham Palace",
+      "description": "Free Tier Comparison can capitalize on negative food quality reviews at Bellingham Palace. Highlight freshness, consistently high-quality ingredients, and meticulous preparation processes to attract customers seeking reliable food standards.",
+      "confidence": "high",
+      "proof_quote": "When I opened my plate I said wt* is this! I ordered stuffed French toast which was made with grinder bread",
+      "mention_count": 1,
+      "significance": 70,
+      "competitor_source": "Bellingham Palace"
+    },
+    {
+      "category": "watch",
+      "title": "Bellingham Palace's Welcoming Atmosphere & Service",
+      "description": "Free Tier Comparison should watch Bellingham Palace's strengths in providing a comfortable setting and attentive staff. Match or exceed their standards in creating a welcoming and customer-focused environment to maintain competitiveness.",
+      "confidence": "high",
+      "proof_quote": "Always a comfortable setting the staff if always sweet and attentive. The food is great classic American breakfast",
+      "mention_count": 1,
+      "significance": 65,
+      "competitor_source": "Bellingham Palace"
+    },
+    {
+      "category": "opportunity",
+      "title": "Poor Delivery Experience at Bellingham Italian Pizza",
+      "description": "Free Tier Comparison should capitalize on customer complaints regarding unprofessional delivery experiences. Focus on professional, reliable, and timely delivery services to gain a competitive advantage.",
+      "confidence": "high",
+      "proof_quote": "If your gonna mail me your menu and if I want to order from your restaurant- make sure your professionalism...",
+      "mention_count": 1,
+      "significance": 70,
+      "competitor_source": "Bellingham Italian Pizza and Grill"
+    },
+    {
+      "category": "watch",
+      "title": "Exceptional Pizza at Bellingham Italian Pizza",
+      "description": "Free Tier Comparison needs to monitor Bellingham Italian Pizza's highly-rated pizza. It is a signature item. Free Tier Comparison can monitor and try to beat pizza quality or specialize in other Italian cuisine.",
+      "confidence": "high",
+      "proof_quote": "Without a foubtthe best pizza I have had in my 30 years of living. The perfect balance between sauce and cheese.",
+      "mention_count": 1,
+      "significance": 70,
+      "competitor_source": "Bellingham Italian Pizza and Grill"
+    }
+  ]
+}
+```

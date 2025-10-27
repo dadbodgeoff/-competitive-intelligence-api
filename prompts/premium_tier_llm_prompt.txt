@@ -1,0 +1,90 @@
+# COMPETITIVE ANALYSIS - PREMIUM TIER (STRATEGIC)
+
+Analyze {{COMPETITOR_COUNT}} competitors for {{RESTAURANT_NAME}} ({{RESTAURANT_CATEGORY}} in {{RESTAURANT_LOCATION}}).
+
+## PREMIUM STRATEGIC REVIEW DATA:
+For each competitor, you have been given:
+- 15 NEGATIVE reviews (1-2⭐) - representing common complaints and patterns
+- 15 POSITIVE reviews (5⭐) - representing standout strengths and what customers love
+- 5 NEUTRAL reviews (3-4⭐) - for balanced strategic context
+
+Reviews are sorted by quality and recency (newest, highest-quality first).
+
+{{COMPETITOR_REVIEWS}}
+
+## YOUR PREMIUM TASK:
+Generate EXACTLY 5 insights per competitor ({{COMPETITOR_COUNT}} competitors = {{COMPETITOR_COUNT}} × 5 total insights):
+
+**For each competitor, provide:**
+1. ONE WEAKNESS INSIGHT (from 1-2⭐ reviews)
+   - Category: "opportunity" or "threat"
+   - Identify the most common complaint or systemic problem
+   - Focus on: service failures, quality issues, operational problems, customer experience gaps
+   - Show how {{RESTAURANT_NAME}} can capitalize on this weakness strategically
+
+2. ONE STRENGTH INSIGHT (from 5⭐ reviews)
+   - Category: "watch"
+   - Identify what customers love most and why they choose this competitor
+   - Focus on: signature items, service excellence, atmosphere, unique value propositions
+   - Show what {{RESTAURANT_NAME}} should monitor, counter, or differentiate from
+
+3. ONE OPPORTUNITY INSIGHT (from pattern analysis)
+   - Category: "opportunity"
+   - Identify market gaps or underserved customer needs
+   - Focus on: unmet demands, service gaps, menu opportunities, experience improvements
+   - Provide specific actionable recommendations for {{RESTAURANT_NAME}}
+
+4. ONE THREAT INSIGHT (from competitive analysis)
+   - Category: "threat"
+   - Identify competitive threats or rising challenges
+   - Focus on: price competition, service innovations, market share threats, customer loyalty risks
+   - Provide strategic response recommendations
+
+5. ONE STRATEGIC INSIGHT (from comprehensive analysis)
+   - Category: "watch" or "opportunity"
+   - Identify long-term strategic implications or positioning opportunities
+   - Focus on: market positioning, competitive moats, differentiation strategies, growth opportunities
+   - Provide strategic business intelligence for {{RESTAURANT_NAME}}
+
+## PREMIUM PATTERN DETECTION:
+- If 5+ reviews mention the same issue → HIGH confidence, HIGH significance (85-95)
+- If 3-4 reviews mention the same issue → MEDIUM-HIGH confidence, significance (75-85)
+- If 2 reviews mention the same issue → MEDIUM confidence, significance (65-75)
+- **CRITICAL**: Look for patterns across the 15 negative and 15 positive reviews
+- Prioritize recurring themes and systemic issues over one-off mentions
+- Recent reviews carry more weight for strategic significance scoring
+- Consider competitive implications and business impact
+
+## OUTPUT FORMAT (JSON):
+{
+  "actionable_insights": [
+    {
+      "category": "opportunity|threat|watch",
+      "title": "Strategic, specific title",
+      "description": "Detailed strategic description for {{RESTAURANT_NAME}} with business implications",
+      "confidence": "high|medium|low",
+      "proof_quote": "Exact quote from reviews above (max 150 chars)",
+      "mention_count": number,
+      "significance": 0-100,
+      "competitor_source": "Competitor Name"
+    }
+  ]
+}
+
+## CRITICAL RULES:
+- Generate EXACTLY {{COMPETITOR_COUNT}} × 5 insights (5 per competitor)
+- Use EXACT quotes from the reviews provided above
+- Each insight must reference a specific competitor
+- Focus on strategic business intelligence for {{RESTAURANT_NAME}}
+- Prioritize actionable insights with clear business impact
+- Consider competitive positioning and market dynamics
+- Return ONLY valid JSON, no other text or explanation
+
+## STRATEGIC FOCUS AREAS:
+- **Operational Excellence**: Service speed, consistency, quality control
+- **Customer Experience**: Atmosphere, staff interaction, convenience
+- **Menu Strategy**: Popular items, pricing, variety, quality
+- **Market Positioning**: Brand perception, target audience, value proposition
+- **Competitive Moats**: Unique advantages, barriers to entry, customer loyalty drivers
+
+Provide {{RESTAURANT_NAME}} with premium strategic intelligence that enables competitive advantage and informed business decisions.

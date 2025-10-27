@@ -64,7 +64,7 @@ async def run_tier_analysis(
         # Get cost estimate
         cost_estimate = orchestrator.get_cost_estimate(
             tier=request.tier.value,
-            competitor_count=request.competitor_count or (3 if request.tier == AnalysisTier.FREE else 5),
+            competitor_count=request.competitor_count or (2 if request.tier == AnalysisTier.FREE else 5),
             avg_reviews_per_competitor=20
         )
         
@@ -104,7 +104,7 @@ async def run_tier_analysis(
             location=request.location,
             category=request.category or "restaurant",
             radius_miles=3.0,
-            max_results=3 if request.tier == AnalysisTier.FREE else 5
+            max_results=2 if request.tier == AnalysisTier.FREE else 5
         )
         
         if not competitors:
@@ -158,7 +158,7 @@ async def run_tier_analysis(
                 reviews = await review_service.fetch_competitor_reviews(
                     competitor_place_id=place_id,
                     competitor_name=name,
-                    max_reviews=15 if request.tier == AnalysisTier.FREE else 30
+                    max_reviews=35 if request.tier == AnalysisTier.FREE else 150
                 )
                 
                 # Convert ReviewData objects to dicts for LLM
@@ -261,6 +261,7 @@ async def run_tier_analysis(
             tier=request.tier.value,
             competitors=competitors_dict,
             insights=insights_stored,
+            evidence_reviews=analysis_result.get('evidence_reviews'),
             metadata=analysis_result.get('metadata', {}),
             created_at=analysis_data['created_at'],
             completed_at=completion_data['completed_at'],
@@ -460,6 +461,15 @@ async def get_analysis_result(
         if competitors:
             logger.info(f"🔍 STEP_4: First competitor: {competitors[0]}")
         
+        # Get 3 sample reviews per competitor for evidence
+        for competitor in competitors:
+            competitor_id = competitor.get("competitor_id")
+            reviews_response = service_client.table("reviews").select("rating, text, review_date").eq("competitor_id", competitor_id).limit(3).execute()
+            competitor["sample_reviews"] = reviews_response.data if reviews_response.data else []
+        
+        # Initialize storage service for evidence retrieval
+        storage_service = EnhancedAnalysisStorage(service_client)
+        
         # Get insights with competitor names
         logger.info(f"🔍 STEP_5: Querying insights table")
         insights_response = service_client.table("insights").select("*").eq("analysis_id", analysis_id).execute()
@@ -501,6 +511,7 @@ async def get_analysis_result(
             "tier": analysis.get('tier', 'free'),
             "competitors": competitors,
             "insights": insights,
+            "evidence_reviews": storage_service.get_evidence_reviews(analysis_id),
             "metadata": {
                 'tier': analysis.get('tier', 'free'),
                 'estimated_cost': analysis.get('estimated_cost', 0.0),

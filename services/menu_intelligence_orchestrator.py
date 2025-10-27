@@ -71,7 +71,7 @@ class MenuIntelligenceOrchestrator:
         """
         
         # Check feature flags
-        if not self.feature_flags.is_enabled("menu_intelligence"):
+        if not self.feature_flags.is_menu_analysis_enabled():
             raise ValueError("Menu Intelligence feature is currently disabled")
         
         analysis_id = f"menu_{restaurant_id}_{int(datetime.now().timestamp())}"
@@ -96,16 +96,32 @@ class MenuIntelligenceOrchestrator:
             self.logger.info("Discovering competitors...")
             competitor_limit = 2 if tier == "free" else 5
             
-            competitors = await self.places_service.find_competitors(
-                restaurant_name="",  # We'll use location-based search
-                location=location,
-                category=category,
-                radius_miles=3.0,
-                max_competitors=competitor_limit
+            competitor_objects = await asyncio.get_event_loop().run_in_executor(
+                None,
+                self.places_service.find_competitors,
+                location,
+                "",  # restaurant_name
+                category,
+                3.0,  # radius_miles
+                competitor_limit  # max_results
             )
             
-            if not competitors:
+            if not competitor_objects:
                 return self._create_no_competitors_response(analysis_id, user_menu, tier)
+            
+            # Convert CompetitorInfo objects to dictionaries for the analysis engine
+            competitors = []
+            for comp in competitor_objects:
+                competitors.append({
+                    "name": comp.name,
+                    "place_id": comp.place_id,
+                    "address": comp.address,
+                    "rating": comp.rating,
+                    "review_count": comp.review_count,
+                    "phone": comp.phone,
+                    "latitude": comp.latitude,
+                    "longitude": comp.longitude
+                })
             
             self.logger.info(f"Found {len(competitors)} competitors")
             

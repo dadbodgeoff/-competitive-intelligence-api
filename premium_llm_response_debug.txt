@@ -1,0 +1,256 @@
+```json
+{
+  "actionable_insights": [
+    {
+      "category": "opportunity",
+      "title": "Capitalize on Firehouse Pizza's inconsistent quality with rigorous quality control.",
+      "description": "Firehouse Pizza's mixed reviews highlight quality control issues. Frontend Flow Test Restaurant should prioritize consistency, focusing on standardized recipes, staff training, and rigorous quality checks to deliver a superior and reliable product.",
+      "confidence": "high",
+      "proof_quote": "ordered a grilled chicken ceasar salad, got a bowl of lettuce w grilled chicken on top. no croutons, no cheese, no salt and pepper and just zero effort.",
+      "mention_count": 6,
+      "significance": 88,
+      "competitor_source": "Firehouse Pizza Shop II"
+    },
+    {
+      "category": "watch",
+      "title": "Monitor Firehouse Pizza's popular grinders, especially BLT and Steak & Cheese.",
+      "description": "Firehouse Pizza's positive reviews frequently mention the grinders as standout items. Frontend Flow Test Restaurant should monitor these offerings to understand local preferences and potentially offer a superior or differentiated version.",
+      "confidence": "medium",
+      "proof_quote": "ordered 2 blt grinders,cheeseberger,fries,and a steak cheese an mushroom grinders first time there i gotta admit food was awsome !!! and bread was spot on!!",
+      "mention_count": 3,
+      "significance": 78,
+      "competitor_source": "Firehouse Pizza Shop II"
+    },
+    {
+      "category": "opportunity",
+      "title": "Improve salad offerings, highlighting fresh ingredients and appealing presentation",
+      "description": "Many salad related complains, this represents an opportunity. Frontend Flow Test Restaurant can capitalize by offering innovative, high-quality salads with fresh ingredients and appealing presentation, differentiating itself from competitors.",
+      "confidence": "high",
+      "proof_quote": "ordered a grilled chicken ceasar salad, got a bowl of lettuce w grilled chicken on top. no croutons, no cheese, no salt and pepper and just zero effort. save ya money",
+      "mention_count": 5,
+      "significance": 86,
+      "competitor_source": "Firehouse Pizza Shop II"
+    },
+    {
+      "category": "threat",
+      "title": "Address the BLT and Steak & Cheese Grinders",
+      "description": "Consider adding grinders and making sure the meat and bread are on point",
+      "confidence": "high",
+      "proof_quote": "ordered 2 blt grinders,cheeseberger,fries,and a steak cheese an mushroom grinders first time there i gotta admit food was awsome !!! and bread was spot on!!",
+      "mention_count": 3,
+      "significance": 80,
+      "competitor_source": "Firehouse Pizza Shop II"
+    },
+    {
+      "category": "watch",
+      "title": "Focus on sandwich offerings, keeping bread quality high",
+      "description": "Bread is an important factor for Firehouse, so keep the bread high quality and sandwich oriented menu",
+      "confidence": "high",
+      "proof_quote": "Not good anymore, my steak and cheese sandwich was mostly bread.. not impressed",
+      "mention_count": 4,
+      "significance": 85,
+      "competitor_source": "Firehouse Pizza Shop II"
+    },
+    {
+      "category": "opportunity",
+      "title": "Prioritize ethical tipping practices and transparent billing.",
+      "description": "Park Ave Pizza's issue with incorrect tipping provides an opportunity for Frontend Flow Test Restaurant to build trust by ensuring transparent billing and ethical tip distribution, emphasizing integrity in customer service.",
+      "confidence": "high",
+      "proof_quote": "I got charged for tip more than I put and signed for",
+      "mention_count": 2,
+      "significance": 70,
+      "competitor_source": "Park Ave Pizza Woonsocket"
+    },
+    {
+      "category": "watch",
+      "title": "Monitor Park Ave Pizza's long-standing customer base and nostalgic appeal.",
+      "description": "Park Ave Pizza's strength lies in its established presence and nostalgic connection with customers. Frontend Flow Test Restaurant needs to understand these deep-rooted preferences and offer a compelling alternative to disrupt existing loyalty.",
+      "confidence": "high",
+      "proof_quote": "I’ve been a patron of this pizzeria for over 20 years. Having lived next door at one point, their pizzas are nostalgic for me.",
+      "mention_count": 4,
+      "significance": 82,
+      "competitor_source": "Park Ave Pizza Woonsocket"
+    },
+    {
+      "category": "opportunity",
+      "title": "Improve atmosphere through cleaning and improved worker conditions",
+      "description": "Make sure that the atmosphere is friendly by treating employees correctly and ensuring clean working spaces",
+      "confidence": "high",
+      "proof_quote": "People in the back were yelling and cursing while customers in.",
+      "mention_count": 2,
+      "significance": 70,
+      "competitor_source": "Park Ave Pizza Woonsocket"
+    },
+    {
+      "category": "threat",
+      "title": "Counter long-term loyalty to the competitor with specials and rewards.",
+      "description": "Offer loyalty programs for continued patronage, or implement special offers to entice new customers to try the restaurant.",
+      "confidence": "high",
+      "proof_quote": "I’ve been a patron of this pizzeria for over 20 years",
+      "mention_count": 4,
+      "significance": 83,
+      "competitor_source": "Park Ave Pizza Woonsocket"
+    },
+    {
+      "category": "opportunity",
+      "title": "Stress cleanliness and hygiene in the shop",
+      "description": "Emphasize proper training and standards",
+      "confidence": "high",
+      "proof_quote": "guy was smashing the cheese with his bare hands, I walked right out.",
+      "mention_count": 2,
+      "significance": 70,
+      "competitor_source": "Park Ave Pizza Woonsocket"
+    },
+    {
+      "category": "opportunity",
+      "title": "Offer traditional breakfast items with consistent quality and execution.",
+      "description": "Bellingham Palace's inconsistent breakfast quality presents an opportunity for Frontend Flow Test Restaurant to establish a reputation for consistently well-prepared classic breakfast dishes.",
+      "confidence": "high",
+      "proof_quote": "When I opened my plate I said wt* is this! I ordered stuffed French toast which was made with grinder bread 😳 This had to be 6”thick.",
+      "mention_count": 3,
+      "significance": 80,
+      "competitor_source": "Bellingham Palace"
+    },
+    {
+      "category": "watch",
+      "title": "Acknowledge and leverage Bellingham Palace's overall quality of food.",
+      "description": "While this may not be Frontend Flow Test Restaurant's focus, monitor general preferences to ensure you do not fall behind.",
+      "confidence": "high",
+      "proof_quote": "I have been coming here for years the food is always wonderful!",
+      "mention_count": 5,
+      "significance": 85,
+      "competitor_source": "Bellingham Palace"
+    },
+    {
+      "category": "opportunity",
+      "title": "Ensure consistent service standards",
+      "description": "Service standards have gone downhill, ensure that your service is always friendly and inviting",
+      "confidence": "high",
+      "proof_quote": "Service used to be friendly, cheerful, now ya barely get a smile from these waitresses",
+      "mention_count": 4,
+      "significance": 82,
+      "competitor_source": "Bellingham Palace"
+    },
+    {
+      "category": "threat",
+      "title": "Ensure staff are consistently smiling and friendly.",
+      "description": "Staff must be friendly for increased customer experience, which is an area that the restaurant is failing in.",
+      "confidence": "medium",
+      "proof_quote": "ya barely get a smile from these waitresses. Had to ask for",
+      "mention_count": 4,
+      "significance": 80,
+      "competitor_source": "Bellingham Palace"
+    },
+    {
+      "category": "watch",
+      "title": "Focus on customer service.",
+      "description": "Service and speed are critical aspects of the business",
+      "confidence": "high",
+      "proof_quote": "Always a comfortable setting the staff if always sweet and attentive",
+      "mention_count": 4,
+      "significance": 80,
+      "competitor_source": "Bellingham Palace"
+    },
+    {
+      "category": "opportunity",
+      "title": "Prioritize professionalism and delivery availability.",
+      "description": "Bellingham Italian Pizza's unreliable delivery service offers an opportunity for Frontend Flow Test Restaurant to build a reputation for dependable and professional delivery services.",
+      "confidence": "high",
+      "proof_quote": "make sure your professionalism and your willingness to provide the delivery is available !",
+      "mention_count": 2,
+      "significance": 72,
+      "competitor_source": "Bellingham Italian Pizza and Grill"
+    },
+    {
+      "category": "watch",
+      "title": "Benchmark Bellingham Italian Pizza's pizza quality and flavor balance.",
+      "description": "Bellingham Italian Pizza's positive reviews highlight exceptional pizza taste and balance. Frontend Flow Test Restaurant should strive for similar excellence and potentially explore unique flavor combinations.",
+      "confidence": "high",
+      "proof_quote": "Without a foubtthe best pizza I have had in my 30 years of living. The perfect balance between sauce and cheese.",
+      "mention_count": 5,
+      "significance": 89,
+      "competitor_source": "Bellingham Italian Pizza and Grill"
+    },
+    {
+      "category": "opportunity",
+      "title": "Focus on delivery service, ensure it is always consistent and friendly.",
+      "description": "Competitor lacks in professional service, especially around delivery. Ensure that all delivery options are available and reliable",
+      "confidence": "high",
+      "proof_quote": "Stop sending me your menus because I'm gonna assume your not gonna delivery it to me",
+      "mention_count": 3,
+      "significance": 78,
+      "competitor_source": "Bellingham Italian Pizza and Grill"
+    },
+    {
+      "category": "threat",
+      "title": "Highlight exceptional pizza quality.",
+      "description": "Compete with overall deliciousness.",
+      "confidence": "high",
+      "proof_quote": "best pizza I have had in my 30 years of living",
+      "mention_count": 5,
+      "significance": 87,
+      "competitor_source": "Bellingham Italian Pizza and Grill"
+    },
+    {
+      "category": "watch",
+      "title": "Offer quality ingredients in sandwiches",
+      "description": "Compete by offering quality sandwiches and high quality ingredients.",
+      "confidence": "high",
+      "proof_quote": "meatball sub and like everything today we’re not getting whole meatballs on today’s economy…that being said…everything from the bread to the peppers was very fresh.",
+      "mention_count": 3,
+      "significance": 79,
+      "competitor_source": "Bellingham Italian Pizza and Grill"
+    },
+    {
+      "category": "opportunity",
+      "title": "Ensure order accuracy and attentive phone service.",
+      "description": "Supreme Pizza's issues with order accuracy and phone service offer Frontend Flow Test Restaurant the chance to differentiate through meticulous order taking and friendly, attentive customer service.",
+      "confidence": "high",
+      "proof_quote": "The girls who take my order over the phone have me repeating everything, like theyre drifting off into space.",
+      "mention_count": 4,
+      "significance": 83,
+      "competitor_source": "Supreme Pizza"
+    },
+    {
+      "category": "watch",
+      "title": "Monitor Supreme Pizza's Boneless Buffalo Chicken and French Fries.",
+      "description": "Focus on creating recipes that can differentiate from the competitors in the area.",
+      "confidence": "medium",
+      "proof_quote": "Oh first time we came here we was driving by and we found a place the boneless buffalo chicken perfect very juicy the french fries super good and crispy",
+      "mention_count": 4,
+      "significance": 81,
+      "competitor_source": "Supreme Pizza"
+    },
+    {
+      "category": "opportunity",
+      "title": "Focus on fast, reliable delivery times.",
+      "description": "Ensure speedy and reliable delivery.",
+      "confidence": "high",
+      "proof_quote": "Delivery takes a ridiculously long time.",
+      "mention_count": 3,
+      "significance": 77,
+      "competitor_source": "Supreme Pizza"
+    },
+    {
+      "category": "threat",
+      "title": "Offer good buffalo chicken.",
+      "description": "Focus on high quality buffalo chicken to differentiate from the competitors.",
+      "confidence": "medium",
+      "proof_quote": "boneless buffalo chicken perfect very juicy",
+      "mention_count": 4,
+      "significance": 82,
+      "competitor_source": "Supreme Pizza"
+    },
+    {
+      "category": "opportunity",
+      "title": "Make cleanliness a priority.",
+      "description": "Cleanliness is a high priority in the restaurant, so focus on keeping it clean.",
+      "confidence": "high",
+      "proof_quote": "The pizza was excellent and wasn't the least bit greasy. Family of 4 and it was a good size. Very clean establishm",
+      "mention_count": 3,
+      "significance": 79,
+      "competitor_source": "Supreme Pizza"
+    }
+  ]
+}
+```

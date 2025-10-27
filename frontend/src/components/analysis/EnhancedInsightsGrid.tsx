@@ -4,12 +4,53 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Insight, Competitor } from '@/types/analysis';
+import { Insight, Competitor, GroupedInsight, RestaurantSource } from '@/types/analysis';
+import { EnhancedInsightCard } from './EnhancedInsightCard';
 import { cn } from '@/lib/utils';
 
 interface EnhancedInsightsGridProps {
   insights: Insight[];
   competitors: Competitor[];
+}
+
+// NEW: Function to group insights by topic and extract restaurant sources
+function groupInsightsByTopic(insights: Insight[]): GroupedInsight[] {
+  const topicGroups: { [key: string]: Insight[] } = {};
+  
+  insights.forEach(insight => {
+    const topicKey = `${insight.title}_${insight.category}`;
+    if (!topicGroups[topicKey]) {
+      topicGroups[topicKey] = [];
+    }
+    topicGroups[topicKey].push(insight);
+  });
+  
+  return Object.entries(topicGroups).map(([, relatedInsights]) => {
+    // Find the main insight (prefer "Multiple Sources" or first one)
+    const mainInsight = relatedInsights.find(i => 
+      i.competitor_name === 'Multiple Sources' || 
+      i.competitor_name === null || 
+      !i.competitor_name
+    ) || relatedInsights[0];
+    
+    // Extract restaurant-specific sources
+    const restaurantSources: RestaurantSource[] = relatedInsights
+      .filter(i => i.competitor_name && 
+                   i.competitor_name !== 'Multiple Sources' && 
+                   i.competitor_name !== null)
+      .map(i => ({
+        name: i.competitor_name!,
+        quote: i.proof_quote,
+        confidence: i.confidence,
+        mentions: i.mention_count
+      }));
+    
+    return {
+      mainInsight,
+      relatedInsights,
+      restaurantSources
+    };
+  });
 }
 
 interface InsightCardProps {
@@ -128,13 +169,17 @@ function InsightSection({
   title, 
   description,
   expandedInsight,
-  setExpandedInsight 
+  setExpandedInsight,
+  useEnhancedCards = false,
+  groupedInsights = null
 }: {
   insights: Insight[];
   title: string;
   description?: string;
   expandedInsight: string | null;
   setExpandedInsight: (id: string | null) => void;
+  useEnhancedCards?: boolean;
+  groupedInsights?: GroupedInsight[] | null;
 }) {
   const [filter, setFilter] = useState<'all' | 'threat' | 'opportunity' | 'watch'>('all');
 
@@ -151,6 +196,13 @@ function InsightSection({
   const filteredInsights = filter === 'all' 
     ? insights 
     : insights.filter(insight => (insight.type || insight.category) === filter);
+
+  // NEW: Choose which insights to render
+  const insightsToRender = useEnhancedCards && groupedInsights 
+    ? groupedInsights.filter(gi => 
+        filteredInsights.some(fi => fi.id === gi.mainInsight.id)
+      )
+    : null;
 
   const insightCounts = {
     all: insights.length,
@@ -196,20 +248,40 @@ function InsightSection({
         </Alert>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredInsights.map((insight, index) => (
-            <InsightCard
-              key={`${insight.title}-${index}`}
-              insight={insight}
-              isExpanded={expandedInsight === `${insight.title}-${index}`}
-              onToggle={() => 
-                setExpandedInsight(
-                  expandedInsight === `${insight.title}-${index}` 
-                    ? null 
-                    : `${insight.title}-${index}`
-                )
-              }
-            />
-          ))}
+          {/* NEW: Conditional rendering */}
+          {useEnhancedCards && insightsToRender ? (
+            // Render enhanced cards
+            insightsToRender.map((groupedInsight, index) => (
+              <EnhancedInsightCard
+                key={`${groupedInsight.mainInsight.title}-${index}`}
+                groupedInsight={groupedInsight}
+                isExpanded={expandedInsight === `${groupedInsight.mainInsight.title}-${index}`}
+                onToggle={() => 
+                  setExpandedInsight(
+                    expandedInsight === `${groupedInsight.mainInsight.title}-${index}` 
+                      ? null 
+                      : `${groupedInsight.mainInsight.title}-${index}`
+                  )
+                }
+              />
+            ))
+          ) : (
+            // Existing card rendering - completely unchanged
+            filteredInsights.map((insight, index) => (
+              <InsightCard
+                key={`${insight.title}-${index}`}
+                insight={insight}
+                isExpanded={expandedInsight === `${insight.title}-${index}`}
+                onToggle={() => 
+                  setExpandedInsight(
+                    expandedInsight === `${insight.title}-${index}` 
+                      ? null 
+                      : `${insight.title}-${index}`
+                  )
+                }
+              />
+            ))
+          )}
         </div>
       )}
     </div>
@@ -218,6 +290,7 @@ function InsightSection({
 
 export function EnhancedInsightsGrid({ insights }: EnhancedInsightsGridProps) {
   const [expandedInsight, setExpandedInsight] = useState<string | null>(null);
+  const [useInlineBreakdown, setUseInlineBreakdown] = useState(false); // NEW: Feature flag
 
   if (insights.length === 0) {
     return (
@@ -228,6 +301,11 @@ export function EnhancedInsightsGrid({ insights }: EnhancedInsightsGridProps) {
       </Alert>
     );
   }
+
+  // NEW: Add grouped insights processing (only when flag enabled)
+  const groupedInsights = useInlineBreakdown 
+    ? groupInsightsByTopic(insights)
+    : null;
 
   // Group insights by competitor
   const generalInsights = insights.filter(
@@ -260,6 +338,22 @@ export function EnhancedInsightsGrid({ insights }: EnhancedInsightsGridProps) {
         </Badge>
       </div>
 
+      {/* NEW: Feature toggle (temporary for testing) */}
+      <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border">
+        <label className="text-sm font-medium flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={useInlineBreakdown}
+            onChange={(e) => setUseInlineBreakdown(e.target.checked)}
+            className="rounded"
+          />
+          Enable Restaurant Breakdown
+        </label>
+        <Badge variant={useInlineBreakdown ? "default" : "outline"} className="text-xs">
+          {useInlineBreakdown ? "Enhanced" : "Standard"}
+        </Badge>
+      </div>
+
       {hasCompetitorSpecificInsights ? (
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
@@ -278,6 +372,8 @@ export function EnhancedInsightsGrid({ insights }: EnhancedInsightsGridProps) {
               description="Cross-competitor patterns and general market insights"
               expandedInsight={expandedInsight}
               setExpandedInsight={setExpandedInsight}
+              useEnhancedCards={useInlineBreakdown}
+              groupedInsights={groupedInsights}
             />
           </TabsContent>
           
@@ -290,6 +386,8 @@ export function EnhancedInsightsGrid({ insights }: EnhancedInsightsGridProps) {
                 description={`Specific insights about ${competitorName}`}
                 expandedInsight={expandedInsight}
                 setExpandedInsight={setExpandedInsight}
+                useEnhancedCards={useInlineBreakdown}
+                groupedInsights={groupedInsights}
               />
             ))}
           </TabsContent>
@@ -302,6 +400,8 @@ export function EnhancedInsightsGrid({ insights }: EnhancedInsightsGridProps) {
           description="Analysis of competitive landscape"
           expandedInsight={expandedInsight}
           setExpandedInsight={setExpandedInsight}
+          useEnhancedCards={useInlineBreakdown}
+          groupedInsights={groupedInsights}
         />
       )}
     </div>

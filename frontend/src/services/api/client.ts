@@ -10,12 +10,13 @@ export const createApiClient = (): AxiosInstance => {
   const client = axios.create({
     baseURL: import.meta.env.VITE_API_URL || '',  // Use empty string - routes already have /api prefix
     withCredentials: true, // Send cookies with every request
+    timeout: 120000, // 2 minutes for file uploads and LLM processing
     headers: {
       'Content-Type': 'application/json',
     },
   });
 
-  // Add response interceptor for automatic token refresh
+  // Add response interceptor for automatic token refresh and retries
   client.interceptors.response.use(
     response => response,
     async error => {
@@ -23,6 +24,30 @@ export const createApiClient = (): AxiosInstance => {
 
       // NEVER retry auth endpoints to prevent infinite loops
       const isAuthEndpoint = originalRequest.url?.includes('/auth/');
+      
+      // Retry on network errors or 5xx errors (but not for uploads in progress)
+      const isRetryableError = 
+        error.code === 'ECONNABORTED' || // Timeout
+        error.code === 'ERR_NETWORK' || // Network error
+        (error.response?.status >= 500 && error.response?.status < 600); // Server errors
+      
+      const isUploadRequest = originalRequest.method?.toLowerCase() === 'post' && 
+                             originalRequest.url?.includes('/upload');
+      
+      // Retry logic for network/server errors (max 2 retries)
+      if (isRetryableError && !isAuthEndpoint && !isUploadRequest) {
+        originalRequest._retryCount = originalRequest._retryCount || 0;
+        
+        if (originalRequest._retryCount < 2) {
+          originalRequest._retryCount += 1;
+          
+          // Exponential backoff: 1s, 2s
+          const delay = 1000 * originalRequest._retryCount;
+          await new Promise(resolve => setTimeout(resolve, delay));
+          
+          return client(originalRequest);
+        }
+      }
       
       // If 401 and haven't retried yet, try to refresh (but NOT for any auth endpoints!)
       if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
@@ -55,6 +80,26 @@ export const createApiClient = (): AxiosInstance => {
 
 // Export singleton instance
 export const apiClient = createApiClient();
+
+/**
+ * Keepalive ping to prevent cold starts
+ * Pings the health endpoint every 5 minutes to keep the server warm
+ */
+if (typeof window !== 'undefined') {
+  // Initial ping after 10 seconds
+  setTimeout(() => {
+    apiClient.get('/health').catch(() => {
+      // Ignore errors - this is just a keepalive
+    });
+  }, 10000);
+  
+  // Periodic ping every 5 minutes
+  setInterval(() => {
+    apiClient.get('/health').catch(() => {
+      // Ignore errors - this is just a keepalive
+    });
+  }, 5 * 60 * 1000);
+}
 
 /**
  * Safe API request wrapper with user-friendly error handling

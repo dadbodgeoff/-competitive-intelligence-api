@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 import os
 import time
 import logging
@@ -80,6 +82,15 @@ async def confirm_email():
     with open("confirmation_page.html", "r") as f:
         html_content = f.read()
     return HTMLResponse(content=html_content, status_code=200)
+
+# Serve frontend in production
+if os.getenv("ENVIRONMENT") == "production":
+    frontend_dist = Path(__file__).parent.parent / "frontend" / "dist"
+    if frontend_dist.exists():
+        app.mount("/", StaticFiles(directory=str(frontend_dist), html=True), name="frontend")
+        logger.info(f"✅ Serving frontend from {frontend_dist}")
+    else:
+        logger.warning(f"⚠️ Frontend dist folder not found at {frontend_dist}")
 
 if __name__ == "__main__":
     import uvicorn

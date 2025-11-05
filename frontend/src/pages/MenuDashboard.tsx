@@ -7,7 +7,7 @@
 
 import { useState, useEffect, Suspense, lazy } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AppShell } from '@/components/layout/AppShell';
 import {
   InvoiceCard,
@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { apiClient } from '@/services/api/client';
-import { parseDataLoadError, parseDeleteError } from '@/utils/errorMessages';
+import { parseDeleteError } from '@/utils/errorMessages';
 
 // Lazy load the heavy table component
 const MenuReviewTable = lazy(() => 
@@ -55,16 +55,6 @@ interface MenuCategory {
   items: MenuItem[];
 }
 
-interface MenuData {
-  id: string;
-  restaurant_name: string;
-  menu_type?: string;
-  created_at: string;
-  updated_at: string;
-  is_active: boolean;
-  categories: MenuCategory[];
-}
-
 export function MenuDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -72,7 +62,7 @@ export function MenuDashboard() {
   const queryClient = useQueryClient();
 
   // Use React Query for menu data
-  const { data: menuData, isLoading: loading, error, refetch } = useQuery({
+  const { data: menuData, isLoading: loading, refetch } = useQuery({
     queryKey: ['current-menu'],
     queryFn: async () => {
       const response = await apiClient.get('/api/v1/menu/current');
@@ -120,7 +110,8 @@ export function MenuDashboard() {
         description: 'Menu has been deleted successfully',
       });
 
-      setMenu(null);
+      // Invalidate the query to refetch
+      queryClient.invalidateQueries({ queryKey: ['current-menu'] });
     } catch (error) {
       const errorDetails = parseDeleteError(error, 'menu');
       toast({
@@ -133,13 +124,13 @@ export function MenuDashboard() {
     }
   };
 
-  const totalItems = menu?.categories?.reduce((sum, cat) => sum + (cat.items?.length || 0), 0) || 0;
+  const totalItems = menu?.categories?.reduce((sum: number, cat: MenuCategory) => sum + (cat.items?.length || 0), 0) || 0;
   const avgPrice = totalItems > 0 && menu?.categories
-    ? menu.categories.reduce((sum, cat) => 
-        sum + (cat.items || []).reduce((s, item) => {
+    ? menu.categories.reduce((sum: number, cat: MenuCategory) => 
+        sum + (cat.items || []).reduce((s: number, item: MenuItem) => {
           // Calculate average of all prices for this item
           const itemAvgPrice = (item.prices?.length || 0) > 0
-            ? item.prices.reduce((acc, p) => acc + p.price, 0) / item.prices.length
+            ? item.prices.reduce((acc: number, p: MenuItemPrice) => acc + p.price, 0) / item.prices.length
             : 0;
           return s + itemAvgPrice;
         }, 0), 0) / totalItems
@@ -327,17 +318,17 @@ export function MenuDashboard() {
                 }>
                   <MenuReviewTable
                     categories={menu.categories}
-                    onUpdateItem={() => {}}
-                    onDeleteItem={() => {}}
-                    onAddItem={() => {}}
-                    onUpdateCategory={() => {}}
+                    onUpdateItem={(_categoryIndex: number, _itemIndex: number, _field: keyof MenuItem, _value: any) => {}}
+                    onDeleteItem={(_categoryIndex: number, _itemIndex: number) => {}}
+                    onAddItem={(_categoryIndex: number) => {}}
+                    onUpdateCategory={(_categoryIndex: number, _field: keyof MenuCategory, _value: any) => {}}
                     onAddCategory={() => {}}
-                    onDeleteCategory={() => {}}
+                    onDeleteCategory={(_categoryIndex: number) => {}}
                     readonly={true}
-                    onBuildRecipe={(itemName) => {
+                    onBuildRecipe={(itemName: string) => {
                       // Find the menu item ID by name
                       for (const category of menu.categories) {
-                        const item = category.items.find((i) => i.name === itemName);
+                        const item = category.items.find((i: MenuItem) => i.name === itemName);
                         if (item && item.id) {
                           // Navigate to recipe page
                           navigate(`/menu/items/${item.id}/recipe`);

@@ -22,13 +22,9 @@ services:
       - .env.production  # Load production secrets from file
     environment:
       # Override Docker-specific settings
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
       - ENVIRONMENT=production
       - APP_ENV=production
       - LOG_LEVEL=INFO
-    depends_on:
-      - redis
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]

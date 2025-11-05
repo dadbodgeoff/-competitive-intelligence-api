@@ -63,6 +63,8 @@ export function MenuParsingProgressPage() {
     queryFn: () => menuComparisonAPI.getAnalysisStatus(analysisId!),
     enabled: !!analysisId && !isComplete && !hasError,
     refetchInterval: 2000,
+    refetchOnWindowFocus: true,
+    staleTime: 1000,
   });
 
   // Update elapsed time

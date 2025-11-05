@@ -45,6 +45,8 @@ export function CompetitorSelectionPage() {
       const status = query.state.data?.status;
       return status === 'completed' || status === 'failed' ? false : 2000;
     },
+    refetchOnWindowFocus: true,
+    staleTime: 1000,
   });
 
   // Get analysis results to get competitor details
@@ -52,6 +54,8 @@ export function CompetitorSelectionPage() {
     queryKey: ['analysis-results', analysisId],
     queryFn: () => menuComparisonAPI.getAnalysisResults(analysisId!),
     enabled: !!analysisId && analysisStatus?.status === 'selecting',
+    refetchOnWindowFocus: true,
+    staleTime: 30000,
   });
 
   const analyzeMutation = useMutation({

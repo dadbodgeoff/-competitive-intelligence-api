@@ -46,6 +46,8 @@ export function SavedComparisonsPage() {
   const { data: savedComparisons, isLoading, error } = useQuery({
     queryKey: ['saved-comparisons'],
     queryFn: () => menuComparisonAPI.listSavedComparisons(1, 50),
+    refetchOnWindowFocus: true,
+    staleTime: 30000,
   });
 
   // Archive comparison mutation

@@ -16,7 +16,9 @@ export function PriceAlertsPage() {
   
   const { data: alerts, isLoading } = useQuery({
     queryKey: ['alerts', 'price-increases'],
-    queryFn: () => alertsApi.getPriceIncreaseAlerts()
+    queryFn: () => alertsApi.getPriceIncreaseAlerts(),
+    refetchOnWindowFocus: true,
+    staleTime: 30000,
   });
   
   const dismissMutation = useMutation({

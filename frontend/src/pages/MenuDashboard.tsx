@@ -7,6 +7,7 @@
 
 import { useState, useEffect, Suspense, lazy } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AppShell } from '@/components/layout/AppShell';
 import {
   InvoiceCard,
@@ -68,15 +69,28 @@ export function MenuDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const [menu, setMenu] = useState<MenuData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadingItems, setLoadingItems] = useState(false);
-  const [deleting, setDeleting] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Use React Query for menu data
+  const { data: menuData, isLoading: loading, error, refetch } = useQuery({
+    queryKey: ['current-menu'],
+    queryFn: async () => {
+      const response = await apiClient.get('/api/v1/menu/current');
+      return response.data;
+    },
+    refetchOnWindowFocus: true,
+    staleTime: 30000,
+  });
+
+  const menu = menuData?.menu ? {
+    ...menuData.menu,
+    categories: (menuData.categories || []).map((cat: any) => ({
+      ...cat,
+      items: cat.items || []
+    }))
+  } : null;
 
   useEffect(() => {
-    // Fast initial load - just menu header
-    fetchMenuSummary();
-    
     // Show success message if coming from upload
     if (location.state?.message) {
       toast({
@@ -86,104 +100,9 @@ export function MenuDashboard() {
       // Clear the state
       window.history.replaceState({}, document.title);
     }
-  }, []);
+  }, [location.state, toast]);
 
-  const fetchMenuSummary = async () => {
-    try {
-      setLoading(true);
-      // Fast endpoint - just menu header and category names
-      const response = await apiClient.get('/api/v1/menu/summary');
-      const data = response.data;
-      
-      if (data.success && data.menu) {
-        // Ensure categories is always an array with items array
-        const categories = (data.categories || []).map((cat: any) => ({
-          ...cat,
-          items: cat.items || []
-        }));
-        
-        setMenu({
-          ...data.menu,
-          categories,
-        });
-        
-        // Now load full items in background
-        setLoadingItems(true);
-        fetchFullMenu();
-      } else {
-        setMenu(null);
-      }
-    } catch (error) {
-      console.error('Failed to fetch menu summary:', error);
-      const errorDetails = parseDataLoadError(error, 'menu');
-      toast({
-        title: errorDetails.title,
-        description: errorDetails.description,
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchFullMenu = async () => {
-    try {
-      // Load full menu with all items
-      const response = await apiClient.get('/api/v1/menu/current');
-      const data = response.data;
-      
-      if (data.success && data.menu) {
-        // Ensure categories is always an array with items array
-        const categories = (data.categories || []).map((cat: any) => ({
-          ...cat,
-          items: cat.items || []
-        }));
-        
-        setMenu({
-          ...data.menu,
-          categories,
-        });
-      }
-    } catch (error) {
-      console.error('Failed to fetch full menu:', error);
-      // Don't show error toast - we already have the summary
-    } finally {
-      setLoadingItems(false);
-    }
-  };
-
-  const fetchCurrentMenu = async () => {
-    try {
-      setLoading(true);
-      const response = await apiClient.get('/api/v1/menu/current');
-      const data = response.data;
-      
-      if (data.success && data.menu) {
-        // Ensure categories is always an array with items array
-        const categories = (data.categories || []).map((cat: any) => ({
-          ...cat,
-          items: cat.items || []
-        }));
-        
-        setMenu({
-          ...data.menu,
-          categories,
-        });
-      } else {
-        setMenu(null);
-      }
-    } catch (error) {
-      console.error('Failed to fetch menu:', error);
-      const errorDetails = parseDataLoadError(error, 'menu details');
-      toast({
-        title: errorDetails.title,
-        description: errorDetails.description,
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [deleting, setDeleting] = useState(false);
 
   const handleDelete = async () => {
     if (!menu) return;
@@ -251,7 +170,7 @@ export function MenuDashboard() {
             {menu && (
               <Button
                 variant="outline"
-                onClick={fetchCurrentMenu}
+                onClick={() => refetch()}
                 className="border-white/10 text-slate-300 hover:bg-white/5"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
@@ -393,16 +312,10 @@ export function MenuDashboard() {
                       Click categories to expand and view items
                     </p>
                   </div>
-                  {loadingItems && (
-                    <div className="flex items-center gap-2 text-sm text-slate-400">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Loading items...</span>
-                    </div>
-                  )}
                 </div>
               </InvoiceCardHeader>
               <InvoiceCardContent>
-                {loadingItems ? (
+                <Suspense fallback={
                   <div className="space-y-4">
                     {[...Array(3)].map((_, i) => (
                       <div key={i} className="animate-pulse">
@@ -411,40 +324,29 @@ export function MenuDashboard() {
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <Suspense fallback={
-                    <div className="space-y-4">
-                      {[...Array(3)].map((_, i) => (
-                        <div key={i} className="animate-pulse">
-                          <div className="h-12 bg-slate-800/50 rounded mb-2" />
-                          <div className="h-32 bg-slate-800/30 rounded" />
-                        </div>
-                      ))}
-                    </div>
-                  }>
-                    <MenuReviewTable
-                      categories={menu.categories}
-                      onUpdateItem={() => {}}
-                      onDeleteItem={() => {}}
-                      onAddItem={() => {}}
-                      onUpdateCategory={() => {}}
-                      onAddCategory={() => {}}
-                      onDeleteCategory={() => {}}
-                      readonly={true}
-                      onBuildRecipe={(itemName) => {
-                        // Find the menu item ID by name
-                        for (const category of menu.categories) {
-                          const item = category.items.find((i) => i.name === itemName);
-                          if (item && item.id) {
-                            // Navigate to recipe page
-                            navigate(`/menu/items/${item.id}/recipe`);
-                            break;
-                          }
+                }>
+                  <MenuReviewTable
+                    categories={menu.categories}
+                    onUpdateItem={() => {}}
+                    onDeleteItem={() => {}}
+                    onAddItem={() => {}}
+                    onUpdateCategory={() => {}}
+                    onAddCategory={() => {}}
+                    onDeleteCategory={() => {}}
+                    readonly={true}
+                    onBuildRecipe={(itemName) => {
+                      // Find the menu item ID by name
+                      for (const category of menu.categories) {
+                        const item = category.items.find((i) => i.name === itemName);
+                        if (item && item.id) {
+                          // Navigate to recipe page
+                          navigate(`/menu/items/${item.id}/recipe`);
+                          break;
                         }
-                      }}
-                    />
-                  </Suspense>
-                )}
+                      }
+                    }}
+                  />
+                </Suspense>
               </InvoiceCardContent>
             </InvoiceCard>
 

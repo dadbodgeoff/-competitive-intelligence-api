@@ -21,7 +21,9 @@ export function AlertSettingsPage() {
   // Load current thresholds
   const { data: priceAlerts } = useQuery({
     queryKey: ['alerts', 'price-increases'],
-    queryFn: () => alertsApi.getPriceIncreaseAlerts()
+    queryFn: () => alertsApi.getPriceIncreaseAlerts(),
+    refetchOnWindowFocus: true,
+    staleTime: 30000,
   });
   
   useEffect(() => {

@@ -16,7 +16,9 @@ export function SavingsOpportunitiesPage() {
   
   const { data: alerts, isLoading } = useQuery({
     queryKey: ['alerts', 'savings-opportunities'],
-    queryFn: () => alertsApi.getSavingsOpportunities()
+    queryFn: () => alertsApi.getSavingsOpportunities(),
+    refetchOnWindowFocus: true,
+    staleTime: 30000,
   });
   
   const dismissMutation = useMutation({

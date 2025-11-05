@@ -1,0 +1,41 @@
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#10B981','primaryTextColor':'#fff','primaryBorderColor':'#059669','lineColor':'#6366F1','secondaryColor':'#3B82F6','tertiaryColor':'#F59E0B','fontSize':'15px'}}}%%
+
+graph LR
+    subgraph Phase1["📤 UPLOAD (470ms)"]
+        A[📄 PDF] --> B[🔒 Security]
+        B --> C[☁️ Storage]
+    end
+    
+    subgraph Phase2["🤖 AI PROCESSING (30-64s)"]
+        D[Gemini 2.5 Flash] --> E[📡 SSE Stream]
+        E --> F[📊 15 Items Extracted]
+    end
+    
+    subgraph Phase3["✅ VALIDATION"]
+        G[Price Checks] --> H[👤 User Review]
+    end
+    
+    subgraph Phase4["💾 DATABASE (723ms)"]
+        I[Invoice Header] --> J[15 Line Items]
+        J --> K[🎯 Fuzzy Match]
+        K --> L[💰 Price Track]
+    end
+    
+    subgraph Phase5["📈 ANALYTICS"]
+        M[Cross-Vendor] --> N[Price Alerts]
+    end
+    
+    Phase1 --> Phase2
+    Phase2 --> Phase3
+    Phase3 --> Phase4
+    Phase4 --> Phase5
+    Phase5 --> O([✨ Complete<br/>$0.0006 | ~65s])
+    
+    style Phase1 fill:#3B82F6,stroke:#2563EB,stroke-width:2px,color:#fff
+    style Phase2 fill:#10B981,stroke:#059669,stroke-width:2px,color:#fff
+    style Phase3 fill:#F59E0B,stroke:#D97706,stroke-width:2px,color:#fff
+    style Phase4 fill:#8B5CF6,stroke:#7C3AED,stroke-width:2px,color:#fff
+    style Phase5 fill:#EC4899,stroke:#DB2777,stroke-width:2px,color:#fff
+    style O fill:#4F46E5,stroke:#4338CA,stroke-width:3px,color:#fff
+```

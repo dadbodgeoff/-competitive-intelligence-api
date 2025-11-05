@@ -1,0 +1,2 @@
+This is not a PDF file.
+It should trigger an error when uploaded.

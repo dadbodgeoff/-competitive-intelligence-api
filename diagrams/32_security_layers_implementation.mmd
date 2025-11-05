@@ -1,0 +1,134 @@
+graph TB
+    subgraph "User's Browser"
+        User[User]
+        Browser[Browser]
+    end
+
+    subgraph "Security Headers - NEW ✨"
+        CSP["Content-Security-Policy<br/>✅ Blocks inline scripts<br/>✅ Restricts external resources<br/>✅ Prevents XSS attacks"]
+        HSTS["Strict-Transport-Security<br/>✅ Forces HTTPS<br/>✅ Prevents downgrade attacks<br/>✅ Production only"]
+        XFrame["X-Frame-Options: DENY<br/>✅ Prevents clickjacking<br/>✅ Blocks iframe embedding"]
+        XContent["X-Content-Type-Options: nosniff<br/>✅ Prevents MIME sniffing<br/>✅ Blocks content type confusion"]
+        Referrer["Referrer-Policy<br/>✅ Controls referrer information<br/>✅ Privacy protection"]
+        Permissions["Permissions-Policy<br/>✅ Disables geolocation<br/>✅ Disables camera/microphone"]
+    end
+
+    subgraph "Cookie Security - EXISTING ✅"
+        HTTPOnly["HTTPOnly Cookies<br/>✅ JavaScript cannot access<br/>✅ Prevents XSS token theft"]
+        Secure["Secure Flag<br/>✅ HTTPS only<br/>✅ Environment aware"]
+        SameSite["SameSite=Lax<br/>✅ CSRF protection<br/>✅ Blocks cross-site requests"]
+    end
+
+    subgraph "Request Flow"
+        Request[HTTP Request]
+        
+        subgraph "Middleware Stack - NEW ✨"
+            SecMiddleware["SecurityHeadersMiddleware<br/>NEW - Adds all security headers"]
+            CORSMiddleware["CORSMiddleware<br/>EXISTING - Origin restrictions"]
+            LogMiddleware["Request Logging<br/>EXISTING - Sanitizes auth headers"]
+            ExceptionMiddleware["Global Exception Handler<br/>EXISTING - ErrorSanitizer"]
+        end
+    end
+
+    subgraph "Authentication Layer - EXISTING ✅"
+        AuthCheck["get_current_user<br/>✅ Validates JWT from cookie<br/>✅ Required on all protected routes"]
+        JWTValidation["JWT Validation<br/>✅ HS256 algorithm<br/>✅ Expiry checking"]
+    end
+
+    subgraph "Authorization Layer - EXISTING ✅"
+        RLS["Row Level Security RLS<br/>✅ Database-level protection<br/>✅ user_id policies"]
+        Ownership["Ownership Validator<br/>✅ Service-level checks<br/>✅ Prevents unauthorized access"]
+    end
+
+    subgraph "Input Validation - EXISTING ✅"
+        Pydantic["Pydantic Validation<br/>✅ All API inputs validated<br/>✅ Type checking"]
+        FileVal["File Validator<br/>✅ 10MB size limit<br/>✅ PDF/Image only"]
+        Malware["Malware Scanner<br/>✅ ClamAV integration<br/>✅ Scans all uploads"]
+    end
+
+    subgraph "Error Handling - EXISTING ✅"
+        ErrorSan["Error Sanitizer<br/>✅ Production mode hides details<br/>✅ Development mode shows errors<br/>✅ No information leakage"]
+    end
+
+    subgraph "Rate Limiting - EXISTING ✅"
+        RateLimit["Rate Limiting<br/>✅ Per-tier limits<br/>✅ Redis-backed<br/>✅ Prevents abuse"]
+    end
+
+    subgraph "CSP Violation Monitoring - NEW ✨"
+        CSPReport["CSP Report Endpoint<br/>NEW - /api/csp-report<br/>Logs violations for monitoring"]
+    end
+
+    subgraph "API Routes"
+        ProtectedRoutes["Protected API Routes<br/>All require authentication"]
+    end
+
+    subgraph "Database"
+        DB[(Supabase PostgreSQL<br/>RLS Enabled)]
+    end
+
+    %% User Flow
+    User -->|Makes Request| Browser
+    Browser -->|HTTPS| Request
+
+    %% Security Headers Applied
+    Request --> SecMiddleware
+    SecMiddleware -.->|Adds| CSP
+    SecMiddleware -.->|Adds| HSTS
+    SecMiddleware -.->|Adds| XFrame
+    SecMiddleware -.->|Adds| XContent
+    SecMiddleware -.->|Adds| Referrer
+    SecMiddleware -.->|Adds| Permissions
+
+    %% Middleware Chain
+    SecMiddleware --> CORSMiddleware
+    CORSMiddleware --> LogMiddleware
+    LogMiddleware --> ExceptionMiddleware
+    ExceptionMiddleware --> AuthCheck
+
+    %% Cookie Security
+    Browser -.->|Sends| HTTPOnly
+    Browser -.->|Sends| Secure
+    Browser -.->|Sends| SameSite
+    HTTPOnly --> AuthCheck
+    Secure --> AuthCheck
+    SameSite --> AuthCheck
+
+    %% Authentication
+    AuthCheck --> JWTValidation
+    JWTValidation --> ProtectedRoutes
+
+    %% Rate Limiting
+    ProtectedRoutes --> RateLimit
+    RateLimit --> Pydantic
+
+    %% Input Validation
+    Pydantic --> FileVal
+    FileVal --> Malware
+
+    %% Authorization
+    Malware --> Ownership
+    Ownership --> RLS
+    RLS --> DB
+
+    %% Error Handling
+    ExceptionMiddleware -.->|Uses| ErrorSan
+    ProtectedRoutes -.->|Uses| ErrorSan
+
+    %% CSP Monitoring
+    Browser -.->|Reports Violations| CSPReport
+    CSP -.->|Violations| CSPReport
+
+    %% Response Flow
+    DB -->|Response| ProtectedRoutes
+    ProtectedRoutes -->|With Headers| SecMiddleware
+    SecMiddleware -->|Secure Response| Browser
+    Browser -->|Displays| User
+
+    %% Styling
+    classDef new fill:#51cf66,stroke:#2f9e44,color:#fff,stroke-width:3px
+    classDef existing fill:#4dabf7,stroke:#1971c2,color:#fff
+    classDef critical fill:#ff6b6b,stroke:#c92a2a,color:#fff
+    
+    class CSP,HSTS,XFrame,XContent,Referrer,Permissions,SecMiddleware,CSPReport new
+    class HTTPOnly,Secure,SameSite,AuthCheck,RLS,Ownership,Pydantic,FileVal,Malware,ErrorSan,RateLimit existing
+    class User,Browser,Request,ProtectedRoutes,DB existing

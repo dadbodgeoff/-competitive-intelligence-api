@@ -1,0 +1,1320 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\playwright.config.ts",
+    "rootDir": "C:/Users/dadbo/OneDrive/Desktop/New/competitive-intelligence-api/src/tests/production/frontend/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 4
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "../reports/frontend-coverage"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "../reports/frontend-coverage/results.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Users/dadbo/OneDrive/Desktop/New/competitive-intelligence-api/src/tests/production/frontend/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/dadbo/OneDrive/Desktop/New/competitive-intelligence-api/src/tests/production/frontend/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "C:/Users/dadbo/OneDrive/Desktop/New/competitive-intelligence-api/src/tests/production/frontend/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "C:/Users/dadbo/OneDrive/Desktop/New/competitive-intelligence-api/src/tests/production/frontend/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "C:/Users/dadbo/OneDrive/Desktop/New/competitive-intelligence-api/src/tests/production/frontend/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "C:/Users/dadbo/OneDrive/Desktop/New/competitive-intelligence-api/src/tests/production/frontend/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "C:/Users/dadbo/OneDrive/Desktop/New/competitive-intelligence-api/src/tests/production/frontend/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "mobile-chrome",
+        "name": "mobile-chrome",
+        "testDir": "C:/Users/dadbo/OneDrive/Desktop/New/competitive-intelligence-api/src/tests/production/frontend/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "C:/Users/dadbo/OneDrive/Desktop/New/competitive-intelligence-api/src/tests/production/frontend/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "mobile-safari",
+        "name": "mobile-safari",
+        "testDir": "C:/Users/dadbo/OneDrive/Desktop/New/competitive-intelligence-api/src/tests/production/frontend/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "C:/Users/dadbo/OneDrive/Desktop/New/competitive-intelligence-api/src/tests/production/frontend/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "tablet",
+        "name": "tablet",
+        "testDir": "C:/Users/dadbo/OneDrive/Desktop/New/competitive-intelligence-api/src/tests/production/frontend/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.56.1",
+    "workers": 4,
+    "webServer": {
+      "command": "cd ../../../frontend && npm run dev",
+      "url": "http://localhost:5173",
+      "reuseExistingServer": true,
+      "timeout": 120000,
+      "stdout": "ignore",
+      "stderr": "pipe"
+    }
+  },
+  "suites": [
+    {
+      "title": "01-onboarding.spec.ts",
+      "file": "01-onboarding.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Journey 1: Onboarding & Authentication",
+          "file": "01-onboarding.spec.ts",
+          "line": 20,
+          "column": 6,
+          "specs": [
+            {
+              "title": "1.1 - Landing page displays and CTAs work",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 226,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:13.686Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-15d3c-page-displays-and-CTAs-work-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-15d3c-page-displays-and-CTAs-work-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-a2019d21a6397ce04101",
+              "file": "01-onboarding.spec.ts",
+              "line": 32,
+              "column": 7
+            },
+            {
+              "title": "1.2 - User can register successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 228,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:13.688Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-3a268-r-can-register-successfully-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-3a268-r-can-register-successfully-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-c9d02d40ff48f20aeb5b",
+              "file": "01-onboarding.spec.ts",
+              "line": 50,
+              "column": 7
+            },
+            {
+              "title": "1.3 - Registration validates email format",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 227,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:13.684Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-fe6cf-tion-validates-email-format-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-fe6cf-tion-validates-email-format-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-ccfa6418bf0ca4a59be7",
+              "file": "01-onboarding.spec.ts",
+              "line": 67,
+              "column": 7
+            },
+            {
+              "title": "1.4 - Registration validates password strength",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 231,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:13.700Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-c0631-validates-password-strength-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-c0631-validates-password-strength-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-96bd349c7f6b4ea4a555",
+              "file": "01-onboarding.spec.ts",
+              "line": 84,
+              "column": 7
+            },
+            {
+              "title": "1.5 - Registration validates password confirmation",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 217,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:14.523Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-fd336-dates-password-confirmation-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-fd336-dates-password-confirmation-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-a8fd670719b1aec23888",
+              "file": "01-onboarding.spec.ts",
+              "line": 101,
+              "column": 7
+            },
+            {
+              "title": "1.6 - User can login successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 206,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:14.518Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-7bfef-User-can-login-successfully-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-7bfef-User-can-login-successfully-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-9ca805e9d3d1aa921044",
+              "file": "01-onboarding.spec.ts",
+              "line": 118,
+              "column": 7
+            },
+            {
+              "title": "1.7 - Login validates required fields",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 218,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:14.522Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-b2c5c-n-validates-required-fields-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-b2c5c-n-validates-required-fields-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-1b04ea6b3359076d910f",
+              "file": "01-onboarding.spec.ts",
+              "line": 128,
+              "column": 7
+            },
+            {
+              "title": "1.8 - Login shows error for invalid credentials",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 219,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:14.536Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-c38b0-ror-for-invalid-credentials-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-c38b0-ror-for-invalid-credentials-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-2efd8d67890c8a88ecfe",
+              "file": "01-onboarding.spec.ts",
+              "line": 138,
+              "column": 7
+            },
+            {
+              "title": "1.9 - Auth state persists across page refresh",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 214,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:15.336Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-95cc8-ersists-across-page-refresh-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-95cc8-ersists-across-page-refresh-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-eed1ce1c0ab89a25028a",
+              "file": "01-onboarding.spec.ts",
+              "line": 152,
+              "column": 7
+            },
+            {
+              "title": "1.10 - User can logout successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 209,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:15.345Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-89be9-ser-can-logout-successfully-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-89be9-ser-can-logout-successfully-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-b468ab50f42907f83e3e",
+              "file": "01-onboarding.spec.ts",
+              "line": 167,
+              "column": 7
+            },
+            {
+              "title": "1.11 - Protected routes redirect to login when not authenticated",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 216,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:15.342Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-8b301-ogin-when-not-authenticated-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-8b301-ogin-when-not-authenticated-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-85917044dae195a18b38",
+              "file": "01-onboarding.spec.ts",
+              "line": 184,
+              "column": 7
+            },
+            {
+              "title": "1.12 - Password visibility toggle works",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 202,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:15.362Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-658ac-ord-visibility-toggle-works-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-658ac-ord-visibility-toggle-works-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-729dc5c0e25a659e1217",
+              "file": "01-onboarding.spec.ts",
+              "line": 202,
+              "column": 7
+            },
+            {
+              "title": "1.13 - Login form is mobile-optimized",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 182,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:16.148Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-b7a67-in-form-is-mobile-optimized-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-b7a67-in-form-is-mobile-optimized-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-c23e66971efe71270589",
+              "file": "01-onboarding.spec.ts",
+              "line": 227,
+              "column": 7
+            },
+            {
+              "title": "1.14 - Registration form is mobile-optimized",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 196,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:16.154Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-f5567-on-form-is-mobile-optimized-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-f5567-on-form-is-mobile-optimized-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-9c67df922c680041ea50",
+              "file": "01-onboarding.spec.ts",
+              "line": 244,
+              "column": 7
+            },
+            {
+              "title": "1.15 - Navigation between login and register works",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 197,
+                      "error": {
+                        "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+                        "stack": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\n    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\n    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5",
+                        "location": {
+                          "file": "<anonymous>",
+                          "column": 16,
+                          "line": 292
+                        }
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at clearAuthState (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:123:9)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:24:5\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "<anonymous>",
+                            "column": 16,
+                            "line": 292
+                          },
+                          "message": "Error: page.evaluate: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at UtilityScript.evaluate (<anonymous>:292:16)\u001b[22m\n\u001b[2m    at UtilityScript.<anonymous> (<anonymous>:1:44)\u001b[22m\n\u001b[2m    at cleanupBrowserStorage (C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\helpers\\cleanup.ts:28:14)\u001b[22m\n\u001b[2m    at C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\e2e\\01-onboarding.spec.ts:29:32\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-11-03T22:15:16.152Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-a3489-en-login-and-register-works-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\dadbo\\OneDrive\\Desktop\\New\\competitive-intelligence-api\\src\\tests\\production\\frontend\\test-results\\01-onboarding-Journey-1-On-a3489-en-login-and-register-works-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "<anonymous>",
+                        "column": 16,
+                        "line": 292
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "dacac6177a7cb5257661-332b199be48e054f732e",
+              "file": "01-onboarding.spec.ts",
+              "line": 258,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-11-03T22:15:13.142Z",
+    "duration": 3328.7830000000004,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 15,
+    "flaky": 0
+  }
+}

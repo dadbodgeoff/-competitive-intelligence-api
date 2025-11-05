@@ -1,0 +1,61 @@
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#10B981','primaryTextColor':'#fff','primaryBorderColor':'#059669','lineColor':'#6366F1','secondaryColor':'#3B82F6','tertiaryColor':'#F59E0B','fontSize':'14px'}}}%%
+
+graph TB
+    subgraph Client["🖥️ CLIENT - Instant Response"]
+        A[Upload Menu PDF]
+        B[SSE Stream]
+        C[User Review]
+    end
+    
+    subgraph Security["🔒 SECURITY - 300ms"]
+        D[HTTPOnly Cookies]
+        E[Malware Scan]
+        F[Row Level Security]
+    end
+    
+    subgraph AI["🤖 AI PROCESSING - 25-40s"]
+        G[Gemini 2.0 Flash]
+        H[Extract Menu Items]
+        I[Validation]
+    end
+    
+    subgraph Database["💾 SOURCE OF TRUTH - 300ms<br/>menu_items table"]
+        J[ACID Transaction]
+        K[Menu Header]
+        L[Menu Items + Prices]
+    end
+    
+    subgraph COGS["💰 COST OF GOODS - 50-100ms<br/>Reads invoice_items"]
+        M[Recipe Builder]
+        N[Unit Conversion]
+        O[Calculate COGS]
+        P[Food Cost %]
+    end
+    
+    A --> D
+    D --> E
+    E --> G
+    G --> H
+    H --> I
+    I --> B
+    B --> C
+    C -->|User Saves| J
+    J --> K
+    K --> L
+    L -.->|Links to| M
+    M --> N
+    N --> O
+    O --> P
+    F -.->|Enforces| L
+    
+    Result[["✨ COMPLETE<br/>~40s total - $0.002 cost<br/>Menu + COGS Ready"]]
+    P --> Result
+    
+    style Client fill:#4F46E5,stroke:#4338CA,stroke-width:3px,color:#fff
+    style Security fill:#EF4444,stroke:#DC2626,stroke-width:3px,color:#fff
+    style AI fill:#10B981,stroke:#059669,stroke-width:3px,color:#fff
+    style Database fill:#3B82F6,stroke:#2563EB,stroke-width:3px,color:#fff
+    style COGS fill:#F59E0B,stroke:#D97706,stroke-width:3px,color:#fff
+    style Result fill:#8B5CF6,stroke:#7C3AED,stroke-width:4px,color:#fff
+```

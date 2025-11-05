@@ -1,0 +1,8 @@
+# E2E Auth Test Suite Dependencies
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+httpx>=0.24.0
+playwright>=1.40.0
+pytest-html>=4.0.0
+pytest-json-report>=1.5.0
+python-dotenv>=1.0.0

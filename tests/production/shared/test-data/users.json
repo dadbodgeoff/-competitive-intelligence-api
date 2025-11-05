@@ -1,0 +1,26 @@
+{
+  "free_tier_user": {
+    "id": "00000000-0000-0000-0000-000000000001",
+    "email": "free@test.com",
+    "password": "TestPass123!",
+    "subscription_tier": "free",
+    "first_name": "Free",
+    "last_name": "User"
+  },
+  "premium_tier_user": {
+    "id": "00000000-0000-0000-0000-000000000002",
+    "email": "premium@test.com",
+    "password": "TestPass123!",
+    "subscription_tier": "premium",
+    "first_name": "Premium",
+    "last_name": "User"
+  },
+  "enterprise_tier_user": {
+    "id": "00000000-0000-0000-0000-000000000003",
+    "email": "enterprise@test.com",
+    "password": "TestPass123!",
+    "subscription_tier": "enterprise",
+    "first_name": "Enterprise",
+    "last_name": "User"
+  }
+}

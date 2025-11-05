@@ -1,0 +1,60 @@
+```mermaid
+graph TB
+    subgraph Client["💻 Modern Frontend"]
+        A[React + TypeScript]
+        B[Tailwind CSS]
+        C[Zustand State]
+        D[React Query]
+    end
+    
+    subgraph API["⚡ High-Performance API"]
+        E[FastAPI + Python]
+        F[Async/Await]
+        G[SSE Streaming]
+        H[WebSocket Ready]
+    end
+    
+    subgraph AI["🤖 AI/ML Pipeline"]
+        I[Gemini 2.0 Flash]
+        J[Strategic Prompting]
+        K[Streaming Responses]
+        L[Context Management]
+    end
+    
+    subgraph Data["💾 Data Layer"]
+        M[(Supabase PostgreSQL)]
+        N[Redis Cache]
+        O[Real-time Subscriptions]
+    end
+    
+    subgraph Security["🔒 Enterprise Security"]
+        P[HTTPOnly Cookies]
+        Q[ClamAV Scanning]
+        R[Rate Limiting]
+        S[CORS + CSRF]
+    end
+    
+    subgraph External["🌐 External APIs"]
+        T[Google Places API]
+        U[Outscraper]
+        V[SerpAPI]
+    end
+    
+    A --> E
+    E --> I
+    I --> M
+    E --> N
+    E --> T
+    E --> U
+    E --> V
+    
+    P -.->|Secures| E
+    Q -.->|Scans| E
+    R -.->|Protects| E
+    S -.->|Validates| E
+    
+    style I fill:#10b981,stroke:#059669,color:#fff
+    style E fill:#3b82f6,stroke:#2563eb,color:#fff
+    style P fill:#ef4444,stroke:#dc2626,color:#fff
+    style M fill:#8b5cf6,stroke:#7c3aed,color:#fff
+```

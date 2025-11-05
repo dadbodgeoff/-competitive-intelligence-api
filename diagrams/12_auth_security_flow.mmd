@@ -1,0 +1,40 @@
+```mermaid
+flowchart TB
+    subgraph Frontend["🎨 React Frontend"]
+        A[User Login] --> B[HTTPOnly Cookie Auth]
+        B --> C{Token Valid?}
+        C -->|Yes| D[Access Protected Routes]
+        C -->|No| E[Auto Refresh Token]
+        E --> F{Refresh Success?}
+        F -->|Yes| D
+        F -->|No| A
+    end
+    
+    subgraph Backend["⚡ FastAPI Backend"]
+        G[Auth Middleware] --> H[Validate Cookie]
+        H --> I{Valid?}
+        I -->|Yes| J[Process Request]
+        I -->|No| K[Return 401]
+        K --> E
+    end
+    
+    subgraph Security["🔒 Security Layer"]
+        L[HTTPOnly Cookies]
+        M[CORS Protection]
+        N[Rate Limiting]
+        O[ClamAV Malware Scan]
+    end
+    
+    D --> G
+    J --> P[API Response]
+    
+    L -.->|Protects| B
+    M -.->|Validates| G
+    N -.->|Throttles| G
+    O -.->|Scans| G
+    
+    style B fill:#10b981,stroke:#059669,color:#fff
+    style G fill:#3b82f6,stroke:#2563eb,color:#fff
+    style L fill:#ef4444,stroke:#dc2626,color:#fff
+    style O fill:#f59e0b,stroke:#d97706,color:#fff
+```

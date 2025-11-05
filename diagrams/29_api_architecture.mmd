@@ -1,0 +1,88 @@
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#10B981','primaryTextColor':'#fff','primaryBorderColor':'#059669','lineColor':'#6366F1','secondaryColor':'#3B82F6','tertiaryColor':'#F59E0B','fontSize':'14px'}}}%%
+
+graph TB
+    subgraph Routes["🛣️ API ROUTES"]
+        A[Auth]
+        B[Invoices]
+        C[Menu]
+        D[Menu Comparison]
+        E[Analysis]
+        F[Price Analytics]
+        G[Subscription]
+    end
+    
+    subgraph Middleware["⚙️ MIDDLEWARE"]
+        H[Auth JWT]
+        I[Rate Limiting]
+        J[CORS]
+        K[Performance Tracker]
+    end
+    
+    subgraph Services["🔧 SERVICES"]
+        L[Invoice Parser]
+        M[Menu Parser]
+        N[Competitor Discovery]
+        O[Menu Comparison]
+        P[LLM Analysis]
+        Q[Storage Services]
+    end
+    
+    subgraph External["🌐 EXTERNAL APIs"]
+        R[Gemini 2.0 Flash]
+        S[Google Places]
+        T[ClamAV Scanner]
+    end
+    
+    subgraph Database["💾 DATABASE"]
+        U[(Supabase PostgreSQL)]
+        V[Redis Cache]
+    end
+    
+    A --> H
+    B --> H
+    C --> H
+    D --> H
+    E --> H
+    F --> H
+    G --> H
+    
+    H --> I
+    I --> J
+    J --> K
+    
+    K --> L
+    K --> M
+    K --> N
+    K --> O
+    K --> P
+    
+    L --> R
+    M --> R
+    O --> R
+    P --> R
+    
+    L --> T
+    M --> T
+    
+    N --> S
+    
+    L --> Q
+    M --> Q
+    N --> Q
+    O --> Q
+    P --> Q
+    
+    Q --> U
+    Q --> V
+    
+    Result[["✨ FASTAPI<br/>Async + SSE Streaming"]]
+    U --> Result
+    
+    style Routes fill:#4F46E5,stroke:#4338CA,stroke-width:3px,color:#fff
+    style Middleware fill:#EF4444,stroke:#DC2626,stroke-width:3px,color:#fff
+    style Services fill:#10B981,stroke:#059669,stroke-width:3px,color:#fff
+    style External fill:#F59E0B,stroke:#D97706,stroke-width:3px,color:#fff
+    style Database fill:#3B82F6,stroke:#2563EB,stroke-width:3px,color:#fff
+    style Result fill:#8B5CF6,stroke:#7C3AED,stroke-width:4px,color:#fff
+```

@@ -1,0 +1,71 @@
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#10B981','primaryTextColor':'#fff','primaryBorderColor':'#059669','lineColor':'#6366F1','secondaryColor':'#3B82F6','tertiaryColor':'#F59E0B','fontSize':'13px'}}}%%
+
+graph LR
+    subgraph L1["🖥️ CLIENT<br/>⚡ Instant Response"]
+        A1[Upload UI]
+        A2[SSE Stream<br/>Real-time]
+        A3[Review]
+    end
+    
+    subgraph L2["🔒 SECURITY<br/>⚡ 470ms"]
+        B1[HTTPOnly<br/>Cookies]
+        B2[Malware<br/>Scan]
+        B3[Row Level<br/>Security]
+    end
+    
+    subgraph L3["🤖 AI PROCESSING<br/>⚡ 30-64s"]
+        C1[Streaming<br/>Non-blocking]
+        C2[Gemini 2.5<br/>Flash]
+        C3[Extract<br/>15 Items]
+        C4[Validate<br/>Math Checks]
+    end
+    
+    subgraph L4["🧠 INTELLIGENCE<br/>⚡ Included in Save"]
+        D1[Fuzzy Match<br/>85% Threshold]
+        D2[Duplicate<br/>Detection]
+        D3[Post-Process<br/>Correction]
+    end
+    
+    subgraph L5["💾 DATABASE<br/>⚡ 723ms Total"]
+        E1[ACID<br/>Transaction]
+        E2[Header +<br/>15 Items]
+        E3[Fuzzy +<br/>Tracking]
+    end
+    
+    subgraph L6["📈 ANALYTICS<br/>⚡ 60-270ms"]
+        F1[Direct<br/>Queries]
+        F2[Real-time<br/>Calc]
+        F3[Cross-Vendor<br/>Compare]
+    end
+    
+    A1 --> B1
+    B1 --> B2
+    B2 --> C1
+    C1 --> C2
+    C2 --> C3
+    C3 --> C4
+    C4 --> A2
+    A2 --> A3
+    A3 --> D1
+    D1 --> D2
+    D2 --> D3
+    D3 --> E1
+    E1 --> E2
+    E2 --> E3
+    E3 --> F1
+    F1 --> F2
+    F2 --> F3
+    B3 -.->|Enforces| E2
+    
+    Result[["✨ COMPLETE<br/>Total: ~65s<br/>Cost: $0.0006<br/>15 Items Processed"]]
+    F3 --> Result
+    
+    style L1 fill:#4F46E5,stroke:#4338CA,stroke-width:2px,color:#fff
+    style L2 fill:#EF4444,stroke:#DC2626,stroke-width:2px,color:#fff
+    style L3 fill:#10B981,stroke:#059669,stroke-width:2px,color:#fff
+    style L4 fill:#F59E0B,stroke:#D97706,stroke-width:2px,color:#fff
+    style L5 fill:#3B82F6,stroke:#2563EB,stroke-width:2px,color:#fff
+    style L6 fill:#EC4899,stroke:#DB2777,stroke-width:2px,color:#fff
+    style Result fill:#8B5CF6,stroke:#7C3AED,stroke-width:3px,color:#fff
+```

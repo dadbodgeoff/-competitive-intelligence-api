@@ -1,0 +1,68 @@
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#10B981','primaryTextColor':'#fff','primaryBorderColor':'#059669','lineColor':'#6366F1','secondaryColor':'#3B82F6','tertiaryColor':'#F59E0B','fontSize':'14px'}}}%%
+
+graph LR
+    subgraph MenuFlow["📋 MENU UPLOAD FLOW"]
+        A[Upload PDF<br/>Menu File]
+        B[AI Parse<br/>Gemini 2.0<br/>⏱️ 25-40s]
+        C[Extract Items<br/>Categories<br/>Prices]
+        D[User Review<br/>& Approve]
+        E[Save to DB<br/>menu_items<br/>⏱️ 300ms]
+    end
+    
+    subgraph COGSFlow["💰 COST OF GOODS BREAKDOWN"]
+        F[Menu Item<br/>Burger $12]
+        G[Recipe Builder<br/>Link Ingredients]
+        H[Read invoice_items<br/>Source of Truth]
+        I[Calculate Costs<br/>Real-time]
+        J[COGS Result<br/>$3.30 - 27.5%]
+    end
+    
+    subgraph Ingredients["🥩 INGREDIENT BREAKDOWN"]
+        K[Bun: $0.45<br/>$5.40/12pk]
+        L[Patty: $2.10<br/>$42/20pk]
+        M[Lettuce: $0.18<br/>$2.40/lb]
+        N[Tomato: $0.22<br/>$3.50/lb]
+        O[Cheese: $0.35<br/>$8.40/24pk]
+    end
+    
+    subgraph Metrics["📊 PERFORMANCE METRICS"]
+        P[Menu Parse<br/>25-40s]
+        Q[DB Save<br/>300ms]
+        R[COGS Calc<br/>50-100ms]
+        S[Cost: $0.002<br/>per menu]
+    end
+    
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E -.->|Links to| F
+    F --> G
+    G --> H
+    H --> I
+    I --> J
+    
+    I --> K
+    I --> L
+    I --> M
+    I --> N
+    I --> O
+    
+    K --> J
+    L --> J
+    M --> J
+    N --> J
+    O --> J
+    
+    B -.->|Timing| P
+    E -.->|Timing| Q
+    I -.->|Timing| R
+    B -.->|Cost| S
+    
+    style MenuFlow fill:#4F46E5,stroke:#4338CA,stroke-width:2px,color:#fff
+    style COGSFlow fill:#10B981,stroke:#059669,stroke-width:2px,color:#fff
+    style Ingredients fill:#F59E0B,stroke:#D97706,stroke-width:2px,color:#fff
+    style Metrics fill:#EC4899,stroke:#DB2777,stroke-width:2px,color:#fff
+    style J fill:#8B5CF6,stroke:#7C3AED,stroke-width:3px,color:#fff
+```

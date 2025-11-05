@@ -1,0 +1,63 @@
+{
+  "summary": {
+    "total": 5,
+    "passed": 4,
+    "failed": 1,
+    "success_rate": "80.0%"
+  },
+  "results": [
+    {
+      "test": "login",
+      "success": true,
+      "status_code": 200,
+      "details": {
+        "user_id": "7a8e9f71-ca9f-46af-8694-41b5e52464ab"
+      },
+      "timestamp": "2025-11-02T18:05:38.983881"
+    },
+    {
+      "test": "start_comparison",
+      "success": true,
+      "status_code": 200,
+      "details": {
+        "analysis_id": "8719925c-d0d2-4c87-8278-b9bf41609b3e",
+        "competitors_found": 5
+      },
+      "timestamp": "2025-11-02T18:05:47.484920"
+    },
+    {
+      "test": "get_status",
+      "success": true,
+      "status_code": 200,
+      "details": {
+        "status": "selecting"
+      },
+      "timestamp": "2025-11-02T18:05:47.982447"
+    },
+    {
+      "test": "select_competitors",
+      "success": true,
+      "status_code": 200,
+      "details": {
+        "selected_count": 2,
+        "stream_events": 6
+      },
+      "timestamp": "2025-11-02T18:05:51.159273"
+    },
+    {
+      "test": "poll_analysis",
+      "success": false,
+      "status_code": 200,
+      "details": {
+        "error": "Failed to parse any competitor menus"
+      },
+      "timestamp": "2025-11-02T18:05:51.576076"
+    }
+  ],
+  "test_data": {
+    "restaurant": "Park Ave Pizza",
+    "location": "Woonsocket, RI",
+    "analysis_id": "8719925c-d0d2-4c87-8278-b9bf41609b3e",
+    "saved_comparison_id": null
+  }
+}

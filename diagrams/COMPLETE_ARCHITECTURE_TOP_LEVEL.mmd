@@ -1,0 +1,126 @@
+graph TB
+    %% ============================================================================
+    %% COMPLETE ARCHITECTURE - Restaurant Intelligence SaaS Platform
+    %% ============================================================================
+    
+    User[👤 User Browser]
+    
+    %% Frontend Layer
+    subgraph Frontend["🎨 FRONTEND - React 18 + TypeScript"]
+        FE1[20 Pages: Dashboard, Analysis<br/>Invoices, Menus, Comparison]
+        FE2[Zustand Auth + React Query]
+        FE3[SSE Streaming Hooks]
+    end
+    
+    %% Security Layer
+    subgraph Security["🔒 SECURITY"]
+        SEC1[HTTPOnly Cookies<br/>SameSite=Lax + JWT HS256]
+        SEC2[CSP Headers + HSTS<br/>X-Frame-Options]
+        SEC3[Row Level Security<br/>ClamAV Malware Scan]
+    end
+    
+    %% API Gateway
+    subgraph API["⚡ FASTAPI - Python 3.14"]
+        API1[5 Middleware:<br/>Security, CORS, Auth<br/>Rate Limit, Logging]
+        API2[7 Route Groups:<br/>Auth, Analysis, Streaming<br/>Invoices, Menus<br/>Comparison, Analytics]
+    end
+    
+    %% Service Layer
+    subgraph Services["🛠️ 47 SERVICES"]
+        SVC1[File Processing: 3<br/>Validator, ClamAV, Dedup]
+        SVC2[LLM Services: 5<br/>Free, Enhanced, Premium<br/>Invoice Parser, Menu Parser]
+        SVC3[Data Processing: 8<br/>Fuzzy Match 95%+<br/>Unit Convert, Analytics]
+        SVC4[Storage: 4<br/>Invoice, Menu<br/>Analysis, Comparison]
+        SVC5[Orchestrators: 3<br/>Analysis, Streaming<br/>Comparison]
+    end
+    
+    %% AI Layer
+    subgraph AI["🤖 AI/LLM"]
+        AI1[Google Gemini 2.0 Flash<br/>Vision + Text Models]
+        AI2[Structured JSON Output<br/>Real-Time SSE Streaming]
+    end
+    
+    %% Database Layer
+    subgraph Database["💾 SUPABASE POSTGRESQL"]
+        DB1[45 Tables:<br/>Core 10, Invoice 8<br/>Menu 12, System 8]
+        DB2[10+ DB Functions:<br/>Fuzzy Match, Analytics<br/>Atomic Usage Limits]
+        DB3[20+ Indexes<br/>RLS Policies]
+    end
+    
+    %% Cache & Storage
+    Redis[(🚀 Redis Cache<br/>Rate Limiting<br/>Sessions)]
+    Storage[(📦 File Storage<br/>Invoices + Menus<br/>Signed URLs)]
+    
+    %% External APIs
+    subgraph External["🌐 EXTERNAL APIs"]
+        EXT1[Google Gemini API]
+        EXT2[Google Places API]
+        EXT3[SerpAPI + Outscraper]
+    end
+    
+    %% Metrics
+    Metrics[["📊 PRODUCTION METRICS<br/>━━━━━━━━━━━━━━━━━━<br/>5 Core Modules<br/>45 Database Tables<br/>47 Backend Services<br/>7 API Route Groups<br/>5 Middleware Layers<br/>20 Frontend Pages<br/>5 LLM Services<br/>3 Subscription Tiers<br/>10+ DB Functions<br/>20+ DB Indexes<br/>━━━━━━━━━━━━━━━━━━<br/>✅ Real-Time SSE<br/>✅ HTTPOnly Auth<br/>✅ Row Level Security<br/>✅ ClamAV Scanning<br/>✅ Atomic Limits<br/>✅ 95%+ Fuzzy Match"]]
+    
+    %% Primary Flow
+    User -->|HTTPS| Security
+    Security --> SEC1
+    Security --> SEC2
+    Security --> SEC3
+    
+    SEC1 --> Frontend
+    Frontend --> FE1
+    Frontend --> FE2
+    Frontend --> FE3
+    
+    FE2 -->|withCredentials| API
+    FE3 -->|SSE| API
+    
+    API --> API1
+    API1 --> API2
+    
+    API2 --> Services
+    Services --> SVC1
+    Services --> SVC2
+    Services --> SVC3
+    Services --> SVC4
+    Services --> SVC5
+    
+    SVC1 --> Storage
+    SVC2 --> AI
+    SVC3 --> Database
+    SVC4 --> Storage
+    SVC4 --> Database
+    SVC5 --> SVC2
+    
+    AI --> AI1
+    AI1 --> AI2
+    AI1 --> External
+    
+    External --> EXT1
+    External --> EXT2
+    External --> EXT3
+    
+    Database --> DB1
+    Database --> DB2
+    Database --> DB3
+    
+    API1 --> Redis
+    SVC5 --> Redis
+    
+    %% Security Enforcement
+    SEC2 -.->|Enforces| Frontend
+    SEC1 -.->|Protects| API
+    SEC3 -.->|Enforces| Database
+    SVC1 -.->|Scans| Storage
+    
+    %% Styling
+    style Frontend fill:#4F46E5,stroke:#4338CA,stroke-width:3px,color:#fff
+    style Security fill:#EF4444,stroke:#DC2626,stroke-width:3px,color:#fff
+    style API fill:#10B981,stroke:#059669,stroke-width:3px,color:#fff
+    style Services fill:#10B981,stroke:#059669,stroke-width:2px,color:#fff
+    style AI fill:#F59E0B,stroke:#D97706,stroke-width:3px,color:#fff
+    style Database fill:#3B82F6,stroke:#2563EB,stroke-width:3px,color:#fff
+    style External fill:#06B6D4,stroke:#0891B2,stroke-width:3px,color:#fff
+    style Metrics fill:#8B5CF6,stroke:#7C3AED,stroke-width:4px,color:#fff
+    style Redis fill:#8B5CF6,stroke:#7C3AED,stroke-width:3px,color:#fff
+    style Storage fill:#F59E0B,stroke:#D97706,stroke-width:3px,color:#fff

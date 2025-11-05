@@ -1,0 +1,67 @@
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'primaryColor':'#10B981','primaryTextColor':'#fff','primaryBorderColor':'#059669','lineColor':'#6366F1','secondaryColor':'#3B82F6','tertiaryColor':'#F59E0B','fontSize':'13px'}}}%%
+
+graph LR
+    subgraph L1["🖥️ CLIENT LAYER<br/>⚡ Instant Response"]
+        A1[Drag & Drop<br/>Upload UI]
+        A2[SSE Stream<br/>Real-time Updates]
+        A3[User Review<br/>& Approve]
+    end
+    
+    subgraph L2["🔒 SECURITY LAYER<br/>⚡ 470ms"]
+        B1[HTTPOnly Cookies<br/>XSS Protection]
+        B2[Malware Scan<br/>ClamAV]
+        B3[Row Level Security<br/>User Isolation]
+    end
+    
+    subgraph L3["🤖 AI PROCESSING LAYER<br/>⚡ 30-64s"]
+        C1[Streaming Arch<br/>Non-blocking I/O]
+        C2[Gemini 2.5 Flash<br/>Vision + Text]
+        C3[Extract 15 Items<br/>JSON Schema]
+        C4[Smart Validation<br/>Math + Outliers]
+    end
+    
+    subgraph L4["💾 SOURCE OF TRUTH<br/>⚡ 723ms Save<br/>invoice_items Table"]
+        D1[ACID Transaction<br/>All-or-Nothing]
+        D2[Fuzzy Matching<br/>Levenshtein 85%]
+        D3[Duplicate Detect<br/>Multi-field Hash]
+        D4[Invoice Header<br/>invoices table]
+        D5[15 Line Items<br/>invoice_items table]
+    end
+    
+    subgraph L5["📈 ANALYTICS LAYER<br/>⚡ 60-270ms<br/>Read-Only Queries"]
+        E1[Query invoice_items<br/>Direct Access]
+        E2[Real-time Calc<br/>7d/28d Averages]
+        E3[Cross-Vendor<br/>Best Price]
+        E4[Smart Alerts<br/>Spike Detection]
+    end
+    
+    A1 --> B1
+    B1 --> B2
+    B2 --> C1
+    C1 --> C2
+    C2 --> C3
+    C3 --> C4
+    C4 --> A2
+    A2 --> A3
+    A3 -->|User Saves| D1
+    D1 --> D2
+    D2 --> D3
+    D3 --> D4
+    D4 --> D5
+    D5 -.->|Read-Only| E1
+    E1 --> E2
+    E2 --> E3
+    E3 --> E4
+    B3 -.->|Enforces| D5
+    
+    Result[["✨ COMPLETE<br/>Total: ~65s<br/>Cost: $0.0006<br/>15 Items in invoice_items"]]
+    E4 --> Result
+    
+    style L1 fill:#4F46E5,stroke:#4338CA,stroke-width:2px,color:#fff
+    style L2 fill:#EF4444,stroke:#DC2626,stroke-width:2px,color:#fff
+    style L3 fill:#10B981,stroke:#059669,stroke-width:2px,color:#fff
+    style L4 fill:#3B82F6,stroke:#2563EB,stroke-width:2px,color:#fff
+    style L5 fill:#EC4899,stroke:#DB2777,stroke-width:2px,color:#fff
+    style Result fill:#8B5CF6,stroke:#7C3AED,stroke-width:3px,color:#fff
+```

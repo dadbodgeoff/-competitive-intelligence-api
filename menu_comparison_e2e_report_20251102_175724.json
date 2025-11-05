@@ -1,0 +1,32 @@
+{
+  "summary": {
+    "total": 2,
+    "passed": 1,
+    "failed": 1,
+    "success_rate": "50.0%"
+  },
+  "results": [
+    {
+      "test": "login",
+      "success": true,
+      "status_code": 200,
+      "details": {
+        "user_id": "7a8e9f71-ca9f-46af-8694-41b5e52464ab"
+      },
+      "timestamp": "2025-11-02T17:57:24.921648"
+    },
+    {
+      "test": "start_comparison",
+      "success": false,
+      "status_code": 404,
+      "details": "{\"detail\":\"Not Found\"}",
+      "timestamp": "2025-11-02T17:57:24.924305"
+    }
+  ],
+  "test_data": {
+    "restaurant": "Park Ave Pizza",
+    "location": "Woonsocket, RI",
+    "analysis_id": null,
+    "saved_comparison_id": null
+  }
+}

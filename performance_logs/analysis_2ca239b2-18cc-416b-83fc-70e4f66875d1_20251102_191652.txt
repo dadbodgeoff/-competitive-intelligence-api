@@ -1,0 +1,88 @@
+================================================================================
+PERFORMANCE REPORT - Analysis 2ca239b2-18cc-416b-83fc-70e4f66875d1
+================================================================================
+
+Total Duration: 5.410s
+Start Time: 2025-11-02T19:16:47.006201
+End Time: 2025-11-02T19:16:52.415765
+Total Steps: 7
+
+================================================================================
+BREAKDOWN BY CATEGORY
+================================================================================
+
+LLM:
+  Total: 4.144s
+  Count: 1
+  Average: 4.144s
+
+DB:
+  Total: 0.760s
+  Count: 4
+  Average: 0.190s
+
+OUTSCRAPER:
+  Total: 0.504s
+  Count: 1
+  Average: 0.504s
+
+SETUP:
+  Total: 0.000s
+  Count: 1
+  Average: 0.000s
+
+================================================================================
+DETAILED STEPS
+================================================================================
+
+1. SETUP: Initialize analysis
+   Duration: 0.000s
+   Start: 2025-11-02T19:16:47.006205
+   Details: {
+      "restaurant": "Test Restaurant",
+      "location": "New York, NY",
+      "tier": "free"
+}
+
+2. DB: Create analysis record
+   Duration: 0.146s
+   Start: 2025-11-02T19:16:47.006762
+
+3. OUTSCRAPER: Parallel competitor discovery + review collection
+   Duration: 0.504s
+   Start: 2025-11-02T19:16:47.152700
+   Details: {
+      "competitors_found": 2,
+      "total_reviews": 78,
+      "outscraper_time": 0.5036182403564453
+}
+
+4. DB: Batch store competitors
+   Duration: 0.140s
+   Start: 2025-11-02T19:16:47.656831
+   Details: {
+      "competitors_count": 2
+}
+
+5. DB: Batch store reviews
+   Duration: 0.152s
+   Start: 2025-11-02T19:16:47.796735
+   Details: {
+      "reviews_count": 78
+}
+
+6. LLM: Gemini analysis
+   Duration: 4.144s
+   Start: 2025-11-02T19:16:47.949097
+   Details: {
+      "insights_generated": 4
+}
+
+7. DB: Batch store insights and evidence
+   Duration: 0.322s
+   Start: 2025-11-02T19:16:52.092844
+   Details: {
+      "insights_stored": 4
+}
+
+================================================================================

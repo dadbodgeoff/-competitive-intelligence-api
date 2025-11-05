@@ -5,6 +5,10 @@ import { Button } from '@/design-system/shadcn/components/button';
 import { Badge } from '@/design-system/shadcn/components/badge';
 import { Progress } from '@/design-system/shadcn/components/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { id } from 'date-fns/locale';
+import { id } from 'date-fns/locale';
+import { id } from 'date-fns/locale';
+import { id } from 'date-fns/locale';
 
 export const LandingPage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -95,29 +99,17 @@ export const LandingPage: React.FC = () => {
         Skip to main content
       </a>
 
-      {/* Navbar - Premium Glass Effect */}
+      {/* Navbar - Simplified */}
       <header className="fixed top-0 w-full h-16 bg-gray-900/95 backdrop-blur-md border-b border-white/10 z-50">
         <div className="max-w-7xl mx-auto h-full px-6 lg:px-8">
           <div className="flex items-center justify-between h-full">
-            <div className="flex items-center gap-2 md:gap-3">
-              <Link to="/" className="flex items-center gap-2">
-                <span className="text-emerald-400 font-bold text-xl">R</span>
-                <span className="text-white font-semibold">RestaurantIQ</span>
-              </Link>
-              <Link to="/register" className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-500/30 transition-all cursor-pointer">
-                <Zap className="w-3 h-3 md:w-3.5 md:h-3.5 text-emerald-400" />
-                <span className="text-[10px] md:text-xs font-medium text-emerald-400 whitespace-nowrap">60-sec processing</span>
-              </Link>
-            </div>
+            <Link to="/" className="flex items-center gap-2">
+              <span className="text-emerald-400 font-bold text-2xl">R</span>
+              <span className="text-white font-semibold text-lg">RestaurantIQ</span>
+            </Link>
 
-            <nav className="hidden md:flex items-center gap-6">
-              <a href="#proof" className="text-gray-400 hover:text-white transition-colors">
-                Proof
-              </a>
-              <a href="#how" className="text-gray-400 hover:text-white transition-colors">
-                How It Works
-              </a>
-              <a href="#pricing" className="text-gray-400 hover:text-white transition-colors">
+            <nav className="hidden md:flex items-center gap-8">
+              <a href="#pricing" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">
                 Pricing
               </a>
               <Link to="/login">
@@ -126,7 +118,7 @@ export const LandingPage: React.FC = () => {
                 </Button>
               </Link>
               <Link to="/register">
-                <Button size="sm">
+                <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600">
                   Get Started
                 </Button>
               </Link>
@@ -174,62 +166,33 @@ export const LandingPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Hero Section - Enhanced with Glow */}
-      <section id="main-content" className="relative pt-28 pb-16 px-6 overflow-hidden">
+      {/* Hero Section - Redesigned */}
+      <section id="main-content" className="relative pt-20 pb-12 px-6 overflow-hidden">
         {/* Animated Background Glow */}
         <div className="absolute -top-1/4 -right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl opacity-50 animate-pulse pointer-events-none" />
         <div className="absolute top-1/2 -left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl opacity-30 pointer-events-none" />
         
-        <div className="container mx-auto max-w-4xl relative z-10">
-          <div className="text-center space-y-6 mb-12">
+        <div className="container mx-auto max-w-5xl relative z-10">
+          <div className="text-center space-y-8 mb-16">
             
-            <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
-              <span className="bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">
-                We Know You're Tired of This Sh*t
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-none">
+              <span className="bg-gradient-to-r from-white via-emerald-100 to-white bg-clip-text text-transparent drop-shadow-2xl">
+                We Know You're Tired<br />of This Sh*t
               </span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-slate-200 max-w-3xl mx-auto font-semibold">
-              What if I told you I could save you at minimum an hour a week?
-            </p>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-              (Drinks are on me if that's all you save.)
-            </p>
-            
-            {/* Primary CTA */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/register">
-                <Button size="lg" className="h-12 px-6 shadow-emerald hover:shadow-emerald/80 group">
-                  Try It Free Now
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <Link to="/login">
-                <Button size="lg" variant="outline" className="h-12 px-6">
-                  Sign In
-                </Button>
-              </Link>
-            </div>
-            
-            {/* Trust Indicators */}
-            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-500">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                <span>No credit card</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                <span>Free forever plan</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-emerald-400" />
-                <span>Your data stays private</span>
-              </div>
+            <div className="space-y-3 max-w-3xl mx-auto">
+              <p className="text-2xl md:text-3xl text-white font-bold">
+                What if I told you I could save you at minimum an hour a week?
+              </p>
+              <p className="text-xl md:text-2xl text-emerald-400 font-semibold italic">
+                (Drinks are on me if that's all you save.)
+              </p>
             </div>
           </div>
 
-          {/* Animated Upload Demo - Premium Glass Card */}
-          <div className="relative max-w-2xl mx-auto mt-12">
+          {/* Animated Upload Demo - MOVED UP */}
+          <div className="relative max-w-2xl mx-auto mb-8">
             <div className="absolute inset-0 bg-emerald-500/20 rounded-2xl blur-xl transition-all duration-300" />
             <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white/5 backdrop-blur-md">
               <div 
@@ -270,6 +233,39 @@ export const LandingPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* CTAs Below Demo */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+            <Link to="/register">
+              <Button size="lg" className="h-14 px-8 text-lg shadow-emerald hover:shadow-emerald/80 group bg-emerald-500 hover:bg-emerald-600">
+                Try It Free Now
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+            <Link to="/login">
+              <Button size="lg" variant="outline" className="h-14 px-8 text-lg border-2">
+                Sign In
+              </Button>
+            </Link>
+          </div>
+          
+          {/* Trust Indicators */}
+          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+              <span>No credit card</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+              <span>Free forever plan</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Shield className="h-5 w-5 text-emerald-400" />
+              <span>Your data stays private</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
           {/* What You Get - Expandable Features with Glass Cards */}
           <div className="mb-16">

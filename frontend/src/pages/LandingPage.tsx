@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, CheckCircle2, Upload, DollarSign, TrendingDown, ChefHat, ArrowRight, Zap, Shield } from 'lucide-react';
+import { Menu, X, CheckCircle2, Upload, DollarSign, TrendingDown, ChefHat, ArrowRight, Shield } from 'lucide-react';
 import { Button } from '@/design-system/shadcn/components/button';
 import { Badge } from '@/design-system/shadcn/components/badge';
 import { Progress } from '@/design-system/shadcn/components/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { id } from 'date-fns/locale';
-import { id } from 'date-fns/locale';
-import { id } from 'date-fns/locale';
-import { id } from 'date-fns/locale';
 
 export const LandingPage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -267,6 +263,9 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
+      {/* What You Get Section */}
+      <section className="py-12 px-6">
+        <div className="container mx-auto max-w-6xl">
           {/* What You Get - Expandable Features with Glass Cards */}
           <div className="mb-16">
             <h3 className="text-2xl md:text-3xl font-bold text-center text-white mb-12">

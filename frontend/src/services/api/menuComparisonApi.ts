@@ -161,11 +161,11 @@ class MenuComparisonAPIService {
    * List saved comparisons
    */
   async listSavedComparisons(
-    limit: number = 20,
-    offset: number = 0
+    page: number = 1,
+    per_page: number = 50
   ): Promise<SavedComparisonsListResponse> {
     const response = await apiClient.get(`${API_BASE}/saved`, {
-      params: { limit, offset }
+      params: { page, per_page }
     });
     return response.data;
   }

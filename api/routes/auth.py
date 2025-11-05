@@ -80,7 +80,7 @@ async def register_user(
             value=jwt_token,
             httponly=True,
             secure=COOKIE_SECURE,  # Environment-based: True in production
-            samesite="strict",
+            samesite="lax",  # Changed from strict to lax for Edge compatibility
             max_age=86400,
             path="/"
         )
@@ -91,7 +91,7 @@ async def register_user(
                 value=auth_response.session.refresh_token,
                 httponly=True,
                 secure=COOKIE_SECURE,  # Environment-based: True in production
-                samesite="strict",
+                samesite="lax",  # Changed from strict to lax for Edge compatibility
                 max_age=604800,
                 path="/api/v1/auth"
             )
@@ -166,7 +166,7 @@ async def login_user(
             value=jwt_token,
             httponly=True,
             secure=COOKIE_SECURE,  # Environment-based: True in production
-            samesite="strict",  # Maximum security for production
+            samesite="lax",  # Changed from strict to lax for Edge compatibility
             max_age=86400,  # 24 hours
             path="/"
         )
@@ -176,7 +176,7 @@ async def login_user(
             value=auth_response.session.refresh_token if auth_response.session else "",
             httponly=True,
             secure=COOKIE_SECURE,  # Environment-based: True in production
-            samesite="strict",  # Maximum security for production
+            samesite="lax",  # Changed from strict to lax for Edge compatibility
             max_age=604800,  # 7 days
             path="/api/v1/auth"  # Only accessible to auth endpoints
         )
@@ -316,7 +316,7 @@ async def refresh_token(
             value=new_jwt,
             httponly=True,
             secure=COOKIE_SECURE,  # Environment-based: True in production
-            samesite="strict",
+            samesite="lax",  # Changed from strict to lax for Edge compatibility
             max_age=86400,  # 24 hours
             path="/"
         )
@@ -328,7 +328,7 @@ async def refresh_token(
                 value=auth_response.session.refresh_token,
                 httponly=True,
                 secure=COOKIE_SECURE,  # Environment-based: True in production
-                samesite="strict",
+                samesite="lax",  # Changed from strict to lax for Edge compatibility
                 max_age=604800,  # 7 days
                 path="/api/v1/auth"
             )

@@ -1,0 +1,53 @@
+{
+  "test_date": "2025-10-29T13:01:16.743729",
+  "place_id": "ChIJBwK_c0Kx5IkRQVU8VHNqYbI",
+  "strategy": "4_call_50_review",
+  "call_results": {
+    "call_1_recent": {
+      "count": 0,
+      "params": {
+        "reviews_limit": 20,
+        "sort": "newest",
+        "cutoffRating": null
+      }
+    },
+    "call_2_five_star": {
+      "count": 0,
+      "params": {
+        "reviews_limit": 10,
+        "sort": "highest_rating",
+        "cutoffRating": 5
+      }
+    },
+    "call_3_four_star": {
+      "count_raw": 0,
+      "count_filtered": 0,
+      "params": {
+        "reviews_limit": 20,
+        "sort": "highest_rating",
+        "cutoffRating": 4,
+        "client_filter": "rating == 4"
+      }
+    },
+    "call_4_low_rated": {
+      "count": 0,
+      "params": {
+        "reviews_limit": 10,
+        "sort": "lowest_rating",
+        "cutoffRating": 2
+      }
+    }
+  },
+  "summary": {
+    "total_reviews_fetched": 0,
+    "unique_reviews": 0,
+    "duplicates": 0,
+    "rating_distribution": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0
+    }
+  }
+}

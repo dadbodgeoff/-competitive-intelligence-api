@@ -17,8 +17,12 @@ export class ReviewAnalysisAPIService {
 
   constructor() {
     this.client = axios.create({
-      baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
-      timeout: 30000,
+      baseURL: import.meta.env.VITE_API_URL || '',
+      timeout: 600000, // 10 minutes - increased for long-running analyses
+      withCredentials: true, // CRITICAL: Send cookies with every request
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
     this.setupInterceptors();
@@ -32,9 +36,13 @@ export class ReviewAnalysisAPIService {
     return response.data;
   }
 
-  async register(userData: RegisterData): Promise<User> {
-    const response: AxiosResponse<User> = await this.client.post('/api/v1/auth/register', userData);
+  async register(userData: RegisterData): Promise<{ user: User; message: string }> {
+    const response: AxiosResponse<{ user: User; message: string }> = await this.client.post('/api/v1/auth/register', userData);
     return response.data;
+  }
+
+  async logout(): Promise<void> {
+    await this.client.post('/api/v1/auth/logout');
   }
 
   async getProfile(): Promise<User> {
@@ -83,21 +91,38 @@ export class ReviewAnalysisAPIService {
     return response.data;
   }
 
-  // Set auth token for requests
-  setAuthToken(token: string): void {
-    this.client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  }
-
-  // Clear auth token
-  clearAuthToken(): void {
-    delete this.client.defaults.headers.common['Authorization'];
-  }
-
-  // Error handling with backend-specific codes
+  // Error handling with automatic token refresh
   private setupInterceptors(): void {
     this.client.interceptors.response.use(
       (response) => response,
-      (error) => {
+      async (error) => {
+        const originalRequest = error.config;
+
+        // NEVER retry auth endpoints to prevent infinite loops
+        const isAuthEndpoint = originalRequest.url?.includes('/auth/');
+        
+        // If 401 and haven't retried yet, try to refresh (but NOT for any auth endpoints!)
+        if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
+          originalRequest._retry = true;
+
+          try {
+            await this.client.post('/api/v1/auth/refresh');
+            return this.client(originalRequest); // Retry original request
+          } catch (refreshError) {
+            // Refresh failed, redirect to login
+            window.location.href = '/login';
+            return Promise.reject(refreshError);
+          }
+        }
+
+        // If it's a 401 on auth endpoint, just redirect
+        if (error.response?.status === 401 && isAuthEndpoint) {
+          // Don't redirect on login/register failures
+          if (!originalRequest.url?.includes('/login') && !originalRequest.url?.includes('/register')) {
+            window.location.href = '/login';
+          }
+        }
+
         const errorCode = error.response?.data?.code;
         const userMessage = this.getErrorMessage(errorCode);
         

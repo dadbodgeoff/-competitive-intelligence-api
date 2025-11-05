@@ -1,0 +1,225 @@
+{
+  "test_info": {
+    "restaurant": "Park Ave Pizza",
+    "location": "Woonsocket, RI",
+    "timestamp": "2025-10-28T18:28:04.693965",
+    "competitors_tested": 3
+  },
+  "statistics": {
+    "api_calls_made": 12,
+    "reviews_collected": 60,
+    "total_cost": 0.20400000000000001,
+    "avg_reviews_per_call": 5.0
+  },
+  "reviews": {
+    "Lj's Kitchen": [
+      {
+        "author": "Liz C.",
+        "rating": 5,
+        "text": "This is such a welcoming and friendly place! I had brunch here for the first time and got the cheddar chive biscuit with the big breakfast. Sooooo good. I truly couldn\u2019t decide between the chicken and waffles, breakfast burger and the big breakfast. They all sounded so good. Lovely staff and owners as well!",
+        "date": "2025-09-28T11:01:00",
+        "quality_score": 0.55
+      },
+      {
+        "author": "Linda Sharron",
+        "rating": 4,
+        "text": "Try a smash burger for sure! $9.99 smash burger with fries, can\u2019t beat that! The bread was soft with a grill-like taste, loaded with caramelized onions, pickles, cheese, sauce, and FLAVOR! every bite tasted SO good! I never thought I\u2019d come here to eat but am glad I did and I would come back. The staff is very friendly, the place had good vibes, relaxed atmosphere. Don\u2019t take my word for it, Check\u2019m out!",
+        "date": "2025-05-10T18:52:11",
+        "quality_score": 0.65
+      },
+      {
+        "author": "Chris Frias",
+        "rating": 5,
+        "text": "We had an incredible experience at LJ\u2019s Kitchen. From the moment we walked in, the staff made us feel so welcome, friendly, and genuinely happy to serve. You can tell they take pride in both the food and the customer experience.\n\nThe highlight of our meal was without a doubt the special they had of Buffalo Mac n\u2019 Cheese, it was creamy, flavorful, and with just the right amount of kick. We also treated ourselves to dessert, and it was absolutely delicious.\n\nBetween the fantastic food and the top-notch service, LJ\u2019s Kitchen is a spot we will definitely be coming back to. Highly recommend.",
+        "date": "2025-08-16T09:34:54",
+        "quality_score": 0.55
+      },
+      {
+        "author": "B V",
+        "rating": 5,
+        "text": "My friends and I had dinner here this evening and we got the bar pizza, smash burger and the spicy italian pasta!  Everything was phenomenal.  When you walk in you will instantly feel welcome.  It\u2019s great place to bring your family and friends.  Will definitely be back!!",
+        "date": "2025-04-05T21:35:01",
+        "quality_score": 0.7
+      },
+      {
+        "author": "christopher connors",
+        "rating": 5,
+        "text": "Had a very enjoyable lunch a place I'd definitely be revisiting for lunch dinner or drinks. Very friendly staff made me feel like I was eating at a friends or family cookout. Doing the RI food fightsI burger challenge this is how I found this GEM hidden in Woonsocket if your in the area, stop in and grab a bite. Staff informed me everything is made by scratch. I enjoyed everything not one thing needs to change. It was cold in dinning room when I walked in and I was just dealing with the chill another set of customers came in and said its chilly and staff was like is it cold to the rest of the people and immediately put the heat up, they wanted to do best for there customers or I should say there friend's I didn't feel they cared about the money they care about friends enjoying good food. THIS IS THE WAY A BUSINESS SHOULD RUN!!! Communication is key, and they are great at it. I see this lovely spot needed to up size in years and lasting for years to come if they keep up the good work. Till we eat again my new friends. ;-)",
+        "date": "2025-05-31T00:50:45",
+        "quality_score": 0.5
+      },
+      {
+        "author": "Liz C.",
+        "rating": 5,
+        "text": "\u00a1Este lugar es tan acogedor y agradable! Com\u00ed un brunch aqu\u00ed por primera vez y ped\u00ed el bizcocho de cheddar y cebollino con el desayuno grande. \u00a1Estaba buen\u00edsimo! La verdad es que no pod\u00eda decidirme entre el pollo con waffles, la hamburguesa de desayuno y el desayuno grande. Todos parec\u00edan deliciosos. \u00a1El personal y los due\u00f1os tambi\u00e9n son encantadores!",
+        "date": "2025-09-28T11:01:00",
+        "quality_score": 0.5
+      },
+      {
+        "author": "Linda Sharron",
+        "rating": 4,
+        "text": "\u00a1Prueba una hamburguesa espectacular con seguridad! Hamburguesa smash de $ 9,99 con papas fritas, \u00a1no hay nada mejor que eso! El pan estaba suave con sabor a parrilla, cargado de cebollas caramelizadas, pepinillos, queso, salsa y \u00a1SABOR! \u00a1Cada bocado sab\u00eda TAN bueno! Nunca pens\u00e9 que vendr\u00eda aqu\u00ed a comer, pero me alegro de haberlo hecho y de volver. El personal es muy amable, el lugar ten\u00eda buena vibra, ambiente relajado. No conf\u00edes en mi palabra, \u00a1compru\u00e9balo!",
+        "date": "2025-05-10T18:52:11",
+        "quality_score": 0.5
+      },
+      {
+        "author": "Chris Frias",
+        "rating": 5,
+        "text": "Tuvimos una experiencia incre\u00edble en LJ's Kitchen. Desde el momento en que entramos, el personal nos hizo sentir muy bienvenidos, amables y realmente felices de servir. Se nota que se enorgullecen tanto de la comida como de la experiencia del cliente.\n\nLo m\u00e1s destacado de nuestra comida fue, sin duda, el especial de macarrones con queso Buffalo: cremosos, sabrosos y con el punto justo de picante. Tambi\u00e9n nos dimos el gusto con el postre, que estaba absolutamente delicioso.\n\nEntre la fant\u00e1stica comida y el servicio de primera, LJ's Kitchen es un lugar al que sin duda volveremos. Lo recomendamos encarecidamente.",
+        "date": "2025-08-16T09:34:54",
+        "quality_score": 0.4
+      },
+      {
+        "author": "B V",
+        "rating": 5,
+        "text": "Mis amigos y yo cenamos aqu\u00ed esta noche y pedimos pizza de bar, hamburguesa smash y pasta italiana picante. Todo estaba fenomenal. Al entrar, te sientes bienvenido al instante. Es un lugar genial para traer a tu familia y amigos. \u00a1Sin duda volveremos!",
+        "date": "2025-04-05T21:35:01",
+        "quality_score": 0.7
+      },
+      {
+        "author": "christopher connors",
+        "rating": 5,
+        "text": "Tuve un almuerzo muy agradable, un lugar al que definitivamente volver\u00eda para comer, cenar o tomar algo. El personal, muy amable, me hizo sentir como si estuviera comiendo en una barbacoa familiar o con amigos. Participando en el reto de las peleas de comida de Rhode Island, as\u00ed fue como encontr\u00e9 esta joya escondida en Woonsocket. Si est\u00e1s por la zona, p\u00e1sate y come algo. El personal me inform\u00f3 que todo est\u00e1 hecho desde cero. Disfrut\u00e9 de todo, no hay nada que cambiar. Hac\u00eda fr\u00edo en el comedor cuando entr\u00e9 y estaba lidiando con el fr\u00edo. Otro grupo de clientes entr\u00f3 y dijo que hac\u00eda fr\u00edo. El personal les pregunt\u00f3 si hac\u00eda fr\u00edo a los dem\u00e1s y enseguida subieron la calefacci\u00f3n. Quer\u00edan lo mejor para sus clientes, o mejor dicho, para sus amigos. No sent\u00ed que les importara el dinero, sino que los amigos disfrutaran de buena comida. \u00a1\u00a1\u00a1AS\u00cd ES COMO DEBE FUNCIONAR UN NEGOCIO!!! La comunicaci\u00f3n es clave, y son excelentes en eso. Veo que este encantador lugar necesita crecer en los pr\u00f3ximos a\u00f1os y durar muchos m\u00e1s si siguen con el buen trabajo. Hasta que volvamos a comer mis nuevos amigos. ;-)",
+        "date": "2025-05-31T00:50:45",
+        "quality_score": 0.4
+      }
+    ],
+    "Firehouse Pizza Shop II": [
+      {
+        "author": "Ryan Campbell",
+        "rating": 3,
+        "text": "It's decent pizza. Fluffy crust. Staff was friendly enough. I'll definitely go again but I'll have to be in the mood for fluffy crust",
+        "date": "2025-09-01T20:01:29",
+        "quality_score": 0.75
+      },
+      {
+        "author": "Josh Brz",
+        "rating": 2,
+        "text": "Not good anymore, my steak and cheese sandwich was mostly bread.. not impressed",
+        "date": "2025-10-12T02:11:03",
+        "quality_score": 0.7
+      },
+      {
+        "author": "mike",
+        "rating": 5,
+        "text": "ordered 2 blt grinders,cheeseberger,fries,and a steak cheese an mushroom grinders first time there i gotta admit food was awsome !!! and bread was spot on!! gonna be my new # 1spot for now on !!!!!!!!!!! thank u firehouse!",
+        "date": "2025-07-10T12:37:55",
+        "quality_score": 0.7999999999999999
+      },
+      {
+        "author": "Erica Garceau",
+        "rating": 1,
+        "text": "ordered a grilled chicken ceasar salad, got a bowl of lettuce w grilled chicken on top. no croutons, no cheese, no salt and pepper and just zero effort. save ya money",
+        "date": "2025-06-03T12:23:14",
+        "quality_score": 0.75
+      },
+      {
+        "author": "Jodi Marchuk",
+        "rating": 4,
+        "text": "Order a medium steak cheese and mushrooms. As well as a medium Italian. I ate the steak. Was very good. My boyfriend ate the Italian, which he also liked. There is inside seating which we didn\u2019t use. Opted to go home. Food was still hot when got home. Prices were fair.",
+        "date": "2022-09-01T15:13:15",
+        "quality_score": 0.85
+      },
+      {
+        "author": "Ryan Campbell",
+        "rating": 3,
+        "text": "Es una pizza decente. La masa esponjosa. El personal fue bastante amable. Sin duda volver\u00e9, pero tendr\u00e9 que estar de humor para una masa esponjosa.",
+        "date": "2025-09-01T20:01:29",
+        "quality_score": 0.7
+      },
+      {
+        "author": "Josh Brz",
+        "rating": 2,
+        "text": "Ya no est\u00e1 bueno, mi s\u00e1ndwich de carne y queso era principalmente pan... no me impresiona.",
+        "date": "2025-10-12T02:11:03",
+        "quality_score": 0.7
+      },
+      {
+        "author": "mike",
+        "rating": 5,
+        "text": "Ped\u00ed dos s\u00e1ndwiches de tocino, lechuga y tomate, una hamburguesa con queso, papas fritas y un s\u00e1ndwich de carne, queso y champi\u00f1ones. \u00a1Es la primera vez que voy! \u00a1Debo admitir que la comida estaba incre\u00edble! \u00a1Y el pan estaba en su punto! \u00a1Ser\u00e1 mi nuevo restaurante n\u00famero 1 de ahora en adelante! \u00a1Gracias, Firehouse!",
+        "date": "2025-07-10T12:37:55",
+        "quality_score": 0.5
+      },
+      {
+        "author": "Erica Garceau",
+        "rating": 1,
+        "text": "Ped\u00ed una ensalada C\u00e9sar con pollo a la parrilla y me trajeron un taz\u00f3n de lechuga con pollo a la parrilla encima. Sin crutones, sin queso, sin sal ni pimienta y sin ning\u00fan esfuerzo. Ahorra dinero.",
+        "date": "2025-06-03T12:23:14",
+        "quality_score": 0.7
+      },
+      {
+        "author": "Jodi Marchuk",
+        "rating": 4,
+        "text": "Ped\u00ed un filete mediano con queso y champi\u00f1ones. Tambi\u00e9n ped\u00ed un italiano mediano. Com\u00ed el filete. Estaba muy bueno. Mi novio pidi\u00f3 el italiano, que tambi\u00e9n le gust\u00f3. Hay mesas en el interior que no usamos. Decidimos irnos a casa. La comida a\u00fan estaba caliente cuando llegamos. Los precios eran razonables.",
+        "date": "2022-09-01T15:13:15",
+        "quality_score": 0.5
+      }
+    ],
+    "Bellingham Palace": [
+      {
+        "author": "Joy Young",
+        "rating": 5,
+        "text": "I have been coming here for years the food is always wonderful! Although my palate has changed since being a child and ordering chocolate chip pancakes. Today we ordered the Irish Benedict and the chicken and waffles both dishes were phenomenal!! Our server was so friendly and attentive. She even had the kitchen divide each order in to 2 plates so we were able to sample. That was such a great idea.",
+        "date": "2025-08-19T16:05:51",
+        "quality_score": 0.6
+      },
+      {
+        "author": "Amy Chounlamany",
+        "rating": 4,
+        "text": "Always a comfortable setting the staff if always sweet and attentive. The food is great classic American breakfast, great lunch and dinner (italian,american,comfort) of and may I just brag about there chicken and waffles the best!",
+        "date": "2025-03-20T08:59:25",
+        "quality_score": 0.7999999999999999
+      },
+      {
+        "author": "jennifer sanchez",
+        "rating": 1,
+        "text": "When I opened my plate I said wt* is this! I ordered stuffed French toast which was made with grinder bread \ud83d\ude33 This had to be 6\u201dthick. Like how can anyone eat that. No strawberries inside but they gave me a freezing cold size of strawberries in juice (not sweetened). This was $15. My husbands bacon also looked shredded and fatty. I wanted regular breakfast with beans but saw that a side of beans is $6.29! You can make a 5 quart pot for that price.",
+        "date": "2025-02-24T21:39:06",
+        "quality_score": 0.6
+      },
+      {
+        "author": "Dee Malle",
+        "rating": 3,
+        "text": "Used to be great, but honestly the quality of the food as well as the service has gone downhill.  Service used to be friendly, cheerful, now ya barely get a smile from these waitresses.  Had to ask for splenda three times before it finally arrived. And the steak in the steak omelet reminded me of those steakum type things from the freezer section.  Definitely not worth the $20+ that that build your own omelet ended up costing.  Oh, and the prices have gone up drastically too.",
+        "date": "2025-09-09T20:19:18",
+        "quality_score": 0.7
+      },
+      {
+        "author": "Josh Erwin",
+        "rating": 4,
+        "text": "Second time coming to this place and haven't been disappointed.\n\nMy girlfriend ordered the steak and eggs with a strawberry mimosa and I had coffee with the Philly cheese steak breakfast.\n\nI must say it was quire enjoyable.",
+        "date": "2024-06-22T10:41:59",
+        "quality_score": 0.75
+      },
+      {
+        "author": "Joy Young",
+        "rating": 5,
+        "text": "Llevo a\u00f1os viniendo aqu\u00ed, \u00a1y la comida siempre es maravillosa! Aunque mi paladar ha cambiado desde que era ni\u00f1a y ped\u00eda panqueques con chispas de chocolate. Hoy pedimos el Benedict irland\u00e9s y el pollo con waffles; \u00a1ambos platos estaban fenomenales! Nuestra camarera fue muy amable y atenta. Incluso hizo que la cocina dividiera cada pedido en dos platos para que pudi\u00e9ramos probar. \u00a1Fue una idea genial!",
+        "date": "2025-08-19T16:05:51",
+        "quality_score": 0.5
+      },
+      {
+        "author": "jennifer sanchez",
+        "rating": 1,
+        "text": "Cuando abr\u00ed el plato, dije: \u00a1\u00bfQu\u00e9 es esto?! Ped\u00ed tostadas francesas rellenas, hechas con pan de molde \ud83d\ude33. Ten\u00edan que ser de 15 cm de grosor. \u00bfC\u00f3mo puede alguien comer eso? No llevaba fresas, pero me dieron unas fresas bien fr\u00edas en jugo (sin az\u00facar). Costaba $15. El tocino de mi marido tambi\u00e9n parec\u00eda desmenuzado y grasiento. Quer\u00eda un desayuno normal con frijoles, pero vi que una guarnici\u00f3n de frijoles cuesta $6.29. \u00a1Se puede preparar una olla de 5 cuartos por ese precio!",
+        "date": "2025-02-24T21:39:06",
+        "quality_score": 0.55
+      },
+      {
+        "author": "Dee Malle",
+        "rating": 3,
+        "text": "Sol\u00eda \u200b\u200bser genial, pero sinceramente, tanto la calidad de la comida como el servicio han deca\u00eddo. Antes, el servicio era amable y alegre, pero ahora las camareras apenas sonr\u00eden. Tuve que pedir Splenda tres veces antes de que por fin llegara. Y el bistec en la tortilla me record\u00f3 a esas cosas de la secci\u00f3n de congelados. Definitivamente no vale los m\u00e1s de $20 que cost\u00f3 esa tortilla casera. Ah, y los precios tambi\u00e9n han subido much\u00edsimo.",
+        "date": "2025-09-09T20:19:18",
+        "quality_score": 0.5
+      },
+      {
+        "author": "Josh Erwin",
+        "rating": 4,
+        "text": "Es la segunda vez que vengo a este lugar y no me ha decepcionado.\n\nMi novia pidi\u00f3 el bistec con huevos y una mimosa de fresa, y yo tom\u00e9 caf\u00e9 con el desayuno de filete de queso Filadelfia.\n\nDebo decir que fue bastante agradable.",
+        "date": "2024-06-22T10:41:59",
+        "quality_score": 0.7
+      }
+    ]
+  }
+}

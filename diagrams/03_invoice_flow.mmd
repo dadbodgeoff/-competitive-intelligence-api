@@ -1,0 +1,24 @@
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant API
+    participant AI as Gemini AI
+    participant DB as Database
+    participant Inv as Inventory System
+    
+    User->>Frontend: Upload PDF Invoice
+    Frontend->>API: POST /upload
+    API->>AI: Extract data from PDF
+    AI-->>API: Structured invoice data
+    API->>Frontend: Stream parsing progress (SSE)
+    Frontend->>User: Show real-time updates
+    
+    User->>Frontend: Review & confirm data
+    Frontend->>API: POST /save
+    API->>DB: Save invoice
+    API->>Inv: Process into inventory
+    Inv->>DB: Create vendors & items
+    Inv->>DB: Record transactions
+    Inv->>DB: Track price history
+    API-->>Frontend: Success + metrics
+    Frontend->>User: Show completion

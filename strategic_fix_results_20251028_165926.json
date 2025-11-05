@@ -1,0 +1,29 @@
+{
+  "test_info": {
+    "test_name": "SerpAPI Strategic Fix Validation",
+    "timestamp": "2025-10-28T16:59:26.602755",
+    "duration_seconds": 10.18108344078064,
+    "senior_engineer_recommendations": [
+      "Google Maps engine for structured data",
+      "Fixed 4 calls per competitor",
+      "Budget guardrails",
+      "Cost target $0.30-0.35"
+    ]
+  },
+  "performance": {
+    "total_reviews": 18,
+    "avg_reviews_per_competitor": 4.5,
+    "rating_coverage_percent": 100.0,
+    "serpapi_calls": 16,
+    "total_api_calls": 20,
+    "estimated_cost": 0.3,
+    "calls_per_competitor": 4.0
+  },
+  "strategic_targets": {
+    "4 calls per competitor (actual: 16/16)": true,
+    "Cost \u2264 $0.35 (actual: $0.300)": true,
+    "Rating coverage \u2265 70% (actual: 100.0%)": true,
+    "Reviews per competitor \u2265 15 (actual: 4.5)": false
+  },
+  "success_rate_percent": 75.0
+}

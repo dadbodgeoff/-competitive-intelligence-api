@@ -1,0 +1,449 @@
+```json
+{
+  "menu_items": [
+    {
+      "category": "Appetizers",
+      "item_name": "Garlic Knots (5)",
+      "description": "with side of marinara sauce",
+      "prices": [
+        {
+          "size": null,
+          "price": 5.00
+        }
+      ]
+    },
+    {
+      "category": "Appetizers",
+      "item_name": "Garlic Bread",
+      "description": "with side of marinara",
+      "prices": [
+        {
+          "size": null,
+          "price": 4.00
+        }
+      ]
+    },
+    {
+      "category": "Appetizers",
+      "item_name": "Garlic Bread",
+      "description": "with cheese",
+      "prices": [
+        {
+          "size": null,
+          "price": 5.00
+        }
+      ]
+    },
+    {
+      "category": "Appetizers",
+      "item_name": "Jumbo Onion Rings",
+      "description": null,
+      "prices": [
+        {
+          "size": null,
+          "price": 6.00
+        }
+      ]
+    },
+    {
+      "category": "Appetizers",
+      "item_name": "Fried Mozzarella Sticks (5)",
+      "description": null,
+      "prices": [
+        {
+          "size": null,
+          "price": 7.00
+        }
+      ]
+    },
+    {
+      "category": "Appetizers",
+      "item_name": "Bruschetta",
+      "description": null,
+      "prices": [
+        {
+          "size": null,
+          "price": 10.00
+        }
+      ]
+    },
+    {
+      "category": "Appetizers",
+      "item_name": "French Fries",
+      "description": null,
+      "prices": [
+        {
+          "size": null,
+          "price": 5.00
+        }
+      ]
+    },
+    {
+      "category": "Appetizers",
+      "item_name": "Chicken Tenders & Fries",
+      "description": null,
+      "prices": [
+        {
+          "size": null,
+          "price": 9.00
+        }
+      ]
+    },
+    {
+      "category": "Wings",
+      "item_name": "JUMBO SIZED WINGS",
+      "description": null,
+      "prices": [
+        {
+          "size": "8 Pieces",
+          "price": 10.00
+        },
+        {
+          "size": "18 Pieces",
+          "price": 20.00
+        }
+      ],
+      "notes": "*Price subject to market pricing"
+    },
+    {
+      "category": "Salads",
+      "item_name": "GARDEN SALAD",
+      "description": "Fresh greens, tomatoes, onions, shredded carrots and cucumbers",
+      "prices": [
+        {
+          "size": null,
+          "price": 5.00
+        }
+      ]
+    },
+    {
+      "category": "Salads",
+      "item_name": "CAESAR SALAD",
+      "description": "Fresh romaine, lettuce tossed with Caesar dressing, croûtons and parmesan cheese",
+      "prices": [
+        {
+          "size": null,
+          "price": 6.00
+        }
+      ]
+    },
+    {
+      "category": "Salads",
+      "item_name": "ANTIPASTO SALAD",
+      "description": "Fresh greens, ham, salami, provolone, tomatoes, cucumbers, shredded carrots, onions and black olives",
+      "prices": [
+        {
+          "size": null,
+          "price": 9.00
+        }
+      ]
+    },
+    {
+      "category": "Salads",
+      "item_name": "GREEK SALAD",
+      "description": "Fresh greens, feta cheese, kalamata olives, cucumbers, pepperoncini peppers, tomatoes, shredded carrots, onions and roasted red peppers",
+      "prices": [
+        {
+          "size": null,
+          "price": 9.00
+        }
+      ]
+    },
+    {
+      "category": "Salads",
+      "item_name": "SOUP OF THE DAY",
+      "description": null,
+      "prices": [
+        {
+          "size": null,
+          "price": 6.00
+        }
+      ]
+    },
+    {
+      "category": "Pizza",
+      "item_name": "Cheese",
+      "description": null,
+      "prices": [
+        {
+          "size": "SMALL 10\"",
+          "price": 8.50
+        },
+        {
+          "size": "LARGE 14\"",
+          "price": 12.50
+        },
+        {
+          "size": "X-LARGE 16\"",
+          "price": 14.50
+        },
+        {
+          "size": "DEEP DISH SICILIAN",
+          "price": 15.50
+        }
+      ]
+    },
+    {
+      "category": "Specialty Pizza",
+      "item_name": "BIANCA",
+      "description": "Mozzarella and ricotta cheese with fresh garlic and olive oil",
+      "prices": [
+        {
+          "size": "SMALL",
+          "price": 11.00
+        },
+        {
+          "size": "LARGE",
+          "price": 15.00
+        },
+        {
+          "size": "X-LARGE",
+          "price": 17.00
+        }
+      ]
+    },
+    {
+      "category": "Specialty Pizza",
+      "item_name": "MARGHERITA",
+      "description": "Mozzarella, plum tomatoes, fresh basil and garlic",
+      "prices": [
+        {
+          "size": "SMALL",
+          "price": 13.00
+        },
+        {
+          "size": "LARGE",
+          "price": 15.00
+        },
+        {
+          "size": "X-LARGE",
+          "price": 17.00
+        }
+      ]
+    },
+    {
+      "category": "Specialty Pizza",
+      "item_name": "VEGGIE LOVERS",
+      "description": "Green peppers, onions, diced tomatoes, black olives and mushrooms",
+      "prices": [
+        {
+          "size": "SMALL",
+          "price": 14.00
+        },
+        {
+          "size": "LARGE",
+          "price": 17.00
+        },
+        {
+          "size": "X-LARGE",
+          "price": 20.00
+        }
+      ]
+    },
+    {
+      "category": "Specialty Pizza",
+      "item_name": "MEAT LOVERS",
+      "description": "Pepperoni, sausage, bacon, meatballs and ham",
+      "prices": [
+        {
+          "size": "SMALL",
+          "price": 14.00
+        },
+        {
+          "size": "LARGE",
+          "price": 17.00
+        },
+        {
+          "size": "X-LARGE",
+          "price": 20.00
+        }
+      ]
+    },
+    {
+      "category": "Specialty Pizza",
+      "item_name": "BBQ BUFFALO CHICKEN",
+      "description": "Mozzarella cheese, breaded chicken, Buffalo sauce and ranch sauce",
+      "prices": [
+        {
+          "size": "SMALL",
+          "price": 14.00
+        },
+        {
+          "size": "LARGE",
+          "price": 18.00
+        },
+        {
+          "size": "X-LARGE",
+          "price": 21.00
+        }
+      ]
+    },
+    {
+      "category": "Specialty Pizza",
+      "item_name": "EXTRAVAGANZA",
+      "description": "Pepperoni, sausage, sliced meatballs, green peppers, onions, mushrooms and extra cheese",
+      "prices": [
+        {
+          "size": "SMALL",
+          "price": 14.00
+        },
+        {
+          "size": "LARGE",
+          "price": 18.00
+        },
+        {
+          "size": "X-LARGE",
+          "price": 21.00
+        }
+      ]
+    },
+    {
+      "category": "Specialty Pizza",
+      "item_name": "PARK AVE. EXCLUSIVE VIP STUFFED PIZZA",
+      "description": "Double crust with mozzarella, ham, salami, provolone, pepperoni, meatballs and onions",
+      "prices": [
+        {
+          "size": "LARGE",
+          "price": 26.00
+        },
+        {
+          "size": "X-LARGE",
+          "price": 29.00
+        }
+      ]
+    },
+    {
+      "category": "Calzone",
+      "item_name": "CHEESE CALZONE",
+      "description": null,
+      "prices": [
+        {
+          "size": null,
+          "price": 10.00
+        }
+      ]
+    },
+    {
+      "category": "Calzone",
+      "item_name": "MEAT LOVERS CALZONE",
+      "description": "Pepperoni, ham, bacon, sausage and meatballs",
+      "prices": [
+        {
+          "size": null,
+          "price": 14.00
+        }
+      ]
+    },
+    {
+      "category": "Calzone",
+      "item_name": "VEGGIE LOVERS CALZONE",
+      "description": "Onions, green peppers, black olives, tomatoes and mushrooms",
+      "prices": [
+        {
+          "size": null,
+          "price": 14.00
+        }
+      ]
+    },
+    {
+      "category": "Calzone",
+      "item_name": "EXTRAVAGANZA CALZONE",
+      "description": "Sausage, pepperoni, meatballs, mushrooms, onions and green peppers",
+      "prices": [
+        {
+          "size": null,
+          "price": 14.00
+        }
+      ]
+    },
+    {
+      "category": "Italian Pasta Entrees",
+      "item_name": "SPAGHETTI MARINARA",
+      "description": null,
+      "prices": [
+        {
+          "size": null,
+          "price": 9.00
+        }
+      ]
+    },
+    {
+      "category": "Italian Pasta Entrees",
+      "item_name": "ADD MEATBALL OR SAUSAGE",
+      "description": null,
+      "prices": [
+        {
+          "size": null,
+          "price": 12.00
+        }
+      ]
+    },
+    {
+      "category": "Italian Pasta Entrees",
+      "item_name": "EGGPLANT PARMIGIANA",
+      "description": "Fresh eggplant topped with marinara sauce and mozzarella with your choice of pasta",
+      "prices": [
+        {
+          "size": null,
+          "price": 13.00
+        }
+      ]
+    },
+    {
+      "category": "Italian Pasta Entrees",
+      "item_name": "CHICKEN PARMIGIANA",
+      "description": "Chicken breast lightly breaded, topped with mozzarella and marinara sauce, served with your choice of pasta",
+      "prices": [
+        {
+          "size": null,
+          "price": 14.00
+        }
+      ]
+    },
+    {
+      "category": "Italian Pasta Entrees",
+      "item_name": "LASAGNA",
+      "description": "Homemade layers of pasta with meat sauce, ricotta and mozzarella",
+      "prices": [
+        {
+          "size": null,
+          "price": 13.00
+        }
+      ]
+    },
+    {
+      "category": "Italian Pasta Entrees",
+      "item_name": "BAKED ZITI",
+      "description": null,
+      "prices": [
+        {
+          "size": null,
+          "price": 12.00
+        }
+      ]
+    },
+    {
+      "category": "Italian Pasta Entrees",
+      "item_name": "MANICOTTI",
+      "description": null,
+      "prices": [
+        {
+          "size": null,
+          "price": 13.00
+        }
+      ]
+    },
+    {
+      "category": "Italian Pasta Entrees",
+      "item_name": "PASTA TRIO",
+      "description": "Lasagna, cheese ravioli and eggplant parmigiana",
+      "prices": [
+        {
+          "size": null,
+          "price": 15.00
+        }
+      ]
+    }
+  ]
+}
+```

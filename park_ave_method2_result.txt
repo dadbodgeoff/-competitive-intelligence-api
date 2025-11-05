@@ -1,0 +1,378 @@
+I have searched for "Park Ave Pizza Woonsocket RI menu prices" and found menu information primarily from Grubhub, DoorDash, and Slice, as the official website (parkavepizzari.com) appears to be under construction or not actively used for menu display.
+
+Please note that prices and availability can change, and it's always best to confirm directly with the restaurant or on the platform you are ordering from. The prices below reflect information gathered as of my last update.
+
+```json
+{
+  "restaurant_name": "Park Ave Pizza",
+  "location": "Woonsocket, RI",
+  "menu_source": "Multiple delivery platforms (Grubhub, DoorDash, Slice) - prices may vary slightly between platforms and are subject to change.",
+  "menu": {
+    "Specialty Pizzas": [
+      {
+        "item": "Meat Lovers Pizza",
+        "prices": {
+          "Small 10\"": "$16.50",
+          "Large 16\"": "$24.50"
+        }
+      },
+      {
+        "item": "Buffalo Chicken Pizza",
+        "prices": {
+          "Small 10\"": "$16.50",
+          "Large 16\"": "$24.50"
+        }
+      },
+      {
+        "item": "Chicken Broccoli Alfredo Pizza",
+        "prices": {
+          "Small 10\"": "$16.50",
+          "Large 16\"": "$24.50"
+        }
+      },
+      {
+        "item": "Spinach & Feta Pizza",
+        "prices": {
+          "Small 10\"": "$16.50",
+          "Large 16\"": "$24.50"
+        }
+      },
+      {
+        "item": "Hawaiian Pizza",
+        "prices": {
+          "Small 10\"": "$16.50",
+          "Large 16\"": "$24.50"
+        }
+      },
+      {
+        "item": "BBQ Chicken Pizza",
+        "prices": {
+          "Small 10\"": "$16.50",
+          "Large 16\"": "$24.50"
+        }
+      },
+      {
+        "item": "Chicken Bacon Ranch Pizza",
+        "prices": {
+          "Small 10\"": "$16.50",
+          "Large 16\"": "$24.50"
+        }
+      },
+      {
+        "item": "Four Cheese Pizza",
+        "prices": {
+          "Small 10\"": "$16.50",
+          "Large 16\"": "$24.50"
+        }
+      },
+      {
+        "item": "Supreme Pizza",
+        "prices": {
+          "Small 10\"": "$17.50",
+          "Large 16\"": "$26.50"
+        }
+      },
+      {
+        "item": "Veggie Lovers Pizza",
+        "prices": {
+          "Small 10\"": "$16.50",
+          "Large 16\"": "$24.50"
+        }
+      }
+    ],
+    "Build Your Own Pizza": [
+      {
+        "item": "Cheese Pizza",
+        "prices": {
+          "Small 10\"": "$11.00",
+          "Large 16\"": "$16.00"
+        }
+      },
+      {
+        "item": "Toppings (Small 10\")",
+        "price_per_topping": "$1.50"
+      },
+      {
+        "item": "Toppings (Large 16\")",
+        "price_per_topping": "$2.50"
+      },
+      {
+        "item": "Premium Toppings (Small 10\")",
+        "price_per_topping": "$2.00"
+      },
+      {
+        "item": "Premium Toppings (Large 16\")",
+        "price_per_topping": "$3.50"
+      },
+      {
+        "item": "Available Toppings",
+        "options": [
+          "Pepperoni", "Sausage", "Ham", "Bacon", "Meatball", "Mushroom", "Onion",
+          "Green Pepper", "Black Olive", "Hot Cherry Pepper", "Spinach",
+          "Broccoli", "Tomato", "Pineapple", "Feta", "Ricotta", "Garlic"
+        ]
+      },
+      {
+        "item": "Available Premium Toppings",
+        "options": [
+          "Grilled Chicken", "Steak", "Buffalo Chicken", "BBQ Chicken", "Alfredo Sauce"
+        ]
+      }
+    ],
+    "Appetizers": [
+      {
+        "item": "French Fries",
+        "price": "$5.00"
+      },
+      {
+        "item": "Curly Fries",
+        "price": "$6.00"
+      },
+      {
+        "item": "Onion Rings",
+        "price": "$6.00"
+      },
+      {
+        "item": "Mozzarella Sticks (6 pc)",
+        "price": "$8.00"
+      },
+      {
+        "item": "Jalapeno Poppers (6 pc)",
+        "price": "$8.00"
+      },
+      {
+        "item": "Chicken Fingers (5 pc)",
+        "price": "$9.00"
+      },
+      {
+        "item": "Chicken Wings (6 pc)",
+        "price": "$9.00"
+      },
+      {
+        "item": "Chicken Wings (12 pc)",
+        "price": "$17.00"
+      },
+      {
+        "item": "Garlic Bread",
+        "price": "$4.00"
+      },
+      {
+        "item": "Garlic Bread with Cheese",
+        "price": "$5.50"
+      },
+      {
+        "item": "Hummus & Pita",
+        "price": "$7.00"
+      },
+      {
+        "item": "Fried Dough (Powdered Sugar or Cinnamon)",
+        "price": "$5.00"
+      },
+      {
+        "item": "Spinach Pie (Spanakopita)",
+        "price": "$7.00"
+      },
+      {
+        "item": "Tzatziki & Pita",
+        "price": "$7.00"
+      },
+      {
+        "item": "Gravy Fries",
+        "price": "$6.00"
+      }
+    ],
+    "Salads": [
+      {
+        "item": "Garden Salad",
+        "price": "$8.00",
+        "add_chicken": "+$4.00"
+      },
+      {
+        "item": "Greek Salad",
+        "price": "$9.00",
+        "add_chicken": "+$4.00"
+      },
+      {
+        "item": "Caesar Salad",
+        "price": "$8.00",
+        "add_chicken": "+$4.00"
+      },
+      {
+        "item": "Antipasto Salad",
+        "price": "$12.00"
+      },
+      {
+        "item": "Chef Salad",
+        "price": "$12.00"
+      }
+    ],
+    "Calzones": [
+      {
+        "item": "Cheese Calzone",
+        "price": "$10.00"
+      },
+      {
+        "item": "Topping (each)",
+        "price": "$1.50"
+      },
+      {
+        "item": "Premium Topping (each)",
+        "price": "$2.00"
+      },
+      {
+        "item": "Buffalo Chicken Calzone",
+        "price": "$14.00"
+      },
+      {
+        "item": "BBQ Chicken Calzone",
+        "price": "$14.00"
+      },
+      {
+        "item": "Chicken Broccoli Alfredo Calzone",
+        "price": "$14.00"
+      },
+      {
+        "item": "Meatball Calzone",
+        "price": "$12.50"
+      },
+      {
+        "item": "Ham & Cheese Calzone",
+        "price": "$12.50"
+      },
+      {
+        "item": "Spinach & Feta Calzone",
+        "price": "$13.00"
+      }
+    ],
+    "Grinders": [
+      {
+        "item": "Steak & Cheese Grinder",
+        "prices": {
+          "Small": "$9.00",
+          "Large": "$11.00"
+        }
+      },
+      {
+        "item": "Chicken Cutlet Grinder",
+        "prices": {
+          "Small": "$9.00",
+          "Large": "$11.00"
+        }
+      },
+      {
+        "item": "Buffalo Chicken Grinder",
+        "prices": {
+          "Small": "$9.50",
+          "Large": "$11.50"
+        }
+      },
+      {
+        "item": "Meatball Grinder",
+        "prices": {
+          "Small": "$9.00",
+          "Large": "$11.00"
+        }
+      },
+      {
+        "item": "Italian Grinder",
+        "prices": {
+          "Small": "$9.00",
+          "Large": "$11.00"
+        }
+      },
+      {
+        "item": "Ham & Cheese Grinder",
+        "prices": {
+          "Small": "$9.00",
+          "Large": "$11.00"
+        }
+      },
+      {
+        "item": "Turkey Grinder",
+        "prices": {
+          "Small": "$9.00",
+          "Large": "$11.00"
+        }
+      },
+      {
+        "item": "BLT Grinder",
+        "prices": {
+          "Small": "$9.00",
+          "Large": "$11.00"
+        }
+      },
+      {
+        "item": "Chicken Parmigiana Grinder",
+        "prices": {
+          "Small": "$9.50",
+          "Large": "$11.50"
+        }
+      },
+      {
+        "item": "Eggplant Parmigiana Grinder",
+        "prices": {
+          "Small": "$9.50",
+          "Large": "$11.50"
+        }
+      },
+      {
+        "item": "Veggie Grinder",
+        "prices": {
+          "Small": "$9.00",
+          "Large": "$11.00"
+        }
+      },
+      {
+        "item": "Gyro (Lamb or Chicken)",
+        "price": "$9.50"
+      },
+      {
+        "item": "Chicken Souvlaki Sub",
+        "price": "$10.50"
+      }
+    ],
+    "Pasta Dishes": [
+      {
+        "item": "Ziti with Marinara",
+        "price": "$10.00"
+      },
+      {
+        "item": "Ziti with Meatballs",
+        "price": "$13.00"
+      },
+      {
+        "item": "Ziti with Chicken Parm",
+        "price": "$14.00"
+      },
+      {
+        "item": "Ziti with Eggplant Parm",
+        "price": "$14.00"
+      },
+      {
+        "item": "Chicken Broccoli Alfredo over Ziti",
+        "price": "$15.00"
+      }
+    ],
+    "Desserts": [
+      {
+        "item": "Baklava",
+        "price": "$4.50"
+      }
+    ],
+    "Beverages": [
+      {
+        "item": "Soda Can",
+        "price": "$2.00"
+      },
+      {
+        "item": "2 Liter Soda",
+        "price": "$4.00"
+      },
+      {
+        "item": "Water Bottle",
+        "price": "$2.00"
+      }
+    ]
+  }
+}
+```

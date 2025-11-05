@@ -9,16 +9,41 @@ from database.supabase_client import get_supabase_client
 security = HTTPBearer()
 
 async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    request: Request,
     supabase = Depends(get_supabase_client)
 ):
     """
-    Extract and validate JWT token, return user ID
+    Extract and validate JWT token from httpOnly cookie or Authorization header
+    Supports both methods for backwards compatibility during migration
     """
+    token = None
+    
+    # DEBUG: Log all cookies received
+    print(f"🍪 Cookies received: {list(request.cookies.keys())}")
+    print(f"🔍 Cookie values: {dict(request.cookies)}")
+    
+    # Try cookie first (new secure method)
+    token = request.cookies.get("access_token")
+    print(f"🎫 Access token from cookie: {'Found' if token else 'NOT FOUND'}")
+    
+    # Fallback to Authorization header (old method - for backwards compatibility)
+    if not token:
+        authorization = request.headers.get("Authorization")
+        if authorization and authorization.startswith("Bearer "):
+            token = authorization.split(" ")[1]
+            print(f"🎫 Access token from header: Found")
+    
+    if not token:
+        print(f"❌ NO TOKEN FOUND - Returning 401")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated"
+        )
+    
     try:
         # Decode JWT token
         payload = jwt.decode(
-            credentials.credentials,
+            token,
             JWT_SECRET_KEY,
             algorithms=[JWT_ALGORITHM]
         )

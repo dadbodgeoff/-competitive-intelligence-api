@@ -1,0 +1,55 @@
+graph TB
+    subgraph "Frontend Layer"
+        UI[React + TypeScript UI]
+        Auth[Auth Store]
+        State[State Management]
+    end
+    
+    subgraph "API Layer"
+        API[FastAPI REST API]
+        SSE[Server-Sent Events]
+        MW[Middleware & Auth]
+    end
+    
+    subgraph "Service Layer"
+        Parser[Document Parsers]
+        Analytics[Analytics Engine]
+        LLM[LLM Orchestrator]
+        Inventory[Inventory Manager]
+    end
+    
+    subgraph "Data Layer"
+        DB[(PostgreSQL)]
+        Storage[File Storage]
+        Cache[Redis Cache]
+    end
+    
+    subgraph "External APIs"
+        Gemini[Google Gemini AI]
+        Places[Google Places API]
+    end
+    
+    UI --> API
+    API --> MW
+    MW --> Parser
+    MW --> Analytics
+    MW --> LLM
+    MW --> Inventory
+    
+    Parser --> Gemini
+    LLM --> Gemini
+    Analytics --> Places
+    
+    Parser --> DB
+    Analytics --> DB
+    Inventory --> DB
+    LLM --> DB
+    
+    Parser --> Storage
+    API --> SSE
+    SSE --> UI
+    
+    style UI fill:#61dafb
+    style API fill:#009688
+    style DB fill:#336791
+    style Gemini fill:#4285f4

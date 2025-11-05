@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Data Structure</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .competitor { border: 1px solid #ccc; margin: 10px 0; padding: 10px; }
+        .insight { border: 1px solid #ddd; margin: 10px 0; padding: 10px; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>Frontend Data Structure Test</h1>
+    <p>Testing if frontend can handle the updated backend data structure...</p>
+    
+    <div id="test-results"></div>
+    
+    <script>
+        // Simulate the backend response structure
+        const mockApiResponse = {
+            "analysis_id": "test-123",
+            "status": "completed",
+            "restaurant_name": "Test Restaurant",
+            "location": "Test Location",
+            "category": "pizza",
+            "tier": "free",
+            "competitors": [
+                {
+                    "competitor_id": "ChIJF7umy2Nq5IkRBWhZFoGqsFQ",
+                    "competitor_name": "All Star Pizza",
+                    "rating": 4.5,
+                    "review_count": 368,
+                    "distance_miles": 0.55,
+                    "address": "800 Providence St, Woonsocket",
+                    "place_id": "ChIJF7umy2Nq5IkRBWhZFoGqsFQ"
+                }
+            ],
+            "insights": [
+                {
+                    "id": "insight_1",
+                    "title": "Service Speed Advantage",
+                    "description": "Focus on faster service to beat competitor wait times",
+                    "confidence": "high",
+                    "category": "opportunity",
+                    "competitor_name": "Multiple Sources",
+                    "proof_quote": "Waited 35 minutes for our pizza, way too long",
+                    "mention_count": 8
+                }
+            ]
+        };
+        
+        function testDataStructure() {
+            const results = document.getElementById('test-results');
+            let html = '<h2>Test Results:</h2>';
+            
+            // Test competitors
+            html += '<h3>Competitors:</h3>';
+            mockApiResponse.competitors.forEach(competitor => {
+                html += `<div class="competitor">
+                    <strong>Name:</strong> ${competitor.competitor_name || competitor.name || 'MISSING'}<br>
+                    <strong>Address:</strong> ${competitor.address || 'MISSING'}<br>
+                    <strong>Rating:</strong> ${competitor.rating}<br>
+                    <strong>Reviews:</strong> ${competitor.review_count}<br>
+                    <strong>Distance:</strong> ${competitor.distance_miles} mi<br>
+                    <strong>Place ID:</strong> ${competitor.place_id || competitor.competitor_id || 'MISSING'}
+                </div>`;
+            });
+            
+            // Test insights
+            html += '<h3>Insights:</h3>';
+            mockApiResponse.insights.forEach(insight => {
+                html += `<div class="insight">
+                    <strong>Title:</strong> ${insight.title}<br>
+                    <strong>Description:</strong> ${insight.description}<br>
+                    <strong>Confidence:</strong> ${insight.confidence}<br>
+                    <strong>Category:</strong> ${insight.category}<br>
+                    <strong>Competitor:</strong> ${insight.competitor_name || 'MISSING'}<br>
+                    <strong>Proof:</strong> "${insight.proof_quote}"<br>
+                    <strong>Mentions:</strong> ${insight.mention_count}
+                </div>`;
+            });
+            
+            results.innerHTML = html;
+        }
+        
+        // Run test when page loads
+        testDataStructure();
+    </script>
+</body>
+</html>

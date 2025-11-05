@@ -1,0 +1,15 @@
+{
+  "test_info": {
+    "timestamp": "2025-10-29T12:20:06.247097",
+    "competitors_tested": 3,
+    "api_key_used": "ZWNlZGE0NzFhOGE1NGQx..."
+  },
+  "summary": {
+    "successful_tests": 0,
+    "total_reviews": 0,
+    "total_cost": 0.012,
+    "total_time": 52.75937485694885,
+    "avg_reviews_per_competitor": 0.0
+  },
+  "competitors": {}
+}

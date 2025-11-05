@@ -1,0 +1,128 @@
+{
+  "analysis_id": "dc4ad54e-44e0-41a5-b675-dce5dd417160",
+  "total_duration_seconds": 141.448,
+  "start_time": "2025-10-29T14:44:46.220381",
+  "end_time": "2025-10-29T14:47:07.667983",
+  "steps": [
+    {
+      "name": "SETUP: Initialize analysis",
+      "duration_seconds": 0.0,
+      "start_time": "2025-10-29T14:44:46.220387",
+      "end_time": "2025-10-29T14:44:46.220715",
+      "details": {
+        "restaurant": "All Star Pizza",
+        "location": "Woonsocket Rhode Island",
+        "tier": "premium"
+      }
+    },
+    {
+      "name": "DB: Create analysis record",
+      "duration_seconds": 0.206,
+      "start_time": "2025-10-29T14:44:46.220801",
+      "end_time": "2025-10-29T14:44:46.426749",
+      "details": {}
+    },
+    {
+      "name": "OUTSCRAPER: Parallel competitor discovery + review collection",
+      "duration_seconds": 100.087,
+      "start_time": "2025-10-29T14:44:46.427062",
+      "end_time": "2025-10-29T14:46:26.514286",
+      "details": {
+        "competitors_found": 5,
+        "total_reviews": 146,
+        "outscraper_time": 100.0865216255188
+      }
+    },
+    {
+      "name": "DB: Batch store competitors",
+      "duration_seconds": 0.768,
+      "start_time": "2025-10-29T14:46:26.514384",
+      "end_time": "2025-10-29T14:46:27.282661",
+      "details": {
+        "competitors_count": 5
+      }
+    },
+    {
+      "name": "DB: Batch store reviews",
+      "duration_seconds": 12.519,
+      "start_time": "2025-10-29T14:46:27.282723",
+      "end_time": "2025-10-29T14:46:39.801940",
+      "details": {
+        "reviews_count": 146
+      }
+    },
+    {
+      "name": "LLM: Gemini analysis",
+      "duration_seconds": 27.085,
+      "start_time": "2025-10-29T14:46:39.802061",
+      "end_time": "2025-10-29T14:47:06.887286",
+      "details": {
+        "insights_generated": 25
+      }
+    },
+    {
+      "name": "DB: Batch store insights and evidence",
+      "duration_seconds": 0.78,
+      "start_time": "2025-10-29T14:47:06.887369",
+      "end_time": "2025-10-29T14:47:07.667466",
+      "details": {
+        "insights_stored": 25
+      }
+    }
+  ],
+  "step_count": 7,
+  "breakdown": {
+    "SETUP": {
+      "total_seconds": 0.0,
+      "count": 1,
+      "steps": [
+        {
+          "name": "SETUP: Initialize analysis",
+          "duration": 0.0
+        }
+      ]
+    },
+    "DB": {
+      "total_seconds": 14.273,
+      "count": 4,
+      "steps": [
+        {
+          "name": "DB: Create analysis record",
+          "duration": 0.206
+        },
+        {
+          "name": "DB: Batch store competitors",
+          "duration": 0.768
+        },
+        {
+          "name": "DB: Batch store reviews",
+          "duration": 12.519
+        },
+        {
+          "name": "DB: Batch store insights and evidence",
+          "duration": 0.78
+        }
+      ]
+    },
+    "OUTSCRAPER": {
+      "total_seconds": 100.087,
+      "count": 1,
+      "steps": [
+        {
+          "name": "OUTSCRAPER: Parallel competitor discovery + review collection",
+          "duration": 100.087
+        }
+      ]
+    },
+    "LLM": {
+      "total_seconds": 27.085,
+      "count": 1,
+      "steps": [
+        {
+          "name": "LLM: Gemini analysis",
+          "duration": 27.085
+        }
+      ]
+    }
+  }
+}

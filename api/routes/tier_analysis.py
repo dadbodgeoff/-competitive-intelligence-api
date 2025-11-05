@@ -3,33 +3,36 @@
 Tier-based Analysis API Routes
 Supports both free and premium analysis tiers
 """
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from datetime import datetime
 import uuid
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from api.schemas.analysis_schemas import (
     AnalysisRequest, AnalysisResponse, AnalysisTier
 )
 from api.middleware.auth import get_current_user
+from api.middleware.rate_limiting import rate_limit
 from database.supabase_client import get_supabase_client, get_supabase_service_client
 from services.analysis_service_orchestrator import AnalysisServiceOrchestrator
-from services.google_places_service import GooglePlacesService
-from services.review_fetching_service import ReviewFetchingService
+from services.outscraper_service import OutscraperService
 from services.enhanced_analysis_storage import EnhancedAnalysisStorage
+from services.error_sanitizer import ErrorSanitizer
+from services.performance_profiler import PerformanceProfiler
 
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["analysis"])
 
 # Initialize services
 orchestrator = AnalysisServiceOrchestrator()
-places_service = GooglePlacesService()
-review_service = ReviewFetchingService()
+outscraper_service = OutscraperService()
 
 @router.post("/run", response_model=AnalysisResponse)
+@rate_limit("analysis")
 async def run_tier_analysis(
     request: AnalysisRequest,
+    force_refresh: bool = Query(False, description="Skip cache and fetch fresh data"),
     current_user: str = Depends(get_current_user),
     supabase = Depends(get_supabase_client)
 ):
@@ -49,22 +52,66 @@ async def run_tier_analysis(
                 detail="Restaurant name and location are required"
             )
         
-        # Validate tier permissions (placeholder - implement based on your auth system)
+        # Check usage limits based on tier
+        from services.usage_limit_service import get_usage_limit_service
+        usage_service = get_usage_limit_service()
+        
+        operation_type = 'premium_analysis' if request.tier == AnalysisTier.PREMIUM else 'free_analysis'
+        allowed, limit_details = usage_service.check_limit(current_user, operation_type)
+        
+        if not allowed:
+            logger.warning(f"Analysis blocked for user {current_user}: {limit_details['message']}")
+            raise HTTPException(
+                status_code=429,
+                detail={
+                    'error': 'Usage limit exceeded',
+                    'message': limit_details['message'],
+                    'current_usage': limit_details['current_usage'],
+                    'limit': limit_details['limit_value'],
+                    'reset_date': limit_details['reset_date'],
+                    'subscription_tier': limit_details['subscription_tier']
+                }
+            )
+        
+        # Validate tier permissions
         if request.tier == AnalysisTier.PREMIUM:
-            # TODO: Check if user has premium subscription
-            # For now, allow all users to test premium
-            pass
+            # Fetch user's actual subscription tier from database
+            service_client = get_supabase_service_client()
+            user_profile = service_client.table("users").select("subscription_tier").eq("id", current_user).execute()
+            
+            if not user_profile.data:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="User profile not found. Please contact support."
+                )
+            
+            user_tier = user_profile.data[0].get("subscription_tier", "free")
+            
+            # Only premium and enterprise users can access premium analysis
+            if user_tier not in ["premium", "enterprise"]:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Premium analysis requires a premium subscription. Please upgrade your account to access advanced features including 5 competitors, strategic insights, and comprehensive market analysis."
+                )
         
         # Generate analysis ID
         analysis_id = str(uuid.uuid4())
         
-        logger.info(f"🔵 ANALYSIS_START: analysis_id={analysis_id}, user_id={current_user}, restaurant={request.restaurant_name}, tier={request.tier.value}")
-        logger.info(f"🔵 USER_CONTEXT: current_user={current_user}, type={type(current_user)}")
+        # Initialize performance profiler
+        profiler = PerformanceProfiler(analysis_id)
+        profiler.start_step("SETUP: Initialize analysis", {
+            'restaurant': request.restaurant_name,
+            'location': request.location,
+            'tier': request.tier.value
+        })
+        
+        logger.info(f"🔵 ANALYSIS_START: analysis_id={analysis_id}, tier={request.tier.value}")
+        logger.debug(f"User context validated")
         
         # Get cost estimate
         cost_estimate = orchestrator.get_cost_estimate(
             tier=request.tier.value,
-            competitor_count=request.competitor_count or (3 if request.tier == AnalysisTier.FREE else 5),
+            competitor_count=request.competitor_count or (2 if request.tier == AnalysisTier.FREE else 5),
             avg_reviews_per_competitor=20
         )
         
@@ -81,31 +128,48 @@ async def run_tier_analysis(
             "created_at": datetime.utcnow().isoformat()
         }
         
+        profiler.end_step()
+        profiler.start_step("DB: Create analysis record")
+        
         # Store in database using service client to bypass RLS
         service_client = get_supabase_service_client()
         insert_result = service_client.table("analyses").insert(analysis_data).execute()
         
-        # CRITICAL LOGGING: Verify analysis was stored
-        logger.info(f"🔵 ANALYSIS_CREATED: analysis_id={analysis_id}, user_id={current_user}")
-        logger.info(f"🔵 INSERT_RESULT: {insert_result.data}")
+        # Verify analysis was stored
+        logger.info(f"🔵 ANALYSIS_CREATED: analysis_id={analysis_id}")
+        logger.debug(f"Insert result: {len(insert_result.data)} records")
         
         # Immediately verify it can be found
         verify_result = service_client.table("analyses").select("*").eq("id", analysis_id).execute()
-        logger.info(f"🔵 IMMEDIATE_VERIFY: Found {len(verify_result.data)} records for analysis_id={analysis_id}")
-        if verify_result.data:
-            stored_analysis = verify_result.data[0]
-            logger.info(f"🔵 STORED_DATA: user_id={stored_analysis.get('user_id')}, status={stored_analysis.get('status')}")
+        logger.debug(f"Verification: Found {len(verify_result.data)} records for analysis_id={analysis_id}")
         
-        # Phase 1: Discover competitors
-        logger.info(f"discovering_competitors: analysis_id={analysis_id}")
+        profiler.end_step()
+        profiler.start_step("OUTSCRAPER: Parallel competitor discovery + review collection")
         
-        competitors = places_service.find_competitors(
-            restaurant_name=request.restaurant_name,
+        # Phase 1 & 2: Discover competitors AND fetch reviews (OPTIMIZED PARALLEL)
+        logger.info(f"🚀 starting_parallel_analysis: analysis_id={analysis_id}")
+        
+        # Use optimized parallel method (3-5x faster) with smart caching
+        analysis_results = outscraper_service.analyze_competitors_parallel(
             location=request.location,
+            restaurant_name=request.restaurant_name,
             category=request.category or "restaurant",
-            radius_miles=3.0,
-            max_results=3 if request.tier == AnalysisTier.FREE else 5
+            max_competitors=2 if request.tier == AnalysisTier.FREE else 5,
+            force_refresh=force_refresh
         )
+        
+        competitors = analysis_results.get('competitors', [])
+        competitors_with_reviews = analysis_results.get('reviews', {})
+        timing = analysis_results.get('timing', {})
+        
+        logger.info(f"⚡ parallel_analysis_complete: {timing.get('total_seconds', 0):.1f}s, {timing.get('reviews_count', 0)} reviews")
+        profiler.end_step({
+            'competitors_found': len(competitors),
+            'total_reviews': timing.get('reviews_count', 0),
+            'outscraper_time': timing.get('total_seconds', 0)
+        })
+        
+        profiler.start_step("DB: Batch store competitors")
         
         if not competitors:
             raise HTTPException(
@@ -113,7 +177,10 @@ async def run_tier_analysis(
                 detail="No competitors found in the specified area"
             )
         
-        # Store competitors
+        # Store competitors (BATCHED for performance)
+        competitor_data_list = []
+        analysis_competitor_data_list = []
+        
         for competitor in competitors:
             competitor_data = {
                 "id": competitor.place_id,  # Use place_id as primary key (it's VARCHAR, not UUID)
@@ -131,9 +198,9 @@ async def run_tier_analysis(
                 "category": request.category or "restaurant",
                 "created_at": datetime.utcnow().isoformat()
             }
-            service_client.table("competitors").upsert(competitor_data).execute()
+            competitor_data_list.append(competitor_data)
             
-            # ✅ FIX: Also store in analysis_competitors linking table
+            # Also prepare analysis_competitors linking table data
             analysis_competitor_data = {
                 "analysis_id": analysis_id,
                 "competitor_id": competitor.place_id,
@@ -142,63 +209,58 @@ async def run_tier_analysis(
                 "review_count": competitor.review_count,
                 "distance_miles": competitor.distance_miles
             }
-            service_client.table("analysis_competitors").upsert(analysis_competitor_data).execute()
+            analysis_competitor_data_list.append(analysis_competitor_data)
         
-        logger.info(f"competitors_discovered: analysis_id={analysis_id}, competitor_count={len(competitors)}")
+        # Batch upsert competitors
+        if competitor_data_list:
+            service_client.table("competitors").upsert(competitor_data_list).execute()
         
-        # Phase 2: Fetch reviews
-        logger.info(f"fetching_reviews: analysis_id={analysis_id}")
+        # Batch upsert analysis_competitors
+        if analysis_competitor_data_list:
+            service_client.table("analysis_competitors").upsert(analysis_competitor_data_list).execute()
         
-        competitors_with_reviews = {}
-        for competitor in competitors:
-            place_id = competitor.place_id
-            name = competitor.name
-            
-            if place_id:
-                reviews = await review_service.fetch_competitor_reviews(
-                    competitor_place_id=place_id,
-                    competitor_name=name,
-                    max_reviews=15 if request.tier == AnalysisTier.FREE else 30
-                )
-                
-                # Convert ReviewData objects to dicts for LLM
-                review_dicts = []
-                for review in reviews:
-                    review_dict = {
-                        'competitor_name': name,
-                        'rating': review.rating,
-                        'text': review.text,
-                        'date': review.review_date.isoformat() if review.review_date else 'Unknown',
-                        'author': review.author_name,
-                        'quality_score': review.quality_score
-                    }
-                    review_dicts.append(review_dict)
-                
-                competitors_with_reviews[place_id] = review_dicts
-                
-                # Store reviews in database
-                for review in reviews:
-                    review_data = {
-                        "id": review.review_id,
-                        "competitor_id": place_id,
-                        "external_id": review.external_id,
-                        "source": review.source,
-                        "author_name": review.author_name,
-                        "rating": review.rating,
-                        "text": review.text,
-                        "review_date": review.review_date.isoformat() if review.review_date else None,
-                        "language": review.language,
-                        "quality_score": review.quality_score,
-                        "created_at": datetime.utcnow().isoformat()
-                    }
+        logger.info(f"competitors_stored_batch: analysis_id={analysis_id}, competitor_count={len(competitors)}")
+        profiler.end_step({'competitors_count': len(competitors)})
+        
+        profiler.start_step("DB: Batch store reviews")
+        # Store reviews in database (BATCHED for performance)
+        all_review_data = []
+        for place_id, reviews in competitors_with_reviews.items():
+            for review in reviews:
+                review_data = {
+                    "id": review.get('review_id'),
+                    "competitor_id": place_id,
+                    "external_id": review.get('review_id'),
+                    "source": review.get('source', 'outscraper'),
+                    "author_name": review.get('author_name'),
+                    "rating": review.get('rating'),
+                    "text": review.get('text'),
+                    "review_date": review.get('date'),
+                    "language": review.get('language', 'en'),
+                    "quality_score": review.get('quality_score'),
+                    "created_at": datetime.utcnow().isoformat()
+                }
+                all_review_data.append(review_data)
+        
+        # Batch upsert all reviews at once (handles duplicates gracefully)
+        if all_review_data:
+            try:
+                service_client.table("reviews").upsert(all_review_data).execute()
+                logger.info(f"reviews_stored_batch: analysis_id={analysis_id}, total_reviews={len(all_review_data)}")
+            except Exception as e:
+                logger.error(f"Failed to batch upsert reviews: {e}")
+                # Fallback to individual upserts if batch fails
+                for review_data in all_review_data:
                     try:
-                        service_client.table("reviews").insert(review_data).execute()
-                    except Exception as e:
-                        logger.warning(f"Failed to store review {review.review_id}: {e}")
+                        service_client.table("reviews").upsert(review_data).execute()
+                    except Exception as e2:
+                        logger.warning(f"Failed to upsert individual review: {e2}")
         
         total_reviews = sum(len(reviews) for reviews in competitors_with_reviews.values())
-        logger.info(f"reviews_fetched: analysis_id={analysis_id}, total_reviews={total_reviews}")
+        logger.info(f"reviews_stored: analysis_id={analysis_id}, total_reviews={total_reviews}")
+        profiler.end_step({'reviews_count': total_reviews})
         
+        profiler.start_step("LLM: Gemini analysis")
         # Phase 3: LLM Analysis using orchestrator
         logger.info(f"starting_llm_analysis: analysis_id={analysis_id}, tier={request.tier.value}")
         
@@ -210,6 +272,9 @@ async def run_tier_analysis(
             tier=request.tier.value
         )
         
+        profiler.end_step({'insights_generated': len(analysis_result.get('actionable_insights', []))})
+        
+        profiler.start_step("DB: Batch store insights and evidence")
         # Phase 4: Store insights using enhanced storage service
         storage_service = EnhancedAnalysisStorage(supabase)
         insights_stored = storage_service.store_analysis_results(
@@ -234,8 +299,25 @@ async def run_tier_analysis(
         }
         
         service_client.table("analyses").update(completion_data).eq("id", analysis_id).execute()
+        profiler.end_step({'insights_stored': len(insights_stored)})
+        
+        # Save performance report
+        profiler.start_step("FINALIZE: Save performance report")
+        report_file = profiler.save_report()
+        profiler.end_step({'report_file': report_file})
+        
+        # Increment usage counter after successful analysis
+        from services.usage_limit_service import get_usage_limit_service
+        usage_service = get_usage_limit_service()
+        usage_service.increment_usage(
+            user_id=current_user,
+            operation_type=operation_type,
+            operation_id=analysis_id,
+            metadata={'tier': request.tier.value, 'competitors': len(competitors_dict)}
+        )
         
         logger.info(f"tier_analysis_completed: analysis_id={analysis_id}, tier={request.tier.value}, insights_count={len(insights_stored)}, processing_time={analysis_result.get('metadata', {}).get('processing_time_seconds', 0)}")
+        logger.info(f"📊 Performance report: {report_file}")
         
         # Convert CompetitorInfo objects to dictionary format for response
         competitors_dict = []
@@ -261,6 +343,7 @@ async def run_tier_analysis(
             tier=request.tier.value,
             competitors=competitors_dict,
             insights=insights_stored,
+            evidence_reviews=analysis_result.get('evidence_reviews'),
             metadata=analysis_result.get('metadata', {}),
             created_at=analysis_data['created_at'],
             completed_at=completion_data['completed_at'],
@@ -286,13 +369,14 @@ async def run_tier_analysis(
             except:
                 pass
         
-        raise HTTPException(
+        raise ErrorSanitizer.create_http_exception(
+            e,
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Analysis failed: {str(e)}"
+            user_message="Analysis failed. Please try again or contact support."
         )
 
 @router.get("/tiers/comparison")
-async def get_tier_comparison():
+async def get_tier_comparison(current_user: str = Depends(get_current_user)):
     """Get comparison of analysis tiers and features"""
     return orchestrator.get_tier_comparison()
 
@@ -300,7 +384,8 @@ async def get_tier_comparison():
 async def estimate_analysis_cost(
     tier: AnalysisTier,
     competitor_count: int = 5,
-    avg_reviews_per_competitor: int = 25
+    avg_reviews_per_competitor: int = 25,
+    current_user: str = Depends(get_current_user)
 ):
     """Estimate cost for analysis based on parameters"""
     return orchestrator.get_cost_estimate(
@@ -308,6 +393,36 @@ async def estimate_analysis_cost(
         competitor_count=competitor_count,
         avg_reviews_per_competitor=avg_reviews_per_competitor
     )
+
+@router.get("/cache/stats")
+async def get_cache_stats(current_user: str = Depends(get_current_user)):
+    """Get Redis cache statistics"""
+    from services.redis_client import cache
+    return cache.get_stats()
+
+@router.post("/cache/invalidate")
+async def invalidate_cache(
+    location: Optional[str] = None,
+    place_id: Optional[str] = None,
+    current_user: str = Depends(get_current_user)
+):
+    """Invalidate cache for specific location or competitor"""
+    from services.outscraper_service import OutscraperService
+    
+    if not location and not place_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Must provide either location or place_id"
+        )
+    
+    service = OutscraperService()
+    service.invalidate_cache(location=location, place_id=place_id)
+    
+    return {
+        "message": "Cache invalidated successfully",
+        "location": location,
+        "place_id": place_id
+    }
 
 @router.get("/{analysis_id}/status")
 async def get_analysis_status(
@@ -320,25 +435,19 @@ async def get_analysis_status(
         # Use service client to bypass RLS since we're validating user via JWT
         service_client = get_supabase_service_client()
         
-        # CRITICAL LOGGING: Debug database state
-        logger.info(f"🔍 STATUS_CHECK: analysis_id={analysis_id}, user_id={current_user}")
+        # Debug database state
+        logger.debug(f"🔍 STATUS_CHECK: analysis_id={analysis_id}")
         
-        # Check if analysis exists at all
-        analysis_exists = service_client.table("analyses").select("id, user_id, restaurant_name, status").eq("id", analysis_id).execute()
-        logger.info(f"🔍 ANALYSIS_EXISTS: {analysis_exists.data}")
-        
-        # Check all analyses for this user
-        user_analyses = service_client.table("analyses").select("id, user_id, restaurant_name, status").eq("user_id", current_user).execute()
-        logger.info(f"🔍 USER_ANALYSES: Found {len(user_analyses.data)} analyses for user {current_user}")
+        # Check if analysis exists
+        analysis_exists = service_client.table("analyses").select("id, status").eq("id", analysis_id).execute()
+        logger.debug(f"Analysis exists: {len(analysis_exists.data) > 0}")
         
         # The actual query we're using
         analysis_response = service_client.table("analyses").select("*").eq("id", analysis_id).eq("user_id", current_user).execute()
-        logger.info(f"🔍 QUERY_RESULT: {len(analysis_response.data)} records found")
+        logger.debug(f"Query result: {len(analysis_response.data)} records found")
         
         if analysis_exists.data and not analysis_response.data:
-            existing = analysis_exists.data[0]
-            logger.error(f"🚨 USER_ID_MISMATCH: Analysis exists with user_id={existing.get('user_id')}, but querying for user_id={current_user}")
-            logger.error(f"🚨 MISMATCH_DETAILS: existing_user={existing.get('user_id')}, query_user={current_user}, match={existing.get('user_id') == current_user}")
+            logger.error(f"🚨 Authorization mismatch for analysis {analysis_id}")
         
         if not analysis_response.data:
             raise HTTPException(
@@ -403,48 +512,45 @@ async def get_analysis_result(
 ):
     """Get analysis result by ID"""
     print(f"🚨 DEBUG: GET_ANALYSIS_RESULT CALLED FOR {analysis_id}")
-    logger.info(f"🚨 DEBUG: GET_ANALYSIS_RESULT CALLED FOR {analysis_id}")
-    logger.info(f"🔍 STEP_1: Starting analysis result fetch")
-    logger.info(f"🔍 STEP_1: analysis_id={analysis_id}")
-    logger.info(f"🔍 STEP_1: current_user={current_user}")
+    logger.debug(f"GET_ANALYSIS_RESULT called for {analysis_id}")
+    logger.debug(f"Starting analysis result fetch")
     
     try:
         # Use service client to bypass RLS since we're validating user via JWT
-        logger.info(f"🔍 STEP_2: Getting service client")
+        logger.debug(f"Getting service client")
         service_client = get_supabase_service_client()
-        logger.info(f"🔍 STEP_2: Service client obtained")
         
-        logger.info(f"🔍 STEP_3: Querying analyses table for analysis_id={analysis_id}, user_id={current_user}")
+        logger.debug(f"Querying analyses table for analysis_id={analysis_id}")
         analysis_response = service_client.table("analyses").select("*").eq("id", analysis_id).eq("user_id", current_user).execute()
-        logger.info(f"🔍 STEP_3: Query executed - found {len(analysis_response.data) if analysis_response.data else 0} records")
         
         if not analysis_response.data:
-            logger.error(f"🔍 STEP_3: ANALYSIS NOT FOUND - analysis_id={analysis_id}, user_id={current_user}")
+            logger.error(f"Analysis not found: {analysis_id}")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Analysis not found"
             )
         
         analysis = analysis_response.data[0]
-        logger.info(f"🔍 STEP_3: Analysis retrieved - status={analysis.get('status')}, category={analysis.get('category')}, tier={analysis.get('tier')}")
-        
-        # DEBUG: Log the analysis data
-        logger.info(f"🔍 ANALYSIS_DATA: {analysis}")
-        logger.info(f"🔍 TIER_VALUE: {analysis.get('tier', 'NOT_FOUND')}")
-        logger.info(f"🔍 ANALYSIS_KEYS: {list(analysis.keys())}")
+        logger.debug(f"Analysis retrieved - status={analysis.get('status')}, tier={analysis.get('tier')}")
         
         # Get competitors from analysis_competitors table
-        logger.info(f"🔍 STEP_4: Querying analysis_competitors table")
+        logger.debug(f"Querying analysis_competitors table")
         competitors_response = service_client.table("analysis_competitors").select("*").eq("analysis_id", analysis_id).execute()
         
-        # Get competitor details separately and combine
+        # Get all competitor IDs for batch query
+        competitor_ids = [comp.get("competitor_id") for comp in competitors_response.data]
+        
+        # Batch query: Get all competitor details in one query
+        competitor_details_map = {}
+        if competitor_ids:
+            all_details_response = service_client.table("competitors").select("id, address, google_place_id").in_("id", competitor_ids).execute()
+            competitor_details_map = {detail['id']: detail for detail in all_details_response.data}
+        
+        # Combine data
         competitors = []
         for comp in competitors_response.data:
             competitor_id = comp.get("competitor_id")
-            
-            # Get full competitor details
-            competitor_details_response = service_client.table("competitors").select("address, google_place_id").eq("id", competitor_id).execute()
-            competitor_details = competitor_details_response.data[0] if competitor_details_response.data else {}
+            competitor_details = competitor_details_map.get(competitor_id, {})
             
             competitor_data = {
                 "competitor_id": competitor_id,
@@ -459,6 +565,15 @@ async def get_analysis_result(
         logger.info(f"🔍 STEP_4: Found {len(competitors) if competitors else 0} competitors")
         if competitors:
             logger.info(f"🔍 STEP_4: First competitor: {competitors[0]}")
+        
+        # Get 3 sample reviews per competitor for evidence
+        for competitor in competitors:
+            competitor_id = competitor.get("competitor_id")
+            reviews_response = service_client.table("reviews").select("rating, text, review_date").eq("competitor_id", competitor_id).limit(3).execute()
+            competitor["sample_reviews"] = reviews_response.data if reviews_response.data else []
+        
+        # Initialize storage service for evidence retrieval
+        storage_service = EnhancedAnalysisStorage(service_client)
         
         # Get insights with competitor names
         logger.info(f"🔍 STEP_5: Querying insights table")
@@ -501,6 +616,7 @@ async def get_analysis_result(
             "tier": analysis.get('tier', 'free'),
             "competitors": competitors,
             "insights": insights,
+            "evidence_reviews": storage_service.get_evidence_reviews(analysis_id),
             "metadata": {
                 'tier': analysis.get('tier', 'free'),
                 'estimated_cost': analysis.get('estimated_cost', 0.0),
@@ -537,4 +653,26 @@ async def get_analysis_result(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve analysis"
+        )
+
+@router.get("/analyses", response_model=list)
+async def get_user_analyses(
+    current_user: str = Depends(get_current_user),
+    supabase = Depends(get_supabase_client)
+):
+    """
+    Get all analyses for the current user
+    Returns list of analyses with basic info
+    """
+    try:
+        response = supabase.table('analyses').select(
+            'id, location, category, competitor_count, status, created_at, updated_at'
+        ).eq('user_id', current_user).order('created_at', desc=True).execute()
+        
+        return response.data
+    except Exception as e:
+        logger.error(f"Failed to fetch analyses: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch analyses"
         )

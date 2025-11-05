@@ -1,0 +1,75 @@
+{
+  "test_info": {
+    "test_name": "SerpAPI Optimization Validation",
+    "timestamp": "2025-10-28T16:17:29.591324",
+    "duration_seconds": 2.5919811725616455,
+    "configuration": {
+      "restaurant_name": "Park Ave Pizza",
+      "location": "Woonsocket, Rhode Island",
+      "category": "pizza",
+      "competitors_found": 19,
+      "competitors_used": 5
+    }
+  },
+  "performance": {
+    "total_reviews": 25,
+    "avg_reviews_per_competitor": 5.0,
+    "rating_coverage_percent": 100.0,
+    "author_coverage_percent": 100.0,
+    "serpapi_calls": 0,
+    "google_calls": 6,
+    "total_api_calls": 6,
+    "estimated_cost": 0.09
+  },
+  "success_criteria": {
+    "25+ reviews per competitor": false,
+    "80%+ reviews with ratings": true,
+    "All competitors have reviews": true,
+    "Collection time < 60s": true,
+    "Cost efficient (< $0.30)": true,
+    "Multiple sources per competitor": true
+  },
+  "success_rate_percent": 83.33333333333334,
+  "competitor_details": [
+    {
+      "competitor_id": "ChIJj-S0i8Zr5IkR5izIcdDkzyQ",
+      "review_count": 5,
+      "ratings_count": 5,
+      "sources": [
+        "google_places"
+      ]
+    },
+    {
+      "competitor_id": "ChIJF7umy2Nq5IkRBWhZFoGqsFQ",
+      "review_count": 5,
+      "ratings_count": 5,
+      "sources": [
+        "google_places"
+      ]
+    },
+    {
+      "competitor_id": "ChIJx36JvcFq5IkRLlCRR_gTSmg",
+      "review_count": 5,
+      "ratings_count": 5,
+      "sources": [
+        "google_places"
+      ]
+    },
+    {
+      "competitor_id": "ChIJKfN8NjVr5IkRSkvhALTwIyU",
+      "review_count": 5,
+      "ratings_count": 5,
+      "sources": [
+        "google_places"
+      ]
+    },
+    {
+      "competitor_id": "ChIJjVrW9sxr5IkRQ9RkMwmT1yU",
+      "review_count": 5,
+      "ratings_count": 5,
+      "sources": [
+        "google_places"
+      ]
+    }
+  ]
+}

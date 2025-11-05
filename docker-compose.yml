@@ -1,4 +1,15 @@
 services:
+  # Pre-flight check - verifies API endpoints before starting
+  api-verify:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: python verify_api_endpoints.py
+    profiles:
+      - verify
+
+  # Backend API
   api:
     build:
       context: .
@@ -6,15 +17,25 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - .env
+      - .env.production  # Load production secrets from file
     environment:
+      # Override Docker-specific settings
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - ENVIRONMENT=production
       - APP_ENV=production
+      - LOG_LEVEL=INFO
     depends_on:
       - redis
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
+  # Redis for caching (optional but recommended)
   redis:
     image: redis:7-alpine
     ports:
@@ -22,6 +43,11 @@ services:
     volumes:
       - redis_data:/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   redis_data:

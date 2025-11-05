@@ -2,6 +2,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { Zap, Crown, Sparkles } from 'lucide-react';
 
 interface TierSelectorProps {
   value: 'free' | 'premium';
@@ -9,7 +10,11 @@ interface TierSelectorProps {
   userTier: 'free' | 'premium' | 'enterprise';
 }
 
-export function TierSelector({ value, onChange, userTier }: TierSelectorProps) {
+export function TierSelector({
+  value,
+  onChange,
+  userTier,
+}: TierSelectorProps) {
   const tiers = [
     {
       id: 'free' as const,
@@ -18,7 +23,9 @@ export function TierSelector({ value, onChange, userTier }: TierSelectorProps) {
       description: 'Analyze 2 closest competitors',
       available: true,
       badge: 'Free',
-      badgeColor: 'bg-gray-100 text-gray-800',
+      badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+      icon: Sparkles,
+      borderColor: 'border-emerald-500/50',
     },
     {
       id: 'premium' as const,
@@ -27,81 +34,112 @@ export function TierSelector({ value, onChange, userTier }: TierSelectorProps) {
       description: 'Analyze 5 competitors with detailed insights',
       available: userTier !== 'free',
       badge: userTier === 'free' ? 'Upgrade Required' : 'Premium',
-      badgeColor: userTier === 'free' 
-        ? 'bg-orange-100 text-orange-800' 
-        : 'bg-blue-100 text-blue-800',
+      badgeColor:
+        userTier === 'free'
+          ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+          : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+      icon: userTier === 'free' ? Crown : Zap,
+      borderColor: 'border-cyan-500/50',
     },
   ];
 
   return (
     <div className="space-y-3">
-      {tiers.map((tier) => (
-        <Card
-          key={tier.id}
-          className={cn(
-            "cursor-pointer transition-all duration-200 hover:shadow-md",
-            value === tier.id && "ring-2 ring-primary ring-offset-2",
-            !tier.available && "opacity-60 cursor-not-allowed"
-          )}
-          onClick={() => tier.available && onChange(tier.id)}
-        >
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-medium text-base">{tier.name}</h3>
-                  <Badge className={tier.badgeColor}>
-                    {tier.badge}
-                  </Badge>
-                </div>
-                <p className="text-sm text-muted-foreground mb-2">
-                  {tier.description}
-                </p>
-                <div className="flex items-center gap-4 text-sm">
-                  <span className="font-medium">
-                    {tier.competitors} competitors
-                  </span>
-                  {tier.id === 'premium' && (
-                    <span className="text-muted-foreground">
-                      + Detailed insights
+      {tiers.map((tier) => {
+        const Icon = tier.icon;
+        return (
+          <Card
+            key={tier.id}
+            className={cn(
+              'cursor-pointer transition-all duration-200 bg-obsidian/50 border-white/10',
+              value === tier.id &&
+                `ring-2 ${tier.borderColor} ring-offset-0 bg-obsidian/80`,
+              tier.available && 'hover:border-white/20',
+              !tier.available && 'opacity-60 cursor-not-allowed'
+            )}
+            onClick={() => tier.available && onChange(tier.id)}
+            data-testid={`tier-${tier.id}`}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div
+                      className={cn(
+                        'p-1.5 rounded-lg',
+                        tier.id === 'free'
+                          ? 'bg-emerald-500/10'
+                          : 'bg-cyan-500/10'
+                      )}
+                    >
+                      <Icon
+                        className={cn(
+                          'h-4 w-4',
+                          tier.id === 'free'
+                            ? 'text-emerald-400'
+                            : 'text-cyan-400'
+                        )}
+                      />
+                    </div>
+                    <h3 className="font-semibold text-base text-white">
+                      {tier.name}
+                    </h3>
+                    <Badge className={`${tier.badgeColor} border font-medium`}>
+                      {tier.badge}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-slate-400 mb-3 ml-10">
+                    {tier.description}
+                  </p>
+                  <div className="flex items-center gap-4 text-sm ml-10">
+                    <span className="font-medium text-white">
+                      {tier.competitors} competitors
                     </span>
+                    {tier.id === 'premium' && (
+                      <span className="text-slate-400">
+                        + Detailed insights
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center">
+                  {tier.available ? (
+                    <div
+                      className={cn(
+                        'w-5 h-5 rounded-full border-2 transition-colors flex items-center justify-center',
+                        value === tier.id
+                          ? tier.id === 'free'
+                            ? 'bg-emerald-500 border-emerald-500'
+                            : 'bg-cyan-500 border-cyan-500'
+                          : 'border-slate-500'
+                      )}
+                    >
+                      {value === tier.id && (
+                        <div className="w-2 h-2 bg-white rounded-full" />
+                      )}
+                    </div>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs border-amber-500/30 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // TODO: Navigate to upgrade page
+                        console.log('Navigate to upgrade');
+                      }}
+                    >
+                      <Crown className="h-3 w-3 mr-1" />
+                      Upgrade
+                    </Button>
                   )}
                 </div>
               </div>
-              
-              <div className="flex items-center">
-                {tier.available ? (
-                  <div
-                    className={cn(
-                      "w-4 h-4 rounded-full border-2 transition-colors",
-                      value === tier.id
-                        ? "bg-primary border-primary"
-                        : "border-muted-foreground"
-                    )}
-                  >
-                    {value === tier.id && (
-                      <div className="w-2 h-2 bg-white rounded-full m-0.5" />
-                    )}
-                  </div>
-                ) : (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-xs"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      // TODO: Navigate to upgrade page
-                      console.log('Navigate to upgrade');
-                    }}
-                  >
-                    Upgrade
-                  </Button>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+            </CardContent>
+          </Card>
+        );
+      })}
     </div>
   );
 }

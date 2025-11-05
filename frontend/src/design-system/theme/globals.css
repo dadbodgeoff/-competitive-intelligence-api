@@ -1,0 +1,407 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+/* Import animations */
+@import './animations.css';
+
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Variables - RestaurantIQ Dark Theme */
+:root {
+  /* Brand Colors */
+  --color-obsidian: #0B1215;
+  --color-emerald-400: #34d399;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #059669;
+  --color-cyan-400: #22d3ee;
+  --color-cyan-500: #06b6d4;
+  --color-cyan-600: #0891b2;
+
+  /* Background Colors */
+  --bg-obsidian: #0B1215;
+  --bg-slate-900: #0f172a;
+  --bg-slate-850: #1a2332;
+  --bg-slate-800: #1e293b;
+  --bg-modal-overlay: rgba(11, 18, 21, 0.85);
+  --bg-sidebar: #0f1419;
+
+  /* Text Colors */
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+  --text-disabled: #64748b;
+  --text-h1: #ffffff;
+  --text-h2: #f8fafc;
+  --text-h3: #f1f5f9;
+  --text-h4: #e2e8f0;
+  --text-h5: #cbd5e1;
+  --text-h6: #94a3b8;
+
+  /* Link Colors */
+  --link-default: #22d3ee;
+  --link-hover: #06b6d4;
+  --link-visited: #0891b2;
+  --link-active: #0e7490;
+  --link-muted: #64748b;
+
+  /* Border Colors */
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-input: rgba(255, 255, 255, 0.15);
+  --border-divider: rgba(255, 255, 255, 0.08);
+  --border-focus: #10b981;
+  --border-hover: rgba(255, 255, 255, 0.2);
+  --border-accent: rgba(16, 185, 129, 0.3);
+
+  /* Semantic Colors - Success */
+  --success-bg: rgba(16, 185, 129, 0.1);
+  --success-border: #059669;
+  --success-text: #34d399;
+  --success-icon: #10b981;
+
+  /* Semantic Colors - Error */
+  --error-bg: rgba(239, 68, 68, 0.1);
+  --error-border: #dc2626;
+  --error-text: #f87171;
+  --error-icon: #ef4444;
+
+  /* Semantic Colors - Warning */
+  --warning-bg: rgba(245, 158, 11, 0.1);
+  --warning-border: #d97706;
+  --warning-text: #fbbf24;
+  --warning-icon: #f59e0b;
+
+  /* Semantic Colors - Info */
+  --info-bg: rgba(34, 211, 238, 0.1);
+  --info-border: #0891b2;
+  --info-text: #22d3ee;
+  --info-icon: #06b6d4;
+
+  /* Semantic Colors - Neutral */
+  --neutral-bg: rgba(148, 163, 184, 0.1);
+  --neutral-border: #64748b;
+  --neutral-text: #cbd5e1;
+  --neutral-icon: #94a3b8;
+
+  /* Button Colors - Primary */
+  --btn-primary-bg: #10b981;
+  --btn-primary-hover: #059669;
+  --btn-primary-active: #047857;
+  --btn-primary-disabled: #334155;
+
+  /* Button Colors - Secondary */
+  --btn-secondary-bg: #1e293b;
+  --btn-secondary-hover: #334155;
+  --btn-secondary-active: #475569;
+  --btn-secondary-disabled: #1e293b;
+
+  /* Button Colors - Ghost */
+  --btn-ghost-bg: transparent;
+  --btn-ghost-hover: rgba(148, 163, 184, 0.1);
+  --btn-ghost-active: rgba(148, 163, 184, 0.2);
+
+  /* Form Elements - Input */
+  --input-bg: #1a2332;
+  --input-focus: #1e293b;
+  --input-text: #f1f5f9;
+  --input-border: #475569;
+  --input-placeholder: #64748b;
+
+  /* Form Elements - Dropdown */
+  --dropdown-bg: #1a2332;
+  --dropdown-hover: #334155;
+  --dropdown-selected: #10b981;
+
+  /* Form Elements - Checkbox */
+  --checkbox-bg: #1a2332;
+  --checkbox-checked: #10b981;
+  --checkbox-border: #475569;
+
+  /* Form Elements - Toggle */
+  --toggle-bg-off: #334155;
+  --toggle-bg-on: #10b981;
+  --toggle-handle: #ffffff;
+
+  /* Form Elements - Radio */
+  --radio-bg: #1a2332;
+  --radio-selected: #10b981;
+  --radio-border: #475569;
+
+  /* Navigation Colors */
+  --nav-item-inactive: #94a3b8;
+  --nav-item-active: #10b981;
+  --nav-item-hover: #cbd5e1;
+  --nav-bg-active: rgba(16, 185, 129, 0.1);
+  --nav-indicator: #10b981;
+  --nav-badge: #ef4444;
+
+  /* Data Visualization - Chart Colors */
+  --chart-1: #10b981;
+  --chart-2: #22d3ee;
+  --chart-3: #a78bfa;
+  --chart-4: #fb923c;
+  --chart-5: #f472b6;
+  --chart-6: #fbbf24;
+
+  /* Progress Colors */
+  --progress-bg: #1e293b;
+  --progress-fill: #10b981;
+  --progress-text: #cbd5e1;
+
+  /* Badge/Tag Colors - Confidence */
+  --badge-confidence-high-bg: rgba(16, 185, 129, 0.15);
+  --badge-confidence-high-text: #34d399;
+  --badge-confidence-high-border: #059669;
+  --badge-confidence-medium-bg: rgba(245, 158, 11, 0.15);
+  --badge-confidence-medium-text: #fbbf24;
+  --badge-confidence-medium-border: #d97706;
+  --badge-confidence-low-bg: rgba(148, 163, 184, 0.15);
+  --badge-confidence-low-text: #cbd5e1;
+  --badge-confidence-low-border: #64748b;
+
+  /* Badge/Tag Colors - Insight Types */
+  --badge-opportunity-bg: rgba(16, 185, 129, 0.15);
+  --badge-opportunity-text: #34d399;
+  --badge-opportunity-border: #059669;
+  --badge-threat-bg: rgba(239, 68, 68, 0.15);
+  --badge-threat-text: #f87171;
+  --badge-threat-border: #dc2626;
+  --badge-watch-bg: rgba(245, 158, 11, 0.15);
+  --badge-watch-text: #fbbf24;
+  --badge-watch-border: #d97706;
+
+  /* Star Ratings */
+  --star-filled: #fbbf24;
+  --star-empty: #334155;
+  --star-half: #fbbf24;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Colored Shadows */
+  --shadow-emerald: 0 8px 16px rgba(16, 185, 129, 0.25);
+  --shadow-cyan: 0 8px 16px rgba(6, 182, 212, 0.25);
+
+  /* Overlay Colors */
+  --overlay-light: rgba(11, 18, 21, 0.4);
+  --overlay-medium: rgba(11, 18, 21, 0.7);
+  --overlay-heavy: rgba(11, 18, 21, 0.9);
+  --overlay-gradient: linear-gradient(180deg, rgba(11, 18, 21, 0) 0%, rgba(11, 18, 21, 0.8) 100%);
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #10b981, #059669);
+  --gradient-secondary: linear-gradient(135deg, #22d3ee, #0891b2);
+  --gradient-accent: linear-gradient(135deg, #10b981, #22d3ee);
+  --gradient-dark: linear-gradient(135deg, #0f172a, #0B1215);
+  --gradient-card: linear-gradient(135deg, #1a2332, #141c1f);
+  --gradient-glow: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15), transparent 70%);
+
+  /* Spacing Scale */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* Typography - Font Families */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
+
+  /* Typography - Font Sizes */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+
+  /* Typography - Font Weights */
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+
+  /* Typography - Line Heights */
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+
+  /* Layout - Width Scale */
+  --width-prose: 65ch;
+  --width-narrow: 42rem;
+  --width-content: 56rem;
+  --width-wide: 72rem;
+  --width-full: 100%;
+
+  /* Z-Index Layers */
+  --z-base: 0;
+  --z-dropdown: 1000;
+  --z-sticky: 1100;
+  --z-fixed: 1200;
+  --z-modal-backdrop: 1300;
+  --z-modal: 1400;
+  --z-popover: 1500;
+  --z-tooltip: 1600;
+
+  /* Transitions */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-slower: 700ms;
+
+  /* Easing Functions */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Base Styles */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--bg-obsidian);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: var(--font-bold);
+    line-height: var(--leading-tight);
+  }
+
+  h1 {
+    font-size: var(--text-5xl);
+    color: var(--text-h1);
+  }
+
+  h2 {
+    font-size: var(--text-4xl);
+    color: var(--text-h2);
+  }
+
+  h3 {
+    font-size: var(--text-3xl);
+    color: var(--text-h3);
+  }
+
+  h4 {
+    font-size: var(--text-2xl);
+    color: var(--text-h4);
+  }
+
+  h5 {
+    font-size: var(--text-xl);
+    color: var(--text-h5);
+  }
+
+  h6 {
+    font-size: var(--text-lg);
+    color: var(--text-h6);
+  }
+
+  /* Links */
+  a {
+    color: var(--link-default);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  a:hover {
+    color: var(--link-hover);
+  }
+
+  a:visited {
+    color: var(--link-visited);
+  }
+
+  a:active {
+    color: var(--link-active);
+  }
+
+  /* Focus States */
+  *:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+  }
+
+  /* Selection */
+  ::selection {
+    background-color: rgba(16, 185, 129, 0.3);
+    color: var(--text-primary);
+  }
+
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-slate-900);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-default);
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--border-hover);
+  }
+}
+
+/* Accessibility - Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+}

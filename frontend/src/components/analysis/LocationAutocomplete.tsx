@@ -87,21 +87,21 @@ export const LocationAutocomplete = forwardRef<HTMLInputElement, LocationAutocom
           onBlur={handleBlur}
           onFocus={() => inputValue.length > 2 && setShowSuggestions(true)}
           className={cn(
-            "form-input", // Mobile-optimized class
+            'bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20',
             className
           )}
           autoComplete="off"
         />
-        
+
         {showSuggestions && suggestions.length > 0 && (
-          <div className="absolute z-50 w-full mt-1 bg-background border border-input rounded-md shadow-lg max-h-60 overflow-auto">
+          <div className="absolute z-50 w-full mt-2 bg-card-dark border border-white/10 rounded-lg shadow-2xl max-h-60 overflow-auto">
             {suggestions.map((suggestion, index) => (
               <button
                 key={index}
                 type="button"
-                className="w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-sm border-b border-border last:border-b-0"
+                className="w-full px-4 py-3 text-left text-white hover:bg-emerald-500/10 focus:bg-emerald-500/10 text-sm border-b border-white/5 last:border-b-0 transition-colors"
                 onClick={() => handleSuggestionClick(suggestion)}
-                style={{ minHeight: '44px' }} // Mobile touch target
+                style={{ minHeight: '44px' }}
               >
                 {suggestion}
               </button>

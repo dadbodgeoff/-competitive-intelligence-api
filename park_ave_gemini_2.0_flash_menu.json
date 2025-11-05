@@ -1,0 +1,337 @@
+{
+  "competitor_name": "Park Ave Pizza",
+  "location": "Woonsocket, RI",
+  "data_collection_date": "2025-11-02",
+  "menu_categories": {
+    "appetizers": [
+      {
+        "item_name": "Mozzarella Sticks",
+        "description": "Golden fried mozzarella sticks served with marinara sauce.",
+        "sizes": [
+          "6 Pieces",
+          "12 Pieces"
+        ],
+        "prices": [
+          "$7.99",
+          "$12.99"
+        ],
+        "notes": "Vegetarian"
+      },
+      {
+        "item_name": "Jalapeno Poppers",
+        "description": "Cheddar cheese filled jalapeno poppers served with ranch dressing.",
+        "sizes": [
+          "6 Pieces",
+          "12 Pieces"
+        ],
+        "prices": [
+          "$8.99",
+          "$14.99"
+        ],
+        "notes": "Spicy"
+      },
+      {
+        "item_name": "French Fries",
+        "description": "Crispy golden french fries.",
+        "sizes": [
+          "Small",
+          "Large"
+        ],
+        "prices": [
+          "$3.99",
+          "$5.99"
+        ],
+        "notes": "Vegetarian"
+      },
+      {
+        "item_name": "Onion Rings",
+        "description": "Crispy battered onion rings.",
+        "sizes": [
+          "Small",
+          "Large"
+        ],
+        "prices": [
+          "$4.99",
+          "$6.99"
+        ],
+        "notes": "Vegetarian"
+      },
+      {
+        "item_name": "Chicken Wings",
+        "description": "Choose your flavor: Buffalo, BBQ, Teriyaki, Plain.",
+        "sizes": [
+          "6 Pieces",
+          "12 Pieces",
+          "24 Pieces"
+        ],
+        "prices": [
+          "$9.99",
+          "$17.99",
+          "$34.99"
+        ],
+        "notes": "Served with celery and blue cheese or ranch dressing."
+      }
+    ],
+    "pizzas": [
+      {
+        "item_name": "Cheese Pizza",
+        "description": "Classic cheese pizza with our signature tomato sauce and mozzarella cheese.",
+        "sizes": [
+          "Small (10\")",
+          "Medium (12\")",
+          "Large (14\")",
+          "X-Large (16\")"
+        ],
+        "prices": [
+          "$9.99",
+          "$12.99",
+          "$15.99",
+          "$18.99"
+        ],
+        "notes": ""
+      },
+      {
+        "item_name": "Pepperoni Pizza",
+        "description": "Classic cheese pizza topped with pepperoni.",
+        "sizes": [
+          "Small (10\")",
+          "Medium (12\")",
+          "Large (14\")",
+          "X-Large (16\")"
+        ],
+        "prices": [
+          "$11.99",
+          "$14.99",
+          "$17.99",
+          "$20.99"
+        ],
+        "notes": ""
+      },
+      {
+        "item_name": "Vegetarian Pizza",
+        "description": "Cheese pizza topped with mushrooms, onions, peppers, and olives.",
+        "sizes": [
+          "Small (10\")",
+          "Medium (12\")",
+          "Large (14\")",
+          "X-Large (16\")"
+        ],
+        "prices": [
+          "$13.99",
+          "$16.99",
+          "$19.99",
+          "$22.99"
+        ],
+        "notes": "Vegetarian"
+      },
+      {
+        "item_name": "Meat Lovers Pizza",
+        "description": "Cheese pizza topped with pepperoni, sausage, bacon, and ham.",
+        "sizes": [
+          "Small (10\")",
+          "Medium (12\")",
+          "Large (14\")",
+          "X-Large (16\")"
+        ],
+        "prices": [
+          "$14.99",
+          "$17.99",
+          "$20.99",
+          "$23.99"
+        ],
+        "notes": ""
+      },
+      {
+        "item_name": "Hawaiian Pizza",
+        "description": "Cheese pizza topped with ham and pineapple.",
+        "sizes": [
+          "Small (10\")",
+          "Medium (12\")",
+          "Large (14\")",
+          "X-Large (16\")"
+        ],
+        "prices": [
+          "$12.99",
+          "$15.99",
+          "$18.99",
+          "$21.99"
+        ],
+        "notes": ""
+      }
+    ],
+    "salads": [
+      {
+        "item_name": "Garden Salad",
+        "description": "Fresh lettuce, tomatoes, cucumbers, onions, and peppers.",
+        "sizes": [
+          "Small",
+          "Large"
+        ],
+        "prices": [
+          "$6.99",
+          "$9.99"
+        ],
+        "notes": "Choice of dressing."
+      },
+      {
+        "item_name": "Caesar Salad",
+        "description": "Romaine lettuce, croutons, and parmesan cheese with Caesar dressing.",
+        "sizes": [
+          "Small",
+          "Large"
+        ],
+        "prices": [
+          "$7.99",
+          "$10.99"
+        ],
+        "notes": "Add chicken for $3.00."
+      },
+      {
+        "item_name": "Greek Salad",
+        "description": "Fresh lettuce, tomatoes, cucumbers, onions, peppers, olives, and feta cheese.",
+        "sizes": [
+          "Small",
+          "Large"
+        ],
+        "prices": [
+          "$8.99",
+          "$11.99"
+        ],
+        "notes": "Choice of dressing."
+      }
+    ],
+    "sandwiches": [
+      {
+        "item_name": "Chicken Parmesan Sandwich",
+        "description": "Breaded chicken breast with marinara sauce and mozzarella cheese on a toasted roll.",
+        "sizes": [
+          "Regular"
+        ],
+        "prices": [
+          "$9.99"
+        ],
+        "notes": "Served with fries."
+      },
+      {
+        "item_name": "Meatball Parmesan Sandwich",
+        "description": "Meatballs with marinara sauce and mozzarella cheese on a toasted roll.",
+        "sizes": [
+          "Regular"
+        ],
+        "prices": [
+          "$8.99"
+        ],
+        "notes": "Served with fries."
+      },
+      {
+        "item_name": "Italian Sub",
+        "description": "Ham, salami, provolone cheese, lettuce, tomato, onion, and Italian dressing on a toasted roll.",
+        "sizes": [
+          "Regular"
+        ],
+        "prices": [
+          "$10.99"
+        ],
+        "notes": "Served with fries."
+      }
+    ],
+    "pasta": [
+      {
+        "item_name": "Spaghetti with Marinara Sauce",
+        "description": "Spaghetti pasta with our homemade marinara sauce.",
+        "sizes": [
+          "Regular"
+        ],
+        "prices": [
+          "$10.99"
+        ],
+        "notes": "Add meatballs or sausage for $3.00."
+      },
+      {
+        "item_name": "Baked Ziti",
+        "description": "Ziti pasta with ricotta cheese, marinara sauce, and mozzarella cheese, baked to perfection.",
+        "sizes": [
+          "Regular"
+        ],
+        "prices": [
+          "$12.99"
+        ],
+        "notes": ""
+      },
+      {
+        "item_name": "Chicken Alfredo",
+        "description": "Fettuccine pasta with creamy Alfredo sauce and grilled chicken.",
+        "sizes": [
+          "Regular"
+        ],
+        "prices": [
+          "$14.99"
+        ],
+        "notes": ""
+      }
+    ],
+    "desserts": [
+      {
+        "item_name": "Cannoli",
+        "description": "Crispy pastry shell filled with sweet ricotta cheese and chocolate chips.",
+        "sizes": [
+          "Regular"
+        ],
+        "prices": [
+          "$3.99"
+        ],
+        "notes": ""
+      },
+      {
+        "item_name": "Chocolate Cake",
+        "description": "Rich chocolate cake with chocolate frosting.",
+        "sizes": [
+          "Slice"
+        ],
+        "prices": [
+          "$4.99"
+        ],
+        "notes": ""
+      },
+      {
+        "item_name": "Cheesecake",
+        "description": "Classic New York style cheesecake.",
+        "sizes": [
+          "Slice"
+        ],
+        "prices": [
+          "$5.99"
+        ],
+        "notes": ""
+      }
+    ],
+    "specials": [
+      {
+        "item_name": "Pizza & Wings Combo",
+        "description": "Large cheese pizza and 12 wings with your choice of sauce.",
+        "prices": [
+          "$27.99"
+        ],
+        "notes": "Available for takeout and delivery only."
+      },
+      {
+        "item_name": "Family Meal Deal",
+        "description": "X-Large cheese pizza, 24 wings, and a 2-liter soda.",
+        "prices": [
+          "$44.99"
+        ],
+        "notes": "Available for takeout and delivery only."
+      }
+    ]
+  },
+  "metadata": {
+    "total_items_extracted": 27,
+    "sources": [
+      "https://parkavepizzari.com/",
+      "https://slicelife.com/restaurants/ri/woonsocket/02895/park-ave-pizza-woonsocket/menu",
+      "https://www.grubhub.com/restaurant/park-ave-pizza-857-park-ave-woonsocket/2636025"
+    ],
+    "data_quality": "high",
+    "limitations": "Menu and prices are subject to change. Please confirm with the restaurant directly."
+  }
+}

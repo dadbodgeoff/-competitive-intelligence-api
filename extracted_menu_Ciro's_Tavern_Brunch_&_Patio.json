@@ -1,0 +1,41 @@
+{
+  "restaurant_name": "Ciro's Tavern, Brunch & Patio",
+  "menu_items": [
+    {
+      "category": "Menus",
+      "item_name": "Starters & Appetizers",
+      "description": null,
+      "prices": []
+    },
+    {
+      "category": "Menus",
+      "item_name": "Wings & Flatbreads",
+      "description": null,
+      "prices": []
+    },
+    {
+      "category": "Menus",
+      "item_name": "Burgers & Sandwiches",
+      "description": null,
+      "prices": []
+    },
+    {
+      "category": "Menus",
+      "item_name": "Entrees",
+      "description": null,
+      "prices": []
+    },
+    {
+      "category": "Menus",
+      "item_name": "Lunch Menu",
+      "description": null,
+      "prices": []
+    },
+    {
+      "category": "Menus",
+      "item_name": "Seasonal Drinks",
+      "description": null,
+      "prices": []
+    }
+  ]
+}

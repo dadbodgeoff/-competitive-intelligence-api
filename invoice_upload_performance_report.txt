@@ -1,0 +1,79 @@
+================================================================================
+INVOICE UPLOAD PERFORMANCE REPORT
+================================================================================
+
+Session Start: 2025-10-31 15:07:03,030
+Session End: 2025-10-31 15:08:35,533
+Total Time: 92.50s
+Total API Calls: 24
+
+================================================================================
+COMPLETE FLOW TRACKING
+================================================================================
+
+
+[1] 🔵 START: GET /api/invoices/
+    Time: 2025-10-31 15:07:03,030
+    Phase: Verify saved data
+
+[3] 🔵 START: GET /api/invoices/
+    Time: 2025-10-31 15:07:03,634
+    Phase: Verify saved data
+
+[5] 🔵 START: POST /api/invoices/upload
+    Time: 2025-10-31 15:07:07,871
+    Phase: Upload PDF to storage
+
+[7] 🔵 START: GET /api/invoices/parse-stream
+    Time: 2025-10-31 15:07:08,401
+    Phase: LLM parsing invoice
+
+[9] 🔵 START: POST /api/invoices/save
+    Time: 2025-10-31 15:07:45,379
+    Phase: Save to invoices + invoice_items tables
+
+[11] 🔵 START: GET /api/invoices/
+    Time: 2025-10-31 15:07:48,195
+    Phase: Verify saved data
+
+[13] 🔵 START: GET /api/invoices/
+    Time: 2025-10-31 15:07:48,758
+    Phase: Verify saved data
+
+[15] 🔵 START: POST /api/invoices/upload
+    Time: 2025-10-31 15:07:51,556
+    Phase: Upload PDF to storage
+
+[17] 🔵 START: GET /api/invoices/parse-stream
+    Time: 2025-10-31 15:07:52,059
+    Phase: LLM parsing invoice
+
+[19] 🔵 START: POST /api/invoices/save
+    Time: 2025-10-31 15:08:34,554
+    Phase: Save to invoices + invoice_items tables
+
+[21] 🔵 START: GET /api/invoices/125d1d9a-d80f-4dd4-8a96-c6f9c75eb50b
+    Time: 2025-10-31 15:08:35,264
+    Phase: Verify saved data
+
+[23] 🔵 START: GET /api/invoices/125d1d9a-d80f-4dd4-8a96-c6f9c75eb50b
+    Time: 2025-10-31 15:08:35,533
+    Phase: Verify saved data
+
+================================================================================
+PHASE BREAKDOWN
+================================================================================
+
+================================================================================
+BOTTLENECK ANALYSIS
+================================================================================
+
+================================================================================
+QUALITY CHECKS
+================================================================================
+
+✅ No errors detected
+
+✅ Successful requests: 0/0
+
+================================================================================

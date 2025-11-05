@@ -1,42 +1,56 @@
-# Stage 1: Build frontend
+# Multi-stage build for production
 FROM node:20-alpine AS frontend-builder
 
-WORKDIR /frontend
+WORKDIR /app/frontend
 
 # Copy frontend package files
 COPY frontend/package*.json ./
 RUN npm ci
 
-# Copy frontend source and build
+# Copy frontend source
 COPY frontend/ ./
+
+# Build frontend
 RUN npm run build
 
-# Stage 2: Python backend
+# Python backend stage
 FROM python:3.11-slim
 
 WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first for better caching
+# Copy requirements and install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Copy backend code
+COPY api/ ./api/
+COPY services/ ./services/
+COPY config/ ./config/
+COPY models/ ./models/
+COPY prompts/ ./prompts/
+COPY database/ ./database/
 
-# Copy built frontend from stage 1
-COPY --from=frontend-builder /frontend/dist /app/frontend/dist
+# Copy built frontend from builder stage
+COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
+
+# Create non-root user for security
+RUN useradd -m -u 1000 appuser && \
+    chown -R appuser:appuser /app
+USER appuser
 
 # Expose port
 EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD curl -f http://localhost:8000/api/v1/health || exit 1
+    CMD curl -f http://localhost:8000/health || exit 1
 
-# Run the application
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run with uvicorn (no reload in production)
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]

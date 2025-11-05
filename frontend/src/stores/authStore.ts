@@ -1,25 +1,20 @@
 import { create } from 'zustand';
-import { AuthState, LoginCredentials, RegisterData } from '@/types/auth';
-import { SecureTokenStorage } from '@/services/SecureTokenStorage';
+import { AuthState, LoginCredentials, RegisterData, User } from '@/types/auth';
 import { reviewAnalysisAPI } from '@/services/ReviewAnalysisAPIService';
 
 interface AuthActions {
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (userData: RegisterData) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
   clearError: () => void;
-  refreshToken: () => Promise<void>;
 }
 
 type AuthStore = AuthState & AuthActions;
 
-const tokenStorage = new SecureTokenStorage();
-
-export const useAuthStore = create<AuthStore>((set, get) => ({
-  // Initial state
+export const useAuthStore = create<AuthStore>((set) => ({
+  // Initial state - NO PERSISTENCE, auth lives in HTTPOnly cookie only
   user: null,
-  token: null,
   isAuthenticated: false,
   isLoading: false,
   error: null,
@@ -31,39 +26,21 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       console.log('🔵 Login attempt started', { email: credentials.email });
       set({ isLoading: true, error: null });
       
-      console.log('🔵 Calling API login...');
+      // Cookies are set automatically by backend
       const response = await reviewAnalysisAPI.login(credentials);
-      console.log('✅ Login API response received', JSON.stringify(response, null, 2));
-      
-      // If user object is missing, fetch it
-      let user = response.user;
-      if (!user) {
-        console.log('⚠️ User object missing, fetching profile...');
-        reviewAnalysisAPI.setAuthToken(response.access_token);
-        user = await reviewAnalysisAPI.getProfile();
-        console.log('✅ Profile fetched', user);
-      }
-      
-      // Store tokens securely
-      tokenStorage.setTokens(response.access_token, response.refresh_token || '', user);
-      
-      // Set auth token for future requests
-      reviewAnalysisAPI.setAuthToken(response.access_token);
+      console.log('✅ Login successful, cookies set by backend');
       
       set({
-        user: user,
-        token: response.access_token,
+        user: response.user,
         isAuthenticated: true,
-        subscriptionTier: user.subscription_tier,
+        subscriptionTier: response.user.subscription_tier,
         isLoading: false,
         error: null,
       });
-      console.log('✅ Login successful, state updated');
     } catch (error) {
       console.error('❌ Login failed', error);
       set({
         user: null,
-        token: null,
         isAuthenticated: false,
         isLoading: false,
         error: error instanceof Error ? error.message : 'Login failed',
@@ -76,12 +53,17 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     try {
       set({ isLoading: true, error: null });
       
-      await reviewAnalysisAPI.register(userData);
+      // Cookies are set automatically by backend
+      const response = await reviewAnalysisAPI.register(userData);
       
-      // Auto-login after successful registration
-      await get().login({
-        email: userData.email,
-        password: userData.password,
+      // Response has { user: {...}, message: "..." } structure
+      const user = ('user' in response ? response.user : response) as User;
+      
+      set({
+        user: user,
+        isAuthenticated: true,
+        subscriptionTier: user.subscription_tier,
+        isLoading: false,
       });
     } catch (error) {
       set({
@@ -92,84 +74,46 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     }
   },
 
-  logout: () => {
-    tokenStorage.clearAllAuthData();
-    reviewAnalysisAPI.clearAuthToken();
-    
+  logout: async () => {
+    // Clear local state first
     set({
       user: null,
-      token: null,
       isAuthenticated: false,
       subscriptionTier: 'free',
       isLoading: false,
       error: null,
     });
-  },
-
-  checkAuth: async () => {
+    
+    // Try to call logout API, but don't wait or care if it fails
     try {
-      set({ isLoading: true });
-      
-      const token = tokenStorage.getValidToken();
-      const user = tokenStorage.getUser();
-      
-      if (token && user) {
-        reviewAnalysisAPI.setAuthToken(token);
-        
-        // Verify token is still valid with backend
-        try {
-          const currentUser = await reviewAnalysisAPI.getProfile();
-          set({
-            user: currentUser,
-            token,
-            isAuthenticated: true,
-            subscriptionTier: currentUser.subscription_tier,
-            isLoading: false,
-          });
-        } catch (error: any) {
-          // Only logout on actual auth errors (401/403)
-          // Keep user logged in for network/server errors (500, timeout, etc.)
-          if (error?.response?.status === 401 || error?.response?.status === 403) {
-            console.log('🔒 Auth token invalid, logging out');
-            get().logout();
-          } else {
-            console.log('⚠️ Network/server error during auth check, keeping user logged in');
-            // Keep existing auth state, just stop loading
-            set({ isLoading: false });
-          }
-        }
-      } else {
-        set({
-          user: null,
-          token: null,
-          isAuthenticated: false,
-          isLoading: false,
-        });
-      }
-    } catch (error) {
-      set({
-        user: null,
-        token: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: error instanceof Error ? error.message : 'Authentication check failed',
-      });
+      await reviewAnalysisAPI.logout();
+    } catch {
+      // Ignore errors - we're already logged out locally
     }
   },
 
-  refreshToken: async () => {
+  checkAuth: async () => {
+    // Don't check auth on initial load - only call this explicitly after login
+    // This prevents infinite loops when cookies are expired
     try {
-      const refreshToken = tokenStorage.getRefreshToken();
-      if (!refreshToken) {
-        get().logout();
-        return;
-      }
-
-      // Note: Implement refresh endpoint when available
-      // For now, just logout and require re-login
-      get().logout();
-    } catch (error) {
-      get().logout();
+      set({ isLoading: true });
+      
+      const currentUser = await reviewAnalysisAPI.getProfile();
+      
+      set({
+        user: currentUser,
+        isAuthenticated: true,
+        subscriptionTier: currentUser.subscription_tier,
+        isLoading: false,
+      });
+    } catch (error: any) {
+      // Just clear state, don't call logout API
+      set({
+        user: null,
+        isAuthenticated: false,
+        subscriptionTier: 'free',
+        isLoading: false,
+      });
     }
   },
 
@@ -177,8 +121,3 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     set({ error: null });
   },
 }));
-
-// Listen for token refresh events
-window.addEventListener('token-refresh-needed', () => {
-  useAuthStore.getState().refreshToken();
-});

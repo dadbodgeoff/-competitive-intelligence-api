@@ -1,0 +1,256 @@
+```json
+{
+  "actionable_insights": [
+    {
+      "category": "opportunity",
+      "title": "Address Food Quality & Consistency Issues at La Placita",
+      "description": "La Placita struggles with food consistency and perceived quality (microwave/frozen ingredients). Park Ave Pizza can emphasize fresh ingredients and consistent preparation to attract customers seeking reliable quality and taste.",
+      "confidence": "high",
+      "proof_quote": "The rice was from the last of everything and the chicken was dry and taste like microwaved and from a frozen of food from Walmart",
+      "mention_count": 5,
+      "significance": 85,
+      "competitor_source": "La Placita Kitchen and Bar"
+    },
+    {
+      "category": "watch",
+      "title": "Mimic La Placita's Welcoming & Friendly Atmosphere",
+      "description": "La Placita excels at creating a welcoming, home-like atmosphere with friendly staff. Park Ave Pizza should train staff to be equally welcoming and attentive, fostering customer loyalty.",
+      "confidence": "high",
+      "proof_quote": "First time here and I love the hospitality definitely felt like home the food is so good it’s gives a tropical vibe why need a vacation",
+      "mention_count": 8,
+      "significance": 90,
+      "competitor_source": "La Placita Kitchen and Bar"
+    },
+    {
+      "category": "opportunity",
+      "title": "Offer Unique & High-Quality Drink Specials",
+      "description": "La Placita is praised for drinks like the 'Stephanie'. Park Ave Pizza could introduce unique, high-quality drink specials to attract new customers and enhance the dining experience. Promote these specials heavily.",
+      "confidence": "medium",
+      "proof_quote": "Este lugar está brutal, pero lo que de verdad me dejó sin palabras fue el trago Stephanie. ¡Qué delicia!",
+      "mention_count": 3,
+      "significance": 75,
+      "competitor_source": "La Placita Kitchen and Bar"
+    },
+    {
+      "category": "threat",
+      "title": "La Placita's Focus on Authentic Flavors",
+      "description": "La Placita offers authentic Hispanic cuisine, a draw for customers seeking specific cultural flavors. Park Ave Pizza should highlight its own unique menu strengths and potentially introduce limited-time specialty pizzas to counter this appeal.",
+      "confidence": "high",
+      "proof_quote": "First time trying them out and I highly recommend them. The food was fresh, authentic and delicious!",
+      "mention_count": 6,
+      "significance": 80,
+      "competitor_source": "La Placita Kitchen and Bar"
+    },
+    {
+      "category": "opportunity",
+      "title": "Capitalize on Inconsistent Food Quality by Promoting Consistency",
+      "description": "La Placita has some quality control issues. Park Ave Pizza can promote stringent quality control and consistent food preparation to reinforce reliability, attracting customers seeking dependable dining.",
+      "confidence": "high",
+      "proof_quote": "Food is fire 🔥 but the consistency is not there yet i give them the benefit of the doubt ordered 4 days in a row the chimi was good the first time",
+      "mention_count": 3,
+      "significance": 70,
+      "competitor_source": "La Placita Kitchen and Bar"
+    },
+    {
+      "category": "opportunity",
+      "title": "Address Menu Transparency & Allergy Information (Kay's)",
+      "description": "Kay's faces complaints about lacking ingredient details (allergens) on the menu. Park Ave Pizza should ensure its menu is detailed and allergy-friendly, increasing customer trust and safety.",
+      "confidence": "high",
+      "proof_quote": "whoever does the menu needs to do a better job, ingredients on certain things like cheese on mushrooms not listed.  People have allergies!!",
+      "mention_count": 4,
+      "significance": 80,
+      "competitor_source": "Kay's Restaurant"
+    },
+    {
+      "category": "watch",
+      "title": "Monitor Kay's Classic Steak Sandwich Popularity",
+      "description": "Kay's is known for its steak sandwiches. Park Ave Pizza should monitor this popularity and potentially offer a competitive sandwich or a premium pizza featuring steak to cater to similar tastes.",
+      "confidence": "high",
+      "proof_quote": "Kay's has been around for so long that 4 generations of my family have eaten there. We normally get their steak sandwiches",
+      "mention_count": 6,
+      "significance": 85,
+      "competitor_source": "Kay's Restaurant"
+    },
+    {
+      "category": "opportunity",
+      "title": "Leverage Outdoor Seating Appeal to Increase Capacity",
+      "description": "Kay's outdoor seating is well-received. If feasible, Park Ave Pizza should explore outdoor seating options to attract more customers, especially during warmer months. This could differentiate from competitors lacking outdoor options.",
+      "confidence": "medium",
+      "proof_quote": "A very extensive menu! All food was great and we sat outside, which was wonderful!",
+      "mention_count": 4,
+      "significance": 70,
+      "competitor_source": "Kay's Restaurant"
+    },
+    {
+      "category": "threat",
+      "title": "Kay's Local Loyalty and History",
+      "description": "Kay's has long-standing local loyalty. Park Ave Pizza should focus on building community engagement (events, partnerships) to solidify its own customer base and brand recognition.",
+      "confidence": "high",
+      "proof_quote": "Kay's has been around for so long that 4 generations of my family have eaten there.",
+      "mention_count": 5,
+      "significance": 80,
+      "competitor_source": "Kay's Restaurant"
+    },
+    {
+      "category": "watch",
+      "title": "Kay's Decline in Food Quality: Opportunity to Capitalize",
+      "description": "Kay's recent negative reviews indicate a decline in food quality and service. Park Ave Pizza must maintain superior food and service standards. If Park Ave Pizza is already maintaining these standards, promote it heavily.",
+      "confidence": "high",
+      "proof_quote": "What happened to the famous Kay’s? They had the best sandwiches for years and tonight was the biggest disappointment.",
+      "mention_count": 7,
+      "significance": 90,
+      "competitor_source": "Kay's Restaurant"
+    },
+    {
+      "category": "opportunity",
+      "title": "Improve Pizza Quality Control at LJ's Kitchen",
+      "description": "LJ's Kitchen faces complaints about pizza quality (burnt). Park Ave Pizza can capitalize on this by ensuring consistent pizza preparation, monitoring oven temperatures, and implementing quality checks.",
+      "confidence": "high",
+      "proof_quote": "Not happy with my order two pizzas tried the Irish one for the very first time and they forgot to put our sour cream in my order second pizza was a meat lovers and can you say burnt to a chrisp",
+      "mention_count": 3,
+      "significance": 75,
+      "competitor_source": "Lj's Kitchen"
+    },
+    {
+      "category": "watch",
+      "title": "Monitor LJ's Kitchen's Unique Pizza Offerings",
+      "description": "LJ's Kitchen offers unique pizza combinations. Park Ave Pizza should monitor these offerings and consider introducing similar unique pizza options to attract adventurous customers, but ensure consistent quality.",
+      "confidence": "high",
+      "proof_quote": "You need to come in here and try this chicken and pickle pizza There is nothing like it",
+      "mention_count": 4,
+      "significance": 80,
+      "competitor_source": "Lj's Kitchen"
+    },
+    {
+      "category": "opportunity",
+      "title": "Expand Beyond Pizza with High-Quality Pub Food",
+      "description": "LJ's Kitchen offers a variety of well-received pub food alongside pizza. Park Ave Pizza should expand its menu to include high-quality pub fare to capture a broader customer base, going beyond basic pizza offerings.",
+      "confidence": "medium",
+      "proof_quote": "Food was absolutely incredible and the atmosphere and people are amazing!  Ordered the shrimp scampi and was very impressed",
+      "mention_count": 5,
+      "significance": 75,
+      "competitor_source": "Lj's Kitchen"
+    },
+    {
+      "category": "threat",
+      "title": "LJ's Strong Local Bar Vibe",
+      "description": "LJ's Kitchen cultivates a strong local bar vibe. Park Ave Pizza should focus on enhancing its own unique atmosphere and consider targeted promotions to attract a similar customer base.",
+      "confidence": "high",
+      "proof_quote": "Great pizza, good drinks, staff is fun, cool local bar vibe.",
+      "mention_count": 3,
+      "significance": 70,
+      "competitor_source": "Lj's Kitchen"
+    },
+    {
+      "category": "opportunity",
+      "title": "Capitalize on Excellent Customer Service",
+      "description": "LJ's Kitchen's customer service is greatly appreciated by its customers. Park Ave Pizza can ensure better customer service for a larger customer base and solidify its customer loyalty and reputation",
+      "confidence": "high",
+      "proof_quote": "We had an incredible experience at LJ’s Kitchen. From the moment we walked in, the staff made us feel so welcome, friendly, and genuinely happy to serve.",
+      "mention_count": 6,
+      "significance": 80,
+      "competitor_source": "Lj's Kitchen"
+    },
+    {
+      "category": "opportunity",
+      "title": "Address Food Quality Issues & Consistency at River Falls",
+      "description": "River Falls suffers from food quality and consistency issues. Park Ave Pizza should emphasize fresh ingredients and consistent preparation to attract customers seeking reliable quality and taste.",
+      "confidence": "high",
+      "proof_quote": "Ordered through DoorDash and had possibly the worst chicken parm I’ve ever tasted. Chicken that was burnt and impossible to bite through",
+      "mention_count": 7,
+      "significance": 90,
+      "competitor_source": "River Falls"
+    },
+    {
+      "category": "watch",
+      "title": "River Falls' Unique Atmosphere and Location",
+      "description": "River Falls benefits from its unique mill atmosphere and waterfront location. Park Ave Pizza can focus on enhancing its own ambiance, perhaps through decor or special events, to create a memorable dining experience.",
+      "confidence": "high",
+      "proof_quote": "Found this gem after a show at the Stadium Theater. when we got there, we found this beautiful place on the water with outside seating and a great view.",
+      "mention_count": 4,
+      "significance": 75,
+      "competitor_source": "River Falls"
+    },
+    {
+      "category": "opportunity",
+      "title": "Improve Service Quality and Speed",
+      "description": "Leverage negative press on wait times. Park Ave Pizza should focus on improving its service times, especially during rush hours, to provide fast-casual dining experiences.",
+      "confidence": "high",
+      "proof_quote": "Not busy at 3 p.m. on a Saturday. Maybe 5 other guests. It took forever to get our food to come out then it was wrong",
+      "mention_count": 3,
+      "significance": 75,
+      "competitor_source": "River Falls"
+    },
+    {
+      "category": "threat",
+      "title": "River Falls' Positive Changes",
+      "description": "Positive reviews show customers believe River Falls is improving since new ownership. Park Ave Pizza must continue to improve and differentiate its brand to avoid falling behind.",
+      "confidence": "medium",
+      "proof_quote": "I used to live in the area and had been going to River Falls for years. The place used to be good and then changed hands and turned out not so great. ",
+      "mention_count": 4,
+      "significance": 70,
+      "competitor_source": "River Falls"
+    },
+    {
+      "category": "watch",
+      "title": "Re-evaluate Menu and Food Presentation",
+      "description": "River Falls offers dishes that customers recognize as complex and flavorful. The restaurant is also described as beautifully presented. Park Ave Pizza should evaluate its presentation and flavor choices.",
+      "confidence": "medium",
+      "proof_quote": "I had bruschetta chicken served over spinach risotto. It was great. Complex mixture of flavors. Huge portion and a beautiful presentation.",
+      "mention_count": 2,
+      "significance": 65,
+      "competitor_source": "River Falls"
+    },
+    {
+      "category": "opportunity",
+      "title": "Improve Food Quality & Consistency at Ciro's Tavern",
+      "description": "Ciro's Tavern faces complaints about poor food quality and inconsistency. Park Ave Pizza can emphasize fresh ingredients and consistent preparation to attract customers seeking reliable quality and taste.",
+      "confidence": "high",
+      "proof_quote": "The pulled pork nachos were awful: ice cold, not even warmed in the oven, bad taste in my stomach.",
+      "mention_count": 6,
+      "significance": 80,
+      "competitor_source": "Ciro's Tavern, Brunch & Patio"
+    },
+    {
+      "category": "watch",
+      "title": "Monitor Ciro's Tavern's Atmosphere",
+      "description": "Ciro's Tavern's atmosphere is often complimented. Park Ave Pizza should try to foster the same atmosphere within their restaurant",
+      "confidence": "medium",
+      "proof_quote": "Very cool spot! Atmosphere is great and the food is quite good too.",
+      "mention_count": 3,
+      "significance": 75,
+      "competitor_source": "Ciro's Tavern, Brunch & Patio"
+    },
+    {
+      "category": "opportunity",
+      "title": "Offer Higher Quality Nachos",
+      "description": "Ciro's pulled pork nachos were extremely disliked. Park Ave Pizza should offer better nachos to cater to a broader customer base, going beyond basic pizza offerings.",
+      "confidence": "high",
+      "proof_quote": "The pulled pork nachos were awful: ice cold, not even warmed in the oven, bad taste in my stomach.",
+      "mention_count": 4,
+      "significance": 70,
+      "competitor_source": "Ciro's Tavern, Brunch & Patio"
+    },
+    {
+      "category": "threat",
+      "title": "Ciro's Tavern is Complimented for Service",
+      "description": "Ciro's Tavern is complimented for their service. Park Ave Pizza should prioritize good customer service to ensure customer satisfaction.",
+      "confidence": "medium",
+      "proof_quote": "Jenny took great care of us- was very knowledgeable and attentive.",
+      "mention_count": 2,
+      "significance": 65,
+      "competitor_source": "Ciro's Tavern, Brunch & Patio"
+    },
+    {
+      "category": "watch",
+      "title": "Outdoor Patio's Potential",
+      "description": "Ciro's Tavern's outdoor patio is a strength for them. Park Ave Pizza should monitor and explore the feasibility of their own outdoor space.",
+      "confidence": "medium",
+      "proof_quote": "AMAZING FIND. Oysters, lobster risotto, great beer list, beautiful outdoor patio. Perfect RI vibes.",
+      "mention_count": 4,
+      "significance": 70,
+      "competitor_source": "Ciro's Tavern, Brunch & Patio"
+    }
+  ]
+}
+```

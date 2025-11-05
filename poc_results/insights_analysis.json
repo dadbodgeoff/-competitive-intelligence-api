@@ -1,0 +1,1643 @@
+{
+  "actionable_insights": [
+    {
+      "category": "opportunity",
+      "title": "Address Order Accuracy and Staff Training Deficiencies at Firehouse Pizza",
+      "description": "Firehouse Pizza struggles with order accuracy and staff attentiveness. Park Ave Pizza can capitalize by emphasizing staff training, implementing robust order verification processes, and offering proactive apologies/remedies for mistakes. This will build trust and differentiate through superior service.",
+      "confidence": "high",
+      "proof_quote": "Ordered was wrong and the staff didn't seem to care.",
+      "mention_count": 3,
+      "significance": 85,
+      "competitor_source": "Firehouse Pizza Shop II"
+    },
+    {
+      "category": "watch",
+      "title": "Monitor Popular Grinder Offerings and Maintain Competitive Quality",
+      "description": "Firehouse Pizza's grinders are a major draw, praised for size and freshness. Park Ave Pizza should monitor grinder popularity, ensure competitive pricing and quality, and possibly introduce a signature grinder to differentiate.",
+      "confidence": "high",
+      "proof_quote": "Awesome food! The grinders are huge and delicious.",
+      "mention_count": 4,
+      "significance": 90,
+      "competitor_source": "Firehouse Pizza Shop II"
+    },
+    {
+      "category": "opportunity",
+      "title": "Offer a Loyalty Program to Combat Customer Defection",
+      "description": "Firehouse Pizza customers indicate variability in food quality. By offering a loyalty program Park Ave Pizza could keep customers coming back even with the occasional slip up in food quality.",
+      "confidence": "medium",
+      "proof_quote": "Not good anymore, my steak and cheese sandwich was mostly bread.. not impressed",
+      "mention_count": 2,
+      "significance": 70,
+      "competitor_source": "Firehouse Pizza Shop II"
+    },
+    {
+      "category": "threat",
+      "title": "Maintain Competitive Pricing While Differentiating on Quality",
+      "description": "Firehouse Pizza's 'delicious pizza and great prices' are attractive. Park Ave Pizza needs to maintain competitive pricing while highlighting superior ingredients, preparation, and overall value to justify any price differences.",
+      "confidence": "high",
+      "proof_quote": "Delicious pizza and great prices!",
+      "mention_count": 1,
+      "significance": 80,
+      "competitor_source": "Firehouse Pizza Shop II"
+    },
+    {
+      "category": "watch",
+      "title": "Balance Speed and Consistency in Service Delivery",
+      "description": "Firehouse Pizza's positive reviews often mention quick service, but negative reviews cite long wait times. Park Ave Pizza should prioritize both speed and consistency in service, using technology to streamline operations and manage customer expectations effectively.",
+      "confidence": "medium",
+      "proof_quote": "Waited over an hour for my pizza. Unacceptable.",
+      "mention_count": 1,
+      "significance": 75,
+      "competitor_source": "Firehouse Pizza Shop II"
+    },
+    {
+      "category": "opportunity",
+      "title": "Invest in Customer Service Training and Empowerment at Elm Street Pizza",
+      "description": "Elm Street Pizza suffers from repeated complaints about rude manager behavior, especially concerning requests for condiments. Park Ave Pizza can differentiate by focusing on customer service training, empowering staff to resolve issues, and fostering a culture of hospitality.",
+      "confidence": "high",
+      "proof_quote": "Rude manager over a side of ranch. Never ordering again.",
+      "mention_count": 6,
+      "significance": 95,
+      "competitor_source": "Elm Street Pizza"
+    },
+    {
+      "category": "watch",
+      "title": "Emulate Staff Friendliness and Maintain Order Accuracy at Elm Street Pizza",
+      "description": "Elm Street Pizza is consistently praised for friendly staff and accurate orders. Park Ave Pizza should emphasize staff training on customer interaction, maintain strict order accuracy, and create a welcoming atmosphere to match or exceed this competitive advantage.",
+      "confidence": "high",
+      "proof_quote": "Staff are super friendly and always make my order correct.",
+      "mention_count": 3,
+      "significance": 85,
+      "competitor_source": "Elm Street Pizza"
+    },
+    {
+      "category": "opportunity",
+      "title": "Offer DoorDash Comment Section Information on Website and Phone Orders",
+      "description": "Elm Street Pizza has an issue with DoorDash orders and side requests due to a lack of comment section. Park Ave Pizza should address this issue by adding DoorDash instruction on website and with phone orders.",
+      "confidence": "high",
+      "proof_quote": "The manager here told me that they can\u2019t add ranch to my order because I have to put it in the comment section of a DoorDash order\u2026 there isn\u2019t a comment section on DoorDash",
+      "mention_count": 2,
+      "significance": 70,
+      "competitor_source": "Elm Street Pizza"
+    },
+    {
+      "category": "threat",
+      "title": "Price Sensitivity Requires Balancing Quality and Value",
+      "description": "Elm Street Pizza's 'great value for the price' is a selling point. Park Ave Pizza must ensure its pricing aligns with perceived value, considering both portion sizes and ingredient quality, to remain competitive.",
+      "confidence": "medium",
+      "proof_quote": "Great value for the price.",
+      "mention_count": 1,
+      "significance": 75,
+      "competitor_source": "Elm Street Pizza"
+    },
+    {
+      "category": "watch",
+      "title": "Ensure Consistent Quality to Maintain Customer Loyalty",
+      "description": "Elm Street Pizza is noted for consistent quality. Park Ave Pizza should implement quality control measures to maintain consistently excellent product, and offer a better experience than Elm Street.",
+      "confidence": "medium",
+      "proof_quote": "Always consistent quality.",
+      "mention_count": 1,
+      "significance": 65,
+      "competitor_source": "Elm Street Pizza"
+    },
+    {
+      "category": "opportunity",
+      "title": "Improve Delivery Service and Order Accuracy at Bellingham Italian Pizza",
+      "description": "Bellingham Italian Pizza suffers from unreliable delivery and order errors. Park Ave Pizza can gain a competitive advantage by ensuring reliable, timely delivery and meticulously accurate order fulfillment, potentially through improved driver training and order verification processes.",
+      "confidence": "high",
+      "proof_quote": "Ordered delivery, never arrived. Waste of time.",
+      "mention_count": 4,
+      "significance": 90,
+      "competitor_source": "Bellingham Italian Pizza and Grill"
+    },
+    {
+      "category": "watch",
+      "title": "Maintain Superior Sauce/Cheese Balance in Pizza Preparation at Bellingham",
+      "description": "Bellingham Italian Pizza receives high praise for its sauce/cheese ratio and fresh ingredients. Park Ave Pizza should monitor this preference and ensure its pizzas consistently deliver a balanced and flavorful experience, potentially by emphasizing fresh, high-quality ingredients.",
+      "confidence": "high",
+      "proof_quote": "The perfect balance between sauce and cheese.",
+      "mention_count": 2,
+      "significance": 80,
+      "competitor_source": "Bellingham Italian Pizza and Grill"
+    },
+    {
+      "category": "opportunity",
+      "title": "Highlight Italian Food Uniqueness",
+      "description": "Bellingham's best reviews are those that emphasize uniqueness in Bellingham's Italian food, such as the fresh bread on their meatball subs. Park Ave Pizza should experiment with Italian dishes that can only be found at Park Ave Pizza.",
+      "confidence": "high",
+      "proof_quote": "Ordered a meatball sub and like everything today we\u2019re not getting whole meatballs on today\u2019s economy\u2026that being said\u2026everything from the bread to the peppers was very fresh.",
+      "mention_count": 1,
+      "significance": 75,
+      "competitor_source": "Bellingham Italian Pizza and Grill"
+    },
+    {
+      "category": "threat",
+      "title": "Overpriced and bland food could impact Park Ave Pizza.",
+      "description": "Bellingham's biggest complaint is overpriced and bland food. Bellingham's competitors can easily capitalize on those complaints.",
+      "confidence": "high",
+      "proof_quote": "Overpriced and the food was bland.",
+      "mention_count": 1,
+      "significance": 75,
+      "competitor_source": "Bellingham Italian Pizza and Grill"
+    },
+    {
+      "category": "watch",
+      "title": "Capitalize on 'Best Kept Secret' Positioning",
+      "description": "Bellingham Italian Pizza is described as a 'best kept secret'. Park Ave Pizza should capitalize on its own quality and service to steal some of Bellingham's customers.",
+      "confidence": "high",
+      "proof_quote": "Best kept secret in Bellingham! Try the pizza!",
+      "mention_count": 1,
+      "significance": 80,
+      "competitor_source": "Bellingham Italian Pizza and Grill"
+    },
+    {
+      "category": "opportunity",
+      "title": "Improve Phone Ordering Processes and Employee Training at Supreme Pizza",
+      "description": "Supreme Pizza consistently receives negative feedback about phone order accuracy and attentiveness. Park Ave Pizza can differentiate by providing superior phone service through improved employee training, clear communication protocols, and order confirmation processes.",
+      "confidence": "high",
+      "proof_quote": "Terrible phone service. Always messes up my order.",
+      "mention_count": 7,
+      "significance": 95,
+      "competitor_source": "Supreme Pizza"
+    },
+    {
+      "category": "watch",
+      "title": "Monitor Boneless Buffalo Chicken Popularity at Supreme Pizza",
+      "description": "Supreme Pizza's boneless buffalo chicken is a standout item. Park Ave Pizza should evaluate the market potential of similar offerings and either introduce a competitive product or differentiate with a unique chicken dish.",
+      "confidence": "high",
+      "proof_quote": "The boneless buffalo chicken is perfect! Fries are crispy!",
+      "mention_count": 2,
+      "significance": 80,
+      "competitor_source": "Supreme Pizza"
+    },
+    {
+      "category": "opportunity",
+      "title": "Reduce Delivery Times and Improve Speed",
+      "description": "Supreme Pizza has delivery delays, according to reviewers. This is an opportunity for Park Ave Pizza to reduce delivery times to beat the competitor.",
+      "confidence": "high",
+      "proof_quote": "Delivery takes a ridiculously long time.",
+      "mention_count": 1,
+      "significance": 75,
+      "competitor_source": "Supreme Pizza"
+    },
+    {
+      "category": "threat",
+      "title": "Customer Order Accuracy Issues at Supreme Pizza",
+      "description": "Supreme Pizza is receiving many reviews regarding customer orders. In the long run, people could defect from Supreme Pizza. Park Ave Pizza needs to ensure that its orders are accurate.",
+      "confidence": "high",
+      "proof_quote": "Not what it used to be. Orders are consistently messed up.",
+      "mention_count": 6,
+      "significance": 85,
+      "competitor_source": "Supreme Pizza"
+    },
+    {
+      "category": "watch",
+      "title": "Emulate Positive Atmosphere and Customer Service",
+      "description": "Supreme Pizza customers love atmosphere and customer service. Park Ave Pizza needs to focus on employee friendliness.",
+      "confidence": "high",
+      "proof_quote": "Super friendly staff and clean place. 10/10!",
+      "mention_count": 1,
+      "significance": 75,
+      "competitor_source": "Supreme Pizza"
+    }
+  ],
+  "analysis_summary": {
+    "total_reviews_analyzed": 139,
+    "competitors_count": 4,
+    "analysis_date": "2025-10-27T17:02:55.127716",
+    "processing_time_seconds": 16.54
+  },
+  "filtering_metadata": {
+    "tier": "premium",
+    "filtered_at": "2025-10-27T17:02:55.127722",
+    "total_insights_generated": 20,
+    "quality_insights": 20,
+    "final_insights": 20,
+    "confidence_threshold": "medium_and_above",
+    "is_fallback": false
+  },
+  "evidence_reviews": {
+    "Firehouse Pizza Shop II": {
+      "negative": [
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 1,
+          "text": "Order was wrong and the staff didn't seem to care.",
+          "quality_score": 0.7999999999999999,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Order was wrong and the staff didn't seem to care.",
+          "date": "2025-10-27T17:02:12.983801"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 1,
+          "text": "ordered a grilled chicken ceasar salad, got a bowl of lettuce w grilled chicken on top. no croutons, no cheese, no salt and pepper and just zero effort. save ya money",
+          "quality_score": 0.75,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "ordered a grilled chicken ceasar salad, got a bowl of lettuce w grilled chicken on top. no croutons, no cheese, no salt and pepper and just zero effort. save ya money",
+          "date": "2025-06-03T12:23:14"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 2,
+          "text": "Not good anymore, my steak and cheese sandwich was mostly bread.. not impressed",
+          "quality_score": 0.7,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Not good anymore, my steak and cheese sandwich was mostly bread.. not impressed",
+          "date": "2025-10-12T02:11:03"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 2,
+          "text": "Not good anymore, my steak and cheese sandwich was mostly bread.. not impressed",
+          "quality_score": 0.7,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Not good anymore, my steak and cheese sandwich was mostly bread.. not impressed",
+          "date": "2025-10-27T17:02:12.983797"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 1,
+          "text": "Waited over an hour for my pizza. Unacceptable.",
+          "quality_score": 0.65,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Waited over an hour for my pizza. Unacceptable.",
+          "date": "2025-10-27T17:02:12.983808"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 2,
+          "text": "The cheese on the pizza tasted cheap.",
+          "quality_score": 0.65,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "The cheese on the pizza tasted cheap.",
+          "date": "2025-10-27T17:02:12.983810"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 1,
+          "text": "They messed up my order and were rude about it.",
+          "quality_score": 0.65,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "They messed up my order and were rude about it.",
+          "date": "2025-10-27T17:02:12.983823"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 1,
+          "text": "Pizza was undercooked and doughy.",
+          "quality_score": 0.6,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Pizza was undercooked and doughy.",
+          "date": "2025-10-27T17:02:12.983796"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 2,
+          "text": "The pizza was greasy and the crust was soggy.",
+          "quality_score": 0.6,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "The pizza was greasy and the crust was soggy.",
+          "date": "2025-10-27T17:02:12.983804"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 1,
+          "text": "The pizza was burnt and inedible.",
+          "quality_score": 0.6,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "The pizza was burnt and inedible.",
+          "date": "2025-10-27T17:02:12.983814"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 2,
+          "text": "My pizza was cold when I got it.",
+          "quality_score": 0.6,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "My pizza was cold when I got it.",
+          "date": "2025-10-27T17:02:12.983818"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 2,
+          "text": "My burger was dry and overcooked. Disappointed.",
+          "quality_score": 0.6,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "My burger was dry and overcooked. Disappointed.",
+          "date": "2025-10-27T17:02:12.983827"
+        }
+      ],
+      "positive": [
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "Ordered a steak and cheese, it was amazing! Best in the area for sure.",
+          "quality_score": 0.75,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Ordered a steak and cheese, it was amazing! Best in the area for sure.",
+          "date": "2025-10-27T17:02:12.983785"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "Awesome food! The grinders are huge and delicious.",
+          "quality_score": 0.75,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Awesome food! The grinders are huge and delicious.",
+          "date": "2025-10-27T17:02:12.983795"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "Best pizza in North Smithfield! Never disappoints.",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Best pizza in North Smithfield! Never disappoints.",
+          "date": "2025-10-27T17:02:12.983800"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "Excellent service and delicious food!",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Excellent service and delicious food!",
+          "date": "2025-10-27T17:02:12.983816"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "The food is always fresh and delicious.",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "The food is always fresh and delicious.",
+          "date": "2025-10-27T17:02:12.983821"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "Love the grinders here! Always fresh and tasty.",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Love the grinders here! Always fresh and tasty.",
+          "date": "2025-10-27T17:02:12.983803"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "Delicious pizza and great prices!",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Delicious pizza and great prices!",
+          "date": "2025-10-27T17:02:12.983812"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "Always a pleasure! The staff is great.",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Always a pleasure! The staff is great.",
+          "date": "2025-10-27T17:02:12.983825"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "Amazing pizza! The best I've had in a long time.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Amazing pizza! The best I've had in a long time.",
+          "date": "2025-10-27T17:02:12.983807"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "Always a great experience! Highly recommend.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Always a great experience! Highly recommend.",
+          "date": "2025-10-27T17:02:12.983809"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "Love their steak and cheese grinders!",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Love their steak and cheese grinders!",
+          "date": "2025-10-27T17:02:12.983815"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "Best pizza place around! Never disappoints!",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Best pizza place around! Never disappoints!",
+          "date": "2025-10-27T17:02:12.983818"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "Great place for a quick and tasty meal.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Great place for a quick and tasty meal.",
+          "date": "2025-10-27T17:02:12.983824"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "Excellent pizza, fast delivery!",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Excellent pizza, fast delivery!",
+          "date": "2025-10-27T17:02:12.983828"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 5,
+          "text": "Best grinders around!",
+          "quality_score": 0.5,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Best grinders around!",
+          "date": "2025-10-27T17:02:12.983811"
+        }
+      ],
+      "neutral": [
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 3,
+          "text": "It's decent pizza. Fluffy crust. Staff was friendly enough. I'll definitely go again but I'll have to be in the mood for fluffy crust",
+          "quality_score": 0.75,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "It's decent pizza. Fluffy crust. Staff was friendly enough. I'll definitely go again but I'll have to be in the mood for fluffy crust",
+          "date": "2025-09-01T20:01:29"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 3,
+          "text": "It's decent pizza. Fluffy crust. Staff was friendly enough.",
+          "quality_score": 0.75,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "It's decent pizza. Fluffy crust. Staff was friendly enough.",
+          "date": "2025-10-27T17:02:12.983794"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 4,
+          "text": "Solid pizza. Quick service and friendly staff.",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Solid pizza. Quick service and friendly staff.",
+          "date": "2025-10-27T17:02:12.983792"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 4,
+          "text": "Great service and the pizza was hot and fresh.",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Great service and the pizza was hot and fresh.",
+          "date": "2025-10-27T17:02:12.983801"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 4,
+          "text": "Quick and easy takeout. Good pizza for a weeknight.",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Quick and easy takeout. Good pizza for a weeknight.",
+          "date": "2025-10-27T17:02:12.983805"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 4,
+          "text": "Good food and friendly atmosphere.",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Good food and friendly atmosphere.",
+          "date": "2025-10-27T17:02:12.983807"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 3,
+          "text": "It's okay pizza, nothing amazing. Good for a quick lunch.",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "It's okay pizza, nothing amazing. Good for a quick lunch.",
+          "date": "2025-10-27T17:02:12.983825"
+        },
+        {
+          "competitor_name": "Firehouse Pizza Shop II",
+          "rating": 4,
+          "text": "Really enjoyed the grinders, especially the bread.",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Really enjoyed the grinders, especially the bread.",
+          "date": "2025-10-27T17:02:12.983826"
+        }
+      ]
+    },
+    "Elm Street Pizza": {
+      "negative": [
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 1,
+          "text": "Rude manager over a side of ranch. Never ordering again.",
+          "quality_score": 0.75,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Rude manager over a side of ranch. Never ordering again.",
+          "date": "2025-10-27T17:02:21.692872"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 1,
+          "text": "Most rudest manager I\u2019ve ever dealt with, whoever hired her should get fired. All a girl wanted was a side of ranch\u2026 I\u2019m never ordering here again.",
+          "quality_score": 0.75,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Most rudest manager I\u2019ve ever dealt with, whoever hired her should get fired. All a girl wanted was a side of ranch\u2026 I\u2019m never ordering here again.",
+          "date": "2025-10-27T17:02:21.692879"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 1,
+          "text": "Manager here told me that they can\u2019t add ranch to my order. Never order here because they aren\u2019t very friendly or helpful.",
+          "quality_score": 0.75,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Manager here told me that they can\u2019t add ranch to my order. Never order here because they aren\u2019t very friendly or helpful.",
+          "date": "2025-10-27T17:02:21.692891"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 2,
+          "text": "Order was wrong and took too long.",
+          "quality_score": 0.65,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Order was wrong and took too long.",
+          "date": "2025-10-27T17:02:21.692887"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 2,
+          "text": "Pizza was undercooked.",
+          "quality_score": 0.6,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Pizza was undercooked.",
+          "date": "2025-10-27T17:02:21.692875"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 2,
+          "text": "Pizza was cold when it arrived.",
+          "quality_score": 0.6,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Pizza was cold when it arrived.",
+          "date": "2025-10-27T17:02:21.692903"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 1,
+          "text": "Rude service. Won't be back.",
+          "quality_score": 0.55,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Rude service. Won't be back.",
+          "date": "2025-10-27T17:02:21.692898"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 1,
+          "text": "Awful customer service!",
+          "quality_score": 0.55,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Awful customer service!",
+          "date": "2025-10-27T17:02:21.692906"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 2,
+          "text": "I have ordered from here a lot in the past and loved the pizza. Lately it seems like it\u2019s just not as good. I used to love the BBQ chicken pizza and today I got it and it had sooo much BBQ sauce on it",
+          "quality_score": 0.5,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "I have ordered from here a lot in the past and loved the pizza. Lately it seems like it\u2019s just not as good. I used to love the BBQ chicken pizza and today I got it and it had sooo much BBQ sauce on it I literally wiped some off. It was also so droopy I had to eat it with a fork. The crust wasn\u2019t as good as I remember. I don\u2019t think it was worth the cost. I would have been better off getting a deal at dominos saving the money. I also got Hawaiian pizza and ordered online it says bacon and pineapple but we instead got ham and pineapple. Also was super droopy and crust wasn\u2019t like it used to be. I used to love the crust here. It\u2019s just not the same for some reason today. Unfortunately I probably won\u2019t order here again because of this. I may wait a bit and give it one more shot because it used to be sooo good.",
+          "date": "2025-01-17T18:20:44"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 1,
+          "text": "The manager here told me that they can\u2019t add ranch to my order because I have to put it in the comment section of a DoorDash order\u2026 there isn\u2019t a comment section on DoorDash\u2026 I order here very frequen",
+          "quality_score": 0.45,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "The manager here told me that they can\u2019t add ranch to my order because I have to put it in the comment section of a DoorDash order\u2026 there isn\u2019t a comment section on DoorDash\u2026 I order here very frequently and even recommended this place to friends and family and never have had an issue calling and asking for a side of ranch every single time and now I\u2019m never ordering here because there is not a comment section on DoorDash and I wish I could just cancel my order now. I\u2019ve never dealt with a more rude manager at any other place\u2026 Like you can\u2019t just add a side of ranch? Never order here because they aren\u2019t very friendly or helpful.",
+          "date": "2025-10-21T18:53:56"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 1,
+          "text": "Most rudest manager I\u2019ve ever dealt with, whoever hired her should get fired. All a girl wanted was a side of ranch\u2026 I had already placed the order and paid and she said \u201cyou have to write it in the c",
+          "quality_score": 0.45,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Most rudest manager I\u2019ve ever dealt with, whoever hired her should get fired. All a girl wanted was a side of ranch\u2026 I had already placed the order and paid and she said \u201cyou have to write it in the comments\u201d hello? Maybe make it an option to add Ranch. and what\u2019s with the attitude too? Idk I\u2019m never ordering here again and I usually got this place weekly almost and everytime I\u2019d call and ask for a side of ranch and they did it no problem, what\u2019s different now? Clearly they\u2019re just mean people..They dont deserve the manager title. They could\u2019ve been like \u201cok but next time you have to leave it in the comments\u201d but instead they just told me no because I didn\u2019t put it in the comments\u2026 even tho every previous time I\u2019ve just called and they did it\u2026 Like I\u2019m sorry if she was having a bad day but taking it out on a customer is just not right. You could\u2019ve just put a side of ranch and gave me a good little tip that I could\u2019ve put it in the comments. I didn\u2019t even know there was a comment section. But, because of the managers tone and attitude over just a side of ranch.. I\u2019m gonna tell all my friends and family to never go here again. I don\u2019t think anyone should have to deal with a rude person over something so silly\u2026 like all I wanted was a side of ranch\u2026",
+          "date": "2025-10-21T19:08:10"
+        }
+      ],
+      "positive": [
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "AMAZING! Staff are super friendly and always make my order correct. The manager is the sweetest girl and is super helpful with me and my son. The food is hands down the best!!!",
+          "quality_score": 0.85,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "AMAZING! Staff are super friendly and always make my order correct. The manager is the sweetest girl and is super helpful with me and my son. The food is hands down the best!!!",
+          "date": "2025-10-27T17:02:21.692873"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "Friendly staff and great food!",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Friendly staff and great food!",
+          "date": "2025-10-27T17:02:21.692885"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "Excellent service and delicious food!",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Excellent service and delicious food!",
+          "date": "2025-10-27T17:02:21.692892"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "Best pizza around! Staff is always friendly.",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Best pizza around! Staff is always friendly.",
+          "date": "2025-10-27T17:02:21.692863"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "Always a pleasure ordering from here.",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Always a pleasure ordering from here.",
+          "date": "2025-10-27T17:02:21.692888"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "Always a great experience, the best!",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Always a great experience, the best!",
+          "date": "2025-10-27T17:02:21.692871"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "Fast delivery and delicious pizza!",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Fast delivery and delicious pizza!",
+          "date": "2025-10-27T17:02:21.692875"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "Highly recommend Elm Street Pizza!",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Highly recommend Elm Street Pizza!",
+          "date": "2025-10-27T17:02:21.692899"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "Always a great pizza! Friendly folks!",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Always a great pizza! Friendly folks!",
+          "date": "2025-10-27T17:02:21.692903"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "Great value for the price.",
+          "quality_score": 0.55,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Great value for the price.",
+          "date": "2025-10-27T17:02:21.692880"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "I am impressed.  I couldn't finish the fourth piece, which is unheard of especially when trying to do exactly that.  The steak pizza was my favorite of the 4, and by far my new favorite pizza in all o",
+          "quality_score": 0.5,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "I am impressed.  I couldn't finish the fourth piece, which is unheard of especially when trying to do exactly that.  The steak pizza was my favorite of the 4, and by far my new favorite pizza in all of New England.  They treat the crust as a functional and subtle commodity, spreading the toppings richly and equally across the entire pie leaving just about a half of in inch of crust to keep it all contained when handling.  Staff was helpful and engaging, pizzas were ordered through the website and they were hot and ready at the time scheduled.  Try this restaurant if you haven't already.  Try the steak pizza of you haven't done so as of yet.  5 stars of awesomeness awarded!!",
+          "date": "2022-10-11T17:07:23"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "Best pizza in Woonsocket!",
+          "quality_score": 0.5,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Best pizza in Woonsocket!",
+          "date": "2025-10-27T17:02:21.692877"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "Hands down, the best pizza!",
+          "quality_score": 0.5,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Hands down, the best pizza!",
+          "date": "2025-10-27T17:02:21.692889"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "Perfect pizza every time!",
+          "quality_score": 0.5,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Perfect pizza every time!",
+          "date": "2025-10-27T17:02:21.692893"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 5,
+          "text": "Always a great experience!",
+          "quality_score": 0.5,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Always a great experience!",
+          "date": "2025-10-27T17:02:21.692896"
+        }
+      ],
+      "neutral": [
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 4,
+          "text": "Good pizza, a little pricey.",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Good pizza, a little pricey.",
+          "date": "2025-10-27T17:02:21.692874"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 4,
+          "text": "Good prices, tasty pizza!",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Good prices, tasty pizza!",
+          "date": "2025-10-27T17:02:21.692898"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 4,
+          "text": "Good pizza, fast service. Recommended!",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Good pizza, fast service. Recommended!",
+          "date": "2025-10-27T17:02:21.692901"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 4,
+          "text": "Solid pizza, quick delivery.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Solid pizza, quick delivery.",
+          "date": "2025-10-27T17:02:21.692869"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 3,
+          "text": "Okay pizza, nothing special.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Okay pizza, nothing special.",
+          "date": "2025-10-27T17:02:21.692870"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 3,
+          "text": "Average pizza, could be better.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Average pizza, could be better.",
+          "date": "2025-10-27T17:02:21.692876"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 4,
+          "text": "Always consistent quality.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Always consistent quality.",
+          "date": "2025-10-27T17:02:21.692878"
+        },
+        {
+          "competitor_name": "Elm Street Pizza",
+          "rating": 3,
+          "text": "Pizza was a bit greasy.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Pizza was a bit greasy.",
+          "date": "2025-10-27T17:02:21.692884"
+        }
+      ]
+    },
+    "Bellingham Italian Pizza and Grill": {
+      "negative": [
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 1,
+          "text": "Terrible service. Waited forever for my food.",
+          "quality_score": 0.75,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Terrible service. Waited forever for my food.",
+          "date": "2025-10-27T17:02:29.965862"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 2,
+          "text": "Overpriced and the food was bland.",
+          "quality_score": 0.7,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Overpriced and the food was bland.",
+          "date": "2025-10-27T17:02:29.965859"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 1,
+          "text": "Don't bother ordering. Rude staff.",
+          "quality_score": 0.7,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Don't bother ordering. Rude staff.",
+          "date": "2025-10-27T17:02:29.965870"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 1,
+          "text": "Ordered delivery, never arrived. Waste of time.",
+          "quality_score": 0.65,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Ordered delivery, never arrived. Waste of time.",
+          "date": "2025-10-27T17:02:29.965845"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 1,
+          "text": "Sent me the wrong order and wouldn't fix it.",
+          "quality_score": 0.65,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Sent me the wrong order and wouldn't fix it.",
+          "date": "2025-10-27T17:02:29.965850"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 1,
+          "text": "If your gonna mail me your menu and if I want to order from your restaurant- make sure your professionalism and your willingness to provide the delivery is available ! Stop sending me your menus becau",
+          "quality_score": 0.6,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "If your gonna mail me your menu and if I want to order from your restaurant- make sure your professionalism and your willingness to provide the delivery is available ! Stop sending me your menus because not even given the chance to order from your place and getting a bad review.\n\nBAD HIT",
+          "date": "2022-06-12T21:35:02"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 2,
+          "text": "Pizza was burnt and toppings were sparse.",
+          "quality_score": 0.6,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Pizza was burnt and toppings were sparse.",
+          "date": "2025-10-27T17:02:29.965847"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 2,
+          "text": "Dry pizza, not enough sauce. Disappointing.",
+          "quality_score": 0.6,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Dry pizza, not enough sauce. Disappointing.",
+          "date": "2025-10-27T17:02:29.965866"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 2,
+          "text": "Pizza was cold and soggy. Terrible.",
+          "quality_score": 0.6,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Pizza was cold and soggy. Terrible.",
+          "date": "2025-10-27T17:02:29.965874"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 1,
+          "text": "Worst pizza ever! Avoid this place.",
+          "quality_score": 0.6,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Worst pizza ever! Avoid this place.",
+          "date": "2025-10-27T17:02:29.965880"
+        }
+      ],
+      "positive": [
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "Excellent food and friendly staff. Highly recommend!",
+          "quality_score": 0.7999999999999999,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Excellent food and friendly staff. Highly recommend!",
+          "date": "2025-10-27T17:02:29.965848"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "Without a foubtthe best pizza I have had in my 30 years of living. The perfect balance between sauce and cheese. And when it comes to the taste... Second to none. Well done to the chef!",
+          "quality_score": 0.75,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Without a foubtthe best pizza I have had in my 30 years of living. The perfect balance between sauce and cheese. And when it comes to the taste... Second to none. Well done to the chef!",
+          "date": "2024-07-27T19:10:34"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "The meatball sub was amazing! Fresh bread made all the difference.",
+          "quality_score": 0.75,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "The meatball sub was amazing! Fresh bread made all the difference.",
+          "date": "2025-10-27T17:02:29.965845"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "The pizza is excellent and the staff is very kind.",
+          "quality_score": 0.75,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "The pizza is excellent and the staff is very kind.",
+          "date": "2025-10-27T17:02:29.965863"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "Seriously, the best pizza I've ever had. Perfect sauce/cheese ratio!",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Seriously, the best pizza I've ever had. Perfect sauce/cheese ratio!",
+          "date": "2025-10-27T17:02:29.965846"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "Seriously impressed with the quality. Definitely worth it!",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Seriously impressed with the quality. Definitely worth it!",
+          "date": "2025-10-27T17:02:29.965860"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "Always a pleasure to order from here, great food!",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Always a pleasure to order from here, great food!",
+          "date": "2025-10-27T17:02:29.965870"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "Best pizza in town! Always fresh ingredients.",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Best pizza in town! Always fresh ingredients.",
+          "date": "2025-10-27T17:02:29.965836"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "Amazing pizza! Tastes authentic.",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Amazing pizza! Tastes authentic.",
+          "date": "2025-10-27T17:02:29.965862"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "The pizza is amazing! Fresh toppings!",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "The pizza is amazing! Fresh toppings!",
+          "date": "2025-10-27T17:02:29.965874"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "Love this place! Great Italian food.",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Love this place! Great Italian food.",
+          "date": "2025-10-27T17:02:29.965875"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "Best Italian food I've had in ages!",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Best Italian food I've had in ages!",
+          "date": "2025-10-27T17:02:29.965880"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "Ordered a meatball sub and like everything today we\u2019re not getting whole meatballs on today\u2019s economy\u2026that being said\u2026everything from the bread to the peppers was very fresh. Made unique; seasoned exc",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Ordered a meatball sub and like everything today we\u2019re not getting whole meatballs on today\u2019s economy\u2026that being said\u2026everything from the bread to the peppers was very fresh. Made unique; seasoned excellently. The meatballs were tender, I don\u2019t know if made in house but whatever was done was fantastic.",
+          "date": "2025-03-12T21:07:00"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "My go-to for pizza night. Never disappoints!",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "My go-to for pizza night. Never disappoints!",
+          "date": "2025-10-27T17:02:29.965851"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 5,
+          "text": "Best kept secret in Bellingham! Try the pizza!",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Best kept secret in Bellingham! Try the pizza!",
+          "date": "2025-10-27T17:02:29.965858"
+        }
+      ],
+      "neutral": [
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 4,
+          "text": "Good portions for the price. Decent pizza.",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Good portions for the price. Decent pizza.",
+          "date": "2025-10-27T17:02:29.965851"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 4,
+          "text": "Good food for the price, worth a try!",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Good food for the price, worth a try!",
+          "date": "2025-10-27T17:02:29.965864"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 4,
+          "text": "Good Italian food, solid value.",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Good Italian food, solid value.",
+          "date": "2025-10-27T17:02:29.965842"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 4,
+          "text": "Good service, tasty pasta dishes.",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Good service, tasty pasta dishes.",
+          "date": "2025-10-27T17:02:29.965847"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 4,
+          "text": "Enjoyed the pizza, will order again.",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Enjoyed the pizza, will order again.",
+          "date": "2025-10-27T17:02:29.965850"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 3,
+          "text": "Average pizza, average service.",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Average pizza, average service.",
+          "date": "2025-10-27T17:02:29.965861"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 3,
+          "text": "Okay pizza, nothing special.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Okay pizza, nothing special.",
+          "date": "2025-10-27T17:02:29.965843"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 3,
+          "text": "It's alright, pretty standard Italian fare.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "It's alright, pretty standard Italian fare.",
+          "date": "2025-10-27T17:02:29.965849"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 3,
+          "text": "Nothing special, but it's edible.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Nothing special, but it's edible.",
+          "date": "2025-10-27T17:02:29.965857"
+        },
+        {
+          "competitor_name": "Bellingham Italian Pizza and Grill",
+          "rating": 4,
+          "text": "Quick delivery, good pizza, happy customer.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Quick delivery, good pizza, happy customer.",
+          "date": "2025-10-27T17:02:29.965860"
+        }
+      ]
+    },
+    "Supreme Pizza": {
+      "negative": [
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 1,
+          "text": "Repeating my order multiple times. Food good, service bad.",
+          "quality_score": 0.85,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Repeating my order multiple times. Food good, service bad.",
+          "date": "2025-10-27T17:02:38.582216"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 1,
+          "text": "Terrible phone service. Always messes up my order.",
+          "quality_score": 0.7999999999999999,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Terrible phone service. Always messes up my order.",
+          "date": "2025-10-27T17:02:38.582243"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 1,
+          "text": "Order always wrong. Paid for extra ranch, didn't get it!",
+          "quality_score": 0.75,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Order always wrong. Paid for extra ranch, didn't get it!",
+          "date": "2025-10-27T17:02:38.582211"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 2,
+          "text": "Not what it used to be. Orders are consistently messed up.",
+          "quality_score": 0.75,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Not what it used to be. Orders are consistently messed up.",
+          "date": "2025-10-27T17:02:38.582218"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 2,
+          "text": "Steak and cheese sub not toasted as requested. Disappointing.",
+          "quality_score": 0.7,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Steak and cheese sub not toasted as requested. Disappointing.",
+          "date": "2025-10-27T17:02:38.582212"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 2,
+          "text": "Getting sloppy. Paid for extra cheese, barely any.",
+          "quality_score": 0.7,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Getting sloppy. Paid for extra cheese, barely any.",
+          "date": "2025-10-27T17:02:38.582230"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 1,
+          "text": "Girls on the phone don't pay attention. Frustrating!",
+          "quality_score": 0.7,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Girls on the phone don't pay attention. Frustrating!",
+          "date": "2025-10-27T17:02:38.582235"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 1,
+          "text": "The girls who take my order over the phone have me repeating everything, like theyre drifting off into space. Food is awesome, service not so much. It\u2019s funny when the male employee takes the order mu",
+          "quality_score": 0.65,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "The girls who take my order over the phone have me repeating everything, like theyre drifting off into space. Food is awesome, service not so much. It\u2019s funny when the male employee takes the order much better over the phone.",
+          "date": "2025-08-16T17:23:14"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 1,
+          "text": "Phone orders a nightmare. No one seems to listen.",
+          "quality_score": 0.65,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Phone orders a nightmare. No one seems to listen.",
+          "date": "2025-10-27T17:02:38.582227"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 2,
+          "text": "Quality has gone down recently. Sad to see.",
+          "quality_score": 0.6,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Quality has gone down recently. Sad to see.",
+          "date": "2025-10-27T17:02:38.582238"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 2,
+          "text": "BBQ Chicken Pizza, Bacon Ranch no ranch at all!",
+          "quality_score": 0.6,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "BBQ Chicken Pizza, Bacon Ranch no ranch at all!",
+          "date": "2025-10-27T17:02:38.582247"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 2,
+          "text": "Not sure what\u2019s going on lately, but they can\u2019t seem to get the orders right. Paid for extra ranch on my BBQ chicken, bacon ranch pizza and got zero ranch but extra cheese. Today I asked for my steak ",
+          "quality_score": 0.55,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Not sure what\u2019s going on lately, but they can\u2019t seem to get the orders right. Paid for extra ranch on my BBQ chicken, bacon ranch pizza and got zero ranch but extra cheese. Today I asked for my steak and cheese sub to be extra toasted and it wasn\u2019t toasted at all. Always order online so I know they see what I ordered. Starting to think twice about this place. It\u2019s not what it used to be!",
+          "date": "2025-08-27T18:19:05"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 2,
+          "text": "Delivery takes a ridiculously long time. I ordered pizza from here twice between March and April 2025. First time, I placed an order at 3:45 on a weekday, pizza wasn't delivered until 5:15. Second tim",
+          "quality_score": 0.45,
+          "is_negative": true,
+          "is_positive": false,
+          "full_text": "Delivery takes a ridiculously long time. I ordered pizza from here twice between March and April 2025. First time, I placed an order at 3:45 on a weekday, pizza wasn't delivered until 5:15. Second time, similar - ordered at 4;00 didn't receive pizza until 5:30. I'm only a 5 minute drive away from them! They skimp on the sauce and toppings. Cheese was heavy and \"gloopy.\" Both times, pizza was barely warm, bordering on being cold. I'm not ordering from here again and I don't recommend ordering from them.",
+          "date": "2025-04-11T18:09:17"
+        }
+      ],
+      "positive": [
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "Best pizza in Cumberland! Always fresh and delicious.",
+          "quality_score": 0.75,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Best pizza in Cumberland! Always fresh and delicious.",
+          "date": "2025-10-27T17:02:38.582201"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "The boneless buffalo chicken is perfect! Fries are crispy!",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "The boneless buffalo chicken is perfect! Fries are crispy!",
+          "date": "2025-10-27T17:02:38.582209"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "Super friendly staff and clean place. 10/10!",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Super friendly staff and clean place. 10/10!",
+          "date": "2025-10-27T17:02:38.582214"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "Highly recommend! Friendly staff and great food.",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Highly recommend! Friendly staff and great food.",
+          "date": "2025-10-27T17:02:38.582229"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "Excellent food and customer service. A+!",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Excellent food and customer service. A+!",
+          "date": "2025-10-27T17:02:38.582235"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "Amazing food, friendly atmosphere!",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Amazing food, friendly atmosphere!",
+          "date": "2025-10-27T17:02:38.582242"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "Always a pleasure eating here. Great food!",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Always a pleasure eating here. Great food!",
+          "date": "2025-10-27T17:02:38.582228"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "Amazing pizza, great service. Can't go wrong.",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Amazing pizza, great service. Can't go wrong.",
+          "date": "2025-10-27T17:02:38.582233"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "Oh first time we came here we was driving by and we found a place the boneless buffalo chicken perfect very juicy the french fries super good and crispy and the chicken cutlet. Awesome. I would recomm",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Oh first time we came here we was driving by and we found a place the boneless buffalo chicken perfect very juicy the french fries super good and crispy and the chicken cutlet. Awesome. I would recommend this place to everybody good customer service very clean, very friendly.Nick  was super excellent service 10+",
+          "date": "2023-10-12T19:31:26"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "Awesome pizza! Definitely recommend.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Awesome pizza! Definitely recommend.",
+          "date": "2025-10-27T17:02:38.582212"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "The chicken cutlet is awesome! Will be back.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "The chicken cutlet is awesome! Will be back.",
+          "date": "2025-10-27T17:02:38.582215"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "Love their pizza! Always consistent.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Love their pizza! Always consistent.",
+          "date": "2025-10-27T17:02:38.582217"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "Best pizza in the area, hands down.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Best pizza in the area, hands down.",
+          "date": "2025-10-27T17:02:38.582225"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "Delicious pizza! My new favorite spot.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Delicious pizza! My new favorite spot.",
+          "date": "2025-10-27T17:02:38.582237"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 5,
+          "text": "Always a great experience. Highly recommend.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": true,
+          "full_text": "Always a great experience. Highly recommend.",
+          "date": "2025-10-27T17:02:38.582239"
+        }
+      ],
+      "neutral": [
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 4,
+          "text": "Good food, quick service. Never had a bad experience.",
+          "quality_score": 0.7999999999999999,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Good food, quick service. Never had a bad experience.",
+          "date": "2025-10-27T17:02:38.582208"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 3,
+          "text": "It's okay. Nothing special, but decent for a quick bite.",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "It's okay. Nothing special, but decent for a quick bite.",
+          "date": "2025-10-27T17:02:38.582210"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 4,
+          "text": "Great portions and tasty food.",
+          "quality_score": 0.7,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Great portions and tasty food.",
+          "date": "2025-10-27T17:02:38.582225"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 4,
+          "text": "Great value for the price. Good lunch spot.",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Great value for the price. Good lunch spot.",
+          "date": "2025-10-27T17:02:38.582213"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 4,
+          "text": "Good pizza, good prices, good times!",
+          "quality_score": 0.65,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Good pizza, good prices, good times!",
+          "date": "2025-10-27T17:02:38.582239"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 3,
+          "text": "Average pizza, nothing to write home about.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Average pizza, nothing to write home about.",
+          "date": "2025-10-27T17:02:38.582214"
+        },
+        {
+          "competitor_name": "Supreme Pizza",
+          "rating": 4,
+          "text": "Quick and easy. Perfect for a Friday night.",
+          "quality_score": 0.6,
+          "is_negative": false,
+          "is_positive": false,
+          "full_text": "Quick and easy. Perfect for a Friday night.",
+          "date": "2025-10-27T17:02:38.582216"
+        }
+      ]
+    }
+  }
+}

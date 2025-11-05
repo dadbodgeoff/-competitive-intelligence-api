@@ -1,0 +1,88 @@
+================================================================================
+PERFORMANCE REPORT - Analysis 7d635c23-d0c4-44c3-b45c-9d7dc1977435
+================================================================================
+
+Total Duration: 197.378s
+Start Time: 2025-10-29T14:32:31.617408
+End Time: 2025-10-29T14:35:48.995466
+Total Steps: 7
+
+================================================================================
+BREAKDOWN BY CATEGORY
+================================================================================
+
+OUTSCRAPER:
+  Total: 153.796s
+  Count: 1
+  Average: 153.796s
+
+LLM:
+  Total: 26.968s
+  Count: 1
+  Average: 26.968s
+
+DB:
+  Total: 16.611s
+  Count: 4
+  Average: 4.153s
+
+SETUP:
+  Total: 0.000s
+  Count: 1
+  Average: 0.000s
+
+================================================================================
+DETAILED STEPS
+================================================================================
+
+1. SETUP: Initialize analysis
+   Duration: 0.000s
+   Start: 2025-10-29T14:32:31.617414
+   Details: {
+      "restaurant": "Park Ave Pizza ",
+      "location": "Woonsocket Rhode Island",
+      "tier": "premium"
+}
+
+2. DB: Create analysis record
+   Duration: 0.227s
+   Start: 2025-10-29T14:32:31.617942
+
+3. OUTSCRAPER: Parallel competitor discovery + review collection
+   Duration: 153.796s
+   Start: 2025-10-29T14:32:31.845330
+   Details: {
+      "competitors_found": 5,
+      "total_reviews": 165,
+      "outscraper_time": 153.79585194587708
+}
+
+4. DB: Batch store competitors
+   Duration: 0.857s
+   Start: 2025-10-29T14:35:05.641754
+   Details: {
+      "competitors_count": 5
+}
+
+5. DB: Batch store reviews
+   Duration: 14.670s
+   Start: 2025-10-29T14:35:06.498804
+   Details: {
+      "reviews_count": 165
+}
+
+6. LLM: Gemini analysis
+   Duration: 26.968s
+   Start: 2025-10-29T14:35:21.169096
+   Details: {
+      "insights_generated": 25
+}
+
+7. DB: Batch store insights and evidence
+   Duration: 0.857s
+   Start: 2025-10-29T14:35:48.137627
+   Details: {
+      "insights_stored": 25
+}
+
+================================================================================

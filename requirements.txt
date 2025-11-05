@@ -9,3 +9,9 @@ python-multipart==0.0.20
 googlemaps==4.10.0
 google-generativeai==0.8.3
 watchdog==4.0.0
+outscraper==5.9.2
+redis==5.0.1
+python-Levenshtein==0.25.0
+jellyfish==1.0.3
+clamd==1.0.2
+sentry-sdk[fastapi]==2.15.0

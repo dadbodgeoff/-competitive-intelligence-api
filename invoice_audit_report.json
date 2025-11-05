@@ -1,0 +1,19 @@
+{
+  "total_invoices": 10,
+  "total_items": 139,
+  "suspicious_pack_sizes": 0,
+  "zero_quantities": 0,
+  "price_mismatches": 0,
+  "duplicates": 0,
+  "categories": {
+    "DRY": 67,
+    "REFRIGERATED": 38,
+    "FROZEN": 34
+  },
+  "vendors": {
+    "PERFORMANCE FOODSERVICE": 6,
+    "PERFORMANCE FOODSERVICE SPRINGFIELD": 4
+  },
+  "avg_parse_time": 34.3,
+  "total_cost": 0.005721
+}

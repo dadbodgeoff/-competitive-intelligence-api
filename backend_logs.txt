@@ -1,0 +1,46 @@
+2025-10-31 15:07:00,850 - httpx._client - DEBUG - HTTP Request: POST https://syxquxgynoinzwhwkosa.supabase.co/auth/v1/token?grant_type=password "HTTP/1.1 200 OK"
+2025-10-31 15:07:01,145 - httpx._client - DEBUG - HTTP Request: GET https://syxquxgynoinzwhwkosa.supabase.co/rest/v1/users?select=subscription_tier&id=eq.7a8e9f71-ca9f-46af-8694-41b5e52464ab "HTTP/1.1 200 OK"
+✅ Fetched subscription tier for 7a8e9f71-ca9f-46af-8694-41b5e52464ab: premium
+2025-10-31 15:07:01,146 - api.main - INFO - ✅ Request completed in 743.73ms - Status: 200
+INFO:     127.0.0.1:54143 - "POST /api/v1/auth/login HTTP/1.1" 200 OK
+2025-10-31 15:07:03,030 - api.main - INFO - 🔵 Incoming request: GET /api/invoices/
+2025-10-31 15:07:03,632 - api.main - INFO - ✅ Request completed in 601.96ms - Status: 200
+INFO:     127.0.0.1:54143 - "GET /api/invoices/?limit=50 HTTP/1.1" 200 OK
+2025-10-31 15:07:03,634 - api.main - INFO - 🔵 Incoming request: GET /api/invoices/
+2025-10-31 15:07:04,018 - api.main - INFO - ✅ Request completed in 384.00ms - Status: 200
+INFO:     127.0.0.1:54143 - "GET /api/invoices/?limit=50 HTTP/1.1" 200 OK
+2025-10-31 15:07:07,871 - api.main - INFO - 🔵 Incoming request: POST /api/invoices/upload
+2025-10-31 15:07:08,398 - services.invoice_monitoring_service - INFO - 📤 [7a8e9f71-ca9f-46af-8694-41b5e52464ab_1761937627932] Upload complete: 0.47s
+2025-10-31 15:07:08,398 - api.main - INFO - ✅ Request completed in 527.33ms - Status: 200
+INFO:     127.0.0.1:54143 - "POST /api/invoices/upload HTTP/1.1" 200 OK
+2025-10-31 15:07:08,401 - api.main - INFO - 🔵 Incoming request: GET /api/invoices/parse-stream
+2025-10-31 15:07:08,471 - api.main - INFO - ✅ Request completed in 69.61ms - Status: 200
+INFO:     127.0.0.1:49410 - "GET /api/invoices/parse-stream HTTP/1.1" 200 OK
+2025-10-31 15:07:38,936 - services.invoice_parser_streaming - INFO - ✅ Parse completed! Model: gemini-2.5-flash, Time: 30s
+2025-10-31 15:07:45,379 - api.main - INFO - 🔵 Incoming request: POST /api/invoices/save
+2025-10-31 15:07:45,686 - api.main - INFO - ✅ Request completed in 307.42ms - Status: 409
+INFO:     127.0.0.1:51748 - "POST /api/invoices/save HTTP/1.1" 409 Conflict
+2025-10-31 15:07:48,195 - api.main - INFO - 🔵 Incoming request: GET /api/invoices/
+2025-10-31 15:07:48,757 - api.main - INFO - ✅ Request completed in 561.54ms - Status: 200
+INFO:     127.0.0.1:51748 - "GET /api/invoices/?limit=50 HTTP/1.1" 200 OK
+2025-10-31 15:07:48,758 - api.main - INFO - 🔵 Incoming request: GET /api/invoices/
+2025-10-31 15:07:49,166 - api.main - INFO - ✅ Request completed in 407.58ms - Status: 200
+INFO:     127.0.0.1:51748 - "GET /api/invoices/?limit=50 HTTP/1.1" 200 OK
+2025-10-31 15:07:51,556 - api.main - INFO - 🔵 Incoming request: POST /api/invoices/upload
+2025-10-31 15:07:52,056 - services.invoice_monitoring_service - INFO - 📤 [7a8e9f71-ca9f-46af-8694-41b5e52464ab_1761937671629] Upload complete: 0.43s
+2025-10-31 15:07:52,056 - api.main - INFO - ✅ Request completed in 500.51ms - Status: 200
+INFO:     127.0.0.1:51748 - "POST /api/invoices/upload HTTP/1.1" 200 OK
+2025-10-31 15:07:52,059 - api.main - INFO - 🔵 Incoming request: GET /api/invoices/parse-stream
+2025-10-31 15:07:52,153 - api.main - INFO - ✅ Request completed in 94.14ms - Status: 200
+INFO:     127.0.0.1:64159 - "GET /api/invoices/parse-stream HTTP/1.1" 200 OK
+2025-10-31 15:08:23,749 - services.invoice_parser_streaming - INFO - ✅ Parse completed! Model: gemini-2.5-flash, Time: 32s
+2025-10-31 15:08:34,554 - api.main - INFO - 🔵 Incoming request: POST /api/invoices/save
+2025-10-31 15:08:35,257 - api.routes.invoices.management - INFO - ✅ Invoice 125d1d9a-d80f-4dd4-8a96-c6f9c75eb50b saved successfully (inventory processing disabled)
+2025-10-31 15:08:35,257 - api.main - INFO - ✅ Request completed in 703.08ms - Status: 200
+INFO:     127.0.0.1:65408 - "POST /api/invoices/save HTTP/1.1" 200 OK
+2025-10-31 15:08:35,264 - api.main - INFO - 🔵 Incoming request: GET /api/invoices/125d1d9a-d80f-4dd4-8a96-c6f9c75eb50b
+2025-10-31 15:08:35,533 - api.main - INFO - ✅ Request completed in 268.49ms - Status: 200
+INFO:     127.0.0.1:65408 - "GET /api/invoices/125d1d9a-d80f-4dd4-8a96-c6f9c75eb50b HTTP/1.1" 200 OK
+2025-10-31 15:08:35,533 - api.main - INFO - 🔵 Incoming request: GET /api/invoices/125d1d9a-d80f-4dd4-8a96-c6f9c75eb50b
+2025-10-31 15:08:35,830 - api.main - INFO - ✅ Request completed in 296.65ms - Status: 200
+INFO:     127.0.0.1:61383 - "GET /api/invoices/125d1d9a-d80f-4dd4-8a96-c6f9c75eb50b HTTP/1.1" 200 OK

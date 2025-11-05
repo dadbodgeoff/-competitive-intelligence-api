@@ -1,0 +1,88 @@
+================================================================================
+PERFORMANCE REPORT - Analysis dc4ad54e-44e0-41a5-b675-dce5dd417160
+================================================================================
+
+Total Duration: 141.448s
+Start Time: 2025-10-29T14:44:46.220381
+End Time: 2025-10-29T14:47:07.667983
+Total Steps: 7
+
+================================================================================
+BREAKDOWN BY CATEGORY
+================================================================================
+
+OUTSCRAPER:
+  Total: 100.087s
+  Count: 1
+  Average: 100.087s
+
+LLM:
+  Total: 27.085s
+  Count: 1
+  Average: 27.085s
+
+DB:
+  Total: 14.273s
+  Count: 4
+  Average: 3.568s
+
+SETUP:
+  Total: 0.000s
+  Count: 1
+  Average: 0.000s
+
+================================================================================
+DETAILED STEPS
+================================================================================
+
+1. SETUP: Initialize analysis
+   Duration: 0.000s
+   Start: 2025-10-29T14:44:46.220387
+   Details: {
+      "restaurant": "All Star Pizza",
+      "location": "Woonsocket Rhode Island",
+      "tier": "premium"
+}
+
+2. DB: Create analysis record
+   Duration: 0.206s
+   Start: 2025-10-29T14:44:46.220801
+
+3. OUTSCRAPER: Parallel competitor discovery + review collection
+   Duration: 100.087s
+   Start: 2025-10-29T14:44:46.427062
+   Details: {
+      "competitors_found": 5,
+      "total_reviews": 146,
+      "outscraper_time": 100.0865216255188
+}
+
+4. DB: Batch store competitors
+   Duration: 0.768s
+   Start: 2025-10-29T14:46:26.514384
+   Details: {
+      "competitors_count": 5
+}
+
+5. DB: Batch store reviews
+   Duration: 12.519s
+   Start: 2025-10-29T14:46:27.282723
+   Details: {
+      "reviews_count": 146
+}
+
+6. LLM: Gemini analysis
+   Duration: 27.085s
+   Start: 2025-10-29T14:46:39.802061
+   Details: {
+      "insights_generated": 25
+}
+
+7. DB: Batch store insights and evidence
+   Duration: 0.780s
+   Start: 2025-10-29T14:47:06.887369
+   Details: {
+      "insights_stored": 25
+}
+
+================================================================================

@@ -1,0 +1,75 @@
+{
+  "session_id": "session_20251028_161751",
+  "start_time": "2025-10-28T16:17:51.726767",
+  "end_time": "2025-10-28T16:18:39.845727",
+  "total_competitors": 19,
+  "total_calls": 0,
+  "total_reviews": 38,
+  "total_cost": 0.0,
+  "total_time_ms": 0.0,
+  "competitors": [
+    {
+      "competitor_name": "Lj's Kitchen",
+      "competitor_id": "ChIJ2cXBZUxr5IkRU_Z6yPXUmVE",
+      "total_calls_made": 0,
+      "total_reviews_collected": 5,
+      "total_cost": 0.0,
+      "total_time_ms": 0.0,
+      "call_breakdown": [],
+      "quality_score": 0.0,
+      "deduplication_rate": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "competitor_name": "All Star Pizza",
+      "competitor_id": "ChIJF7umy2Nq5IkRBWhZFoGqsFQ",
+      "total_calls_made": 0,
+      "total_reviews_collected": 7,
+      "total_cost": 0.0,
+      "total_time_ms": 0.0,
+      "call_breakdown": [],
+      "quality_score": 0.0,
+      "deduplication_rate": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "competitor_name": "Firehouse Pizza Shop II",
+      "competitor_id": "ChIJx36JvcFq5IkRLlCRR_gTSmg",
+      "total_calls_made": 0,
+      "total_reviews_collected": 10,
+      "total_cost": 0.0,
+      "total_time_ms": 0.0,
+      "call_breakdown": [],
+      "quality_score": 0.0,
+      "deduplication_rate": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "competitor_name": "401 Pizza",
+      "competitor_id": "ChIJKfN8NjVr5IkRSkvhALTwIyU",
+      "total_calls_made": 0,
+      "total_reviews_collected": 8,
+      "total_cost": 0.0,
+      "total_time_ms": 0.0,
+      "call_breakdown": [],
+      "quality_score": 0.0,
+      "deduplication_rate": 0.0,
+      "success_rate": 0.0
+    },
+    {
+      "competitor_name": "Elm Street Pizza",
+      "competitor_id": "ChIJjVrW9sxr5IkRQ9RkMwmT1yU",
+      "total_calls_made": 0,
+      "total_reviews_collected": 8,
+      "total_cost": 0.0,
+      "total_time_ms": 0.0,
+      "call_breakdown": [],
+      "quality_score": 0.0,
+      "deduplication_rate": 0.0,
+      "success_rate": 0.0
+    }
+  ],
+  "overall_success_rate": 0.0,
+  "cost_per_review": 0.0,
+  "reviews_per_call": 0.0
+}

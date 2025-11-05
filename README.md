@@ -1,243 +1,120 @@
-# 🍕 Competitive Intelligence API
+# Restaurant Intelligence Platform
 
-A full-stack restaurant competitive analysis platform that uses AI to analyze competitor reviews and generate actionable business insights.
+A full-stack SaaS platform for restaurant operators to manage invoices, track pricing, analyze menus, and gain competitive intelligence.
 
-## 🚀 Features
+## Features
 
-- **🔍 Competitor Discovery** - Automatically find nearby competitors using Google Places API
-- **📊 Review Analysis** - Fetch and analyze thousands of customer reviews
-- **🤖 AI Insights** - Generate actionable insights using Google Gemini AI
-- **📈 Tiered Analysis** - Free (3 competitors) and Premium (5 competitors) tiers
-- **🎯 Smart Categorization** - Threats, opportunities, and watch items
-- **📱 Modern Frontend** - React + TypeScript with real-time progress tracking
-- **🔐 Secure Authentication** - JWT-based auth with Supabase backend
-- **⚡ Fast Performance** - Optimized pipeline with caching
+- **Invoice Management**: Upload and parse vendor invoices with AI
+- **Price Analytics**: Track ingredient prices over time with alerts
+- **Menu Intelligence**: Parse menus and calculate COGS
+- **Competitor Analysis**: Compare your menu against competitors
+- **Review Analysis**: AI-powered analysis of customer reviews
+- **Multi-tier Subscriptions**: Free, Pro, and Enterprise tiers
 
-## 🏗️ Architecture
-
-### Backend (Python FastAPI)
-- **API Routes** - RESTful endpoints for analysis and authentication
-- **Services** - Modular services for Google Places, review fetching, and LLM analysis
-- **Database** - Supabase PostgreSQL with RLS policies
-- **Authentication** - JWT tokens with secure user management
-
-### Frontend (React + TypeScript)
-- **Modern UI** - Tailwind CSS with shadcn/ui components
-- **State Management** - Zustand for auth and application state
-- **Real-time Updates** - Progress tracking during analysis
-- **Responsive Design** - Mobile-first approach
-
-## 🛠️ Tech Stack
-
-**Backend:**
-- Python 3.11+
-- FastAPI
-- Supabase (PostgreSQL)
-- Google Places API
-- Google Gemini AI
-- Pydantic for validation
+## Tech Stack
 
 **Frontend:**
-- React 18
-- TypeScript
+- React 18 + TypeScript
 - Vite
-- Tailwind CSS
-- shadcn/ui
-- React Query
+- TailwindCSS + shadcn/ui
 - React Router
+- Zustand (state management)
+- Axios
 
-## 📋 Prerequisites
+**Backend:**
+- FastAPI (Python 3.11)
+- Supabase (PostgreSQL + Auth)
+- Redis (caching)
+- Google Gemini (LLM)
+- Docker
 
+## Quick Start (Development)
+
+### Prerequisites
+- Docker & Docker Compose
+- Node.js 20+
 - Python 3.11+
-- Node.js 18+
-- Supabase account
-- Google Cloud Platform account (for Places & Gemini APIs)
 
-## 🚀 Quick Start
+### Setup
 
-### 1. Clone the Repository
+1. Clone the repository:
 ```bash
 git clone <your-repo-url>
-cd competitive-intelligence-api
+cd restaurant-intelligence
 ```
 
-### 2. Backend Setup
+2. Copy environment file:
 ```bash
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Copy environment template
 cp .env.example .env
-
-# Edit .env with your API keys and database credentials
 ```
 
-### 3. Database Setup
+3. Start development stack:
 ```bash
-# Run the database schema in your Supabase SQL editor
-# File: database/schema.sql
+docker-compose -f docker-compose.dev.yml up
 ```
 
-### 4. Frontend Setup
+4. Access the app:
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:8000
+- API Docs: http://localhost:8000/api/docs
+
+## Production Deployment
+
+See `PRODUCTION_SETUP_GUIDE.md` for detailed deployment instructions.
+
+### Quick Deploy to Digital Ocean
+
+1. Create `.env.production` with production secrets
+2. Build and deploy:
 ```bash
-cd frontend
-npm install
+docker-compose build
+docker-compose up -d
 ```
 
-### 5. Start Development Servers
+## Project Structure
 
-**Backend:**
-```bash
-python -m uvicorn api.main:app --reload --port 8000
+```
+├── api/                 # FastAPI backend routes
+├── services/            # Business logic services
+├── database/            # Database migrations
+├── frontend/            # React frontend
+│   ├── src/
+│   │   ├── components/  # React components
+│   │   ├── pages/       # Page components
+│   │   ├── services/    # API clients
+│   │   └── stores/      # State management
+├── config/              # Configuration
+├── models/              # Data models
+└── prompts/             # LLM prompts
+
 ```
 
-**Frontend:**
-```bash
-cd frontend
-npm run dev
-```
+## Environment Variables
 
-Visit `http://localhost:5173` to access the application.
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Copy `.env.example` to `.env` and configure:
+Required environment variables:
 
 ```env
 # Supabase
-SUPABASE_URL=your_supabase_url
-SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-
-# Google APIs
-GOOGLE_PLACES_API_KEY=your_places_api_key
-GOOGLE_GEMINI_API_KEY=your_gemini_api_key
+SUPABASE_URL=your-supabase-url
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
 # JWT
-JWT_SECRET_KEY=your_secret_key
+JWT_SECRET_KEY=your-jwt-secret
+
+# Google APIs
+GOOGLE_GEMINI_API_KEY=your-gemini-key
+GOOGLE_PLACES_API_KEY=your-places-key
+
+# External Services
+SERPAPI_KEY=your-serpapi-key
+OUTSCRAPER_API_KEY=your-outscraper-key
 ```
 
-### API Keys Setup
+## License
 
-1. **Supabase**: Create project at [supabase.com](https://supabase.com)
-2. **Google Places API**: Enable in [Google Cloud Console](https://console.cloud.google.com)
-3. **Google Gemini API**: Get key from [AI Studio](https://aistudio.google.com)
+Proprietary - All Rights Reserved
 
-## 📊 Usage
+## Support
 
-### Creating an Analysis
-
-1. **Register/Login** - Create account or sign in
-2. **New Analysis** - Enter restaurant details
-3. **Choose Tier** - Free (3 competitors) or Premium (5 competitors)
-4. **Wait for Results** - Real-time progress tracking
-5. **View Insights** - Analyze competitors and actionable insights
-
-### Analysis Results Include:
-
-- **Competitor Overview** - Ratings, reviews, distance, addresses
-- **AI Insights** - Categorized threats, opportunities, and watch items
-- **Evidence Quotes** - Supporting customer review excerpts
-- **Confidence Scores** - High/Medium/Low confidence ratings
-
-## 🏢 Business Tiers
-
-### Free Tier
-- 3 competitors analyzed
-- Basic insights generation
-- Standard processing
-- $0.11 estimated cost per analysis
-
-### Premium Tier
-- 5 competitors analyzed
-- Advanced strategic insights
-- Priority processing
-- $0.25 estimated cost per analysis
-
-## 🔐 Security
-
-- **Environment Variables** - All secrets in `.env` (never committed)
-- **JWT Authentication** - Secure token-based auth
-- **RLS Policies** - Row-level security in database
-- **Input Validation** - Pydantic schemas for all inputs
-- **Rate Limiting** - API rate limits by tier
-
-## 🧪 Testing
-
-### Backend Tests
-```bash
-python test_complete_system_end_to_end.py
-python test_frontend_backend_flow.py
-```
-
-### Frontend Tests
-```bash
-cd frontend
-npm run test
-```
-
-## 📁 Project Structure
-
-```
-competitive-intelligence-api/
-├── api/                    # FastAPI backend
-│   ├── routes/            # API endpoints
-│   ├── middleware/        # Auth & CORS
-│   └── schemas/           # Pydantic models
-├── services/              # Business logic
-│   ├── google_places_service.py
-│   ├── llm_analysis_service.py
-│   └── review_fetching_service.py
-├── database/              # Database schemas & migrations
-├── frontend/              # React frontend
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── services/      # API services
-│   │   ├── stores/        # State management
-│   │   └── types/         # TypeScript types
-└── prompts/               # AI prompts
-```
-
-## 🚀 Deployment
-
-### Backend Deployment
-- Deploy to Railway, Heroku, or AWS
-- Set environment variables
-- Run database migrations
-
-### Frontend Deployment
-- Build: `npm run build`
-- Deploy to Vercel, Netlify, or AWS S3
-- Configure API URL
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-- **Documentation**: Check the `/docs` folder
-- **Issues**: Open GitHub issues for bugs
-- **Questions**: Use GitHub discussions
-
-## 🎯 Roadmap
-
-- [ ] Menu intelligence module
-- [ ] Advanced analytics dashboard
-- [ ] Multi-location support
-- [ ] API rate optimization
-- [ ] Mobile app
-
----
-
-**Built with ❤️ for restaurant owners who want to stay competitive**
+For issues or questions, contact: [your-email]

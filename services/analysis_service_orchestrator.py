@@ -7,8 +7,8 @@ from typing import Dict, List, Optional
 import logging
 from datetime import datetime
 
-from services.free_tier_llm_service import FreeTierLLMService
-from services.enhanced_llm_service import EnhancedLLMAnalysisService
+from services.real_free_tier_llm_service import RealFreeTierLLMService
+from services.premium_tier_llm_service import PremiumTierLLMService
 
 logger = logging.getLogger(__name__)
 
@@ -22,13 +22,13 @@ class AnalysisServiceOrchestrator:
     """
     
     def __init__(self):
-        self.free_service = FreeTierLLMService()
-        self.premium_service = EnhancedLLMAnalysisService()
+        self.free_service = RealFreeTierLLMService()
+        self.premium_service = PremiumTierLLMService()
         
         # Cost tracking
         self.target_costs = {
             'free': 0.11,
-            'premium': 0.25
+            'premium': 0.35  # Higher cost for 150 reviews + 5 insights per competitor
         }
     
     async def analyze_competitors(
@@ -59,16 +59,16 @@ class AnalysisServiceOrchestrator:
             tier = "free"
         
         # Log routing decision
-        logger.info(f"analysis_routing_started: restaurant={restaurant_name}, tier={tier}, competitor_count={len(competitors_data)}, total_reviews={sum(len(reviews) for reviews in competitors_data.values())}")
+        logger.info(f"analysis_routing_started: tier={tier}, competitor_count={len(competitors_data)}, total_reviews={sum(len(reviews) for reviews in competitors_data.values())}")
         
         start_time = datetime.now()
         
         try:
             if tier == "premium":
                 # Route to enhanced service
-                logger.info(f"routing_to_premium_tier: restaurant={restaurant_name}")
+                logger.info(f"routing_to_premium_tier")
                 
-                result = await self.premium_service.analyze_competitors_enhanced(
+                result = await self.premium_service.analyze_competitors_premium_tier(
                     restaurant_name=restaurant_name,
                     restaurant_location=restaurant_location,
                     restaurant_category=restaurant_category,
@@ -80,7 +80,7 @@ class AnalysisServiceOrchestrator:
                 
             else:
                 # Route to free tier service
-                logger.info(f"routing_to_free_tier: restaurant={restaurant_name}")
+                logger.info(f"routing_to_free_tier")
                 
                 result = await self.free_service.analyze_competitors_free_tier(
                     restaurant_name=restaurant_name,
@@ -94,12 +94,12 @@ class AnalysisServiceOrchestrator:
             
             # Log completion
             processing_time = (datetime.now() - start_time).total_seconds()
-            logger.info(f"analysis_routing_completed: restaurant={restaurant_name}, tier={tier}, processing_time_seconds={processing_time}, insights_count={len(result.get('actionable_insights', []))}")
+            logger.info(f"analysis_routing_completed: tier={tier}, processing_time_seconds={processing_time}, insights_count={len(result.get('actionable_insights', []))}")
             
             return result
             
         except Exception as e:
-            logger.error(f"analysis_routing_failed: restaurant={restaurant_name}, tier={tier}, error={str(e)}")
+            logger.error(f"analysis_routing_failed: tier={tier}, error={str(e)}")
             
             # Return fallback mock analysis
             return self._get_fallback_analysis(restaurant_name, tier, competitors_data)
@@ -178,23 +178,27 @@ class AnalysisServiceOrchestrator:
                 'premium': {
                     'cost_per_analysis': self.target_costs['premium'],
                     'competitors_analyzed': 5,
-                    'insights_provided': '8-12 strategic insights',
+                    'insights_provided': '25 strategic insights (5 per competitor)',
+                    'reviews_analyzed': '150 per competitor (35 selected for analysis)',
+                    'evidence_reviews': '35 per competitor (175 total)',
                     'features': [
                         'Everything in Free tier, PLUS:',
-                        'Market gap analysis',
-                        'Strategic recommendations with ROI',
-                        'Implementation timeline',
-                        'Competitive positioning map',
-                        'Menu item buzz analysis',
-                        'Success metrics and KPIs'
+                        '5 strategic insights per competitor',
+                        '150 reviews collected per competitor',
+                        '35 evidence reviews per competitor',
+                        'Strategic business intelligence',
+                        'Competitive threat assessment',
+                        'Market opportunity analysis',
+                        'Operational excellence insights'
                     ],
                     'use_cases': [
                         'Strategic business planning',
+                        'Competitive positioning',
                         'Market expansion decisions',
-                        'Competitive differentiation',
-                        'Investment planning'
+                        'Investment planning',
+                        'Operational improvements'
                     ],
-                    'target_users': 'Growing restaurants, strategic planners'
+                    'target_users': 'Growing restaurants, strategic planners, multi-location operators'
                 }
             },
             'upgrade_benefits': {

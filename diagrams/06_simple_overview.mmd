@@ -1,0 +1,21 @@
+graph LR
+    User[Restaurant Owner] --> Platform[Intelligence Platform]
+    
+    Platform --> M1[Review Analytics]
+    Platform --> M2[Invoice Automation]
+    Platform --> M3[Price Intelligence]
+    Platform --> M4[Menu Costing]
+    Platform --> M5[Competitor Analysis]
+    
+    M1 --> Insights[Business Insights]
+    M2 --> Insights
+    M3 --> Insights
+    M4 --> Insights
+    M5 --> Insights
+    
+    Insights --> Actions[Smart Decisions]
+    
+    style User fill:#ffd93d
+    style Platform fill:#a8e6cf
+    style Insights fill:#6bcf7f
+    style Actions fill:#ff6b9d

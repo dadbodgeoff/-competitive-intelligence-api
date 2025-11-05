@@ -1,0 +1,130 @@
+{
+  "Firehouse Pizza Shop II": [
+    {
+      "rating": 5,
+      "text": "Ordered a steak and cheese, it was amazing! Best in the area for sure.",
+      "quality_score": 0.75,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 4,
+      "text": "Solid pizza. Quick service and friendly staff.",
+      "quality_score": 0.7,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 3,
+      "text": "It's decent pizza. Fluffy crust. Staff was friendly enough.",
+      "quality_score": 0.75,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 5,
+      "text": "Awesome food! The grinders are huge and delicious.",
+      "quality_score": 0.75,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 1,
+      "text": "Pizza was undercooked and doughy.",
+      "quality_score": 0.6,
+      "source": "llm_generated"
+    }
+  ],
+  "Elm Street Pizza": [
+    {
+      "rating": 5,
+      "text": "Best pizza around! Staff is always friendly.",
+      "quality_score": 0.65,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 4,
+      "text": "Solid pizza, quick delivery.",
+      "quality_score": 0.6,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 3,
+      "text": "Okay pizza, nothing special.",
+      "quality_score": 0.6,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 5,
+      "text": "Always a great experience, the best!",
+      "quality_score": 0.6,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 1,
+      "text": "Rude manager over a side of ranch. Never ordering again.",
+      "quality_score": 0.75,
+      "source": "llm_generated"
+    }
+  ],
+  "Bellingham Italian Pizza and Grill": [
+    {
+      "rating": 5,
+      "text": "Best pizza in town! Always fresh ingredients.",
+      "quality_score": 0.65,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 4,
+      "text": "Good Italian food, solid value.",
+      "quality_score": 0.65,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 3,
+      "text": "Okay pizza, nothing special.",
+      "quality_score": 0.6,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 5,
+      "text": "The meatball sub was amazing! Fresh bread made all the difference.",
+      "quality_score": 0.75,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 1,
+      "text": "Ordered delivery, never arrived. Waste of time.",
+      "quality_score": 0.65,
+      "source": "llm_generated"
+    }
+  ],
+  "Supreme Pizza": [
+    {
+      "rating": 5,
+      "text": "Best pizza in Cumberland! Always fresh and delicious.",
+      "quality_score": 0.75,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 4,
+      "text": "Good food, quick service. Never had a bad experience.",
+      "quality_score": 0.7999999999999999,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 5,
+      "text": "The boneless buffalo chicken is perfect! Fries are crispy!",
+      "quality_score": 0.7,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 3,
+      "text": "It's okay. Nothing special, but decent for a quick bite.",
+      "quality_score": 0.7,
+      "source": "llm_generated"
+    },
+    {
+      "rating": 1,
+      "text": "Order always wrong. Paid for extra ranch, didn't get it!",
+      "quality_score": 0.75,
+      "source": "llm_generated"
+    }
+  ]
+}

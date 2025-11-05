@@ -1,5 +1,10 @@
+import { AppShell } from '@/components/layout/AppShell';
 import { ReviewAnalysisResultsPage } from '@/components/analysis/ReviewAnalysisResults';
 
 export function AnalysisResultsPage() {
-  return <ReviewAnalysisResultsPage />;
+  return (
+    <AppShell>
+      <ReviewAnalysisResultsPage />
+    </AppShell>
+  );
 }

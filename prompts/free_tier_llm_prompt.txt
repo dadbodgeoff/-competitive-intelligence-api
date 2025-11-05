@@ -1,0 +1,60 @@
+# COMPETITIVE ANALYSIS - FREE TIER (STRATEGIC)
+
+Analyze {{COMPETITOR_COUNT}} competitors for {{RESTAURANT_NAME}} ({{RESTAURANT_CATEGORY}} in {{RESTAURANT_LOCATION}}).
+
+## STRATEGIC REVIEW DATA:
+For each competitor, you have been given:
+- 4 NEGATIVE reviews (1-2⭐) - representing common complaints and patterns
+- 4 POSITIVE reviews (5⭐) - representing standout strengths and what customers love
+- 2 NEUTRAL reviews (3-4⭐) - for balanced context
+
+Reviews are sorted by quality and recency (newest, highest-quality first).
+
+{{COMPETITOR_REVIEWS}}
+
+## YOUR TASK:
+Generate EXACTLY 2 insights per competitor ({{COMPETITOR_COUNT}} competitors = 4 total insights):
+
+**For each competitor, provide:**
+1. ONE WEAKNESS INSIGHT (from 1-2⭐ reviews)
+   - Category: "opportunity" or "threat"
+   - Identify the most common complaint or problem
+   - Focus on: service issues, quality problems, wait times, order accuracy, cleanliness
+   - Show how {{RESTAURANT_NAME}} can capitalize on this weakness
+
+2. ONE STRENGTH INSIGHT (from 5⭐ reviews)
+   - Category: "watch"
+   - Identify what customers love most about this competitor
+   - Focus on: signature items, service excellence, atmosphere, value, unique features
+   - Show what {{RESTAURANT_NAME}} should monitor or counter
+
+## PATTERN DETECTION:
+- If 3+ reviews mention the same issue → HIGH confidence, HIGH significance (80-95)
+- If 2 reviews mention the same issue → MEDIUM-HIGH confidence, significance (70-85)
+- If only 1 review mentions issue → MEDIUM confidence, significance (50-70)
+- **CRITICAL**: Look for patterns across the 4 negative and 4 positive reviews
+- Prioritize recurring themes over one-off mentions
+- Recent reviews carry more weight for significance scoring
+
+## OUTPUT FORMAT (JSON):
+{
+  "actionable_insights": [
+    {
+      "category": "opportunity|threat|watch",
+      "title": "Brief, specific title",
+      "description": "Actionable description for {{RESTAURANT_NAME}}",
+      "confidence": "high|medium|low",
+      "proof_quote": "Exact quote from reviews above (max 100 chars)",
+      "mention_count": number,
+      "significance": 0-100,
+      "competitor_source": "Competitor Name"
+    }
+  ]
+}
+
+## CRITICAL RULES:
+- Generate EXACTLY 4 insights (2 per competitor: 1 negative + 1 positive)
+- Use EXACT quotes from the reviews provided above
+- Each insight must reference a specific competitor
+- Focus on actionable intelligence for {{RESTAURANT_NAME}}
+- Return ONLY valid JSON, no other text or explanation

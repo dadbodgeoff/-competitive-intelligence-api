@@ -20,16 +20,14 @@ export interface RegisterData {
   confirm_password: string;
 }
 
+// Login/Register response (cookies set automatically by backend)
 export interface TokenResponse {
-  access_token: string;
-  refresh_token: string;
-  token_type: string;
   user: User;
+  message?: string;
 }
 
 export interface AuthState {
   user: User | null;
-  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;

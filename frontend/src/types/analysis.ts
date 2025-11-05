@@ -48,6 +48,23 @@ export interface Insight {
   significance?: number;
 }
 
+export interface EvidenceReview {
+  competitor_name: string;
+  rating: number;
+  text: string;
+  full_text: string;
+  date: string;
+  quality_score?: number;
+}
+
+export interface EvidenceReviews {
+  [competitorName: string]: {
+    negative: EvidenceReview[];
+    positive: EvidenceReview[];
+    neutral: EvidenceReview[];
+  };
+}
+
 export interface ReviewAnalysisResponse {
   analysis_id: string;
   restaurant_name: string;
@@ -57,6 +74,7 @@ export interface ReviewAnalysisResponse {
   status: string;
   competitors: Competitor[];
   insights: Insight[];
+  evidence_reviews?: EvidenceReviews;
   processing_time_seconds: number;
   created_at: string;
   completed_at: string;
@@ -66,4 +84,17 @@ export interface AnalysisResponse {
   analysis_id: string;
   status: string;
   message: string;
+}
+
+export interface RestaurantSource {
+  name: string;
+  quote: string;
+  confidence: 'high' | 'medium' | 'low';
+  mentions: number;
+}
+
+export interface GroupedInsight {
+  mainInsight: Insight;
+  relatedInsights: Insight[];
+  restaurantSources: RestaurantSource[];
 }

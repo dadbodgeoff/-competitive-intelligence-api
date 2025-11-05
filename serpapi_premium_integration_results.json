@@ -1,0 +1,61 @@
+{
+  "summary": {
+    "total_reviews": 98,
+    "avg_reviews_per_competitor": 19.6,
+    "success_rate": 100.0,
+    "total_cost": 0.22499999999999998,
+    "cost_per_competitor": 0.045
+  },
+  "competitors": {
+    "Domino's Pizza": {
+      "review_count": 20,
+      "cost": 0.045,
+      "source": "serpapi",
+      "sample_reviews": [
+        "90 percent delivery based location, but service for eating in at one of the 3 or 4 tables is pretty quick. Decent prices. Standard Dominos pizza.",
+        "1. Domino's Pizza \u00b7 (67 reviews) \u00b7 1396 1st Ave, New York, NY 10021. (212) 772-8100. 1396 1st Ave, New York, NY 10021 ; 2. Domino's Pizza \u00b7 (219 reviews) \u00b7 2553 ...",
+        "domino's pizza New York, NY 10467 ; 1. Domino's Pizza \u00b7 (164 reviews). 1.4 mi ; 2. Domino's Pizza \u00b7 (42 reviews). 2.8 mi ; 3. Domino's Pizza \u00b7 (68 reviews). 0.8 mi ; 4 ..."
+      ]
+    },
+    "Papa John's": {
+      "review_count": 21,
+      "cost": 0.045,
+      "source": "serpapi",
+      "sample_reviews": [
+        "Papa John's Pizza New York, NY \u00b7 1. Papa Johns Pizza. 2.1 (64 reviews). 2.1 mi. 343 Grand St, New York, NY 10002 \u00b7 2. Papa Johns Pizza. 1.5 (120 reviews). 3.3 ...",
+        "Papa John's Pizza Manhattan, NY ; 1. Papa Johns Pizza \u00b7 (17 reviews). 2.8 mi. 896 Amsterdam Ave, New York, NY 10025. (212) 864-7272 ; 2. Papa Johns Pizza \u00b7 (47 ...",
+        "Papa John's Pizza New York, NY 10002 \u00b7 1. Papa Johns Pizza. 2.1 (64 reviews). 1.8 mi. 343 Grand St, New York, NY 10002. (212) 979-7272 \u00b7 2. Papa Johns Pizza."
+      ]
+    },
+    "Pizza Hut": {
+      "review_count": 23,
+      "cost": 0.045,
+      "source": "serpapi",
+      "sample_reviews": [
+        "Pizza Hut New York, NY \u00b7 1. Pizza Hut. 4.0 (4 reviews). 2.8 mi. 555 2nd Ave, New York, NY 10016. (646) 666-5998. 555 2nd Ave, New York, NY 10016 \u00b7 2. Pizza Hut.",
+        "Pizza Hut Manhattan, NY ; 1. Pizza Hut \u00b7 (18 reviews) \u00b7 932 8th Ave, New York, NY 10019. (929) 645-2154 ; 2. Pizza Hut \u00b7 (4 reviews) \u00b7 555 2nd Ave, New York, NY 10016.",
+        "PIZZA HUT - Try Our New Menu - 932 8th Ave, New York, NY 10019, 23 Photos, (929) 645-2154, Mon - 11:00 am - 3:00 am, Tue - 11:00 am - 3:00 am, ..."
+      ]
+    },
+    "Little Caesars": {
+      "review_count": 17,
+      "cost": 0.045,
+      "source": "serpapi",
+      "sample_reviews": [
+        "LITTLE CAESARS - Try Our New Menu - 1332 Saint Nicholas Ave, New York, NY 10033, 7 Photos, (212) 543-2127, Mon - 11:00 am - 11:00 pm, Tue - 11:00 am - 10:30 ...",
+        "Delivery & Pickup Options - 7 reviews of LITTLE CAESARS \"New-ish location for a chain of pizza restaurants. I ordered delivery through DoorDash.",
+        "little caesars E 53rd St, New York, NY 10022 \u00b7 1. Little Caesars. 2.8 (4 reviews). 1.5 mi \u00b7 2. Little Caesars. 3.1 (40 reviews). 4.7 mi \u00b7 3. Little Caesars Pizza."
+      ]
+    },
+    "Sbarro": {
+      "review_count": 17,
+      "cost": 0.045,
+      "source": "serpapi",
+      "sample_reviews": [
+        "SBARRO - Try Our New Menu - 159 West 33Rd Street, New York, NY 10001, 53 Photos, (212) 564-1909, Mon - 10:00 am - 10:00 pm, Tue - 10:00 am - 10:00 pm, ...",
+        "Yelpers report this location has closed. Find a similar spot. New York, NY.",
+        "Great tasting food. Very freshly made. The staff where not overly helpful but they where not rude either. The bathrooms deffintly need some attention though."
+      ]
+    }
+  }
+}

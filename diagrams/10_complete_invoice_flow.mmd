@@ -1,0 +1,118 @@
+sequenceDiagram
+    participant Browser
+    participant React as React Component<br/>(TypeScript)
+    participant Hook as Custom Hook<br/>(useInvoiceParseStream)
+    participant API as API Service<br/>(Axios HTTP Client)
+    participant FastAPI as FastAPI Server<br/>(Python)
+    participant Auth as JWT Middleware<br/>(Token Validation)
+    participant Route as API Route Handler<br/>(Pydantic Validation)
+    participant Storage as File Storage Service<br/>(Supabase Storage)
+    participant Parser as AI Parser Service<br/>(Gemini 2.5 Flash)
+    participant PostProc as Post-Processor<br/>(Auto-Correction)
+    participant Valid as Validator<br/>(Business Rules)
+    participant SSE as SSE Stream<br/>(Server-Sent Events)
+    participant Orchestrator as Invoice Processor<br/>(Event Orchestrator)
+    participant Fuzzy as Fuzzy Matcher<br/>(Multi-Algorithm)
+    participant DB as PostgreSQL<br/>(Supabase)
+    
+    Browser->>React: User selects PDF file
+    React->>React: Validate file type & size
+    React->>Hook: Call uploadInvoice(file)
+    Hook->>API: POST /api/invoices/upload
+    API->>FastAPI: HTTP Request + JWT Token
+    FastAPI->>Auth: Verify JWT token
+    Auth->>Auth: Decode & validate user
+    Auth->>Route: Pass user_id to handler
+    Route->>Route: Validate file with Pydantic
+    Route->>Storage: Upload PDF to cloud storage
+    Storage->>Storage: Generate secure URL
+    Storage-->>Route: Return file_url
+    Route-->>API: Return {file_url, invoice_id}
+    API-->>Hook: Success response
+    Hook->>Hook: Open SSE connection
+    Hook->>API: GET /api/invoices/parse-stream
+    API->>FastAPI: SSE connection request
+    FastAPI->>Route: Stream handler
+    Route->>SSE: Initialize event stream
+    
+    SSE->>React: Event: "Uploading... ✓"
+    React->>Browser: Update progress bar (10%)
+    
+    Route->>Parser: Send PDF to Gemini AI
+    Parser->>Parser: OCR + Text Extraction
+    SSE->>React: Event: "Extracting data... 25%"
+    React->>Browser: Update progress bar (25%)
+    
+    Parser->>Parser: Structure data (vendor, items, prices)
+    SSE->>React: Event: "Processing items... 50%"
+    React->>Browser: Update progress bar (50%)
+    
+    Parser-->>Route: Return structured JSON
+    Route->>PostProc: Auto-correct data
+    PostProc->>PostProc: Fix math errors (qty × price)
+    PostProc->>PostProc: Normalize pack sizes
+    PostProc->>PostProc: Detect weight-based pricing
+    SSE->>React: Event: "Validating... 75%"
+    React->>Browser: Update progress bar (75%)
+    
+    PostProc-->>Route: Return corrected data
+    Route->>Valid: Validate business rules
+    Valid->>Valid: Check required fields
+    Valid->>Valid: Validate totals
+    Valid-->>Route: Return validation results
+    
+    SSE->>React: Event: "Complete! ✓"
+    React->>Browser: Update progress bar (100%)
+    SSE->>React: Event: Close stream
+    React->>React: Display editable table
+    Browser->>React: User reviews & edits data
+    Browser->>React: User clicks "Save"
+    
+    React->>Hook: Call saveInvoice(data)
+    Hook->>API: POST /api/invoices/save
+    API->>FastAPI: HTTP Request + data
+    FastAPI->>Auth: Verify JWT
+    Auth->>Route: Pass user_id
+    Route->>Route: Validate with Pydantic
+    Route->>DB: Check for duplicates
+    DB-->>Route: No duplicates found
+    Route->>DB: BEGIN TRANSACTION
+    Route->>DB: INSERT INTO invoices
+    Route->>DB: INSERT INTO invoice_items (bulk)
+    Route->>DB: INSERT INTO parse_logs
+    DB-->>Route: Return invoice_id
+    
+    Route->>Orchestrator: Trigger inventory processing
+    Orchestrator->>DB: Check processed_events (idempotency)
+    DB-->>Orchestrator: Not processed yet
+    Orchestrator->>DB: Get/Create vendor
+    Orchestrator->>Fuzzy: Match each item to inventory
+    
+    loop For each invoice item
+        Fuzzy->>Fuzzy: Normalize text
+        Fuzzy->>Fuzzy: Calculate similarity scores
+        Fuzzy->>Fuzzy: Apply weighted algorithms
+        Fuzzy->>DB: Search existing inventory
+        alt Match found (score > threshold)
+            Fuzzy-->>Orchestrator: Return inventory_item_id
+        else No match
+            Fuzzy->>DB: CREATE new inventory item
+            Fuzzy-->>Orchestrator: Return new item_id
+        end
+        Orchestrator->>DB: Record purchase transaction
+        Orchestrator->>DB: Update inventory quantity
+        Orchestrator->>DB: Track price history
+        Orchestrator->>DB: Check for price anomalies
+        alt Price spike detected
+            Orchestrator->>DB: Create alert
+        end
+    end
+    
+    Orchestrator->>DB: Mark as processed (idempotency)
+    Orchestrator->>DB: COMMIT TRANSACTION
+    Orchestrator-->>Route: Return processing results
+    Route-->>API: Return success + metrics
+    API-->>Hook: Success response
+    Hook-->>React: Update state
+    React->>Browser: Show success message
+    React->>Browser: Navigate to invoice list

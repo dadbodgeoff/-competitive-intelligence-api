@@ -1,0 +1,114 @@
+/**
+ * shadcn/ui Theme Variables
+ * HSL color variables for shadcn/ui components
+ * 
+ * This file is auto-generated from our design tokens
+ * Do not edit manually - update design tokens instead
+ */
+
+@layer base {
+  :root {
+    /* === OBSIDIAN DARK THEME (Default) === */
+    
+    /* Backgrounds */
+    --background: 197 47% 7%;          /* Obsidian #0B1215 */
+    --foreground: 210 40% 98%;         /* Light text #f8fafc */
+    
+    /* Cards */
+    --card: 217 33% 17%;               /* Card bg #1a2332 */
+    --card-foreground: 210 40% 98%;
+    
+    /* Popovers */
+    --popover: 222 47% 11%;            /* Popover #1e293b */
+    --popover-foreground: 210 40% 98%;
+    
+    /* Primary - Emerald */
+    --primary: 160 84% 39%;            /* Emerald #10b981 */
+    --primary-foreground: 0 0% 100%;   /* White */
+    
+    /* Secondary - Cyan */
+    --secondary: 187 85% 43%;          /* Cyan #06b6d4 */
+    --secondary-foreground: 0 0% 100%; /* White */
+    
+    /* Muted */
+    --muted: 217 33% 17%;              /* Slate-850 #1a2332 */
+    --muted-foreground: 215 16% 47%;   /* Slate-400 #94a3b8 */
+    
+    /* Accent */
+    --accent: 217 33% 17%;             /* Slate-850 */
+    --accent-foreground: 160 84% 39%;  /* Emerald */
+    
+    /* Destructive */
+    --destructive: 0 84% 60%;          /* Red #ef4444 */
+    --destructive-foreground: 210 40% 98%;
+    
+    /* Success */
+    --success: 160 84% 39%;            /* Emerald #10b981 */
+    --success-foreground: 0 0% 100%;
+    
+    /* Warning */
+    --warning: 38 92% 50%;             /* Amber #f59e0b */
+    --warning-foreground: 26 90% 37%;  /* Dark amber */
+    
+    /* Info */
+    --info: 187 85% 43%;               /* Cyan #06b6d4 */
+    --info-foreground: 0 0% 100%;
+    
+    /* Borders */
+    --border: 217 33% 17%;             /* Subtle borders */
+    --input: 217 33% 17%;              /* Input backgrounds */
+    --ring: 160 84% 39%;               /* Focus ring - Emerald */
+    
+    /* Chart Colors */
+    --chart-1: 160 84% 39%;            /* Emerald */
+    --chart-2: 187 85% 43%;            /* Cyan */
+    --chart-3: 258 90% 66%;            /* Violet */
+    --chart-4: 38 92% 50%;             /* Amber */
+    --chart-5: 0 84% 60%;              /* Red */
+    
+    /* Border Radius */
+    --radius: 0.5rem;                  /* 8px default */
+  }
+  
+  /* Light mode (if needed later) */
+  .light {
+    --background: 0 0% 100%;           /* White */
+    --foreground: 222.2 84% 4.9%;      /* Dark text */
+    
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    
+    --primary: 160 84% 39%;            /* Keep emerald */
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 210 40% 96%;          /* Light gray */
+    --secondary-foreground: 222.2 47% 11%;
+    
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    
+    --accent: 210 40% 96%;
+    --accent-foreground: 160 84% 39%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 160 84% 39%;
+  }
+}
+
+/* Base styles for shadcn components */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+  }
+}

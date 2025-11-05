@@ -1,8 +1,8 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from pathlib import Path
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 import os
 import time
 import logging
@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 # Configure logging
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,  # Changed from DEBUG to reduce noise
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
@@ -27,12 +27,94 @@ app = FastAPI(
     redoc_url="/api/redoc"
 )
 
+# ============================================================================
+# SECURITY: Global Exception Handlers - Prevent Information Leakage
+# ============================================================================
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """
+    Catch-all exception handler to prevent stack traces from leaking to users.
+    
+    Security Best Practice:
+    - Production: Return generic error message
+    - Development: Return detailed error for debugging
+    """
+    # Log the full error with stack trace for debugging
+    logger.error(
+        f"Unhandled exception on {request.method} {request.url.path}",
+        exc_info=True,
+        extra={
+            "path": request.url.path,
+            "method": request.method,
+            "client_host": request.client.host if request.client else "unknown"
+        }
+    )
+    
+    # Determine environment
+    environment = os.getenv("ENVIRONMENT", "development").lower()
+    
+    if environment == "production":
+        # PRODUCTION: Never expose internal errors
+        return JSONResponse(
+            status_code=500,
+            content={
+                "detail": "An internal error occurred. Please try again later.",
+                "error_id": f"{int(time.time())}"  # For support reference
+            }
+        )
+    else:
+        # DEVELOPMENT: Show details for debugging
+        return JSONResponse(
+            status_code=500,
+            content={
+                "detail": str(exc),
+                "type": type(exc).__name__,
+                "path": request.url.path
+            }
+        )
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    """
+    Handle HTTP exceptions (4xx, 5xx) with sanitized messages.
+    """
+    # Log HTTP errors
+    if exc.status_code >= 500:
+        logger.error(f"HTTP {exc.status_code} on {request.url.path}: {exc.detail}")
+    else:
+        logger.warning(f"HTTP {exc.status_code} on {request.url.path}: {exc.detail}")
+    
+    # Return the exception as-is (these are already safe)
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail}
+    )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """
+    Handle request validation errors (422) with clear messages.
+    """
+    logger.warning(f"Validation error on {request.url.path}: {exc.errors()}")
+    
+    # Return validation errors (safe to expose)
+    return JSONResponse(
+        status_code=422,
+        content={
+            "detail": "Validation error",
+            "errors": exc.errors()
+        }
+    )
+
 # Request logging middleware
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
     start_time = time.time()
     logger.info(f"🔵 Incoming request: {request.method} {request.url.path}")
-    logger.debug(f"   Headers: {dict(request.headers)}")
+    # Sanitize headers - remove Authorization token
+    safe_headers = {k: v for k, v in request.headers.items() if k.lower() != 'authorization'}
+    logger.debug(f"   Headers: {safe_headers}")
     
     try:
         response = await call_next(request)
@@ -44,31 +126,180 @@ async def log_requests(request: Request, call_next):
         logger.error(f"❌ Request failed after {process_time:.2f}ms - Error: {str(e)}")
         raise
 
-# CORS middleware
+# CORS middleware - support production domains
+allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:5173").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Security headers middleware (CSP, X-Frame-Options, etc.)
+from api.middleware.security_headers import SecurityHeadersMiddleware
+app.add_middleware(SecurityHeadersMiddleware)
+
 # Include routes
 from api.routes.auth import router as auth_router
-from api.routes.analysis import router as legacy_analysis_router
 from api.routes.tier_analysis import router as analysis_router
+from api.routes.streaming_analysis import router as streaming_router
+from api.routes.subscription import router as subscription_router
+from api.routes.usage_limits import router as usage_limits_router
+# New modular invoice routes
+from api.routes.invoices import upload, parsing, management, processing
+# Menu management routes
+from api.routes.menu import upload as menu_upload, parsing as menu_parsing, management as menu_management, recipes as menu_recipes
+from api.routes.menu_comparison import router as menu_comparison_router
+# from api.routes.inventory_operations import router as inventory_router  # REMOVED: Frontend inventory module removed
+from api.routes.user_preferences import router as preferences_router
+from api.routes.price_analytics import router as price_analytics_router
+from api.routes.alert_management import router as alert_management_router
+from api.routes.dashboard_analytics import router as dashboard_analytics_router
+from api.routes.competitive_intelligence_summary import router as competitive_intelligence_router
+from api.routes import csp_report
+
+# DISABLED: Inventory processing removed - invoices are source of truth only
+# Initialize background workers (registers event handlers)
+# import workers.invoice_processor_worker
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(analysis_router, prefix="/api/v1/analysis", tags=["Analysis"])
-app.include_router(legacy_analysis_router, prefix="/api/v1/legacy/analysis", tags=["Legacy Analysis"])
+app.include_router(streaming_router, prefix="/api/v1/streaming", tags=["Streaming Analysis"])
+app.include_router(subscription_router, prefix="/api/v1/subscription", tags=["Subscription"])
+app.include_router(usage_limits_router, tags=["Usage Limits"])
+# Invoice operations (modular)
+app.include_router(upload.router, tags=["Invoice Operations"])
+app.include_router(parsing.router, tags=["Invoice Operations"])
+app.include_router(management.router, tags=["Invoice Operations"])
+app.include_router(processing.router, tags=["Invoice Operations"])
+# app.include_router(inventory_router, tags=["Inventory Operations"])  # REMOVED: Frontend inventory module removed
+app.include_router(preferences_router, tags=["User Preferences"])
+app.include_router(price_analytics_router, tags=["Price Analytics"])
+app.include_router(alert_management_router, tags=["Alert Management"])
+app.include_router(dashboard_analytics_router, tags=["Dashboard Analytics"])
+app.include_router(competitive_intelligence_router, tags=["Competitive Intelligence"])
+# Menu operations (modular)
+app.include_router(menu_upload.router, tags=["Menu Operations"])
+app.include_router(menu_parsing.router, tags=["Menu Operations"])
+app.include_router(menu_management.router, tags=["Menu Operations"])
+app.include_router(menu_recipes.router, tags=["Menu Operations"])
+app.include_router(menu_comparison_router, tags=["Menu Comparison"])
+app.include_router(csp_report.router, tags=["Security"])
 
-# Health check endpoint
-@app.get("/api/v1/health")
+# Health check endpoint (used by Docker healthcheck)
+@app.get("/health")
 async def health_check():
-    return {
+    """Simple health check for Docker/load balancers"""
+    from supabase import create_client
+    
+    health = {
         "status": "healthy",
         "version": "1.0.0",
-        "environment": os.getenv("APP_ENV", "development")
+        "timestamp": time.time(),
+        "environment": os.getenv("ENVIRONMENT", "development"),
+        "checks": {}
     }
+    
+    # Check database connectivity
+    try:
+        supabase_url = os.getenv("SUPABASE_URL")
+        supabase_key = os.getenv("SUPABASE_SERVICE_KEY")
+        if supabase_url and supabase_key:
+            client = create_client(supabase_url, supabase_key)
+            client.table("users").select("id").limit(1).execute()
+            health["checks"]["database"] = "ok"
+        else:
+            health["checks"]["database"] = "not_configured"
+    except Exception as e:
+        health["checks"]["database"] = "error"
+        health["status"] = "degraded"
+        logger.error(f"Database health check failed: {e}")
+    
+    # Check Redis (optional)
+    try:
+        from services.redis_client import redis_client
+        redis_client.ping()
+        health["checks"]["redis"] = "ok"
+    except:
+        health["checks"]["redis"] = "unavailable"
+    
+    return health
+
+# Detailed health check with dependencies
+@app.get("/api/v1/health")
+async def detailed_health_check():
+    """Detailed health check with all dependencies"""
+    from services.malware_scanner import MalwareScannerService
+    from supabase import create_client
+    
+    health = {
+        "status": "healthy",
+        "version": "1.0.0",
+        "timestamp": time.time(),
+        "environment": os.getenv("ENVIRONMENT", "development"),
+        "checks": {}
+    }
+    
+    # Database
+    try:
+        supabase_url = os.getenv("SUPABASE_URL")
+        supabase_key = os.getenv("SUPABASE_SERVICE_KEY")
+        client = create_client(supabase_url, supabase_key)
+        client.table("users").select("id").limit(1).execute()
+        health["checks"]["database"] = "ok"
+    except Exception as e:
+        health["checks"]["database"] = f"error: {str(e)}"
+        health["status"] = "degraded"
+    
+    # Redis
+    try:
+        from services.redis_client import redis_client
+        redis_client.ping()
+        health["checks"]["redis"] = "ok"
+    except Exception as e:
+        health["checks"]["redis"] = f"unavailable: {str(e)}"
+    
+    # ClamAV
+    try:
+        scanner = MalwareScannerService()
+        clamav_status = scanner.get_status()
+        health["checks"]["clamav"] = clamav_status
+    except Exception as e:
+        health["checks"]["clamav"] = f"error: {str(e)}"
+    
+    return health
+
+# ============================================================================
+# PRODUCTION: Static File Serving for Frontend
+# ============================================================================
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+
+# Serve frontend static files in production
+frontend_dist = Path(__file__).parent.parent / "frontend" / "dist"
+if frontend_dist.exists() and os.getenv("ENVIRONMENT") == "production":
+    logger.info(f"📦 Serving frontend from {frontend_dist}")
+    
+    # Serve static assets (JS, CSS, images)
+    app.mount("/assets", StaticFiles(directory=str(frontend_dist / "assets")), name="assets")
+    
+    # Serve index.html for all other routes (SPA routing)
+    @app.get("/{full_path:path}")
+    async def serve_frontend(full_path: str):
+        """Serve React SPA for all non-API routes"""
+        # Don't intercept API routes or health checks
+        if full_path.startswith("api/") or full_path == "health":
+            raise HTTPException(status_code=404)
+        
+        index_file = frontend_dist / "index.html"
+        if index_file.exists():
+            return HTMLResponse(content=index_file.read_text())
+        raise HTTPException(status_code=404)
+else:
+    # Development mode - API only
+    @app.get("/")
+    async def root():
+        return {"message": "Competitive Intelligence API", "status": "running", "mode": "development"}
 
 # Email confirmation endpoint
 @app.get("/auth/confirm")
@@ -77,20 +308,6 @@ async def confirm_email():
     with open("confirmation_page.html", "r") as f:
         html_content = f.read()
     return HTMLResponse(content=html_content, status_code=200)
-
-# Serve frontend in production - MUST be last to act as catch-all
-if os.getenv("ENVIRONMENT") == "production":
-    frontend_dist = Path(__file__).parent.parent / "frontend" / "dist"
-    if frontend_dist.exists():
-        app.mount("/", StaticFiles(directory=str(frontend_dist), html=True), name="frontend")
-        logger.info(f"✅ Serving frontend from {frontend_dist}")
-    else:
-        logger.warning(f"⚠️ Frontend dist folder not found at {frontend_dist}")
-else:
-    # Root endpoint only in development
-    @app.get("/")
-    async def root():
-        return {"message": "Competitive Intelligence API", "status": "running"}
 
 if __name__ == "__main__":
     import uvicorn

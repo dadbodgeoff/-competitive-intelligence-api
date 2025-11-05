@@ -158,6 +158,108 @@ analyze_*.py
 debug_*.py
 monitor_*.py
 diagnose_*.py
+verify_*.py
+verify_*.sql
+seed_*.py
+audit_*.py
+trace_*.py
+comprehensive_*.py
+cleanup_*.py
+get_test_*.py
+production_menu_extractor.py
+list_migrations.py
+export_schema_python.py
+consolidate_all_sql.py
+audit_runner.py
+pre_production_audit.py
+fix_*.py
+fix_*.sql
+apply_*.sql
+apply_*.py
+run_*.py
+start_*.py
+restart_*.py
+wipe_*.py
+query_*.py
+compare_*.py
+create_*.sql
+diagnose_*.sql
+disable_*.sql
+force_*.sql
+reset_*.sql
+reset_*.py
+sync_*.sql
+upgrade_*.sql
+export_*.py
+export_*.bat
+generate_*.py
+visualize_*.py
+simple_*.py
+kiro_*.py
+
+# All markdown documentation (keep only README.md)
+*.md
+!README.md
+!LICENSE.md
+
+# Test directories and files
+tests/
+test-invoice-parser/
+*.test.ts
+*.spec.ts
+*.test.tsx
+*.spec.tsx
+*.test.js
+*.spec.js
+conftest.py
+pytest.ini
+
+# Diagrams and visual documentation
+diagrams/
+*.mmd
+
+# Monitoring and logs
+monitoring_logs/
+performance_logs/
+debug_logs/
+backend_logs.txt
+*.log
+
+# SQL verification and audit files
+*.sql
+!database/migrations/*.sql
+
+# JSON test/verification files
+*_verification_*.json
+*_session_report_*.json
+*_results*.json
+*_response*.json
+*_debug*.json
+*_test*.json
+extracted_*.json
+enhanced_*.json
+improved_*.json
+invoice_*.json
+menu_*.json
+multi_*.json
+optimized_*.json
+outscraper_*.json
+park_ave_*.json
+production_*.json
+serpapi_*.json
+strategic_*.json
+updated_*.json
+
+# Sample/test PDFs
+*.pdf
+*.PDF
+
+# Git commit messages
+.git/COMMIT_EDITMSG
+
+# Python cache
+tests/**/__pycache__/
+**/*.pyc
 
 # Backup files
 *.bak
@@ -166,3 +268,30 @@ diagnose_*.py
 
 # Redis dump file
 dump.rdb
+
+# Development scripts
+*.bat
+!docker-*.bat
+*.sh
+!deploy-to-digital-ocean.sh
+!docker-*.sh
+
+# Archive and temp folders
+_archive/
+poc_results/
+real_review_results/
+tests_temp/
+backend/
+utils/
+workers/
+fixes/
+
+# Config files
+filewatcher_config.json
+github_setup_commands.txt
+*.txt
+!requirements.txt
+
+# Database files
+*.db
+restaurant_analysis.db

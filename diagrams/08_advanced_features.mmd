@@ -1,0 +1,46 @@
+graph TB
+    subgraph "Fuzzy Matching Engine"
+        FM1[Text Normalization]
+        FM2[Multi-Algorithm Scoring]
+        FM3[Confidence Calculation]
+        FM4[Self-Learning System]
+        FM1 --> FM2 --> FM3 --> FM4
+    end
+    
+    subgraph "Real-Time Streaming"
+        RT1[SSE Connection]
+        RT2[Progress Events]
+        RT3[Live UI Updates]
+        RT4[Error Recovery]
+        RT1 --> RT2 --> RT3 --> RT4
+    end
+    
+    subgraph "Anomaly Detection"
+        AD1[Historical Analysis]
+        AD2[Statistical Modeling]
+        AD3[Threshold Detection]
+        AD4[Alert Generation]
+        AD1 --> AD2 --> AD3 --> AD4
+    end
+    
+    subgraph "LLM Orchestration"
+        LLM1[Request Analysis]
+        LLM2[Model Selection]
+        LLM3[Cost Optimization]
+        LLM4[Response Streaming]
+        LLM1 --> LLM2 --> LLM3 --> LLM4
+    end
+    
+    FM4 --> Result[95%+ Match Rate]
+    RT4 --> Result2[Zero Loading Spinners]
+    AD4 --> Result3[Proactive Alerts]
+    LLM4 --> Result4[Optimized Costs]
+    
+    style FM1 fill:#ff6b6b
+    style RT1 fill:#4ecdc4
+    style AD1 fill:#45b7d1
+    style LLM1 fill:#96ceb4
+    style Result fill:#ffeaa7
+    style Result2 fill:#ffeaa7
+    style Result3 fill:#ffeaa7
+    style Result4 fill:#ffeaa7

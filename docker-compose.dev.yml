@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # Pre-flight check - verifies API endpoints before starting
+  api-verify:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: python verify_api_endpoints.py
+    profiles:
+      - verify
+
+  # Backend API with hot reload
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount source code for hot reload
+      - ./api:/app/api
+      - ./services:/app/services
+      - ./config:/app/config
+      - ./models:/app/models
+      - ./prompts:/app/prompts
+      - ./database:/app/database
+    environment:
+      # Supabase (from your .env - update these values)
+      - SUPABASE_URL=https://kapbytccfblkfqrdviec.supabase.co
+      - SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthcGJ5dGNjZmJsa2ZxcmR2aWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxODgyNjYsImV4cCI6MjA3Nzc2NDI2Nn0.ugvWaJ2mkAea_rirLuX70-4oVJSgmD6STT3mdphOssw
+      - SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthcGJ5dGNjZmJsa2ZxcmR2aWVjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MjE4ODI2NiwiZXhwIjoyMDc3NzY0MjY2fQ.3APhyqsQDqECNvJKzRfVR4KINLDGxoJSevXPXnh_u2c
+      - SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthcGJ5dGNjZmJsa2ZxcmR2aWVjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MjE4ODI2NiwiZXhwIjoyMDc3NzY0MjY2fQ.3APhyqsQDqECNvJKzRfVR4KINLDGxoJSevXPXnh_u2c
+      - JWT_SECRET_KEY=o1PwTW4TIFe2lqxPJIx/mueXqcdF2l5b3DWlmSA2TTPwEUxs6vysyG7OgdYvwBoegHG4bNNjNelEpdQLwNcl8A==
+      - OUTSCRAPER_API_KEY=ZWNlZGE0NzFhOGE1NGQxYjhhYjE3MzBlZjRjMWE2YjJ8NmNhZTQzMWFiYg
+      - GOOGLE_GEMINI_API_KEY=AIzaSyByUR9t7Zu2mXAQyVXDr4CaSBvvZoRvIxE
+      - GOOGLE_PLACES_API_KEY=AIzaSyDPODKuwtE1YiN2jcGCDkIWJSYDN5TLAC0
+      - SERPAPI_KEY=d36efe5ca9439abd39403a11c463625951c5acd83c8cf754262498440625bafe
+      # Docker overrides
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ENVIRONMENT=development
+      - LOG_LEVEL=DEBUG
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  # Frontend dev server
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run dev -- --host"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    restart: unless-stopped
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+

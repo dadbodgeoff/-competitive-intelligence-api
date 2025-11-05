@@ -1,6 +1,14 @@
 import os
 from typing import List
 
+# Load environment variables (only in non-Docker environments)
+# Docker containers get env vars from docker-compose
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except:
+    pass  # In Docker, env vars are already set
+
 # Supabase Configuration
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://syxquxgynoinzwhwkosa.supabase.co")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
@@ -10,6 +18,9 @@ SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-super-secret-jwt-key-change-this-in-production-2024")
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
+
+# Cookie Security Configuration
+COOKIE_SECURE = os.getenv("ENV") == "production" or os.getenv("APP_ENV") == "production"
 
 # Application Configuration
 APP_ENV = os.getenv("APP_ENV", "development")

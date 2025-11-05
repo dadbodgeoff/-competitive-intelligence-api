@@ -1,0 +1,35 @@
+flowchart TD
+    Start([User Action]) --> Upload{Action Type?}
+    
+    Upload -->|Invoice| Invoice[Invoice Module]
+    Upload -->|Menu| Menu[Menu Module]
+    Upload -->|Analysis Request| Review[Review Module]
+    
+    Invoice --> Parse1[AI Parsing]
+    Menu --> Parse2[AI Parsing]
+    Review --> API1[External API]
+    
+    Parse1 --> Validate[Validation]
+    Parse2 --> Validate
+    API1 --> Process[LLM Processing]
+    
+    Validate --> Save[Save to DB]
+    Process --> Save
+    
+    Save --> Trigger{Triggers}
+    
+    Trigger --> Inventory[Update Inventory]
+    Trigger --> Pricing[Update Pricing]
+    Trigger --> Analytics[Generate Analytics]
+    
+    Inventory --> Dashboard[Dashboard]
+    Pricing --> Dashboard
+    Analytics --> Dashboard
+    
+    Dashboard --> End([User Views Results])
+    
+    style Start fill:#95e1d3
+    style End fill:#95e1d3
+    style Invoice fill:#f38181
+    style Menu fill:#aa96da
+    style Review fill:#fcbad3

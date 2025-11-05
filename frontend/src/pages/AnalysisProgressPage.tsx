@@ -1,4 +1,5 @@
 import { useParams, Navigate } from 'react-router-dom';
+import { AppShell } from '@/components/layout/AppShell';
 import { AnalysisProgressTracker } from '@/components/analysis/AnalysisProgressTracker';
 
 export function AnalysisProgressPage() {
@@ -15,5 +16,9 @@ export function AnalysisProgressPage() {
     return <Navigate to="/dashboard" replace />;
   }
 
-  return <AnalysisProgressTracker analysisId={analysisId} />;
+  return (
+    <AppShell>
+      <AnalysisProgressTracker analysisId={analysisId} />
+    </AppShell>
+  );
 }

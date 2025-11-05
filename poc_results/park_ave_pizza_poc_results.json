@@ -1,0 +1,99 @@
+{
+  "test_timestamp": "2025-10-27T17:02:01.316017",
+  "test_restaurant": "Park Ave Pizza",
+  "test_location": "Woonsocket, RI",
+  "phases": {
+    "phase_1": {
+      "competitors_found": 4,
+      "competitor_names": [
+        "Firehouse Pizza Shop II",
+        "Elm Street Pizza",
+        "Bellingham Italian Pizza and Grill",
+        "Supreme Pizza"
+      ],
+      "competitor_details": [
+        {
+          "name": "Firehouse Pizza Shop II",
+          "address": "639 Great Rd, North Smithfield",
+          "rating": 4.4,
+          "review_count": 375,
+          "distance_miles": 1.8459321331206404
+        },
+        {
+          "name": "Elm Street Pizza",
+          "address": "596 Elm St, Woonsocket",
+          "rating": 4.3,
+          "review_count": 497,
+          "distance_miles": 1.164301547862582
+        },
+        {
+          "name": "Bellingham Italian Pizza and Grill",
+          "address": "131 Pulaski Blvd, Bellingham",
+          "rating": 4.2,
+          "review_count": 149,
+          "distance_miles": 1.5507862438900368
+        },
+        {
+          "name": "Supreme Pizza",
+          "address": "3450 Mendon Rd # D, Cumberland",
+          "rating": 4.2,
+          "review_count": 369,
+          "distance_miles": 3.2898975589128154
+        }
+      ]
+    },
+    "phase_2": {
+      "total_real_reviews": 19,
+      "reviews_per_competitor": {
+        "Firehouse Pizza Shop II": 5,
+        "Elm Street Pizza": 5,
+        "Bellingham Italian Pizza and Grill": 4,
+        "Supreme Pizza": 5
+      }
+    },
+    "phase_3": {
+      "total_generated_reviews": 180,
+      "generated_per_competitor": {
+        "Firehouse Pizza Shop II": 45,
+        "Elm Street Pizza": 45,
+        "Bellingham Italian Pizza and Grill": 45,
+        "Supreme Pizza": 45
+      }
+    },
+    "phase_4": {
+      "total_reviews_tested": 199,
+      "total_passed_quality": 199,
+      "total_failed_quality": 0,
+      "quality_pass_rate": 100.0
+    },
+    "phase_5": {
+      "total_selected_for_analysis": 140,
+      "target_per_competitor": 35,
+      "selection_efficiency": "140/140"
+    },
+    "phase_6": {
+      "insights_generated": 20,
+      "target_insights": 20,
+      "insight_generation_success": true
+    },
+    "phase_7": {
+      "poc_insights_count": 20,
+      "production_insights_count": 20,
+      "insight_improvement": 0,
+      "data_volume_comparison": {
+        "poc_total_reviews": 140,
+        "production_total_reviews": 19
+      }
+    },
+    "phase_8": {
+      "safety_score": 93,
+      "hallucination_indicators": 6,
+      "spam_indicators": 1,
+      "quality_comparison": {
+        "real_avg_quality": 0.563,
+        "generated_avg_quality": 0.635,
+        "quality_delta": 0.072
+      }
+    }
+  }
+}

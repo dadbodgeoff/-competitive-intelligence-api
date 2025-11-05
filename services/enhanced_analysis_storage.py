@@ -37,17 +37,22 @@ class EnhancedAnalysisStorage:
         """
         
         try:
+            # Store evidence reviews if available
+            if 'evidence_reviews' in analysis_result:
+                self._store_evidence_reviews(analysis_id, analysis_result['evidence_reviews'])
+            
             if tier == "free":
                 return self._store_free_tier_insights(analysis_id, analysis_result)
             else:
-                return self._store_premium_tier_insights(analysis_id, analysis_result)
+                # Premium tier also uses actionable_insights structure (same as free tier)
+                return self._store_free_tier_insights(analysis_id, analysis_result)
                 
         except Exception as e:
             logger.error(f"Failed to store analysis results: {e}")
             return []
     
     def _store_free_tier_insights(self, analysis_id: str, analysis_result: Dict) -> List[Dict]:
-        """Store free tier insights (actionable_insights structure)"""
+        """Store free tier insights (actionable_insights structure) - BATCHED"""
         
         insights_to_store = []
         
@@ -63,19 +68,27 @@ class EnhancedAnalysisStorage:
                 "mention_count": insight.get('mention_count', 1),
                 "significance": insight.get('significance', 0.0),
                 "proof_quote": insight.get('proof_quote', ''),
+                "competitor_name": insight.get('competitor_source', 'Multiple Sources'),
                 "created_at": datetime.utcnow().isoformat()
             }
             
             insights_to_store.append(insight_data)
-            
-            # Store in database
-            try:
-                self.supabase.table("insights").insert(insight_data).execute()
-                logger.info(f"Stored free tier insight: {insight_data['title']}")
-            except Exception as e:
-                logger.error(f"Error storing free tier insight: {e}")
         
-        logger.info(f"Stored {len(insights_to_store)} free tier insights")
+        # Batch insert all insights at once
+        if insights_to_store:
+            try:
+                self.supabase.table("insights").insert(insights_to_store).execute()
+                logger.info(f"Stored {len(insights_to_store)} free tier insights (batched)")
+            except Exception as e:
+                logger.error(f"Error batch storing insights: {e}")
+                # Fallback to individual inserts
+                for insight_data in insights_to_store:
+                    try:
+                        self.supabase.table("insights").insert(insight_data).execute()
+                        logger.info(f"Stored free tier insight: {insight_data['title']}")
+                    except Exception as e2:
+                        logger.error(f"Error storing individual insight: {e2}")
+        
         return insights_to_store
     
     def _store_premium_tier_insights(self, analysis_id: str, analysis_result: Dict) -> List[Dict]:
@@ -279,3 +292,59 @@ class EnhancedAnalysisStorage:
             count += len(competitor.get('popular_items', []))
         
         return count
+    
+    def _store_evidence_reviews(self, analysis_id: str, evidence_reviews: Dict) -> None:
+        """Store evidence reviews used for analysis - BATCHED"""
+        
+        try:
+            all_evidence_data = []
+            
+            for competitor_name, reviews_by_sentiment in evidence_reviews.items():
+                for sentiment_category, reviews in reviews_by_sentiment.items():
+                    for review in reviews:
+                        evidence_data = {
+                            "analysis_id": analysis_id,
+                            "competitor_name": competitor_name,
+                            "sentiment_category": sentiment_category,
+                            "review_data": review,
+                            "created_at": datetime.utcnow().isoformat()
+                        }
+                        all_evidence_data.append(evidence_data)
+            
+            # Batch insert all evidence reviews at once
+            if all_evidence_data:
+                self.supabase.table("evidence_reviews").insert(all_evidence_data).execute()
+                logger.info(f"Stored {len(all_evidence_data)} evidence reviews for analysis {analysis_id} (batched)")
+            
+        except Exception as e:
+            logger.error(f"Error storing evidence reviews: {e}")
+    
+    def get_evidence_reviews(self, analysis_id: str, user_id: str = None) -> Dict:
+        """Retrieve evidence reviews for an analysis"""
+        
+        try:
+            # Note: analysis_id is already validated by caller to belong to user_id
+            response = self.supabase.table("evidence_reviews").select("*").eq("analysis_id", analysis_id).execute()
+            
+            # Organize by competitor and sentiment
+            evidence_by_competitor = {}
+            
+            for record in response.data:
+                competitor_name = record['competitor_name']
+                sentiment_category = record['sentiment_category']
+                review_data = record['review_data']
+                
+                if competitor_name not in evidence_by_competitor:
+                    evidence_by_competitor[competitor_name] = {
+                        'negative': [],
+                        'positive': [],
+                        'neutral': []
+                    }
+                
+                evidence_by_competitor[competitor_name][sentiment_category].append(review_data)
+            
+            return evidence_by_competitor
+            
+        except Exception as e:
+            logger.error(f"Error retrieving evidence reviews: {e}")
+            return {}

@@ -1,0 +1,20 @@
+graph LR
+    subgraph "Restaurant Intelligence Platform"
+        A[Review Analytics]
+        B[Invoice Processing]
+        C[Price Analytics]
+        D[Menu & Recipe Costing]
+        E[Competitor Menu Analysis]
+    end
+    
+    A -->|Competitor Data| E
+    B -->|Price Data| C
+    B -->|Inventory Data| D
+    C -->|Cost Insights| D
+    E -->|Pricing Intel| C
+    
+    style A fill:#ff6b6b
+    style B fill:#4ecdc4
+    style C fill:#45b7d1
+    style D fill:#96ceb4
+    style E fill:#ffeaa7

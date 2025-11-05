@@ -70,11 +70,6 @@ async def health_check():
         "environment": os.getenv("APP_ENV", "development")
     }
 
-# Root endpoint
-@app.get("/")
-async def root():
-    return {"message": "Competitive Intelligence API", "status": "running"}
-
 # Email confirmation endpoint
 @app.get("/auth/confirm")
 async def confirm_email():
@@ -83,7 +78,7 @@ async def confirm_email():
         html_content = f.read()
     return HTMLResponse(content=html_content, status_code=200)
 
-# Serve frontend in production
+# Serve frontend in production - MUST be last to act as catch-all
 if os.getenv("ENVIRONMENT") == "production":
     frontend_dist = Path(__file__).parent.parent / "frontend" / "dist"
     if frontend_dist.exists():
@@ -91,6 +86,11 @@ if os.getenv("ENVIRONMENT") == "production":
         logger.info(f"✅ Serving frontend from {frontend_dist}")
     else:
         logger.warning(f"⚠️ Frontend dist folder not found at {frontend_dist}")
+else:
+    # Root endpoint only in development
+    @app.get("/")
+    async def root():
+        return {"message": "Competitive Intelligence API", "status": "running"}
 
 if __name__ == "__main__":
     import uvicorn

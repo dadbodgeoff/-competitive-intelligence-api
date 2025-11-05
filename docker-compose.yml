@@ -1,4 +1,4 @@
-name: restaurantiq
+version: '3.8'
 
 services:
   # Backend API

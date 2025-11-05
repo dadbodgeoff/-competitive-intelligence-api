@@ -24,6 +24,11 @@ class RedisCache:
         self.enabled = False
         self.client = None
         
+        # Check if Redis is explicitly disabled
+        if os.getenv('REDIS_ENABLED', 'true').lower() == 'false':
+            logger.info("⚠️ Redis explicitly disabled via REDIS_ENABLED=false")
+            return
+        
         try:
             # Try to connect to Redis
             redis_host = os.getenv('REDIS_HOST', 'localhost')

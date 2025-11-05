@@ -25,6 +25,7 @@ services:
       - ENVIRONMENT=production
       - APP_ENV=production
       - LOG_LEVEL=INFO
+      - REDIS_ENABLED=false
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]

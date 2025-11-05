@@ -20,7 +20,7 @@
  * });
  */
 
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { useQuery, UseQueryResult, keepPreviousData } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 
 interface SmartPollingOptions<T> {
@@ -76,9 +76,9 @@ export function useSmartPolling<T>({
     enabled: enabled && !completedRef.current,
     
     // Dynamic refetch interval with exponential backoff
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
       // Stop polling if complete
-      if (data && isComplete(data)) {
+      if (query.state.data && isComplete(query.state.data)) {
         completedRef.current = true;
         return false;
       }
@@ -102,7 +102,7 @@ export function useSmartPolling<T>({
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     
     // Keep previous data while refetching
-    placeholderData: (previousData) => previousData as T,
+    placeholderData: keepPreviousData,
   });
 
   // Handle completion

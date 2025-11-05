@@ -10,6 +10,9 @@ RUN npm ci
 # Copy frontend source
 COPY frontend/ ./
 
+# Use Docker-specific env file (empty API URL for same-origin requests)
+RUN cp .env.docker .env.production
+
 # Build frontend
 RUN npm run build
 

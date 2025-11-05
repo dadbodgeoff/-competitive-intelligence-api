@@ -17,9 +17,9 @@ try:
 except ImportError:
     print("⚠️  python-dotenv not installed, using environment variables directly")
 
-# Supabase credentials - hardcoded for development
-SUPABASE_URL = os.getenv("SUPABASE_URL") or "https://kapbytccfblkfqrdviec.supabase.co"
-SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY") or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthcGJ5dGNjZmJsa2ZxcmR2aWVjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MjE4ODI2NiwiZXhwIjoyMDc3NzY0MjY2fQ.3APhyqsQDqECNvJKzRfVR4KINLDGxoJSevXPXnh_u2c"
+# Supabase credentials - load from environment
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     print("❌ Missing SUPABASE_URL or SUPABASE_SERVICE_KEY")

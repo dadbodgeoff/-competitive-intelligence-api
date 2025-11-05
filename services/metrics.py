@@ -16,7 +16,7 @@ class SimpleMetrics:
     
     def __init__(self):
         supabase_url = os.getenv("SUPABASE_URL")
-        supabase_key = os.getenv("SUPABASE_SERVICE_KEY")
+        supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
         
         if not supabase_url or not supabase_key:
             logger.warning("Metrics disabled: Supabase credentials not found")

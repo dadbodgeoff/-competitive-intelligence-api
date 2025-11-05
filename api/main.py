@@ -203,7 +203,7 @@ async def health_check():
     # Check database connectivity
     try:
         supabase_url = os.getenv("SUPABASE_URL")
-        supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_SERVICE_KEY")
+        supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
         if supabase_url and supabase_key:
             client = create_client(supabase_url, supabase_key)
             client.table("users").select("id").limit(1).execute()
@@ -243,7 +243,7 @@ async def detailed_health_check():
     # Database
     try:
         supabase_url = os.getenv("SUPABASE_URL")
-        supabase_key = os.getenv("SUPABASE_SERVICE_KEY")
+        supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
         client = create_client(supabase_url, supabase_key)
         client.table("users").select("id").limit(1).execute()
         health["checks"]["database"] = "ok"

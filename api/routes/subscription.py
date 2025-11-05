@@ -253,7 +253,7 @@ async def admin_upgrade_user(
             from supabase import create_client
             import os
             supabase_url = os.getenv("SUPABASE_URL")
-            supabase_key = os.getenv("SUPABASE_SERVICE_KEY")
+            supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
             admin_client = create_client(supabase_url, supabase_key)
             
             # Search by email in auth.users

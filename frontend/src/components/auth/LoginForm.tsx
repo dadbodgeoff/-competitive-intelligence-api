@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuthStore } from '@/stores/authStore';
 import { LoginCredentials } from '@/types/auth';
 import { parseAuthError } from '@/utils/errorMessages';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/utils/supabase';
 import { toast } from '@/hooks/use-toast';
 
 const loginSchema = z.object({

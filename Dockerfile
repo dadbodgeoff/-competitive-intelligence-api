@@ -10,11 +10,11 @@ RUN npm ci
 # Copy frontend source
 COPY frontend/ ./
 
-# Use Docker-specific env file (empty API URL for same-origin requests)
-RUN cp .env.docker .env.production
+# .env.production is already in the frontend folder with Supabase credentials
+# No need to overwrite it with .env.docker
 
-# Build frontend
-RUN npm run build
+# Build frontend with explicit production mode
+RUN NODE_ENV=production npm run build
 
 # Python backend stage
 FROM python:3.11-slim

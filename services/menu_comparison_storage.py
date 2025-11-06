@@ -36,6 +36,40 @@ class MenuComparisonStorage:
         self.client: Client = create_client(supabase_url, supabase_key)
         logger.info("✅ Menu Comparison Storage initialized")
     
+    def _sanitize_price(self, value) -> Optional[float]:
+        """
+        Convert price value to float, handling non-numeric strings
+        
+        Args:
+            value: Price value (could be number, string, or None)
+            
+        Returns:
+            Float value or None if invalid
+        """
+        if value is None:
+            return None
+        
+        # If already a number, return it
+        if isinstance(value, (int, float)):
+            return float(value)
+        
+        # If string, try to convert
+        if isinstance(value, str):
+            # Remove common non-numeric characters
+            cleaned = value.strip().replace('$', '').replace(',', '')
+            
+            # Check for non-numeric strings like "Varies", "Market Price", etc.
+            if not cleaned or cleaned.lower() in ['varies', 'market', 'mp', 'n/a', 'na', 'tbd']:
+                return None
+            
+            try:
+                return float(cleaned)
+            except ValueError:
+                logger.warning(f"⚠️ Could not convert price '{value}' to number, storing as None")
+                return None
+        
+        return None
+    
     def create_analysis(
         self,
         user_id: str,
@@ -280,6 +314,12 @@ class MenuComparisonStorage:
         try:
             insight_records = []
             for insight in insights:
+                # Sanitize numeric fields - convert non-numeric values to None
+                user_price = self._sanitize_price(insight.get('user_item_price'))
+                competitor_price = self._sanitize_price(insight.get('competitor_item_price'))
+                price_diff = self._sanitize_price(insight.get('price_difference'))
+                price_diff_pct = self._sanitize_price(insight.get('price_difference_percent'))
+                
                 insight_records.append({
                     "analysis_id": analysis_id,
                     "insight_type": insight.get('insight_type', 'opportunity'),
@@ -287,12 +327,12 @@ class MenuComparisonStorage:
                     "title": insight.get('title'),
                     "description": insight.get('description'),
                     "user_item_name": insight.get('user_item_name'),
-                    "user_item_price": insight.get('user_item_price'),
+                    "user_item_price": user_price,
                     "competitor_item_name": insight.get('competitor_item_name'),
-                    "competitor_item_price": insight.get('competitor_item_price'),
+                    "competitor_item_price": competitor_price,
                     "competitor_business_name": insight.get('competitor_business_name'),
-                    "price_difference": insight.get('price_difference'),
-                    "price_difference_percent": insight.get('price_difference_percent'),
+                    "price_difference": price_diff,
+                    "price_difference_percent": price_diff_pct,
                     "confidence": insight.get('confidence', 'medium'),
                     "priority": insight.get('priority', 50),
                     "evidence": insight.get('evidence'),

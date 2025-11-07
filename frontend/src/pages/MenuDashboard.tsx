@@ -68,8 +68,9 @@ export function MenuDashboard() {
       const response = await apiClient.get('/api/v1/menu/current');
       return response.data;
     },
+    refetchOnMount: 'always',  // Always fetch fresh data on mount
     refetchOnWindowFocus: true,
-    staleTime: 30000,
+    staleTime: 0,  // Don't cache - always fetch fresh
   });
 
   const menu = menuData?.menu ? {

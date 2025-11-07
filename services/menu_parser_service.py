@@ -105,6 +105,7 @@ class MenuParserService:
                     "top_p": 0.95,
                     "top_k": 40,
                     "max_output_tokens": 8192,
+                    "response_mime_type": "application/json",  # Force valid JSON output
                 }
             )
             
@@ -276,26 +277,45 @@ Return ONLY valid JSON in this exact format:
 
 Extract every actual menu item you can see. Be thorough and accurate."""
     
+    def _clean_json_response(self, text: str) -> str:
+        """Clean and repair common JSON issues from LLM responses"""
+        import re
+        
+        # Remove markdown code blocks
+        text = re.sub(r'```json\s*', '', text)
+        text = re.sub(r'```\s*$', '', text)
+        text = text.strip()
+        
+        # Remove any text before first {
+        first_brace = text.find('{')
+        if first_brace > 0:
+            logger.warning(f"⚠️  Removing {first_brace} chars before JSON")
+            text = text[first_brace:]
+        
+        # Remove any text after last }
+        last_brace = text.rfind('}')
+        if last_brace > 0 and last_brace < len(text) - 1:
+            logger.warning(f"⚠️  Removing {len(text) - last_brace - 1} chars after JSON")
+            text = text[:last_brace + 1]
+        
+        # Fix common escape issues
+        text = text.replace('\\n', ' ')  # Replace newlines with spaces
+        
+        return text.strip()
+    
     def _parse_response(self, response_text: str) -> Dict:
-        """Parse Gemini response into structured data"""
+        """Parse Gemini response into structured data with robust error handling"""
         import json
         
-        # Remove markdown code blocks if present
-        response_text = response_text.strip()
-        if response_text.startswith("```json"):
-            response_text = response_text[7:]
-        if response_text.startswith("```"):
-            response_text = response_text[3:]
-        if response_text.endswith("```"):
-            response_text = response_text[:-3]
-        
-        response_text = response_text.strip()
+        # Clean the response
+        cleaned_text = self._clean_json_response(response_text)
         
         # Parse JSON
         try:
-            menu_data = json.loads(response_text)
+            menu_data = json.loads(cleaned_text)
             return menu_data
         except json.JSONDecodeError as e:
             logger.error(f"❌ JSON parsing failed: {e}")
-            logger.error(f"Raw response: {response_text[:500]}...")
+            logger.error(f"Cleaned response (first 500 chars): {cleaned_text[:500]}...")
+            logger.error(f"Original response (first 500 chars): {response_text[:500]}...")
             raise ValueError(f"Failed to parse Gemini response: {e}")

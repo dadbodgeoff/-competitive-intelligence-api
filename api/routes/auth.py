@@ -37,7 +37,8 @@ async def register_user(
                 "data": {
                     "first_name": user_data.first_name,
                     "last_name": user_data.last_name
-                }
+                },
+                "email_redirect_to": "https://restaurantiq.us/dashboard"
             }
         })
         logger.info(f"🔵 Supabase sign_up completed. User: {auth_response.user is not None}")

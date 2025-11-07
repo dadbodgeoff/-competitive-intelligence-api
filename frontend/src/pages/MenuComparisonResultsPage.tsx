@@ -60,8 +60,9 @@ export function MenuComparisonResultsPage() {
     queryKey: ['analysis-results', analysisId],
     queryFn: () => menuComparisonAPI.getAnalysisResults(analysisId!),
     enabled: !!analysisId,
+    refetchOnMount: 'always',  // Always fetch fresh data on mount
     refetchOnWindowFocus: true,
-    staleTime: 30000,
+    staleTime: 0,  // Don't cache - always fetch fresh
   });
 
   // Save comparison mutation

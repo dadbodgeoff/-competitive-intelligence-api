@@ -62,9 +62,15 @@ export function MenuParsingProgressPage() {
     queryKey: ['analysis-status', analysisId],
     queryFn: () => menuComparisonAPI.getAnalysisStatus(analysisId!),
     enabled: !!analysisId && !isComplete && !hasError,
-    refetchInterval: 2000,
+    refetchInterval: (query) => {
+      // Stop polling when complete
+      if (query.state.data?.status === 'completed') {
+        return false;
+      }
+      return 2000;
+    },
     refetchOnWindowFocus: true,
-    staleTime: 1000,
+    staleTime: 0,
   });
 
   // Update elapsed time

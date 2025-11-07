@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/design-system/shadcn/components/card';
 import { Button } from '@/design-system/shadcn/components/button';

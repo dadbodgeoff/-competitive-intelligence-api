@@ -63,9 +63,12 @@ export const InvoiceDemoCard: React.FC = () => {
   };
 
   return (
-    <Card className="p-6 md:p-8 border-2 border-dashed border-slate-700 hover:border-emerald-500 transition-colors bg-slate-900">
-      <CardHeader className="p-0 mb-4">
-        <CardTitle className="text-xl md:text-2xl text-white">Live Demo</CardTitle>
+    <Card className="p-8 md:p-12 border-2 border-emerald-500/30 hover:border-emerald-500 transition-all bg-gradient-to-br from-slate-900 to-slate-800 shadow-2xl shadow-emerald-500/10">
+      <CardHeader className="p-0 mb-6">
+        <CardTitle className="text-3xl md:text-4xl font-bold text-white mb-2">
+          See It In Action
+        </CardTitle>
+        <p className="text-lg md:text-xl text-emerald-400">Watch an invoice transform in real-time</p>
       </CardHeader>
       <CardContent className="p-0">
         <div 
@@ -75,22 +78,22 @@ export const InvoiceDemoCard: React.FC = () => {
           tabIndex={0}
           onKeyDown={(e) => e.key === 'Enter' && startDemo()}
         >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                <Upload className="w-6 h-6 text-white" />
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-emerald-500/30">
+                <Upload className="w-8 h-8 text-white" />
               </div>
               <div className="flex-1">
-                <p className="text-sm md:text-base font-semibold text-white">
+                <p className="text-lg md:text-xl font-semibold text-white mb-1">
                   {isAnimating ? 'Processing...' : 'Click to See What Happens'}
                 </p>
-                <p className="text-xs md:text-sm text-gray-400 mt-1">
+                <p className="text-base md:text-lg text-slate-200 font-medium">
                   {currentStage}
                 </p>
               </div>
             </div>
             {progress === 100 && (
-              <Badge className="bg-emerald-500 text-white px-3 py-1 text-xs">
+              <Badge className="bg-emerald-500 text-white px-4 py-2 text-sm font-semibold">
                 ✓ Done
               </Badge>
             )}
@@ -98,11 +101,11 @@ export const InvoiceDemoCard: React.FC = () => {
           
           <Progress 
             value={progress} 
-            className="h-2 bg-slate-800"
+            className="h-3 bg-slate-800"
           />
           
           {!isAnimating && (
-            <p className="text-sm text-center text-gray-500 mt-4 group-hover:text-emerald-400 transition-colors">
+            <p className="text-base md:text-lg text-center text-slate-400 mt-6 group-hover:text-emerald-400 transition-colors font-medium">
               Click to see how an invoice turns into live intelligence
             </p>
           )}

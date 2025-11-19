@@ -16,6 +16,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    env_file:
+      - .env
     ports:
       - "8000:8000"
     volumes:
@@ -27,16 +29,16 @@ services:
       - ./prompts:/app/prompts
       - ./database:/app/database
     environment:
-      # Supabase (from your .env - update these values)
-      - SUPABASE_URL=https://kapbytccfblkfqrdviec.supabase.co
-      - SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthcGJ5dGNjZmJsa2ZxcmR2aWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxODgyNjYsImV4cCI6MjA3Nzc2NDI2Nn0.ugvWaJ2mkAea_rirLuX70-4oVJSgmD6STT3mdphOssw
-      - SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthcGJ5dGNjZmJsa2ZxcmR2aWVjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MjE4ODI2NiwiZXhwIjoyMDc3NzY0MjY2fQ.3APhyqsQDqECNvJKzRfVR4KINLDGxoJSevXPXnh_u2c
-      - SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthcGJ5dGNjZmJsa2ZxcmR2aWVjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MjE4ODI2NiwiZXhwIjoyMDc3NzY0MjY2fQ.3APhyqsQDqECNvJKzRfVR4KINLDGxoJSevXPXnh_u2c
-      - JWT_SECRET_KEY=o1PwTW4TIFe2lqxPJIx/mueXqcdF2l5b3DWlmSA2TTPwEUxs6vysyG7OgdYvwBoegHG4bNNjNelEpdQLwNcl8A==
-      - OUTSCRAPER_API_KEY=ZWNlZGE0NzFhOGE1NGQxYjhhYjE3MzBlZjRjMWE2YjJ8NmNhZTQzMWFiYg
-      - GOOGLE_GEMINI_API_KEY=AIzaSyByUR9t7Zu2mXAQyVXDr4CaSBvvZoRvIxE
-      - GOOGLE_PLACES_API_KEY=AIzaSyDPODKuwtE1YiN2jcGCDkIWJSYDN5TLAC0
-      - SERPAPI_KEY=d36efe5ca9439abd39403a11c463625951c5acd83c8cf754262498440625bafe
+      # Secrets pulled from .env to mirror production
+      - SUPABASE_URL=${SUPABASE_URL:-https://kapbytccfblkfqrdviec.supabase.co}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthcGJ5dGNjZmJsa2ZxcmR2aWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxODgyNjYsImV4cCI6MjA3Nzc2NDI2Nn0.ugvWaJ2mkAea_rirLuX70-4oVJSgmD6STT3mdphOssw}
+      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthcGJ5dGNjZmJsa2ZxcmR2aWVjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MjE4ODI2NiwiZXhwIjoyMDc3NzY0MjY2fQ.3APhyqsQDqECNvJKzRfVR4KINLDGxoJSevXPXnh_u2c}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthcGJ5dGNjZmJsa2ZxcmR2aWVjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MjE4ODI2NiwiZXhwIjoyMDc3NzY0MjY2fQ.3APhyqsQDqECNvJKzRfVR4KINLDGxoJSevXPXnh_u2c}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-o1PwTW4TIFe2lqxPJIx/mueXqcdF2l5b3DWlmSA2TTPwEUxs6vysyG7OgdYvwBoegHG4bNNjNelEpdQLwNcl8A==}
+      - OUTSCRAPER_API_KEY=${OUTSCRAPER_API_KEY:-ZWNlZGE0NzFhOGE1NGQxYjhhYjE3MzBlZjRjMWE2YjJ8NmNhZTQzMWFiYg}
+      - GOOGLE_GEMINI_API_KEY=${GOOGLE_GEMINI_API_KEY:-AIzaSyByUR9t7Zu2mXAQyVXDr4CaSBvvZoRvIxE}
+      - GOOGLE_PLACES_API_KEY=${GOOGLE_PLACES_API_KEY:-AIzaSyDPODKuwtE1YiN2jcGCDkIWJSYDN5TLAC0}
+      - SERPAPI_KEY=${SERPAPI_KEY:-d36efe5ca9439abd39403a11c463625951c5acd83c8cf754262498440625bafe}
       # Docker overrides
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -58,6 +60,8 @@ services:
     command: sh -c "npm install && npm run dev -- --host"
     environment:
       - VITE_API_URL=http://localhost:8000
+      - VITE_SUPABASE_URL=${SUPABASE_URL:-https://kapbytccfblkfqrdviec.supabase.co}
+      - VITE_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImthcGJ5dGNjZmJsa2ZxcmR2aWVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxODgyNjYsImV4cCI6MjA3Nzc2NDI2Nn0.ugvWaJ2mkAea_rirLuX70-4oVJSgmD6STT3mdphOssw}
     restart: unless-stopped
 
   # Redis

@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuthStore } from '@/stores/authStore';
 import { LoginCredentials } from '@/types/auth';
 import { parseAuthError } from '@/utils/errorMessages';
-import { supabase } from '@/utils/supabase';
+import { supabase, isSupabaseEnabled } from '@/utils/supabase';
 import { toast } from '@/hooks/use-toast';
 
 const loginSchema = z.object({
@@ -44,6 +44,15 @@ export function LoginForm() {
   };
 
   const handleGoogleSignIn = async () => {
+    if (!isSupabaseEnabled || !supabase) {
+      toast({
+        title: 'Google sign-in unavailable',
+        description: 'Google sign-in is disabled in this environment. Use email instead.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -115,7 +124,7 @@ export function LoginForm() {
               variant="outline"
               className="w-full h-12 text-base font-medium bg-white hover:bg-gray-50 text-gray-900 border-gray-300"
               onClick={handleGoogleSignIn}
-              disabled={isLoading}
+              disabled={isLoading || !isSupabaseEnabled}
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                 <path

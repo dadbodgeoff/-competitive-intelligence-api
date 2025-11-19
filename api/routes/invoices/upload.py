@@ -2,10 +2,12 @@
 Invoice Upload Routes
 Handles file upload to storage
 """
-from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 import logging
 import time
+import uuid
+from datetime import datetime
 
 from services.invoice_storage_service import InvoiceStorageService
 from services.file_validator import FileValidator
@@ -13,6 +15,10 @@ from services.invoice_monitoring_service import monitoring_service
 from services.invoice_duplicate_detector import InvoiceDuplicateDetector
 from api.middleware.auth import get_current_user
 from api.middleware.rate_limiting import rate_limit
+from services.guest_session_store import (
+    reserve_guest_upload_slot,
+    store_guest_session,
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/invoices", tags=["invoice-operations"])
@@ -152,3 +158,91 @@ async def upload_invoice(
             "error": str(e),
             "session_id": session_id
         }, status_code=500)
+
+
+@router.post("/guest-upload")
+async def guest_upload_invoice(
+    request: Request,
+    file: UploadFile = File(...)
+):
+    """
+    Upload invoice file for landing page demo (unauthenticated guest mode)
+    """
+    client_ip = request.client.host if request.client else "unknown"
+    wait_seconds = reserve_guest_upload_slot(client_ip or "unknown")
+
+    if wait_seconds is not None:
+        raise HTTPException(
+            status_code=429,
+            detail={
+                "error": "guest_upload_limit",
+                "message": "You already ran your free invoice demo. Please try again later or create a free account.",
+                "retry_after_seconds": wait_seconds,
+            }
+        )
+
+    guest_session_id = str(uuid.uuid4())
+    guest_user_id = f"guest_{guest_session_id}"
+    monitoring_session_id = monitoring_service.start_session(guest_user_id, file.filename)
+    upload_start = time.time()
+
+    try:
+        validation = await file_validator.validate_file(file)
+        if not validation["valid"]:
+            monitoring_service.log_error(monitoring_session_id, "guest_upload", validation["error"])
+            raise HTTPException(status_code=400, detail=validation["error"])
+
+        file.file.seek(0)
+        file_content = await file.read()
+        file_hash = duplicate_detector.calculate_file_hash(file_content)
+        file.file.seek(0)
+
+        if await duplicate_detector.is_processing(guest_user_id, file_hash):
+            monitoring_service.log_error(
+                monitoring_session_id,
+                "guest_upload",
+                "File is currently being processed. Please wait.",
+            )
+            raise HTTPException(
+                status_code=409,
+                detail={
+                    "error": "processing",
+                    "message": "This file is currently being processed. Please wait a moment.",
+                },
+            )
+
+        await duplicate_detector.mark_processing(guest_user_id, file_hash)
+        try:
+            file_url = await storage_service.upload_file(
+                file=file,
+                user_id=guest_user_id,
+            )
+        finally:
+            await duplicate_detector.clear_processing(guest_user_id, file_hash)
+
+        upload_time = time.time() - upload_start
+        monitoring_service.log_upload(monitoring_session_id, file_url, upload_time)
+
+        session_payload = {
+            "session_id": guest_session_id,
+            "file_url": file_url,
+            "filename": file.filename,
+            "guest_user_id": guest_user_id,
+            "monitoring_session_id": monitoring_session_id,
+            "uploaded_at": datetime.utcnow().isoformat(),
+        }
+        store_guest_session(guest_session_id, session_payload)
+
+        return JSONResponse({
+            "success": True,
+            "session_id": guest_session_id,
+            "filename": file.filename,
+        })
+
+    except HTTPException:
+        monitoring_service.log_error(monitoring_session_id, "guest_upload", "HTTP error during guest upload")
+        raise
+    except Exception as e:
+        monitoring_service.log_error(monitoring_session_id, "guest_upload", str(e))
+        logger.exception("Guest upload failed")
+        raise HTTPException(status_code=500, detail="Failed to upload invoice. Please try again.") from e

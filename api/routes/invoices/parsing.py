@@ -15,6 +15,7 @@ from services.invoice_validator_service import InvoiceValidatorService
 from services.invoice_duplicate_detector import InvoiceDuplicateDetector
 from services.invoice_monitoring_service import monitoring_service
 from services.error_sanitizer import sanitize_parsing_error
+from services.guest_session_store import get_guest_session
 from api.middleware.auth import get_current_user
 from api.middleware.rate_limiting import check_invoice_parse_limit, release_rate_limit, rate_limit
 from api.middleware.subscription import check_usage_limits
@@ -34,6 +35,52 @@ class ParseRequest(BaseModel):
     file_url: str
     vendor_hint: Optional[str] = None
     session_id: Optional[str] = None
+
+
+@router.get("/guest-parse-stream")
+async def guest_parse_invoice_stream(
+    session_id: str,
+    vendor_hint: Optional[str] = None
+):
+    """
+    Stream invoice parsing for guest uploads (landing page demo)
+    """
+    session = get_guest_session(session_id)
+    if not session:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error": "session_not_found",
+                "message": "Upload session expired or not found. Please upload again.",
+            }
+        )
+
+    file_url = session.get("file_url")
+    guest_user_id = session.get("guest_user_id", f"guest_{session_id}")
+
+    if not file_url:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error": "invalid_session",
+                "message": "Session is missing file information. Please upload again.",
+            }
+        )
+
+    return StreamingResponse(
+        streaming_parser.parse_invoice_streaming(
+            file_url=file_url,
+            user_id=guest_user_id,
+            vendor_hint=vendor_hint
+        ),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache, no-transform",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+            "Content-Encoding": "none",
+        }
+    )
 
 
 @router.get("/parse-stream")
@@ -69,7 +116,6 @@ async def parse_invoice_stream(
             "Content-Encoding": "none",  # Prevent compression buffering
         }
     )
-
 
 @router.post("/parse")
 async def parse_invoice(
@@ -200,3 +246,4 @@ async def check_duplicate(
             "success": False,
             "error": sanitize_parsing_error(e)
         }, status_code=500)
+

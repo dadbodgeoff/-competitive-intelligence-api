@@ -130,6 +130,11 @@ async def login_user(
     Login user with Supabase Auth and set httpOnly cookies
     """
     try:
+        logger.info(f"🔵 Login attempt for email: {credentials.email}")
+        # Log Supabase URL being used (without exposing full key)
+        from api.config import SUPABASE_URL
+        logger.debug(f"🔵 Connecting to Supabase: {SUPABASE_URL}")
+        
         # Authenticate with Supabase
         auth_response = supabase.auth.sign_in_with_password({
             "email": credentials.email,
@@ -137,6 +142,7 @@ async def login_user(
         })
 
         if auth_response.user is None or auth_response.session is None:
+            logger.warning(f"⚠️ Login failed: auth_response.user or session is None")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid credentials"
@@ -144,6 +150,7 @@ async def login_user(
 
         user = auth_response.user
         user_id = user.id
+        logger.info(f"✅ Supabase authentication successful for user {user_id}")
 
         # Fetch subscription tier from public.users table using service client to bypass RLS
         subscription_tier = "free"  # Default
@@ -194,14 +201,36 @@ async def login_user(
             },
             "message": "Login successful"
         }
-        logger.debug(f"Login successful for user {user_id}, cookies set")
+        logger.info(f"✅ Login successful for user {user_id}, cookies set")
         return response_data
 
+    except HTTPException:
+        # Re-raise HTTP exceptions as-is
+        raise
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid credentials"
-        )
+        # Log the actual error for debugging
+        logger.error(f"❌ Login failed: {type(e).__name__}: {str(e)}")
+        import traceback
+        logger.error(f"❌ Full traceback: {traceback.format_exc()}")
+        
+        # Check if it's a Supabase-specific error
+        error_message = str(e).lower()
+        if "network" in error_message or "connection" in error_message or "timeout" in error_message:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Authentication service temporarily unavailable. Please try again."
+            )
+        elif "invalid" in error_message and "credentials" in error_message:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid credentials"
+            )
+        else:
+            # Generic error - don't expose details to user
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid credentials"
+            )
 
 @router.post("/logout")
 async def logout_user(

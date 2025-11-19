@@ -25,7 +25,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuthStore } from '@/stores/authStore';
 import { RegisterData } from '@/types/auth';
 import { parseAuthError } from '@/utils/errorMessages';
-import { supabase } from '@/utils/supabase';
+import { supabase, isSupabaseEnabled } from '@/utils/supabase';
 import { toast } from '@/hooks/use-toast';
 
 const registerSchema = z
@@ -75,6 +75,15 @@ export function RegisterForm() {
   };
 
   const handleGoogleSignIn = async () => {
+    if (!isSupabaseEnabled || !supabase) {
+      toast({
+        title: 'Google sign-in unavailable',
+        description: 'Google sign-in is disabled in this environment. Use email instead.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -157,7 +166,7 @@ export function RegisterForm() {
               variant="outline"
               className="w-full h-12 text-base font-medium bg-white hover:bg-gray-50 text-gray-900 border-gray-300"
               onClick={handleGoogleSignIn}
-              disabled={isLoading}
+              disabled={isLoading || !isSupabaseEnabled}
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                 <path

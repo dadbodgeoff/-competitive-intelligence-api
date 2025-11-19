@@ -2,19 +2,27 @@ import React from 'react';
 
 export const TestimonialCard: React.FC = () => {
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 md:p-12 h-full flex flex-col">
-      <p className="text-xl md:text-2xl text-white font-medium leading-relaxed mb-6 flex-1">
-        &ldquo;RestaurantIQ killed the Sunday spreadsheet marathon. Our GM opens it during prep, sees what jumped in price, and we adjust pars before doors open. It&rsquo;s part of the shift now.&rdquo;
-      </p>
-      <div className="flex items-center gap-3 text-slate-400">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-white font-bold">
-          MR
-        </div>
-        <div>
-          <p className="font-semibold text-white text-base md:text-lg">Maya R.</p>
-          <p className="text-sm md:text-base">GM, 3-unit fast casual</p>
-        </div>
+    <div className="surface-glass-muted border border-white/5 rounded-3xl p-8 md:p-12 h-full flex flex-col space-y-6 hover-lift">
+      <div>
+        <p className="text-sm uppercase tracking-widest text-emerald-300 mb-3">Founding cohort</p>
+        <h3 className="text-2xl md:text-3xl font-bold text-white leading-tight">
+          You&rsquo;ll get hands-on support while we build around your kitchen.
+        </h3>
       </div>
+      <ul className="space-y-4 text-slate-300 text-base leading-relaxed flex-1">
+        <li>
+          <span className="text-white font-semibold">What you can use today:</span> Invoice Guard, Recipe Brain, Competitor Radar, and the live uploader without signing a contract.
+        </li>
+        <li>
+          <span className="text-white font-semibold">What we ask from you:</span> real invoices, honest feedback, and a 15-minute weekly touchpoint so we prioritize the right workflows.
+        </li>
+        <li>
+          <span className="text-white font-semibold">What you get:</span> direct access to the builder, roadmap influence, and grandfathered pricing when unlimited plans launch.
+        </li>
+      </ul>
+      <p className="text-sm text-slate-400">
+        Ready to be part of the founding cohort? We&rsquo;ll set you up personally after you create a free account.
+      </p>
     </div>
   );
 };

@@ -6,16 +6,16 @@ import { Button } from '@/design-system/shadcn/components/button';
 import { Badge } from '@/design-system/shadcn/components/badge';
 
 const freeTierFeatures = [
-  '1 invoice upload per week + 2 bonus every 28 days',
-  '2 competitor analyses per week',
-  '1 premium deep-dive analysis per week',
-  '1 menu upload & comparison per week',
-  'Full COGS + recipe linking on everything you upload',
+  '1 invoice upload per week + 2 bonus credits every 28 days',
+  'Full access to Invoice Guard, Recipe Brain, and Competitor Radar in sandbox mode',
+  'Save parsed invoices, recipes, and price alerts forever once you register',
+  'Export-ready data and PDF summaries for each invoice you keep',
+  'Email support directly with the founder-operator who built it',
 ];
 
 const premiumFeatures = [
-  'Fair price for real restaurants',
-  'First 500 on the waitlist get grandfathered forever',
+  'Unlimited uploads, competitor runs, and historical storage',
+  'Team permissions, audit logs, and dedicated onboarding for multi-unit groups',
 ];
 
 export const PricingSection: React.FC = () => {
@@ -27,13 +27,13 @@ export const PricingSection: React.FC = () => {
             Right now – completely free (no card, no catch)
           </h2>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Start free. Upgrade when you're ready.
+            Perfect for single-unit operators or curious teams. Running 5+ locations? Let’s chat so we can size the unlimited tier for you.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-5xl mx-auto">
           {/* Free Forever Plan */}
-          <Card className="bg-slate-800/50 border-2 border-emerald-500/30 hover:border-emerald-500 transition-all duration-300 group overflow-hidden relative">
+          <Card className="gradient-outline surface-glass rounded-3xl border-2 border-emerald-500/30 hover:border-emerald-400/50 transition-all duration-300 group overflow-hidden relative">
              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-cyan-500" />
             <CardContent className="p-8 md:p-10">
               <div className="mb-8">
@@ -60,18 +60,18 @@ export const PricingSection: React.FC = () => {
                   size="lg" 
                   className="w-full h-14 text-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20 group-hover:shadow-emerald-500/20 transition-all"
                 >
-                  Start Free Right Now
+                  Start free & find your first savings
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <p className="text-center text-slate-500 text-sm mt-4">
-                10 seconds to setup, no credit card
+                One upload per week + auto reminder when your limit resets.
               </p>
             </CardContent>
           </Card>
 
           {/* Waitlist Plan */}
-          <Card className="bg-slate-900/50 border border-slate-700 hover:border-slate-600 transition-colors relative overflow-hidden flex flex-col">
+          <Card className="surface-glass-muted border border-slate-700 hover:border-slate-500 transition-colors relative overflow-hidden flex flex-col rounded-3xl">
             <CardContent className="p-8 md:p-10 flex-1 flex flex-col">
               <div className="mb-8">
                  <div className="flex items-center justify-between mb-4">
@@ -80,7 +80,7 @@ export const PricingSection: React.FC = () => {
                     <Clock className="w-3 h-3" /> Coming in 7-14 days
                   </Badge>
                 </div>
-                <p className="text-slate-400">Fair price for real restaurants.</p>
+                <p className="text-slate-400">Designed for multi-unit groups that need unlimited parsing, exports, and permissions.</p>
               </div>
 
               <div className="flex-1 flex flex-col justify-center space-y-6 mb-10 border-l-2 border-slate-700 pl-6 py-4">
@@ -98,11 +98,11 @@ export const PricingSection: React.FC = () => {
                     variant="outline"
                     className="w-full h-14 text-lg border-2 border-slate-600 hover:border-white hover:bg-slate-800 text-slate-300 hover:text-white transition-all"
                   >
-                    Join Waitlist → Lock Your Price
+                    Join the waitlist → lock in founder pricing
                   </Button>
                 </Link>
                 <p className="text-center text-slate-500 text-sm mt-4">
-                  First 500 get grandfathered pricing
+                  We&rsquo;ll reach out for a quick sizing call and lock in your grandfathered rate.
                 </p>
               </div>
             </CardContent>
@@ -115,14 +115,14 @@ export const PricingSection: React.FC = () => {
             You’ve got nothing to lose and thousands to gain every month.
           </h2>
           <p className="text-xl md:text-2xl text-slate-300 mb-10 leading-relaxed">
-            Drop one invoice. If it doesn’t blow your mind in 30 seconds, delete your account and forget I exist.
+            Drop one invoice. If it doesn’t surface something actionable in 30 seconds, delete your account and tell us what we missed.
           </p>
           <Link to="/register">
             <Button 
               size="lg" 
               className="cta-button-lg bg-white text-slate-900 hover:bg-slate-100 hover:scale-105 shadow-xl border-0"
             >
-              Try It Free – See Your Numbers Now
+              Send me a login—let’s find margin
             </Button>
           </Link>
         </div>

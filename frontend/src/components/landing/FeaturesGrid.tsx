@@ -1,159 +1,96 @@
 import React from 'react';
-import { CheckCircle2, TrendingUp, DollarSign, Clock, AlertCircle } from 'lucide-react';
+import { CheckCircle2, TrendingUp, DollarSign, Clock, Compass } from 'lucide-react';
+
+const capabilities = [
+  {
+    label: 'Protect margins',
+    title: 'Invoice Guard',
+    description: 'Every invoice upload is reconciled against your catalog and tolerance thresholds.',
+    bullets: [
+      'Auto-matches 100% of line items with fuzzy matching and alias handling.',
+      'Flags price creep, unit pack tricks, and delivery-fee shifts in seconds.',
+      'Surfaces 7/28/90-day averages alongside the current charge.',
+    ],
+    icon: <DollarSign className="w-6 h-6 text-emerald-300" />,
+    outcome: 'Decide margin fixes before the next truck unloads.',
+  },
+  {
+    label: 'Automate ops',
+    title: 'Recipe Brain',
+    description: 'Recipes stay tied to live invoice costs—no CSV exports or manual clicks.',
+    bullets: [
+      'Links ingredients to the latest vendor cost the moment invoices post.',
+      'Rebuilds plate and batch cost automatically and highlights overruns.',
+      'Notifies chefs when target food cost is breached so they can adjust pars.',
+    ],
+    icon: <Clock className="w-6 h-6 text-cyan-300" />,
+    outcome: 'Prep meetings start with today’s costs, not last week’s spreadsheet.',
+  },
+  {
+    label: 'Win market share',
+    title: 'Competitor Radar',
+    description: 'See how nearby restaurants price and what guests rave or complain about.',
+    bullets: [
+      'Pulls menus, pricing, and positioning from 5 competitors in a click.',
+      'Summarises reviews so you know what the neighborhood loves or hates.',
+      'Recommends price moves, promos, or dishes worth spotlighting.',
+    ],
+    icon: <Compass className="w-6 h-6 text-purple-300" />,
+    outcome: 'Run menu meetings with up-to-date comps and guest sentiment on-screen.',
+  },
+  {
+    label: 'Stay on top of shifts',
+    title: 'Opening Briefing',
+    description: 'A daily card that shows leaks, wins, and what to act on before doors open.',
+    bullets: [
+      'Highlights yesterday’s price alerts, new vendor quotes, and menu flags.',
+      'Shows savings captured and where attention is still needed.',
+      'Built for the opening manager checklist—glance, act, move on.',
+    ],
+    icon: <TrendingUp className="w-6 h-6 text-emerald-200" />,
+    outcome: 'Morning duties become a controlled flyover instead of firefighting.',
+  },
+];
 
 export const FeaturesGrid: React.FC = () => {
   return (
-    <section className="py-16 md:py-24">
-      <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-3xl md:text-5xl font-black text-center text-white mb-16 leading-tight">
-          What actually happens when you<br/>upload invoices + your menu
-        </h2>
-        
-        <div className="bg-slate-800/50 rounded-2xl border border-slate-700 overflow-hidden">
-          <table className="w-full roi-table">
-            <thead>
-              <tr className="bg-slate-900/80 border-b border-slate-700">
-                <th className="text-left py-6 px-8 text-xl font-bold text-slate-300 w-[25%]">What you do</th>
-                <th className="text-left py-6 px-8 text-xl font-bold text-emerald-400 w-[45%]">What RestaurantIQ does instantly</th>
-                <th className="text-left py-6 px-8 text-xl font-bold text-white w-[30%]">Why it matters every week</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-700">
-              <tr className="hover:bg-slate-800/80 transition-colors group">
-                <td className="py-8 px-8 align-top">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-slate-300 font-bold flex-shrink-0">1</div>
-                    <span className="text-lg font-medium text-white">Drop 5–10 invoices</span>
-                  </div>
-                </td>
-                <td className="py-8 px-8 align-top">
-                  <ul className="space-y-3">
-                    <li className="flex items-start gap-2 text-slate-300">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500 mt-1 flex-shrink-0" />
-                      Tracks every item across every vendor
-                    </li>
-                    <li className="flex items-start gap-2 text-slate-300">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500 mt-1 flex-shrink-0" />
-                      Shows last paid, 7/28/90-day averages
-                    </li>
-                    <li className="flex items-start gap-2 text-white font-medium">
-                      <AlertCircle className="w-5 h-5 text-red-400 mt-1 flex-shrink-0" />
-                      Flags price creep immediately
-                    </li>
-                  </ul>
-                </td>
-                <td className="py-8 px-8 align-top bg-emerald-900/10 group-hover:bg-emerald-900/20 transition-colors">
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <DollarSign className="w-6 h-6 text-emerald-400 mt-1 flex-shrink-0" />
-                      <span className="text-xl font-semibold text-emerald-300">
-                        Stop playing detective on price creep—RestaurantIQ flags it the day it happens.
-                      </span>
-                    </div>
-                    <p className="text-base text-slate-300">
-                      Owners replaced six spreadsheets and a Sunday night audit with one screen.
-                    </p>
-                  </div>
-                </td>
-              </tr>
+    <section>
+      <div className="max-w-6xl mx-auto px-4 space-y-12">
+        <div className="max-w-3xl mx-auto text-center space-y-4">
+          <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
+            What you’ll unlock in the first seven days
+          </h2>
+          <p className="text-slate-300 text-lg">
+            RestaurantIQ behaves like an ops partner that never sleeps—guarding margin, feeding your team live numbers, and
+            scanning the market so you can move faster than the competition.
+          </p>
+        </div>
 
-              <tr className="hover:bg-slate-800/80 transition-colors group">
-                <td className="py-8 px-8 align-top">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-slate-300 font-bold flex-shrink-0">2</div>
-                    <span className="text-lg font-medium text-white">Add your menu once</span>
-                  </div>
-                </td>
-                <td className="py-8 px-8 align-top">
-                  <ul className="space-y-3">
-                    <li className="flex items-start gap-2 text-slate-300">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500 mt-1 flex-shrink-0" />
-                      Links recipes to real invoice prices
-                    </li>
-                    <li className="flex items-start gap-2 text-slate-300">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500 mt-1 flex-shrink-0" />
-                      Calculates true plate cost every single day
-                    </li>
-                    <li className="flex items-start gap-2 text-white font-medium">
-                      <Clock className="w-5 h-5 text-cyan-400 mt-1 flex-shrink-0" />
-                      Updates the second a new invoice lands
-                    </li>
-                  </ul>
-                </td>
-                <td className="py-8 px-8 align-top bg-cyan-900/10 group-hover:bg-cyan-900/20 transition-colors">
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <TrendingUp className="w-6 h-6 text-cyan-400 mt-1 flex-shrink-0" />
-                      <span className="text-xl font-semibold text-cyan-300">
-                        Daily plate cost without exporting a single CSV.
-                      </span>
-                    </div>
-                    <p className="text-base text-slate-300">
-                      Chefs keep it open on the line to adjust pars and costing before service.
-                    </p>
-                  </div>
-                </td>
-              </tr>
-
-              <tr className="hover:bg-slate-800/80 transition-colors group">
-                <td className="py-8 px-8 align-top">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-slate-300 font-bold flex-shrink-0">3</div>
-                    <span className="text-lg font-medium text-white">Click one button</span>
-                  </div>
-                </td>
-                <td className="py-8 px-8 align-top">
-                  <ul className="space-y-3">
-                    <li className="flex items-start gap-2 text-slate-300">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500 mt-1 flex-shrink-0" />
-                      Compares your prices to 5 nearby competitors
-                    </li>
-                    <li className="flex items-start gap-2 text-white font-medium">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-500 mt-1 flex-shrink-0" />
-                      Pulls their reviews and tells you what customers love/hate
-                    </li>
-                  </ul>
-                </td>
-                <td className="py-8 px-8 align-top bg-purple-900/10 group-hover:bg-purple-900/20 transition-colors">
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <DollarSign className="w-6 h-6 text-purple-400 mt-1 flex-shrink-0" />
-                      <span className="text-xl font-semibold text-purple-300">
-                        Confident price moves with live comps and customer sentiment in one place.
-                      </span>
-                    </div>
-                    <p className="text-base text-slate-300">
-                      Teams use it during weekly menu meetings to decide what to promote or raise.
-                    </p>
-                  </div>
-                </td>
-              </tr>
-
-              <tr className="hover:bg-slate-800/80 transition-colors group">
-                <td className="py-8 px-8 align-top">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-emerald-900 text-emerald-400 flex items-center justify-center font-bold flex-shrink-0 border border-emerald-500/30">✓</div>
-                    <span className="text-lg font-medium text-white">Nothing else</span>
-                  </div>
-                </td>
-                <td className="py-8 px-8 align-top">
-                  <p className="text-lg text-slate-300 italic">
-                    Daily dashboard shows exactly where you’re bleeding money
-                  </p>
-                </td>
-                <td className="py-8 px-8 align-top bg-emerald-900/10 group-hover:bg-emerald-900/20 transition-colors">
-                  <div className="space-y-3">
-                    <p className="text-xl font-semibold text-white">
-                      Morning briefing replaces the old legal-pad checklist.
-                    </p>
-                    <p className="text-base text-slate-300">
-                      RestaurantIQ becomes part of opening duties—operators glance, act, move on.
-                    </p>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div className="grid gap-8 md:gap-10 md:grid-cols-2">
+          {capabilities.map((item) => (
+            <div
+              key={item.title}
+              className="surface-glass-muted border border-white/5 rounded-3xl p-8 md:p-10 hover-lift"
+            >
+              <div className="flex items-center justify-between gap-4 mb-6">
+                <span className="badge-soft">{item.label}</span>
+                {item.icon}
+              </div>
+              <h3 className="text-2xl font-semibold text-white mb-3">{item.title}</h3>
+              <p className="text-slate-300 text-base mb-6">{item.description}</p>
+              <ul className="space-y-3 text-slate-200 text-sm">
+                {item.bullets.map((bullet) => (
+                  <li key={bullet} className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400 mt-0.5" />
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 px-4 py-3 text-sm text-emerald-100">
+                {item.outcome}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

@@ -1,13 +1,23 @@
 import os
 import time
 from datetime import datetime
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, Set
 
 from services.redis_client import cache
 
 GUEST_SESSION_TTL_SECONDS = int(os.getenv("GUEST_SESSION_TTL_SECONDS", "86400"))  # 24 hours
 GUEST_UPLOAD_COOLDOWN_DAYS = int(os.getenv("GUEST_UPLOAD_COOLDOWN_DAYS", "28"))
 GUEST_UPLOAD_COOLDOWN_SECONDS = GUEST_UPLOAD_COOLDOWN_DAYS * 24 * 3600
+
+
+def _parse_bypass_ips() -> Set[str]:
+    raw = os.getenv("GUEST_UPLOAD_BYPASS_IPS", "")
+    if not raw:
+        return set()
+    return {ip.strip() for ip in raw.split(",") if ip.strip()}
+
+
+_guest_upload_bypass_ips = _parse_bypass_ips()
 
 _local_sessions: Dict[str, Dict[str, Any]] = {}
 _local_ip_locks: Dict[str, float] = {}
@@ -33,6 +43,9 @@ def reserve_guest_upload_slot(ip_address: str) -> Optional[int]:
     """
     now = time.time()
     ttl = GUEST_UPLOAD_COOLDOWN_SECONDS
+
+    if ip_address and ip_address in _guest_upload_bypass_ips:
+        return None
 
     if cache.enabled:
         key = f"guest_upload_ip:{ip_address}"

@@ -13,9 +13,12 @@ export const LandingFooter: React.FC = () => {
             Built by an owner who closed at 2am for a decade.<br/>
             No salespeople will ever call you. Your data stays yours. Cancel anytime.
           </p>
+          <p className="text-sm text-slate-500 max-w-2xl mx-auto mt-4">
+            Security &amp; privacy: uploads are encrypted in Supabase, guest invoices auto-expire after 24 hours, and you can delete anything permanently with one click.
+          </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-left max-w-2xl mx-auto mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-left max-w-2xl mx-auto mb-8">
           <div>
             <h4 className="font-bold text-white mb-4">Product</h4>
             <ul className="space-y-2 text-slate-400">
@@ -38,6 +41,21 @@ export const LandingFooter: React.FC = () => {
             </p>
           </div>
         </div>
+
+        <Link
+          to="/register"
+          className="group flex w-full max-w-2xl mx-auto mb-12 items-center justify-between gap-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-5 py-4 text-left hover:border-emerald-400/50 hover:bg-emerald-500/15 transition-colors"
+        >
+          <div>
+            <p className="text-xs uppercase tracking-[0.35em] text-emerald-300">Free seat available</p>
+            <p className="text-base md:text-lg font-semibold text-white mt-1">
+              Free seat. 60 seconds to your first insight.
+            </p>
+          </div>
+          <span className="text-emerald-200 text-sm font-semibold group-hover:text-white">
+            Send me a login — let’s find margin →
+          </span>
+        </Link>
 
         <div className="pt-8 border-t border-slate-900 text-slate-600 text-sm">
           © {currentYear} RestaurantIQ. All rights reserved.

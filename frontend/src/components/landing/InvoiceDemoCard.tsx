@@ -72,16 +72,16 @@ export const InvoiceDemoCard: React.FC = () => {
   };
 
   return (
-    <Card className="w-full border-2 border-dashed border-slate-700 bg-slate-900/50 backdrop-blur">
+    <Card className="gradient-outline surface-glass-muted w-full border-2 border-dashed border-white/10 bg-slate-900/60">
       <CardHeader className="text-center space-y-3">
         <Badge className="mx-auto bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-4 py-1">
-          See the magic right now (no login)
+          Start parsing in under a minute
         </Badge>
         <CardTitle className="text-2xl md:text-4xl font-bold text-white">
-          Drop a real invoice. Watch the parser stream live.
+          Drop a real invoice. Watch the alerts stream live.
         </CardTitle>
         <p className="text-slate-400 text-base md:text-lg">
-          PDFs or photos from Sysco, US Foods, Restaurant Depot, etc. We’ll parse it in ~30 seconds.
+          PDFs or photos from Sysco, US Foods, Restaurant Depot, etc. We’ll parse it and surface the problems in ~30 seconds.
         </p>
       </CardHeader>
 
@@ -113,27 +113,27 @@ export const InvoiceDemoCard: React.FC = () => {
             </div>
             <div className="space-y-1">
               <p className="text-2xl font-bold text-white">
-                {state.status === 'idle' ? 'Drop any invoice here' : state.fileName || 'Processing…'}
+                {state.status === 'idle' ? 'Drop your invoice here' : state.fileName || 'Processing…'}
               </p>
               <p className="text-slate-400">
                 {state.status === 'idle'
-                  ? 'PDFs, JPGs, PNGs · Max 10MB'
+                  ? 'PDFs, JPGs, PNGs · Max 10MB · Sysco, US Foods, Restaurant Depot'
                   : state.status === 'ready'
-                    ? 'Parsed successfully'
+                    ? 'Invoice analyzed successfully'
                     : state.status === 'error'
                       ? state.error || 'Something went wrong'
-                      : 'Parsing with Gemini Flash…'}
+                      : 'Auditing line items and costs…'}
               </p>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-6 text-slate-500 text-sm font-medium pt-2">
               <span className="flex items-center gap-2">
-                <ArrowRight className="w-4 h-4 rotate-45" /> No spreadsheets
+                <ArrowRight className="w-4 h-4 rotate-45" /> No spreadsheet clean-up
               </span>
               <span className="flex items-center gap-2">
                 <ArrowRight className="w-4 h-4 rotate-45" /> No manual entry
               </span>
               <span className="flex items-center gap-2">
-                <ArrowRight className="w-4 h-4 rotate-45" /> No B.S. pricing
+                <ArrowRight className="w-4 h-4 rotate-45" /> No pricing games
               </span>
             </div>
             {state.status !== 'idle' && (
@@ -183,7 +183,7 @@ export const InvoiceDemoCard: React.FC = () => {
         )}
 
         {state.status === 'ready' && state.invoiceData && (
-          <div className="bg-emerald-500/10 border border-emerald-500/40 rounded-2xl p-6 space-y-4">
+          <div className="bg-emerald-500/10 border border-emerald-500/40 rounded-2xl p-6 space-y-6">
             <div className="flex flex-wrap gap-6 text-white">
               <div>
                 <p className="text-sm uppercase tracking-widest text-emerald-300 mb-1">Vendor</p>
@@ -205,6 +205,53 @@ export const InvoiceDemoCard: React.FC = () => {
             <p className="text-emerald-200 text-sm">
               We saved this preview in your browser. Create a free account to keep it forever and unlock price alerts.
             </p>
+
+            {state.invoiceData.alerts && state.invoiceData.alerts.length > 0 && (
+              <div className="bg-slate-900/60 border border-emerald-500/40 rounded-xl p-4 space-y-3">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <p className="text-sm uppercase tracking-widest text-emerald-300">
+                    Flagged price changes
+                  </p>
+                  <span className="text-xs text-emerald-200">
+                    {state.invoiceData.alerts.length} items outside tolerance
+                  </span>
+                </div>
+                <ul className="space-y-3 text-slate-100 text-sm">
+                  {state.invoiceData.alerts.map((alert) => (
+                    <li key={alert.item} className="border border-emerald-500/20 rounded-lg p-3 bg-emerald-500/5">
+                      <p className="font-semibold text-emerald-200">{alert.item} &middot; {alert.change}</p>
+                      <p className="text-slate-200 mt-1">{alert.issue}</p>
+                      <p className="text-slate-400 mt-1 italic">{alert.suggestion}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {state.invoiceData.fuzzy_matches && state.invoiceData.fuzzy_matches.length > 0 && (
+              <div className="bg-slate-900/60 border border-emerald-500/30 rounded-xl p-4 space-y-3">
+                <p className="text-sm uppercase tracking-widest text-emerald-300">
+                  Catalog matches we confirmed for you
+                </p>
+                <ul className="space-y-2 text-slate-200 text-sm">
+                  {state.invoiceData.fuzzy_matches.map((match) => (
+                    <li key={match.invoice_item} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border border-slate-700 rounded-lg p-3 bg-slate-900/40">
+                      <div>
+                        <p className="font-semibold text-white">{match.invoice_item}</p>
+                        <p className="text-slate-400 text-xs">
+                          Matched to: {match.matched_inventory_item}
+                        </p>
+                      </div>
+                      <div className="text-slate-300 text-xs sm:text-right">
+                        <p>Confidence {Math.round(match.confidence * 100)}%</p>
+                        <p>Last paid ${match.last_price.toFixed(2)}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <div className="flex flex-col sm:flex-row gap-3">
               <Link to="/register" className="flex-1">
                 <Button className="w-full bg-white text-slate-900 hover:bg-slate-100">

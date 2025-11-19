@@ -3,22 +3,27 @@ import { Card, CardContent } from '@/design-system/shadcn/components/card';
 
 export const FounderStoryCard: React.FC = () => {
   return (
-    <Card className="h-full shadow-2xl bg-white border-slate-200 relative z-10">
-      <CardContent className="p-8 md:p-12 text-center space-y-5">
-        <h2 className="text-2xl md:text-4xl font-black text-slate-900 leading-tight">
-          I ran restaurants for 10+ years.
-        </h2>
-        <p className="text-lg md:text-xl text-slate-700 leading-relaxed font-medium">
-          Every tool was too slow, too expensive, too complicated—and built by people who never actually ran a restaurant.
+    <Card className="h-full surface-glass rounded-3xl text-left relative overflow-hidden">
+      <CardContent className="p-8 md:p-12 space-y-6">
+        <div className="space-y-3">
+          <span className="badge-soft">Built by an operator</span>
+          <h2 className="text-2xl md:text-4xl font-black text-white leading-tight">
+            I ran restaurants for 10+ years.
+          </h2>
+          <p className="text-lg md:text-xl text-slate-200 leading-relaxed font-medium">
+            RestaurantIQ exists because I was done with:
+          </p>
+        </div>
+        <ul className="text-base md:text-lg text-slate-200/90 font-medium space-y-3">
+          <li>• Closing at 2am then reconciling invoices by hand before payroll.</li>
+          <li>• Vendors changing descriptions so price hikes slipped past the team.</li>
+          <li>• Paying $500–$2,000/mo for “insights” that still required spreadsheets.</li>
+        </ul>
+        <p className="text-base md:text-lg text-slate-200/80 font-medium">
+          RestaurantIQ is the system I begged Toast, MarginEdge, and Restaurant365 to build—so I built it myself and kept it honest.
         </p>
-        <p className="text-xl md:text-2xl text-emerald-700 font-bold leading-relaxed italic">
-          "So I built RestaurantIQ: the tool I begged Toast to create."
-        </p>
-        <p className="text-base md:text-lg text-slate-600 font-medium">
-          Upload an invoice, start tracking today.
-        </p>
-        <div className="pt-4 border-t border-slate-200">
-          <p className="text-sm font-bold text-slate-400 uppercase tracking-wider">
+        <div className="pt-5 border-t border-white/10">
+          <p className="text-sm font-bold text-emerald-200 uppercase tracking-wider">
             — Geoffrey Fernald, Founder
           </p>
         </div>

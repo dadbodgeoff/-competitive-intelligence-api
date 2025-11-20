@@ -103,7 +103,28 @@ class SchedulingShiftService:
         if not result.data:
             raise ValueError("Shift not found")
         self.labor_summary_service.recompute_for_shift(shift_id=shift_id)
-        return result.data[0]
+        shift_record = result.data[0]
+
+        created_at = shift_record.get("created_at") or datetime.utcnow().isoformat()
+        updated_at = shift_record.get("updated_at") or created_at
+
+        assignment: Dict[str, Any] = {
+            "shift_id": shift_id,
+            "account_id": self.account_id,
+            "member_user_id": member_user_id,
+            "wage_override": (
+                float(wage_override) if wage_override is not None
+                else (
+                    float(shift_record["wage_override_cents"]) / 100
+                    if shift_record.get("wage_override_cents") is not None
+                    else None
+                )
+            ),
+            "wage_type_override": wage_type_override,
+            "created_at": created_at,
+            "updated_at": updated_at,
+        }
+        return assignment
 
     def unassign_member(self, shift_id: str, member_user_id: str) -> None:
         """Remove an assignment from a shift."""

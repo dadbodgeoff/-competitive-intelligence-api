@@ -19,7 +19,15 @@ import type { PrepTemplate, PrepTemplateItem } from '@/types/prep'
 import { useToast } from '@/hooks/use-toast'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
 
 export function PrepTemplatesPage() {
@@ -56,6 +64,9 @@ export function PrepTemplatesPage() {
             <DialogContent className="bg-card-dark border-white/10">
               <DialogHeader>
                 <DialogTitle>Create prep template</DialogTitle>
+                <DialogDescription className="text-slate-400">
+                  Give this default prep list a clear name and optional description so your team knows when to use it.
+                </DialogDescription>
               </DialogHeader>
               <div className="space-y-3">
                 <div className="space-y-1">

@@ -133,7 +133,7 @@ class PrepDayService:
             .select("*")
             .eq("account_id", self.account_id)
             .eq("prep_day_id", prep_day_id)
-            .order("display_order", asc=True)
+            .order("display_order")
             .execute()
         )
         return result.data or []

@@ -1,7 +1,7 @@
 import { apiClient, safeRequest } from './client';
 import type { InviteValidation } from '@/types/auth';
 
-interface AccountSummaryResponse {
+export interface AccountSummaryResponse {
   account: {
     id: string;
     name: string | null;

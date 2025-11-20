@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { PageHeader } from '../components/layout/PageHeader';
-import { PageHeading } from '../components/layout/PageHeading';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { AppShell } from '@/components/layout/AppShell';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { PageHeading } from '@/components/layout/PageHeading';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { TrendingUp, TrendingDown, DollarSign, Package, Search, Filter, Lightbulb, Bell } from 'lucide-react';
-import { analyticsApi } from '../services/api/analyticsApi';
-import { formatCurrency, formatPercent } from '../types/analytics';
-import type { DashboardSummaryResponse, ItemsListResponse } from '../types/analytics';
+import { analyticsApi } from '@/services/api/analyticsApi';
+import { formatCurrency, formatPercent } from '@/types/analytics';
+import type { DashboardSummaryResponse, ItemsListResponse } from '@/types/analytics';
 
 export function PriceAnalyticsDashboard() {
   const navigate = useNavigate();
@@ -87,20 +88,19 @@ export function PriceAnalyticsDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-obsidian">
-      <PageHeader 
-        breadcrumbs={[
-          { label: 'Dashboard', href: '/dashboard' },
-          { label: 'Price Analytics' }
-        ]}
-      />
-      
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Page Title & Quick Actions */}
-        <div className="mb-6">
+    <AppShell maxWidth="wide">
+      <div className="space-y-8">
+        <PageHeader
+          breadcrumbs={[
+            { label: 'Dashboard', href: '/dashboard' },
+            { label: 'Price Analytics' },
+          ]}
+        />
+
+        <div>
           <PageHeading>Price Analytics</PageHeading>
-          <p className="text-gray-400 mb-4">Track pricing trends and discover savings opportunities</p>
-          
+          <p className="text-slate-400 mb-4">Track pricing trends and discover savings opportunities</p>
+
           <div className="flex gap-3">
             <Button
               onClick={() => navigate('/analytics/opportunities')}
@@ -119,11 +119,10 @@ export function PriceAnalyticsDashboard() {
           </div>
         </div>
 
-        {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-obsidian-light border-obsidian-border">
+          <Card className="bg-card-dark border-white/10">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-300">
+              <CardTitle className="text-sm font-medium text-slate-300">
                 Items Tracked
               </CardTitle>
               <Package className="h-4 w-4 text-blue-400" />
@@ -132,15 +131,15 @@ export function PriceAnalyticsDashboard() {
               <div className="text-2xl font-bold text-white">
                 {summaryLoading ? '...' : summary?.unique_items_tracked || 0}
               </div>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-slate-400">
                 Unique inventory items
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-obsidian-light border-obsidian-border">
+          <Card className="bg-card-dark border-white/10">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-300">
+              <CardTitle className="text-sm font-medium text-slate-300">
                 Active Vendors
               </CardTitle>
               <TrendingUp className="h-4 w-4 text-green-400" />
@@ -149,15 +148,15 @@ export function PriceAnalyticsDashboard() {
               <div className="text-2xl font-bold text-white">
                 {summaryLoading ? '...' : summary?.active_vendors || 0}
               </div>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-slate-400">
                 Suppliers tracked
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-obsidian-light border-obsidian-border">
+          <Card className="bg-card-dark border-white/10">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-300">
+              <CardTitle className="text-sm font-medium text-slate-300">
                 Total Purchases
               </CardTitle>
               <Package className="h-4 w-4 text-purple-400" />
@@ -166,15 +165,15 @@ export function PriceAnalyticsDashboard() {
               <div className="text-2xl font-bold text-white">
                 {summaryLoading ? '...' : summary?.total_purchases || 0}
               </div>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-slate-400">
                 Last {daysBack} days
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-obsidian-light border-obsidian-border">
+          <Card className="bg-card-dark border-white/10">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-300">
+              <CardTitle className="text-sm font-medium text-slate-300">
                 Total Spend
               </CardTitle>
               <DollarSign className="h-4 w-4 text-green-400" />
@@ -183,15 +182,14 @@ export function PriceAnalyticsDashboard() {
               <div className="text-2xl font-bold text-white">
                 {summaryLoading ? '...' : formatCurrency(summary?.total_spend || 0)}
               </div>
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-slate-400">
                 Last {daysBack} days
               </p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Filters */}
-        <Card className="bg-obsidian-light border-obsidian-border mb-6">
+        <Card className="bg-card-dark border-white/10 mb-6">
           <CardHeader>
             <CardTitle className="text-white flex items-center gap-2">
               <Filter className="h-5 w-5" />
@@ -202,17 +200,17 @@ export function PriceAnalyticsDashboard() {
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
                   <Input
                     placeholder="Search inventory items..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 bg-obsidian border-obsidian-border text-white"
+                    className="pl-10 bg-obsidian/70 border-white/10 text-white"
                   />
                 </div>
               </div>
               <Select value={trendFilter} onValueChange={(value: any) => setTrendFilter(value)}>
-                <SelectTrigger className="w-48 bg-obsidian border-obsidian-border text-white">
+                <SelectTrigger className="w-48 bg-obsidian/70 border-white/10 text-white">
                   <SelectValue placeholder="Filter by trend" />
                 </SelectTrigger>
                 <SelectContent>
@@ -223,7 +221,7 @@ export function PriceAnalyticsDashboard() {
                 </SelectContent>
               </Select>
               <Select value={daysBack.toString()} onValueChange={(value) => setDaysBack(parseInt(value))}>
-                <SelectTrigger className="w-32 bg-obsidian border-obsidian-border text-white">
+                <SelectTrigger className="w-32 bg-obsidian/70 border-white/10 text-white">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -237,8 +235,7 @@ export function PriceAnalyticsDashboard() {
           </CardContent>
         </Card>
 
-        {/* Items Table */}
-        <Card className="bg-obsidian-light border-obsidian-border">
+        <Card className="bg-card-dark border-white/10">
           <CardHeader>
             <CardTitle className="text-white">
               Inventory Price Tracking ({filteredItems.length} items)
@@ -246,39 +243,39 @@ export function PriceAnalyticsDashboard() {
           </CardHeader>
           <CardContent>
             {itemsLoading ? (
-              <div className="text-center py-8 text-gray-400">Loading inventory data...</div>
+                <div className="text-center py-8 text-slate-400">Loading inventory data...</div>
             ) : filteredItems.length === 0 ? (
-              <div className="text-center py-8 text-gray-400">No items found matching your filters</div>
+                <div className="text-center py-8 text-slate-400">No items found matching your filters</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-obsidian-border">
-                      <th className="text-left py-3 px-4 text-gray-300 font-medium">Item Name</th>
-                      <th className="text-right py-3 px-4 text-gray-300 font-medium">Last Price</th>
-                      <th className="text-right py-3 px-4 text-gray-300 font-medium">7-Day Avg</th>
-                      <th className="text-right py-3 px-4 text-gray-300 font-medium">28-Day Avg</th>
-                      <th className="text-center py-3 px-4 text-gray-300 font-medium">7-Day Trend</th>
-                      <th className="text-right py-3 px-4 text-gray-300 font-medium">Last Purchase</th>
+                      <tr className="border-b border-white/10">
+                        <th className="text-left py-3 px-4 text-slate-300 font-medium">Item Name</th>
+                        <th className="text-right py-3 px-4 text-slate-300 font-medium">Last Price</th>
+                        <th className="text-right py-3 px-4 text-slate-300 font-medium">7-Day Avg</th>
+                        <th className="text-right py-3 px-4 text-slate-300 font-medium">28-Day Avg</th>
+                        <th className="text-center py-3 px-4 text-slate-300 font-medium">7-Day Trend</th>
+                        <th className="text-right py-3 px-4 text-slate-300 font-medium">Last Purchase</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredItems.map((item, index) => (
-                      <tr key={index} className="border-b border-obsidian-border/50 hover:bg-obsidian/50">
+                        <tr key={index} className="border-b border-white/5/50 hover:bg-white/5">
                         <td className="py-3 px-4 text-white font-medium">{item.description}</td>
                         <td className="py-3 px-4 text-right text-white">
                           {item.last_paid_price ? formatCurrency(item.last_paid_price) : '-'}
                         </td>
-                        <td className="py-3 px-4 text-right text-gray-300">
+                          <td className="py-3 px-4 text-right text-slate-300">
                           {item.avg_price_7day ? formatCurrency(item.avg_price_7day) : '-'}
                         </td>
-                        <td className="py-3 px-4 text-right text-gray-300">
+                          <td className="py-3 px-4 text-right text-slate-300">
                           {item.avg_price_28day ? formatCurrency(item.avg_price_28day) : '-'}
                         </td>
                         <td className="py-3 px-4 text-center">
                           {getTrendBadge(item.price_change_7day_percent)}
                         </td>
-                        <td className="py-3 px-4 text-right text-gray-400 text-sm">
+                          <td className="py-3 px-4 text-right text-slate-400 text-sm">
                           {item.last_paid_date ? new Date(item.last_paid_date).toLocaleDateString() : '-'}
                         </td>
                       </tr>
@@ -290,6 +287,7 @@ export function PriceAnalyticsDashboard() {
           </CardContent>
         </Card>
       </div>
-    </div>
+      </div>
+    </AppShell>
   );
 }

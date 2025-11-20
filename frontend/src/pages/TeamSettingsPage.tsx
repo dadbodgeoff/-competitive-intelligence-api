@@ -9,13 +9,12 @@ import {
   clearClockPin,
 } from '@/services/api/accountApi';
 import { useAuthStore } from '@/stores/authStore';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
+import { AccountOverviewCard } from '@/components/team/AccountOverviewCard';
+import { ModuleAccessCard } from '@/components/team/ModuleAccessCard';
+import { TeamMembersCard } from '@/components/team/TeamMembersCard';
+import { InviteMemberCard } from '@/components/team/InviteMemberCard';
+import { ClockPinCard } from '@/components/team/ClockPinCard';
 
 export function TeamSettingsPage() {
   const queryClient = useQueryClient();
@@ -91,11 +90,7 @@ export function TeamSettingsPage() {
   });
 
   const inviteMutation = useMutation({
-    mutationFn: () =>
-      inviteAccountMember({
-        email: inviteEmail,
-        role: inviteRole,
-      }),
+    mutationFn: (payload: { email: string; role: 'owner' | 'admin' | 'member' }) => inviteAccountMember(payload),
     onSuccess: () => {
       setInviteEmail('');
       setInviteRole('member');
@@ -179,328 +174,43 @@ export function TeamSettingsPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <Card className="bg-card-dark border-white/10">
-        <CardHeader>
-          <CardTitle className="text-xl text-white">Account Overview</CardTitle>
-        </CardHeader>
-        <CardContent className="text-slate-300 space-y-2">
-          <div className="flex items-center gap-2">
-            <span className="font-medium text-slate-100">Account:</span>
-            <span>{data.account.name ?? 'Untitled Account'}</span>
-            <Badge variant="secondary" className="ml-2 capitalize">
-              {data.account.plan}
-            </Badge>
-          </div>
-          <div>
-            <span className="font-medium text-slate-100">Members:</span>{' '}
-            <span>{data.members.length}</span>
-          </div>
-          <div>
-            <span className="font-medium text-slate-100">Owner:</span>{' '}
-            <span>{user?.email}</span>
-          </div>
-        </CardContent>
-      </Card>
+      <AccountOverviewCard
+        accountName={data.account.name}
+        plan={data.account.plan}
+        memberCount={data.members.length}
+        ownerEmail={user?.email ?? null}
+      />
 
-      <Card className="bg-card-dark border-white/10">
-        <CardHeader>
-          <CardTitle className="text-xl text-white">Module Access</CardTitle>
-        </CardHeader>
-      <Card className="bg-card-dark border-white/10">
-        <CardHeader>
-          <CardTitle className="text-xl text-white">Time Clock PIN</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-slate-400 text-sm">
-            Choose a 4-digit PIN to clock in from the public <code className="text-emerald-300">/time</code> page. This
-            PIN is private to you and can be updated anytime.
-          </p>
-          <div className="text-sm text-slate-300">
-            Status:{' '}
-            {pinStatus?.is_set
-              ? `Set ${pinStatus.updated_at ? `on ${new Date(pinStatus.updated_at).toLocaleString()}` : ''}`
-              : 'Not set'}
-          </div>
-          <form
-            className="grid gap-4 md:grid-cols-2"
-            onSubmit={(event) => {
-              event.preventDefault();
-              if (pin !== pinConfirm) {
-                toast({
-                  title: 'PINs do not match',
-                  description: 'Enter the same 4-digit value in both fields.',
-                  variant: 'destructive',
-                });
-                return;
-              }
-              if (!/^\d{4}$/.test(pin)) {
-                toast({
-                  title: 'Invalid PIN',
-                  description: 'PIN must be exactly four digits.',
-                  variant: 'destructive',
-                });
-                return;
-              }
-              clockPinMutation.mutate(pin);
-            }}
-          >
-            <div className="space-y-1">
-              <Label htmlFor="pin" className="text-slate-300">
-                New PIN
-              </Label>
-              <Input
-                id="pin"
-                type="password"
-                inputMode="numeric"
-                pattern="\d{4}"
-                maxLength={4}
-                value={pin}
-                onChange={(event) => setPinValue(event.target.value)}
-                placeholder="••••"
-                className="bg-obsidian/70 text-white border-white/10 tracking-[0.4em]"
-                disabled={clockPinMutation.isPending}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="pin-confirm" className="text-slate-300">
-                Confirm PIN
-              </Label>
-              <Input
-                id="pin-confirm"
-                type="password"
-                inputMode="numeric"
-                pattern="\d{4}"
-                maxLength={4}
-                value={pinConfirm}
-                onChange={(event) => setPinConfirm(event.target.value)}
-                placeholder="••••"
-                className="bg-obsidian/70 text-white border-white/10 tracking-[0.4em]"
-                disabled={clockPinMutation.isPending}
-              />
-            </div>
-            <div className="col-span-full flex flex-wrap gap-3">
-              <Button
-                type="submit"
-                className="bg-emerald-600 hover:bg-emerald-500"
-                disabled={clockPinMutation.isPending}
-              >
-                Save PIN
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={clearPinMutation.isPending || !pinStatus?.is_set}
-                onClick={() => clearPinMutation.mutate()}
-              >
-                Remove PIN
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+      <ModuleAccessCard
+        modules={data.modules}
+        isOwner={Boolean(isOwner)}
+        isUpdating={moduleMutation.isPending}
+        onToggle={(slug, enabled) => moduleMutation.mutate({ slug, enabled })}
+      />
 
-        <CardContent className="space-y-4">
-          {data.modules.map((module) => (
-            <div
-              key={module.module_slug}
-              className="flex items-center justify-between rounded-lg border border-white/5 bg-white/5 p-4"
-            >
-              <div>
-                <p className="text-white font-medium">{module.module_slug.replace(/_/g, ' ')}</p>
-                <p className="text-sm text-slate-400">
-                  {module.can_access ? 'Enabled for all members' : 'Disabled'}
-                </p>
-              </div>
-              <Switch
-                checked={module.can_access}
-                onCheckedChange={(checked) =>
-                  moduleMutation.mutate({ slug: module.module_slug, enabled: checked })
-                }
-                disabled={!isOwner || moduleMutation.isPending}
-              />
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+      <ClockPinCard
+        status={pinStatus}
+        onSave={(value) => clockPinMutation.mutate(value)}
+        onRemove={() => clearPinMutation.mutate()}
+        saving={clockPinMutation.isPending}
+        removing={clearPinMutation.isPending}
+      />
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="bg-card-dark border-white/10">
-          <CardHeader>
-            <CardTitle className="text-xl text-white">Team Members</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {data.members.map((member) => {
-              const rawMeta = member.auth_users?.raw_user_meta_data as Record<string, unknown> | undefined;
-              const firstName =
-                member.auth_users?.first_name ??
-                member.profile?.first_name ??
-                (rawMeta?.first_name as string | undefined) ??
-                '';
-              const lastName =
-                member.auth_users?.last_name ??
-                member.profile?.last_name ??
-                (rawMeta?.last_name as string | undefined) ??
-                '';
-              const currentRate = activeCompensation.get(member.user_id);
-              return (
-                <div
-                  key={member.user_id}
-                  className="rounded-lg border border-white/5 bg-white/5 p-4 space-y-2"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-white font-medium">
-                        {(firstName || lastName) ? `${firstName} ${lastName}`.trim() : member.auth_users?.email || 'Member'}
-                      </p>
-                      <p className="text-xs uppercase tracking-wide text-slate-400">
-                        {member.role}
-                      </p>
-                    </div>
-                    <Badge
-                      variant={member.status === 'active' ? 'secondary' : 'outline'}
-                      className="capitalize"
-                    >
-                      {member.status}
-                    </Badge>
-                  </div>
-                  <div className="text-sm text-slate-300">
-                    Current rate:{' '}
-                    {currentRate
-                      ? `$${currentRate.rate.toFixed(2)} ${currentRate.currency} (${currentRate.rate_type})`
-                      : 'Not set'}
-                  </div>
-                  {isOwner && member.status === 'active' && (
-                    <form
-                      className="flex items-center gap-2"
-                      onSubmit={(event) => {
-                        event.preventDefault();
-                        const formData = new FormData(event.currentTarget);
-                        const rate = Number(formData.get('rate'));
-                        const notes = String(formData.get('notes') || '');
-                        if (Number.isNaN(rate) || rate <= 0) {
-                          toast({
-                            title: 'Invalid rate',
-                            description: 'Enter a rate greater than zero.',
-                            variant: 'destructive',
-                          });
-                          return;
-                        }
-                        compensationMutation.mutate({
-                          user_id: member.user_id,
-                          rate,
-                          notes,
-                        });
-                        event.currentTarget.reset();
-                      }}
-                    >
-                      <div className="flex flex-1 items-center gap-2">
-                        <div className="flex items-center gap-2">
-                          <Label htmlFor={`rate-${member.user_id}`} className="text-xs text-slate-400">
-                            Rate ($/hr)
-                          </Label>
-                          <Input
-                            id={`rate-${member.user_id}`}
-                            name="rate"
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            className="h-9 w-28 bg-obsidian/70 text-white border-white/10"
-                            placeholder="25.00"
-                          />
-                        </div>
-                        <Input
-                          name="notes"
-                          placeholder="Notes (optional)"
-                          className="h-9 bg-obsidian/70 text-white border-white/10"
-                        />
-                      </div>
-                      <Button
-                        type="submit"
-                        size="sm"
-                        disabled={compensationMutation.isPending}
-                        className="bg-emerald-600 hover:bg-emerald-500"
-                      >
-                        Save
-                      </Button>
-                    </form>
-                  )}
-                </div>
-              );
-            })}
-          </CardContent>
-        </Card>
+        <TeamMembersCard
+          members={data.members}
+          compensationLookup={activeCompensation}
+          isOwner={Boolean(isOwner)}
+          onAssignCompensation={(payload) => compensationMutation.mutate(payload)}
+          assigning={compensationMutation.isPending}
+        />
 
-        <Card className="bg-card-dark border-white/10">
-          <CardHeader>
-            <CardTitle className="text-xl text-white">Invite Team Member</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="space-y-1">
-              <Label htmlFor="invite-email" className="text-slate-300">
-                Email
-              </Label>
-              <Input
-                id="invite-email"
-                type="email"
-                placeholder="manager@restaurant.com"
-                className="bg-obsidian/70 text-white border-white/10"
-                value={inviteEmail}
-                onChange={(event) => setInviteEmail(event.target.value)}
-                disabled={!isOwner || inviteMutation.isPending}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="invite-role" className="text-slate-300">
-                Role
-              </Label>
-              <select
-                id="invite-role"
-                className="w-full rounded-md border border-white/10 bg-obsidian/70 px-3 py-2 text-sm text-white"
-                value={inviteRole}
-                onChange={(event) => setInviteRole(event.target.value as 'owner' | 'admin' | 'member')}
-                disabled={!isOwner || inviteMutation.isPending}
-              >
-                <option value="member">Member</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-            <Button
-              onClick={() => inviteMutation.mutate()}
-              disabled={!isOwner || inviteMutation.isPending || !inviteEmail}
-              className="bg-emerald-600 hover:bg-emerald-500"
-            >
-              Send Invite
-            </Button>
-
-            <div className="text-xs text-slate-400">
-              Invited users will receive an email with a link to join this account. Existing Supabase
-              accounts matching the email will be added immediately.
-            </div>
-
-            <div className="border-t border-white/5 pt-4 space-y-3">
-              <h3 className="text-sm font-semibold text-white">Pending invitations</h3>
-              {data.invitations.length === 0 && (
-                <p className="text-xs text-slate-500">No pending invites.</p>
-              )}
-              {data.invitations.map((invite) => (
-                <div key={invite.id} className="flex items-center justify-between text-sm text-slate-300">
-                  <div>
-                    <p className="font-medium">{invite.email}</p>
-                    <p className="text-xs text-slate-500">
-                      {invite.role} • expires {new Date(invite.expires_at).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <Badge
-                    variant={invite.status === 'pending' ? 'secondary' : 'outline'}
-                    className="capitalize"
-                  >
-                    {invite.status}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <InviteMemberCard
+          isOwner={Boolean(isOwner)}
+          isInviting={inviteMutation.isPending}
+          invitations={data.invitations}
+          onInvite={(payload) => inviteMutation.mutate(payload)}
+        />
       </div>
     </div>
   );

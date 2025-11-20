@@ -29,6 +29,13 @@ supabase migration up 030_menu_item_sales_tracking.sql
 
 After migration, seed or record sales through the COGS dashboard to populate spend analytics.
 
+### New: Time Clock PIN + /time Kiosk
+
+- Team members can set a personal 4-digit PIN from **Settings → Team**.
+- The public `/time` route works like the login screen but only asks for the PIN to clock in/out.
+- Each PIN submission automatically starts or ends the member’s current shift and shows a confirmation banner.
+- Requires the Supabase migration `043_clock_pin_support.sql` and the `CLOCK_PIN_PEPPER` environment variable (see below).
+
 ## Tech Stack
 
 **Frontend:**
@@ -127,6 +134,9 @@ GOOGLE_PLACES_API_KEY=your-places-key
 # External Services
 SERPAPI_KEY=your-serpapi-key
 OUTSCRAPER_API_KEY=your-outscraper-key
+
+# Time Clock PINs
+CLOCK_PIN_PEPPER=strong-random-string-used-for-pin-hashing
 ```
 
 ## License

@@ -4,6 +4,7 @@ import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { AcceptInvitePage } from './pages/AcceptInvitePage';
+import { TimeClockPage } from './pages/TimeClockPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { DashboardPageNew } from './pages/DashboardPageNew';
 import { NewAnalysisPage } from './pages/NewAnalysisPage';
@@ -58,6 +59,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/accept-invite" element={<AcceptInvitePage />} />
+          <Route path="/time" element={<TimeClockPage />} />
 
           {/* Protected routes */}
           <Route

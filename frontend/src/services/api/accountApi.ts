@@ -37,6 +37,10 @@ interface AccountSummaryResponse {
       last_name?: string | null;
       subscription_tier?: string | null;
     } | null;
+    clock_pin?: {
+      is_set: boolean;
+      updated_at?: string | null;
+    };
   }>;
   invitations: Array<{
     id: string;
@@ -143,6 +147,36 @@ export async function validateAccountInvite(token: string) {
     throw new Error(result.error?.message ?? 'Invitation validation failed');
   }
 
+  return result.data;
+}
+
+export async function getClockPinStatus() {
+  const result = await safeRequest<{ has_pin: boolean; updated_at?: string | null }>(() =>
+    apiClient.get('/api/v1/accounts/clock-pin')
+  );
+  if (!result.success || !result.data) {
+    throw new Error(result.error?.message ?? 'Failed to load PIN status');
+  }
+  return result.data;
+}
+
+export async function setClockPin(pin: string) {
+  const result = await safeRequest<{ has_pin: boolean; updated_at?: string | null }>(() =>
+    apiClient.put('/api/v1/accounts/clock-pin', { pin })
+  );
+  if (!result.success || !result.data) {
+    throw new Error(result.error?.message ?? 'Failed to save PIN');
+  }
+  return result.data;
+}
+
+export async function clearClockPin() {
+  const result = await safeRequest<{ has_pin: boolean; updated_at?: string | null }>(() =>
+    apiClient.delete('/api/v1/accounts/clock-pin')
+  );
+  if (!result.success || !result.data) {
+    throw new Error(result.error?.message ?? 'Failed to remove PIN');
+  }
   return result.data;
 }
 

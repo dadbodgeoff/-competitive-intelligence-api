@@ -9,7 +9,14 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/hooks/use-toast'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -231,10 +238,10 @@ export function SchedulingDashboardPage() {
   const handleSaveShift = async () => {
     if (!dialogDayId || !selectedWeekId) return
 
-    const payload = {
+  const payload = {
       day_id: dialogDayId,
       week_id: selectedWeekId,
-      shift_type: 'scheduled',
+    shift_type: 'other',
       start_time: `${formState.start_time}:00`,
       end_time: `${formState.end_time}:00`,
       break_minutes: Number(formState.break_minutes || 0),
@@ -651,6 +658,9 @@ export function SchedulingDashboardPage() {
         <DialogContent className="bg-card-dark border-white/10 max-w-lg">
           <DialogHeader>
             <DialogTitle>{dialogMode === 'create' ? 'Create shift' : 'Edit shift'}</DialogTitle>
+            <DialogDescription>
+              Set the shift window, optional break, and assign a teammate. Fields marked optional can be left blank.
+            </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1">

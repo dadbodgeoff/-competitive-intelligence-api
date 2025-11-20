@@ -5,6 +5,7 @@ from .weeks import router as weeks_router
 from .shifts import router as shifts_router
 from .timekeeping import router as timekeeping_router
 from .grid import router as grid_router
+from .timeclock_portal import router as timeclock_router
 
 router = APIRouter(prefix="/api/v1/scheduling", tags=["Scheduling"])
 
@@ -13,6 +14,7 @@ router.include_router(weeks_router)
 router.include_router(shifts_router)
 router.include_router(timekeeping_router)
 router.include_router(grid_router)
+router.include_router(timeclock_router)
 
 __all__ = ["router"]
 

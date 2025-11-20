@@ -38,6 +38,10 @@ class CompensationRequest(BaseModel):
     notes: Optional[str] = None
 
 
+class ClockPinRequest(BaseModel):
+    pin: str = Field(..., min_length=4, max_length=4, pattern=r"^\d{4}$")
+
+
 @router.get("/current")
 async def get_current_account_summary(
     auth: AuthenticatedUser = Depends(get_current_membership)
@@ -281,4 +285,42 @@ async def list_members_with_comp(
     except Exception as exc:  # pragma: no cover - best effort
         logger.exception("Failed to load members with compensation: %s", exc)
         raise HTTPException(status_code=500, detail="Failed to load members")
+
+
+@router.get("/clock-pin")
+async def get_clock_pin_status(
+    auth: AuthenticatedUser = Depends(get_current_membership),
+):
+    service_client = get_supabase_service_client()
+    record = (
+        service_client.table("users")
+        .select("clock_pin_updated_at")
+        .eq("id", auth.id)
+        .limit(1)
+        .execute()
+    ).data
+    updated_at = record[0].get("clock_pin_updated_at") if record else None
+    return {"has_pin": bool(updated_at), "updated_at": updated_at}
+
+
+@router.put("/clock-pin")
+async def set_clock_pin(
+    payload: ClockPinRequest,
+    auth: AuthenticatedUser = Depends(get_current_membership),
+):
+    service = AccountService()
+    try:
+        updated_at = service.set_clock_pin(auth.id, payload.pin)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+    return {"has_pin": True, "updated_at": updated_at}
+
+
+@router.delete("/clock-pin")
+async def clear_clock_pin(
+    auth: AuthenticatedUser = Depends(get_current_membership),
+):
+    service = AccountService()
+    service.clear_clock_pin(auth.id)
+    return {"has_pin": False, "updated_at": None}
 

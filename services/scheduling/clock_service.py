@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone, timedelta
 from decimal import Decimal, ROUND_HALF_UP
 from typing import Dict, Optional, Tuple
+
+from zoneinfo import ZoneInfo
 
 from database.supabase_client import get_supabase_service_client
 from services.account_service import AccountService
@@ -15,11 +17,15 @@ logger = logging.getLogger(__name__)
 class ClockService:
     """Manage clock-in/out workflows for scheduled shifts."""
 
+    PIN_EARLY_GRACE_MINUTES = 60
+    PIN_LATE_GRACE_MINUTES = 180
+
     def __init__(self, account_id: str) -> None:
         self.account_id = account_id
         self.client = get_supabase_service_client()
         self.account_service = AccountService()
         self.summary_service = LaborSummaryService(account_id=account_id)
+        self._tzinfo: Optional[ZoneInfo] = None
 
     # ------------------------------------------------------------------#
     # Public API
@@ -129,6 +135,97 @@ class ClockService:
         )
         return result.data[0] if result.data else session
 
+    def get_live_session_for_member(self, member_user_id: str) -> Optional[Dict]:
+        """Return the current live session for a member regardless of shift."""
+        result = (
+            self.client.table("scheduling_shift_live_sessions")
+            .select("*")
+            .eq("account_id", self.account_id)
+            .eq("member_user_id", member_user_id)
+            .limit(1)
+            .execute()
+        )
+        return result.data[0] if result.data else None
+
+    def find_shift_for_member(self, member_user_id: str) -> str:
+        """Resolve the best shift to clock into for a member using heuristics."""
+        assignments = (
+            self.client.table("scheduling_shift_assignments")
+            .select("shift_id")
+            .eq("account_id", self.account_id)
+            .eq("member_user_id", member_user_id)
+            .execute()
+        ).data or []
+
+        shift_ids = [row["shift_id"] for row in assignments if row.get("shift_id")]
+        if not shift_ids:
+            raise ValueError("No scheduled shifts assigned to this member")
+
+        shifts = (
+            self.client.table("scheduling_shifts")
+            .select("id, day_id, start_time, end_time, break_minutes")
+            .eq("account_id", self.account_id)
+            .in_("id", shift_ids)
+            .execute()
+        ).data or []
+
+        if not shifts:
+            raise ValueError("Scheduled shifts for this member could not be located")
+
+        day_ids = list({shift["day_id"] for shift in shifts if shift.get("day_id")})
+        days_lookup: Dict[str, date] = {}
+        if day_ids:
+            day_rows = (
+                self.client.table("scheduling_days")
+                .select("id, schedule_date")
+                .eq("account_id", self.account_id)
+                .in_("id", day_ids)
+                .execute()
+            ).data or []
+            for row in day_rows:
+                schedule_date = row.get("schedule_date")
+                if schedule_date:
+                    days_lookup[row["id"]] = datetime.fromisoformat(schedule_date).date()
+
+        tzinfo = self._get_timezone()
+        now_local = datetime.now(tzinfo)
+        grace_before = timedelta(minutes=self.PIN_EARLY_GRACE_MINUTES)
+        grace_after = timedelta(minutes=self.PIN_LATE_GRACE_MINUTES)
+
+        best_active: Optional[Tuple[datetime, Dict]] = None
+        best_upcoming: Optional[Tuple[datetime, Dict]] = None
+
+        for shift in shifts:
+            day_id = shift.get("day_id")
+            schedule_date = days_lookup.get(day_id)
+            if not schedule_date:
+                continue
+
+            start_time_str = shift.get("start_time")
+            end_time_str = shift.get("end_time")
+            if not start_time_str or not end_time_str:
+                continue
+
+            start_time = datetime.strptime(start_time_str, "%H:%M:%S").time()
+            end_time = datetime.strptime(end_time_str, "%H:%M:%S").time()
+
+            start_dt = datetime.combine(schedule_date, start_time, tzinfo=tzinfo)
+            end_dt = datetime.combine(schedule_date, end_time, tzinfo=tzinfo)
+            if end_dt <= start_dt:
+                end_dt += timedelta(days=1)
+
+            if start_dt - grace_before <= now_local <= end_dt + grace_after:
+                if not best_active or start_dt < best_active[0]:
+                    best_active = (start_dt, shift)
+            elif start_dt > now_local:
+                if not best_upcoming or start_dt < best_upcoming[0]:
+                    best_upcoming = (start_dt, shift)
+
+        chosen = best_active[1] if best_active else (best_upcoming[1] if best_upcoming else None)
+        if not chosen:
+            raise ValueError("No eligible shift found for this member right now")
+        return chosen["id"]
+
     # ------------------------------------------------------------------#
     # Helpers
     # ------------------------------------------------------------------#
@@ -143,6 +240,26 @@ class ClockService:
             .execute()
         )
         return result.data[0] if result.data else None
+
+    def _get_timezone(self) -> ZoneInfo:
+        if self._tzinfo:
+            return self._tzinfo
+        tz_name = "UTC"
+        settings = (
+            self.client.table("scheduling_settings")
+            .select("timezone")
+            .eq("account_id", self.account_id)
+            .limit(1)
+            .execute()
+        ).data
+        if settings and settings[0].get("timezone"):
+            tz_name = settings[0]["timezone"]
+        try:
+            self._tzinfo = ZoneInfo(tz_name)
+        except Exception:
+            logger.warning("Invalid timezone %s for account %s; defaulting to UTC", tz_name, self.account_id)
+            self._tzinfo = ZoneInfo("UTC")
+        return self._tzinfo
 
     def _assert_shift_member_access(self, shift_id: str, member_user_id: str) -> None:
         shift = (

@@ -6,7 +6,11 @@ membership/roles when performing account-scoped operations.
 """
 from __future__ import annotations
 
+import hashlib
+import hmac
 import logging
+import os
+import secrets
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple
 
@@ -18,8 +22,15 @@ logger = logging.getLogger(__name__)
 class AccountService:
     """Helper for account and membership lookups."""
 
+    PIN_LENGTH = 4
+    PIN_HASH_ITERATIONS = 390_000
+    PIN_SALT_BYTES = 16
+    PIN_DEFAULT_PEPPER = "restiq-clock-pin-pepper"
+
     def __init__(self) -> None:
         self.client = get_supabase_service_client()
+        self._pin_pepper = os.getenv("CLOCK_PIN_PEPPER", self.PIN_DEFAULT_PEPPER)
+        self.auth_admin = self._get_auth_admin()
 
     def get_primary_account_id(self, user_id: str) -> str:
         """Return the user's primary account id or raise if none found."""
@@ -103,7 +114,7 @@ class AccountService:
         if user_ids:
             public_result = (
                 self.client.table("users")
-                .select("id, first_name, last_name, subscription_tier")
+                .select("id, first_name, last_name, subscription_tier, clock_pin_updated_at")
                 .in_("id", user_ids)
                 .execute()
             )
@@ -112,21 +123,10 @@ class AccountService:
                     "first_name": profile.get("first_name"),
                     "last_name": profile.get("last_name"),
                     "subscription_tier": profile.get("subscription_tier"),
+                    "clock_pin_updated_at": profile.get("clock_pin_updated_at"),
                 }
 
-            auth_result = (
-                self.client.schema("auth")
-                .table("users")
-                .select("id, email, raw_user_meta_data")
-                .in_("id", user_ids)
-                .execute()
-            )
-            for record in auth_result.data or []:
-                auth_profiles[record["id"]] = {
-                    "id": record.get("id"),
-                    "email": record.get("email"),
-                    "raw_user_meta_data": record.get("raw_user_meta_data"),
-                }
+            auth_profiles = self._fetch_auth_profiles(user_ids)
 
         compensation_result = (
             self.client.table("account_member_compensation")
@@ -152,7 +152,124 @@ class AccountService:
             }
             member["profile"] = public_entry
             member["compensation"] = comp_by_user.get(member["user_id"])
+            member["clock_pin"] = {
+                "is_set": bool(public_entry.get("clock_pin_updated_at")),
+                "updated_at": public_entry.get("clock_pin_updated_at"),
+            }
         return members
+
+    # ------------------------------------------------------------------#
+    # Clock-in PIN helpers
+    # ------------------------------------------------------------------#
+    def set_clock_pin(self, user_id: str, pin: str) -> str:
+        normalized = self._normalize_pin(pin)
+        pin_hash, salt_hex = self._derive_pin_hash(normalized)
+        lookup_hash = self._build_lookup_hash(normalized)
+        timestamp = datetime.now(timezone.utc).isoformat()
+        self.client.table("users").update(
+            {
+                "clock_pin_hash": pin_hash,
+                "clock_pin_salt": salt_hex,
+                "clock_pin_lookup": lookup_hash,
+                "clock_pin_updated_at": timestamp,
+                "clock_pin_failed_attempts": 0,
+            }
+        ).eq("id", user_id).execute()
+        return timestamp
+
+    def clear_clock_pin(self, user_id: str) -> None:
+        self.client.table("users").update(
+            {
+                "clock_pin_hash": None,
+                "clock_pin_salt": None,
+                "clock_pin_lookup": None,
+                "clock_pin_updated_at": None,
+                "clock_pin_failed_attempts": 0,
+            }
+        ).eq("id", user_id).execute()
+
+    def lookup_user_by_pin(self, pin: str) -> Optional[Dict]:
+        normalized = self._normalize_pin(pin)
+        lookup_hash = self._build_lookup_hash(normalized)
+        result = (
+            self.client.table("users")
+            .select(
+                "id, primary_account_id, default_account_role, first_name, last_name, clock_pin_hash, clock_pin_salt, clock_pin_updated_at"
+            )
+            .eq("clock_pin_lookup", lookup_hash)
+            .execute()
+        )
+
+        for row in result.data or []:
+            if self._verify_pin_hash(normalized, row.get("clock_pin_hash"), row.get("clock_pin_salt")):
+                self.client.table("users").update({"clock_pin_failed_attempts": 0}).eq("id", row["id"]).execute()
+                row.pop("clock_pin_hash", None)
+                row.pop("clock_pin_salt", None)
+                return row
+        return None
+
+    def _normalize_pin(self, pin: Optional[str]) -> str:
+        if not pin:
+            raise ValueError("Clock PIN is required")
+        cleaned = pin.strip()
+        if len(cleaned) != self.PIN_LENGTH or not cleaned.isdigit():
+            raise ValueError(f"Clock PIN must be exactly {self.PIN_LENGTH} digits")
+        return cleaned
+
+    def _build_lookup_hash(self, pin: str) -> str:
+        payload = f"{pin}:{self._pin_pepper}".encode("utf-8")
+        return hashlib.sha256(payload).hexdigest()
+
+    def _derive_pin_hash(self, pin: str, *, salt_hex: Optional[str] = None) -> Tuple[str, str]:
+        payload = f"{pin}:{self._pin_pepper}".encode("utf-8")
+        if salt_hex:
+            salt_bytes = bytes.fromhex(salt_hex)
+        else:
+            salt_bytes = secrets.token_bytes(self.PIN_SALT_BYTES)
+        digest = hashlib.pbkdf2_hmac("sha256", payload, salt_bytes, self.PIN_HASH_ITERATIONS)
+        return digest.hex(), salt_bytes.hex()
+
+    def _verify_pin_hash(self, pin: str, expected_hash: Optional[str], salt_hex: Optional[str]) -> bool:
+        if not expected_hash or not salt_hex:
+            return False
+        computed, _ = self._derive_pin_hash(pin, salt_hex=salt_hex)
+        return hmac.compare_digest(computed, expected_hash)
+
+    def _fetch_auth_profiles(self, user_ids: List[str]) -> Dict[str, Dict]:
+        """Fetch auth profile details via admin API without mutating table schema."""
+        profiles: Dict[str, Dict] = {}
+        if not self.auth_admin:
+            logger.warning("Auth admin client unavailable; skipping auth profile fetch")
+            return profiles
+
+        for user_id in user_ids:
+            try:
+                response = self.auth_admin.get_user_by_id(user_id)
+            except Exception as exc:
+                logger.warning("Failed to fetch auth profile for %s: %s", user_id, exc)
+                continue
+
+            user = getattr(response, "user", None)
+            if not user:
+                continue
+
+            profiles[user_id] = {
+                "id": getattr(user, "id", user_id),
+                "email": getattr(user, "email", None),
+                "raw_user_meta_data": getattr(user, "user_metadata", {}) or {},
+            }
+        return profiles
+
+    def _get_auth_admin(self):
+        """Return the Supabase auth admin helper, handling mock clients."""
+        admin_attr = getattr(self.client.auth, "admin", None)
+        if callable(admin_attr):
+            try:
+                return admin_attr()
+            except TypeError:
+                # Supabase python client exposes admin as property; fall back to attribute access
+                pass
+        return admin_attr
 
     # ------------------------------------------------------------------#
     # Invitation helpers

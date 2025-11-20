@@ -5,6 +5,8 @@ import {
   updateModuleAccess,
   inviteAccountMember,
   assignMemberCompensation,
+  setClockPin,
+  clearClockPin,
 } from '@/services/api/accountApi';
 import { useAuthStore } from '@/stores/authStore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,12 +24,52 @@ export function TeamSettingsPage() {
 
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<'owner' | 'admin' | 'member'>('member');
+  const [pin, setPinValue] = useState('');
+  const [pinConfirm, setPinConfirm] = useState('');
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['account-summary'],
     queryFn: fetchAccountSummary,
     refetchOnWindowFocus: false,
   });
+  const clockPinMutation = useMutation({
+    mutationFn: (pinCode: string) => setClockPin(pinCode),
+    onSuccess: () => {
+      setPinValue('');
+      setPinConfirm('');
+      queryClient.invalidateQueries({ queryKey: ['account-summary'] });
+      toast({
+        title: 'PIN updated',
+        description: 'Your kiosk PIN is ready to use.',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Failed to save PIN',
+        description: error?.message ?? 'Please try again.',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const clearPinMutation = useMutation({
+    mutationFn: () => clearClockPin(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['account-summary'] });
+      toast({
+        title: 'PIN removed',
+        description: 'Clock-in PIN cleared successfully.',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Failed to remove PIN',
+        description: error?.message ?? 'Please try again.',
+        variant: 'destructive',
+      });
+    },
+  });
+
 
   const moduleMutation = useMutation({
     mutationFn: ({ slug, enabled }: { slug: string; enabled: boolean }) =>
@@ -132,6 +174,9 @@ export function TeamSettingsPage() {
     }
   });
 
+  const currentMember = data.members.find((member) => member.user_id === user?.id);
+  const pinStatus = currentMember?.clock_pin;
+
   return (
     <div className="p-6 space-y-6">
       <Card className="bg-card-dark border-white/10">
@@ -161,6 +206,99 @@ export function TeamSettingsPage() {
         <CardHeader>
           <CardTitle className="text-xl text-white">Module Access</CardTitle>
         </CardHeader>
+      <Card className="bg-card-dark border-white/10">
+        <CardHeader>
+          <CardTitle className="text-xl text-white">Time Clock PIN</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-slate-400 text-sm">
+            Choose a 4-digit PIN to clock in from the public <code className="text-emerald-300">/time</code> page. This
+            PIN is private to you and can be updated anytime.
+          </p>
+          <div className="text-sm text-slate-300">
+            Status:{' '}
+            {pinStatus?.is_set
+              ? `Set ${pinStatus.updated_at ? `on ${new Date(pinStatus.updated_at).toLocaleString()}` : ''}`
+              : 'Not set'}
+          </div>
+          <form
+            className="grid gap-4 md:grid-cols-2"
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (pin !== pinConfirm) {
+                toast({
+                  title: 'PINs do not match',
+                  description: 'Enter the same 4-digit value in both fields.',
+                  variant: 'destructive',
+                });
+                return;
+              }
+              if (!/^\d{4}$/.test(pin)) {
+                toast({
+                  title: 'Invalid PIN',
+                  description: 'PIN must be exactly four digits.',
+                  variant: 'destructive',
+                });
+                return;
+              }
+              clockPinMutation.mutate(pin);
+            }}
+          >
+            <div className="space-y-1">
+              <Label htmlFor="pin" className="text-slate-300">
+                New PIN
+              </Label>
+              <Input
+                id="pin"
+                type="password"
+                inputMode="numeric"
+                pattern="\d{4}"
+                maxLength={4}
+                value={pin}
+                onChange={(event) => setPinValue(event.target.value)}
+                placeholder="••••"
+                className="bg-obsidian/70 text-white border-white/10 tracking-[0.4em]"
+                disabled={clockPinMutation.isPending}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="pin-confirm" className="text-slate-300">
+                Confirm PIN
+              </Label>
+              <Input
+                id="pin-confirm"
+                type="password"
+                inputMode="numeric"
+                pattern="\d{4}"
+                maxLength={4}
+                value={pinConfirm}
+                onChange={(event) => setPinConfirm(event.target.value)}
+                placeholder="••••"
+                className="bg-obsidian/70 text-white border-white/10 tracking-[0.4em]"
+                disabled={clockPinMutation.isPending}
+              />
+            </div>
+            <div className="col-span-full flex flex-wrap gap-3">
+              <Button
+                type="submit"
+                className="bg-emerald-600 hover:bg-emerald-500"
+                disabled={clockPinMutation.isPending}
+              >
+                Save PIN
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={clearPinMutation.isPending || !pinStatus?.is_set}
+                onClick={() => clearPinMutation.mutate()}
+              >
+                Remove PIN
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+
         <CardContent className="space-y-4">
           {data.modules.map((module) => (
             <div

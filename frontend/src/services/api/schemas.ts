@@ -336,6 +336,18 @@ export const schedulingClockOutResponseSchema = z.object({
   entry: schedulingShiftClockEntrySchema,
 });
 
+export const timeClockPinResponseSchema = z.object({
+  status: z.enum(['clocked_in', 'clocked_out']),
+  account_id: z.string(),
+  member_user_id: z.string(),
+  member_name: z.string(),
+  shift_id: z.string(),
+  session_id: z.string().optional(),
+  entry_id: z.string().optional(),
+  occurred_at: z.string(),
+  message: z.string(),
+});
+
 export const laborDaySummarySchema = z.object({
   id: z.string(),
   account_id: z.string(),

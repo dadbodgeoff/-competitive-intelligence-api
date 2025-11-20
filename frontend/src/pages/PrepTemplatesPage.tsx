@@ -28,6 +28,7 @@ export function PrepTemplatesPage() {
   const [newTemplateName, setNewTemplateName] = useState('')
   const [newTemplateDescription, setNewTemplateDescription] = useState('')
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | undefined>()
+  const [createDialogOpen, setCreateDialogOpen] = useState(false)
 
   const createTemplateMutation = useCreatePrepTemplate()
   const deleteTemplateMutation = useDeletePrepTemplate()
@@ -48,7 +49,7 @@ export function PrepTemplatesPage() {
               tasks such as sauces, dough, or mise en place.
             </p>
           </div>
-          <Dialog>
+          <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="default">New template</Button>
             </DialogTrigger>
@@ -81,13 +82,15 @@ export function PrepTemplatesPage() {
                   onClick={async () => {
                     if (!newTemplateName.trim()) return
                     try {
-                      await createTemplateMutation.mutateAsync({
+                      const response = await createTemplateMutation.mutateAsync({
                         name: newTemplateName.trim(),
                         description: newTemplateDescription || undefined,
                       })
+                      setSelectedTemplateId(response.template.id)
                       setNewTemplateName('')
                       setNewTemplateDescription('')
-                      refetchTemplates()
+                      setCreateDialogOpen(false)
+                      await refetchTemplates()
                       toast({ title: 'Template created' })
                     } catch (error) {
                       toast({

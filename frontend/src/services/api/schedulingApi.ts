@@ -11,6 +11,7 @@ import {
   schedulingClockOutResponseSchema,
   timesheetResponseSchema,
   schedulerGridResponseSchema,
+  timeClockPinResponseSchema,
 } from './schemas'
 import type {
   SchedulingSettingsResponse,
@@ -23,6 +24,7 @@ import type {
   SchedulingClockOutResponse,
   TimesheetResponse,
   SchedulerGridResponse,
+  TimeClockPinResponse,
 } from '@/types/scheduling'
 
 export async function getSchedulingSettings() {
@@ -185,5 +187,12 @@ export async function getSchedulerGrid(weekId: string) {
     apiClient.get(`/api/v1/scheduling/weeks/${weekId}/grid`)
   )
   return parseResponse(result, schedulerGridResponseSchema, 'Failed to load schedule grid')
+}
+
+export async function clockWithPin(pin: string) {
+  const result = await safeRequest<TimeClockPinResponse>(() =>
+    apiClient.post('/api/v1/scheduling/timeclock/pin', { pin })
+  )
+  return parseResponse(result, timeClockPinResponseSchema, 'Failed to update time clock')
 }
 

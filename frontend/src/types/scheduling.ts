@@ -211,3 +211,15 @@ export interface SchedulerGridResponse {
   totals: SchedulerTotals
 }
 
+export interface TimeClockPinResponse {
+  status: 'clocked_in' | 'clocked_out'
+  account_id: string
+  member_user_id: string
+  member_name: string
+  shift_id: string
+  session_id?: string
+  entry_id?: string
+  occurred_at: string
+  message: string
+}
+

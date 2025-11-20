@@ -16,7 +16,7 @@ from services.invoice_duplicate_detector import InvoiceDuplicateDetector
 from services.invoice_processor import InvoiceProcessor
 from services.invoice_batch_processor import InvoiceBatchProcessor
 from services.invoice_monitoring_service import monitoring_service
-from api.middleware.auth import get_current_user
+from api.middleware.auth import get_current_membership, AuthenticatedUser
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/invoices", tags=["invoice-operations"])
@@ -45,7 +45,7 @@ class SaveInvoiceRequest(BaseModel):
 @router.post("/save")
 async def save_invoice(
     request: SaveInvoiceRequest,
-    current_user: str = Depends(get_current_user)
+    auth: AuthenticatedUser = Depends(get_current_membership)
 ):
     """
     Save parsed/reviewed invoice to database
@@ -58,6 +58,8 @@ async def save_invoice(
     """
     session_id = request.session_id
     save_start = time.time()
+    current_user = auth.id
+    account_id = auth.account_id
     
     try:
         # Check usage limits (free tier: 1 weekly + 2 monthly bonus)
@@ -99,6 +101,7 @@ async def save_invoice(
         # Final duplicate check before save
         duplicate = await duplicate_detector.check_for_duplicate(
             user_id=current_user,
+            account_id=account_id,
             invoice_number=request.invoice_data['invoice_number'],
             vendor_name=request.invoice_data['vendor_name'],
             invoice_date=request.invoice_data['invoice_date'],
@@ -119,7 +122,8 @@ async def save_invoice(
             parse_metadata=request.parse_metadata,
             file_url=request.file_url,
             status=request.status,
-            user_id=current_user
+            user_id=current_user,
+            account_id=account_id
         )
         
         save_time = time.time() - save_start
@@ -184,7 +188,7 @@ async def list_invoices(
     per_page: int = Query(50, ge=1, le=100, description="Items per page (max 100)"),
     status: Optional[str] = Query(None, description="Filter by status"),
     vendor: Optional[str] = Query(None, description="Filter by vendor name"),
-    current_user: str = Depends(get_current_user)
+    auth: AuthenticatedUser = Depends(get_current_membership)
 ):
     """
     List user's invoices with filtering and pagination
@@ -204,7 +208,8 @@ async def list_invoices(
         offset = (page - 1) * per_page
         
         invoices = await storage_service.list_invoices(
-            user_id=current_user,
+            user_id=auth.id,
+            account_id=auth.account_id,
             limit=per_page,
             offset=offset,
             status=status,
@@ -242,7 +247,7 @@ async def list_invoices(
 @router.get("/{invoice_id}")
 async def get_invoice(
     invoice_id: str,
-    current_user: str = Depends(get_current_user)
+    auth: AuthenticatedUser = Depends(get_current_membership)
 ):
     """
     Get full invoice details with line items
@@ -255,7 +260,8 @@ async def get_invoice(
         logger.info(f"🔍 [GET_INVOICE] Calling storage_service.get_invoice...")
         invoice = await storage_service.get_invoice(
             invoice_id=invoice_id,
-            user_id=current_user
+            user_id=auth.id,
+            account_id=auth.account_id
         )
         
         logger.info(f"📦 [GET_INVOICE] Storage service returned: {invoice is not None}")
@@ -290,7 +296,7 @@ async def get_invoice(
 @router.delete("/{invoice_id}")
 async def delete_invoice(
     invoice_id: str,
-    current_user: str = Depends(get_current_user)
+    auth: AuthenticatedUser = Depends(get_current_membership)
 ):
     """
     Delete invoice and all related line items
@@ -300,7 +306,8 @@ async def delete_invoice(
     try:
         success = await storage_service.delete_invoice(
             invoice_id=invoice_id,
-            user_id=current_user
+            user_id=auth.id,
+            account_id=auth.account_id
         )
         
         if not success:

@@ -10,34 +10,31 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { isAuthenticated, checkAuth } = useAuthStore();
   const location = useLocation();
   const [authChecked, setAuthChecked] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    // ALWAYS verify auth with backend on mount
-    // This is the ONLY source of truth (HTTPOnly cookie)
+    let mounted = true;
+    setIsChecking(true);
+
     const verifyAuth = async () => {
-      // Skip if already checking
-      if (isVerifying) return;
-      
-      setIsVerifying(true);
-      
       try {
         await checkAuth();
-        // If successful, isAuthenticated will be set to true by checkAuth
-      } catch (error) {
-        // checkAuth already handles setting isAuthenticated to false
-        console.log('Auth verification failed');
       } finally {
-        setAuthChecked(true);
-        setIsVerifying(false);
+        if (mounted) {
+          setAuthChecked(true);
+          setIsChecking(false);
+        }
       }
     };
 
     verifyAuth();
-  }, [location.pathname]); // Re-verify on route change
 
-  // Show loading while verifying auth
-  if (!authChecked || isVerifying) {
+    return () => {
+      mounted = false;
+    };
+  }, [checkAuth, location.pathname]);
+
+  if (!authChecked || isChecking) {
     return (
       <div className="min-h-screen bg-obsidian flex items-center justify-center">
         <div className="text-white">Verifying authentication...</div>
@@ -45,7 +42,6 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }

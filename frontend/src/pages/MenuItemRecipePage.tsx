@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppShell } from '@/components/layout/AppShell';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { Button } from '@/components/ui/button';
 import { Loader2, ArrowLeft, RefreshCw } from 'lucide-react';
 import { useRecipeBuilder } from '@/hooks/useRecipeBuilder';
@@ -86,9 +87,9 @@ export function MenuItemRecipePage() {
               Refresh
             </Button>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-1">
+          <PageHeading className="mb-1">
             Recipe: {recipe.menu_item.name}
-          </h1>
+          </PageHeading>
           <p className="text-slate-400">
             Build your recipe and calculate true cost of goods sold
           </p>

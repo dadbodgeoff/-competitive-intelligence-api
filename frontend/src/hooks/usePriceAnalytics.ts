@@ -6,10 +6,13 @@
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { analyticsApi } from '@/services/api/analyticsApi';
 import type {
-  SavingsOpportunitiesResponse,
-  PriceAnomaliesResponse,
-  VendorPerformanceResponse,
   DashboardSummaryResponse,
+  ItemsListResponse,
+  PriceAnomaliesResponse,
+  PriceComparisonResponse,
+  PriceTrendsResponse,
+  SavingsOpportunitiesResponse,
+  VendorPerformanceResponse,
 } from '@/types/analytics';
 
 /**
@@ -17,7 +20,7 @@ import type {
  */
 export function useItemsList(
   daysBack = 90
-): UseQueryResult<any> {
+): UseQueryResult<ItemsListResponse> {
   return useQuery({
     queryKey: ['itemsList', daysBack],
     queryFn: () => analyticsApi.getItemsList(daysBack),
@@ -32,7 +35,7 @@ export function usePriceComparison(
   itemDescription: string | undefined,
   daysBack = 90,
   enabled = true
-): UseQueryResult<any> {
+): UseQueryResult<PriceComparisonResponse> {
   return useQuery({
     queryKey: ['priceComparison', itemDescription, daysBack],
     queryFn: () => analyticsApi.getPriceComparison(itemDescription!, daysBack),
@@ -48,7 +51,7 @@ export function usePriceTrends(
   itemDescription: string | undefined,
   days = 90,
   enabled = true
-): UseQueryResult<any> {
+): UseQueryResult<PriceTrendsResponse> {
   return useQuery({
     queryKey: ['priceTrends', itemDescription, days],
     queryFn: () => analyticsApi.getPriceTrends(itemDescription!, days),

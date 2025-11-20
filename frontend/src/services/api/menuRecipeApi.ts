@@ -13,6 +13,7 @@ import type {
   UpdateIngredientRequest,
   UpdateIngredientResponse,
   DeleteIngredientResponse,
+  MenuItemRecipe,
 } from '@/types/menuRecipe';
 
 export const menuRecipeApi = {
@@ -24,7 +25,7 @@ export const menuRecipeApi = {
     query: string,
     limit = 20
   ): Promise<SearchInventoryResponse> {
-    const response = await apiClient.get(
+    const response = await apiClient.get<SearchInventoryResponse>(
       `/api/v1/menu/search-inventory?q=${encodeURIComponent(query)}&limit=${limit}`
     );
     return response.data;
@@ -37,10 +38,18 @@ export const menuRecipeApi = {
   async getRecipe(
     menuItemId: string,
     priceId?: string
-  ): Promise<RecipeResponse> {
+  ): Promise<MenuItemRecipe> {
     const params = priceId ? `?price_id=${priceId}` : '';
-    const response = await apiClient.get(`/api/v1/menu/items/${menuItemId}/recipe${params}`);
-    return response.data;
+    const response = await apiClient.get<RecipeResponse>(`/api/v1/menu/items/${menuItemId}/recipe${params}`);
+    const data = response.data;
+    return {
+      menu_item: data.menu_item,
+      ingredients: data.ingredients,
+      total_cogs: data.total_cogs,
+      menu_price: data.menu_price,
+      gross_profit: data.gross_profit,
+      food_cost_percent: data.food_cost_percent,
+    };
   },
 
   /**

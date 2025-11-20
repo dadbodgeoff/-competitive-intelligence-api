@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Clock, MapPin, Users, Sparkles, Calendar } from 'lucide-react';
 import { apiClient } from '@/services/api/client';
 import { AppShell } from '@/components/layout/AppShell';
+import { PageHeading } from '@/components/layout/PageHeading';
 
 interface SavedAnalysis {
   id: string;
@@ -62,7 +63,7 @@ export function SavedAnalysesPage() {
     <AppShell>
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-3">Saved Analyses</h1>
+            <PageHeading className="mb-3">Saved Analyses</PageHeading>
             <p className="text-lg text-slate-400">Review your past competitive analyses</p>
           </div>
           <Link to="/analysis/new">

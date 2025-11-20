@@ -11,6 +11,24 @@ A full-stack SaaS platform for restaurant operators to manage invoices, track pr
 - **Review Analysis**: AI-powered analysis of customer reviews
 - **Multi-tier Subscriptions**: Free, Pro, and Enterprise tiers
 
+### New: Daily Sales Tracking
+
+- Capture daily quantities sold per menu item
+- COGS snapshots are stored automatically using existing recipes
+- View 14-day spend summaries and top cost drivers inside the COGS dashboard (`/cogs`)
+- API endpoints:
+  - `POST /api/v1/menu/sales/daily` – record or update daily quantities
+  - `GET /api/v1/menu/sales/daily?sale_date=YYYY-MM-DD` – fetch entries for a specific date
+  - `GET /api/v1/menu/sales/summary?start_date&end_date` – retrieve aggregated spend summaries
+
+Run the new migration before using the module:
+
+```bash
+supabase migration up 030_menu_item_sales_tracking.sql
+```
+
+After migration, seed or record sales through the COGS dashboard to populate spend analytics.
+
 ## Tech Stack
 
 **Frontend:**

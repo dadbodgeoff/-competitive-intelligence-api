@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { AuthState, LoginCredentials, RegisterData, User } from '@/types/auth';
-import { reviewAnalysisAPI } from '@/services/ReviewAnalysisAPIService';
+import { AuthState, LoginCredentials, RegisterData } from '@/types/auth';
+import { login, register, logout, getProfile } from '@/services/api/reviewAnalysisApi';
 
 interface AuthActions {
   login: (credentials: LoginCredentials) => Promise<void>;
@@ -19,6 +19,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   isLoading: false,
   error: null,
   subscriptionTier: 'free',
+  moduleAccess: [],
 
   // Actions
   login: async (credentials: LoginCredentials) => {
@@ -27,13 +28,14 @@ export const useAuthStore = create<AuthStore>((set) => ({
       set({ isLoading: true, error: null });
       
       // Cookies are set automatically by backend
-      const response = await reviewAnalysisAPI.login(credentials);
+      const response = await login(credentials);
       console.log('✅ Login successful, cookies set by backend');
       
       set({
         user: response.user,
         isAuthenticated: true,
         subscriptionTier: response.user.subscription_tier,
+        moduleAccess: response.user.module_access ?? [],
         isLoading: false,
         error: null,
       });
@@ -53,16 +55,17 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       set({ isLoading: true, error: null });
       
-      // Cookies are set automatically by backend
-      const response = await reviewAnalysisAPI.register(userData);
-      
-      // Response has { user: {...}, message: "..." } structure
-      const user = ('user' in response ? response.user : response) as User;
-      
+      const response = await register(userData);
+      const user = response.user;
+      if (!user) {
+        throw new Error('Registration succeeded but no user was returned.');
+      }
+
       set({
         user: user,
         isAuthenticated: true,
         subscriptionTier: user.subscription_tier,
+        moduleAccess: user.module_access ?? [],
         isLoading: false,
       });
     } catch (error) {
@@ -80,13 +83,14 @@ export const useAuthStore = create<AuthStore>((set) => ({
       user: null,
       isAuthenticated: false,
       subscriptionTier: 'free',
+      moduleAccess: [],
       isLoading: false,
       error: null,
     });
     
     // Try to call logout API, but don't wait or care if it fails
     try {
-      await reviewAnalysisAPI.logout();
+      await logout();
     } catch {
       // Ignore errors - we're already logged out locally
     }
@@ -98,20 +102,22 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       set({ isLoading: true });
       
-      const currentUser = await reviewAnalysisAPI.getProfile();
+      const currentUser = await getProfile();
       
       set({
         user: currentUser,
         isAuthenticated: true,
         subscriptionTier: currentUser.subscription_tier,
+        moduleAccess: currentUser.module_access ?? [],
         isLoading: false,
       });
-    } catch (error: any) {
+    } catch {
       // Just clear state, don't call logout API
       set({
         user: null,
         isAuthenticated: false,
         subscriptionTier: 'free',
+      moduleAccess: [],
         isLoading: false,
       });
     }

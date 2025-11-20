@@ -16,8 +16,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    env_file:
-      - .env
     ports:
       - "8000:8000"
     volumes:
@@ -42,10 +40,14 @@ services:
       # Docker overrides
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - CLAMAV_ENABLED=true
+      - CLAMAV_HOST=clamav
+      - CLAMAV_PORT=3310
       - ENVIRONMENT=development
       - LOG_LEVEL=DEBUG
     depends_on:
       - redis
+      - clamav
     restart: unless-stopped
 
   # Frontend dev server
@@ -70,4 +72,12 @@ services:
     ports:
       - "6379:6379"
     restart: unless-stopped
+
+  clamav:
+    build:
+      context: .
+      dockerfile: clamav/Dockerfile
+    restart: unless-stopped
+    expose:
+      - "3310"
 

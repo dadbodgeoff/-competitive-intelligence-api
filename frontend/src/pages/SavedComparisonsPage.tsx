@@ -33,6 +33,7 @@ import {
   FileText,
   Archive,
 } from 'lucide-react';
+import { PageHeading } from '@/components/layout/PageHeading';
 
 export function SavedComparisonsPage() {
   const navigate = useNavigate();
@@ -182,9 +183,7 @@ export function SavedComparisonsPage() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">
-              Saved Menu Comparisons
-            </h1>
+            <PageHeading className="mb-2">Saved Menu Comparisons</PageHeading>
             <p className="text-slate-400">
               View and manage your competitor menu analysis reports
             </p>

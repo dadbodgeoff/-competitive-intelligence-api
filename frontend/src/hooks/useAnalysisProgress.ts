@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { reviewAnalysisAPI } from '@/services/ReviewAnalysisAPIService';
+import { getAnalysisStatus } from '@/services/api/reviewAnalysisApi';
 
 export function useAnalysisProgress(analysisId: string) {
   const [isPolling, setIsPolling] = useState(true);
@@ -19,7 +19,7 @@ export function useAnalysisProgress(analysisId: string) {
 
   const { data: status, error, isLoading } = useQuery({
     queryKey: ['analysis-status', analysisId],
-    queryFn: () => reviewAnalysisAPI.getAnalysisStatus(analysisId),
+    queryFn: () => getAnalysisStatus(analysisId),
     enabled: isPolling && !!analysisId && isTabVisible,
     refetchInterval: (query) => {
       const data = query?.state?.data;

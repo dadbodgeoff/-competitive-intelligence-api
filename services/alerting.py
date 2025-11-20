@@ -6,6 +6,7 @@ import os
 import logging
 from typing import Dict, Optional
 from datetime import datetime
+from requests import RequestException, post
 
 logger = logging.getLogger(__name__)
 
@@ -35,11 +36,22 @@ def send_critical_alert(title: str, message: str, context: Optional[Dict] = None
         logger.critical(f"Context: {context}")
     
     logger.critical("=" * 80)
-    
-    # TODO: After beta, integrate with:
-    # - SendGrid/Mailgun for email alerts
-    # - Slack webhook for team notifications
-    # - PagerDuty for on-call rotation
+
+    webhook_url = os.getenv("ALERT_WEBHOOK_URL")
+    if webhook_url:
+        payload = {
+            "text": f"*🚨 {title}*\n{message}\n`{datetime.utcnow().isoformat()}`",
+        }
+        if context:
+            payload["attachments"] = [{"text": f"Context: ```{context}```"}]
+        try:
+            post(
+                webhook_url,
+                json=payload,
+                timeout=5,
+            )
+        except RequestException as exc:  # pragma: no cover - best effort
+            logger.exception("Failed to deliver alert webhook: %s", exc)
 
 
 def alert_subscription_bypass(user_id: str, endpoint: str, required_tier: str, actual_tier: str):

@@ -6,6 +6,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppShell } from '@/components/layout/AppShell';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { InvoiceCard, InvoiceCardHeader, InvoiceCardContent, InvoiceStatusBadge } from '@/design-system/components';
 import { Button } from '@/components/ui/button';
 import { InvoiceReviewTable } from '@/components/invoice/InvoiceReviewTable';
@@ -13,6 +14,7 @@ import { apiClient } from '@/services/api/client';
 import { useToast } from '@/hooks/use-toast';
 import { parseDataLoadError, parseDeleteError } from '@/utils/errorMessages';
 import { Download, Trash2, Loader2 } from 'lucide-react';
+import { attachConversionToLineItem, type PackConversionResult } from '@/utils/invoiceUnits';
 
 interface InvoiceData {
   invoice_number: string;
@@ -30,8 +32,15 @@ interface InvoiceData {
     unit_price: number;
     extended_price: number;
     category?: 'DRY' | 'REFRIGERATED' | 'FROZEN';
+    converted_quantity?: number;
+    converted_unit?: string;
+    per_pack_quantity?: number;
+    per_pack_unit?: string;
+    conversion?: PackConversionResult;
   }>;
 }
+
+type InvoiceLineItem = InvoiceData['line_items'][number];
 
 export function InvoiceDetailPage() {
   const { invoiceId } = useParams<{ invoiceId: string }>();
@@ -69,9 +78,12 @@ export function InvoiceDetailPage() {
         invoice_number: data.invoice?.invoice_number
       });
       
+      const rawLineItems = (data.items || []) as InvoiceLineItem[];
+      const lineItems = rawLineItems.map((item) => attachConversionToLineItem(item));
+
       setInvoice({
         ...data.invoice,
-        line_items: data.items || [],
+        line_items: lineItems,
       });
       
       console.log('✅ [DETAIL] Invoice state updated successfully');
@@ -141,7 +153,7 @@ export function InvoiceDetailPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-1">Invoice Details</h1>
+            <PageHeading className="mb-1">Invoice Details</PageHeading>
             <p className="text-slate-400">
               {invoice.vendor_name} • #{invoice.invoice_number}
             </p>

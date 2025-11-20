@@ -9,6 +9,7 @@ import { useState, useEffect, Suspense, lazy } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AppShell } from '@/components/layout/AppShell';
+import { PageHeading } from '@/components/layout/PageHeading';
 import {
   InvoiceCard,
   InvoiceCardHeader,
@@ -153,7 +154,7 @@ export function MenuDashboard() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Menu Dashboard</h1>
+            <PageHeading>Menu Dashboard</PageHeading>
             <p className="text-slate-400">
               View and manage your restaurant menu
             </p>

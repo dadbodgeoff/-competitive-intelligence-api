@@ -10,59 +10,84 @@ interface LocationAutocompleteProps extends React.InputHTMLAttributes<HTMLInputE
 // This provides the mobile-optimized foundation
 export const LocationAutocomplete = forwardRef<HTMLInputElement, LocationAutocompleteProps>(
   ({ className, onLocationSelect, onChange, ...props }, ref) => {
-    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [suggestions, setSuggestions] = useState<Array<{ label: string; placeId?: string }>>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
+    const abortControllerRef = useRef<AbortController | null>(null);
 
-    // Mock suggestions for now - will be replaced with Google Places API
-    const mockSuggestions = [
-      'New York, NY, USA',
-      'Los Angeles, CA, USA',
-      'Chicago, IL, USA',
-      'Houston, TX, USA',
-      'Phoenix, AZ, USA',
-      'Philadelphia, PA, USA',
-      'San Antonio, TX, USA',
-      'San Diego, CA, USA',
-    ];
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setInputValue(value);
-      
-      // Filter mock suggestions
-      if (value.length > 2) {
-        const filtered = mockSuggestions.filter(suggestion =>
-          suggestion.toLowerCase().includes(value.toLowerCase())
-        );
-        setSuggestions(filtered.slice(0, 5));
-        setShowSuggestions(true);
-      } else {
+    const fetchSuggestions = async (value: string) => {
+      if (value.trim().length < 3) {
+        setSuggestions([]);
         setShowSuggestions(false);
+        return;
       }
 
-      // Call parent onChange
-      if (onChange) {
-        onChange(e);
+      abortControllerRef.current?.abort();
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(value)}`,
+          {
+            headers: {
+              'Accept-Language': 'en',
+            },
+            signal: controller.signal,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch suggestions: ${response.statusText}`);
+        }
+
+        const data: Array<{ display_name: string; place_id: string }> = await response.json();
+        setSuggestions(
+          data.map((item) => ({
+            label: item.display_name,
+            placeId: item.place_id,
+          }))
+        );
+        setShowSuggestions(data.length > 0);
+      } catch (error) {
+        if ((error as Error).name === 'AbortError') {
+          return;
+        }
+        setSuggestions([]);
+        setShowSuggestions(false);
       }
     };
 
-    const handleSuggestionClick = (suggestion: string) => {
-      setInputValue(suggestion);
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value;
+      setInputValue(value);
+      fetchSuggestions(value);
+
+      if (onChange) {
+        onChange(event);
+      }
+    };
+
+    const handleSuggestionClick = (suggestion: { label: string; placeId?: string }) => {
+      setInputValue(suggestion.label);
       setShowSuggestions(false);
-      
+
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+
       // Create synthetic event for form integration
       const syntheticEvent = {
-        target: { value: suggestion }
+        target: { value: suggestion.label },
       } as React.ChangeEvent<HTMLInputElement>;
-      
+
       if (onChange) {
         onChange(syntheticEvent);
       }
-      
+
       if (onLocationSelect) {
-        onLocationSelect(suggestion);
+        onLocationSelect(suggestion.label, suggestion.placeId);
       }
     };
 
@@ -76,6 +101,12 @@ export const LocationAutocomplete = forwardRef<HTMLInputElement, LocationAutocom
         ref.current = inputRef.current;
       }
     }, [ref]);
+
+    useEffect(() => {
+      return () => {
+        abortControllerRef.current?.abort();
+      };
+    }, []);
 
     return (
       <div className="relative">
@@ -103,7 +134,7 @@ export const LocationAutocomplete = forwardRef<HTMLInputElement, LocationAutocom
                 onClick={() => handleSuggestionClick(suggestion)}
                 style={{ minHeight: '44px' }}
               >
-                {suggestion}
+                {suggestion.label}
               </button>
             ))}
           </div>

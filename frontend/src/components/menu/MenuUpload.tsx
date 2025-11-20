@@ -15,6 +15,7 @@ import { useDropzone } from 'react-dropzone';
 import { cn } from '@/design-system';
 import { useUsageLimit } from '@/hooks/useUsageLimits';
 import { UsageLimitWarning, UsageCounter } from '@/components/common/UsageLimitWarning';
+import { PageHeading } from '@/components/layout/PageHeading';
 import {
   InvoiceCard,
   InvoiceCardHeader,
@@ -37,6 +38,7 @@ import {
   X,
   Loader2,
 } from 'lucide-react';
+import { uploadMenuFile } from '@/services/api/menuApi';
 
 export interface MenuUploadProps {
   onSuccess?: (menuId: string) => void;
@@ -65,32 +67,13 @@ export function MenuUpload({ onSuccess, className }: MenuUploadProps) {
   } = useMenuParseStream();
 
   // Check upload limit using centralized hook
-  const { limit: uploadLimit, loading: _checkingLimit, isBlocked } = useUsageLimit('menu_upload');
+  const { limit: uploadLimit, isBlocked } = useUsageLimit('menu_upload');
 
   const uploadFile = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append('file', file);
 
-    const baseUrl = import.meta.env.VITE_API_URL || '';
-    const response = await fetch(`${baseUrl}/api/v1/menu/upload`, {
-      method: 'POST',
-      credentials: 'include', // Send cookies
-      body: formData,
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      
-      // Handle usage limit errors specially
-      if (response.status === 429) {
-        const limitError = error.detail || error;
-        throw new Error(limitError.message || 'Usage limit exceeded');
-      }
-      
-      throw new Error(error.detail || 'Upload failed');
-    }
-
-    const result = await response.json();
+    const result = await uploadMenuFile(formData);
     return result.file_url;
   };
 
@@ -194,7 +177,7 @@ export function MenuUpload({ onSuccess, className }: MenuUploadProps) {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Upload Menu</h1>
+            <PageHeading>Upload Menu</PageHeading>
             <p className="text-slate-400">
               Upload your menu and we'll extract the data automatically
             </p>

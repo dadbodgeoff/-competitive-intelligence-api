@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, AlertCircle, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,25 +18,45 @@ import { toast } from '@/hooks/use-toast';
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(1, 'Password is required'),
+  invite_token: z.string().optional(),
 });
 
 export function LoginForm() {
   const navigate = useNavigate();
   const { login, isLoading, error, clearError } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
+  const [searchParams] = useSearchParams();
+
+  const inviteToken = searchParams.get('token') ?? undefined;
+  const inviteEmail = searchParams.get('email') ?? undefined;
+  const inviteAccountName = searchParams.get('accountName') ?? undefined;
+  const isInviteFlow = Boolean(inviteToken);
 
   const form = useForm<LoginCredentials>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
       password: '',
+      invite_token: inviteToken,
     },
   });
+
+  useEffect(() => {
+    if (inviteEmail) {
+      form.setValue('email', inviteEmail);
+    }
+    if (inviteToken) {
+      form.setValue('invite_token', inviteToken);
+    }
+  }, [form, inviteEmail, inviteToken]);
 
   const onSubmit = async (data: LoginCredentials) => {
     try {
       clearError();
-      await login(data);
+      await login({
+        ...data,
+        invite_token: inviteToken,
+      });
       navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
@@ -118,6 +138,16 @@ export function LoginForm() {
               );
             })()}
             
+            {isInviteFlow && (
+              <Alert className="bg-emerald-500/10 border-emerald-500/40 text-emerald-100">
+                <AlertDescription>
+                  {inviteAccountName
+                    ? `Welcome back. Sign in to join ${inviteAccountName}.`
+                    : 'Use the email address that received this invitation to finish joining the account.'}
+                </AlertDescription>
+              </Alert>
+            )}
+
             {/* Google Sign In Button */}
             <Button
               type="button"
@@ -172,6 +202,7 @@ export function LoginForm() {
                           className="h-12 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20"
                           autoComplete="email"
                           data-testid="email-input"
+                          readOnly={isInviteFlow}
                         />
                       </FormControl>
                       <FormMessage className="text-red-400" />

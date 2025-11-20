@@ -2,7 +2,7 @@
 Menu Recipe Routes
 Handles ingredient linking and COGS calculations for plate costing
 """
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks
 from fastapi.responses import JSONResponse
 from typing import Optional
 from pydantic import BaseModel
@@ -13,6 +13,12 @@ from dotenv import load_dotenv
 
 from services.menu_recipe_service import MenuRecipeService
 from api.middleware.auth import get_current_user
+from services.background_tasks import (
+    get_cached_payload,
+    recipe_snapshot_key,
+    run_post_recipe_change_tasks,
+    store_recipe_snapshot,
+)
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -142,12 +148,25 @@ async def get_menu_item_recipe(
     Joins with inventory_items (READ ONLY) for current costs
     """
     try:
+        if price_id is None:
+            cache_key = recipe_snapshot_key(current_user, menu_item_id)
+            cached = get_cached_payload(cache_key)
+            if cached:
+                return JSONResponse({
+                    "success": True,
+                    **cached,
+                    "cache_hit": True
+                })
+
         recipe = await recipe_service.get_recipe(
             menu_item_id=menu_item_id,
             user_id=current_user,
             price_id=price_id
         )
-        
+
+        if price_id is None:
+            store_recipe_snapshot(current_user, menu_item_id, recipe)
+
         return JSONResponse({
             "success": True,
             **recipe
@@ -163,9 +182,10 @@ async def get_menu_item_recipe(
 
 @router.post("/items/{menu_item_id}/ingredients")
 async def add_menu_ingredient(
+    background_tasks: BackgroundTasks,
     menu_item_id: str,
     request: AddIngredientRequest,
-    current_user: str = Depends(get_current_user)
+    current_user: str = Depends(get_current_user),
 ):
     """
     Add ingredient to menu item recipe
@@ -183,10 +203,18 @@ async def add_menu_ingredient(
             notes=request.notes
         )
         
-        return JSONResponse({
+        response = JSONResponse({
             "success": True,
             **result  # Returns ingredient_id, warnings, calculated_cost
         })
+        
+        background_tasks.add_task(
+            run_post_recipe_change_tasks,
+            current_user,
+            [menu_item_id],
+        )
+        
+        return response
         
     except Exception as e:
         logger.error(f"❌ Add ingredient failed: {e}")
@@ -198,10 +226,11 @@ async def add_menu_ingredient(
 
 @router.put("/items/{menu_item_id}/ingredients/{ingredient_id}")
 async def update_menu_ingredient(
+    background_tasks: BackgroundTasks,
     menu_item_id: str,
     ingredient_id: str,
     request: UpdateIngredientRequest,
-    current_user: str = Depends(get_current_user)
+    current_user: str = Depends(get_current_user),
 ):
     """
     Update ingredient quantity or notes
@@ -215,10 +244,18 @@ async def update_menu_ingredient(
             notes=request.notes
         )
         
-        return JSONResponse({
+        response = JSONResponse({
             "success": success,
             "message": "Ingredient updated successfully"
         })
+        
+        background_tasks.add_task(
+            run_post_recipe_change_tasks,
+            current_user,
+            [menu_item_id],
+        )
+        
+        return response
         
     except Exception as e:
         logger.error(f"❌ Update ingredient failed: {e}")
@@ -230,9 +267,10 @@ async def update_menu_ingredient(
 
 @router.delete("/items/{menu_item_id}/ingredients/{ingredient_id}")
 async def remove_menu_ingredient(
+    background_tasks: BackgroundTasks,
     menu_item_id: str,
     ingredient_id: str,
-    current_user: str = Depends(get_current_user)
+    current_user: str = Depends(get_current_user),
 ):
     """
     Remove ingredient from menu item
@@ -244,10 +282,18 @@ async def remove_menu_ingredient(
             user_id=current_user
         )
         
-        return JSONResponse({
+        response = JSONResponse({
             "success": success,
             "message": "Ingredient removed successfully"
         })
+        
+        background_tasks.add_task(
+            run_post_recipe_change_tasks,
+            current_user,
+            [menu_item_id],
+        )
+        
+        return response
         
     except Exception as e:
         logger.error(f"❌ Remove ingredient failed: {e}")

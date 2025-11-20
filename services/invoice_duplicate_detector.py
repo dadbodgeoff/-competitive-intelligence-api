@@ -83,6 +83,7 @@ class InvoiceDuplicateDetector:
     async def check_for_duplicate_by_hash(
         self,
         user_id: str,
+        account_id: str,
         file_hash: str
     ) -> Optional[Dict]:
         """
@@ -99,7 +100,7 @@ class InvoiceDuplicateDetector:
             # Check if file hash already exists for this user
             result = self.client.table("invoices").select(
                 "id, invoice_number, vendor_name, invoice_date, total, created_at, file_hash"
-            ).eq("user_id", user_id).eq("file_hash", file_hash).execute()
+            ).eq("account_id", account_id).eq("file_hash", file_hash).execute()
             
             if result.data:
                 duplicate = result.data[0]
@@ -123,6 +124,7 @@ class InvoiceDuplicateDetector:
     async def check_for_duplicate(
         self,
         user_id: str,
+        account_id: str,
         invoice_number: str,
         vendor_name: str,
         invoice_date: str,
@@ -148,11 +150,11 @@ class InvoiceDuplicateDetector:
         try:
             # First check by file hash if provided (fastest)
             if file_hash:
-                hash_duplicate = await self.check_for_duplicate_by_hash(user_id, file_hash)
+                hash_duplicate = await self.check_for_duplicate_by_hash(user_id, account_id, file_hash)
                 if hash_duplicate:
                     return hash_duplicate
             # Use Redis lock to prevent race conditions
-            lock_key = f"invoice_check:{user_id}:{invoice_number}:{vendor_name}"
+            lock_key = f"invoice_check:{account_id}:{invoice_number}:{vendor_name}"
             
             async with self.redis_lock(lock_key, timeout=5):
                 # Parse date for range check (±1 day tolerance)
@@ -163,7 +165,7 @@ class InvoiceDuplicateDetector:
                 # Check for exact match first
                 exact_match = self.client.table("invoices").select(
                     "id, invoice_number, vendor_name, invoice_date, total, created_at"
-                ).eq("user_id", user_id).eq(
+                ).eq("account_id", account_id).eq(
                     "invoice_number", invoice_number
                 ).eq("vendor_name", vendor_name).eq(
                     "invoice_date", invoice_date
@@ -185,7 +187,7 @@ class InvoiceDuplicateDetector:
                 # Check for near-duplicate (same vendor, similar date, similar total)
                 near_matches = self.client.table("invoices").select(
                     "id, invoice_number, vendor_name, invoice_date, total, created_at"
-                ).eq("user_id", user_id).eq(
+                ).eq("account_id", account_id).eq(
                     "vendor_name", vendor_name
                 ).gte("invoice_date", date_start).lte(
                     "invoice_date", date_end
@@ -220,7 +222,7 @@ class InvoiceDuplicateDetector:
             # Don't block processing on duplicate check failure
             return None
     
-    async def mark_processing(self, user_id: str, file_hash: str, ttl: int = 300):
+    async def mark_processing(self, user_id: str, account_id: str, file_hash: str, ttl: int = 300):
         """
         Mark file as being processed (prevents concurrent processing)
         
@@ -230,21 +232,21 @@ class InvoiceDuplicateDetector:
             ttl: Time to live in seconds (default 5 minutes)
         """
         if self.redis_enabled:
-            key = f"processing:{user_id}:{file_hash}"
+            key = f"processing:{account_id}:{file_hash}"
             self.redis.client.setex(key, ttl, "1")
             logger.debug(f"📝 Marked as processing: {file_hash[:8]}...")
     
-    async def is_processing(self, user_id: str, file_hash: str) -> bool:
+    async def is_processing(self, user_id: str, account_id: str, file_hash: str) -> bool:
         """Check if file is currently being processed"""
         if self.redis_enabled:
-            key = f"processing:{user_id}:{file_hash}"
+            key = f"processing:{account_id}:{file_hash}"
             return self.redis.client.exists(key) > 0
         return False
     
-    async def clear_processing(self, user_id: str, file_hash: str):
+    async def clear_processing(self, user_id: str, account_id: str, file_hash: str):
         """Clear processing marker"""
         if self.redis_enabled:
-            key = f"processing:{user_id}:{file_hash}"
+            key = f"processing:{account_id}:{file_hash}"
             self.redis.client.delete(key)
             logger.debug(f"✅ Cleared processing: {file_hash[:8]}...")
     

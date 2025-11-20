@@ -7,6 +7,13 @@ from api.middleware.auth import get_current_user
 from database.supabase_client import get_supabase_service_client
 from services.price_analytics_service import PriceAnalyticsService
 from services.error_sanitizer import ErrorSanitizer
+from services.background_tasks import (
+    get_cached_payload,
+    price_anomalies_key,
+    price_dashboard_key,
+    price_savings_key,
+    warm_price_analytics_cache,
+)
 
 router = APIRouter(prefix="/api/v1/analytics", tags=["price_analytics"])
 
@@ -62,6 +69,23 @@ async def get_savings_opportunities(
 ):
     """Find items where switching vendors could save money"""
     try:
+        cache_key = None
+        if min_savings_percent == 5.0 and days_back == 90:
+            cache_key = price_savings_key(current_user, min_savings_percent, days_back)
+            cached = get_cached_payload(cache_key)
+            if cached:
+                return {
+                    "opportunities": cached,
+                    "total_opportunities": len(cached)
+                }
+            warm_price_analytics_cache(current_user)
+            cached = get_cached_payload(cache_key)
+            if cached:
+                return {
+                    "opportunities": cached,
+                    "total_opportunities": len(cached)
+                }
+
         supabase = get_supabase_service_client()
         service = PriceAnalyticsService(supabase)
         opportunities = service.find_savings_opportunities(current_user, min_savings_percent, days_back)
@@ -105,6 +129,23 @@ async def get_price_anomalies(
 ):
     """Detect unusual price changes"""
     try:
+        cache_key = None
+        if days_back == 90 and min_change_percent == 20.0:
+            cache_key = price_anomalies_key(current_user, min_change_percent, days_back)
+            cached = get_cached_payload(cache_key)
+            if cached:
+                return {
+                    "anomalies": cached,
+                    "total_anomalies": len(cached)
+                }
+            warm_price_analytics_cache(current_user)
+            cached = get_cached_payload(cache_key)
+            if cached:
+                return {
+                    "anomalies": cached,
+                    "total_anomalies": len(cached)
+                }
+
         supabase = get_supabase_service_client()
         service = PriceAnalyticsService(supabase)
         anomalies = service.detect_price_anomalies(current_user, days_back, min_change_percent)
@@ -125,6 +166,17 @@ async def get_dashboard_summary(
 ):
     """Get summary analytics for dashboard"""
     try:
+        cache_key = None
+        if days_back == 90:
+            cache_key = price_dashboard_key(current_user, days_back)
+            cached = get_cached_payload(cache_key)
+            if cached:
+                return cached
+            warm_price_analytics_cache(current_user)
+            cached = get_cached_payload(cache_key)
+            if cached:
+                return cached
+
         supabase = get_supabase_service_client()
         service = PriceAnalyticsService(supabase)
         return service.get_dashboard_summary(current_user, days_back)

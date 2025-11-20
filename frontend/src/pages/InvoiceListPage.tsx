@@ -3,9 +3,10 @@
  * RestaurantIQ Platform
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppShell } from '@/components/layout/AppShell';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { InvoiceCard, InvoiceCardHeader, InvoiceCardContent, InvoiceStatusBadge } from '@/design-system/components';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,53 +19,43 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { apiClient } from '@/services/api/client';
 import { useToast } from '@/hooks/use-toast';
 import { parseDataLoadError } from '@/utils/errorMessages';
 import { Plus, Search, FileText, Calendar, DollarSign, Loader2, Filter, X } from 'lucide-react';
-
-interface Invoice {
-  id: string;
-  invoice_number: string;
-  invoice_date: string;
-  vendor_name: string;
-  total: number;
-  status: 'parsed' | 'reviewed' | 'approved';
-  created_at: string;
-}
+import { useInvoices } from '@/hooks/useInvoices';
 
 export function InvoiceListPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedVendor, setSelectedVendor] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [displayLimit, setDisplayLimit] = useState(10);
 
-  useEffect(() => {
-    fetchInvoices();
-  }, []);
-
-  const fetchInvoices = async () => {
-    try {
-      const response = await apiClient.get('/api/v1/invoices/?page=1&per_page=20');
-      const data = response.data;
-      
-      // Backend already sorts by created_at descending
-      setInvoices(data.data || []);
-    } catch (error) {
-      const errorDetails = parseDataLoadError(error, 'invoices');
-      toast({
-        title: errorDetails.title,
-        description: errorDetails.description,
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
+  const {
+    data: invoiceResponse,
+    isLoading,
+    isFetching,
+    error,
+  } = useInvoices(
+    { page: 1, perPage: 50 },
+    {
+      staleTime: 1000 * 60 * 5,
+      placeholderData: (previousData) => previousData,
     }
-  };
+  );
+
+  useEffect(() => {
+    if (!error) return;
+    const errorDetails = parseDataLoadError(error, 'invoices');
+    toast({
+      title: errorDetails.title,
+      description: errorDetails.description,
+      variant: 'destructive',
+    });
+  }, [error, toast]);
+
+  const invoices = invoiceResponse?.data ?? [];
 
   // Get unique vendors for filter
   const uniqueVendors = useMemo(() => {
@@ -112,7 +103,7 @@ export function InvoiceListPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Invoices</h1>
+            <PageHeading>Invoices</PageHeading>
             <p className="text-slate-400">
               Manage and review your uploaded invoices
             </p>
@@ -217,14 +208,14 @@ export function InvoiceListPage() {
         </Card>
 
         {/* Loading State */}
-        {loading && (
+        {(isLoading || isFetching) && (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 text-emerald-400 animate-spin" />
           </div>
         )}
 
         {/* Empty State */}
-        {!loading && invoices.length === 0 && (
+        {!isLoading && invoices.length === 0 && (
           <InvoiceCard variant="elevated">
             <InvoiceCardContent className="py-12 text-center">
               <FileText className="h-12 w-12 text-slate-500 mx-auto mb-4" />
@@ -244,7 +235,7 @@ export function InvoiceListPage() {
         )}
 
         {/* Invoice Grid */}
-        {!loading && filteredInvoices.length > 0 && (
+        {!isLoading && filteredInvoices.length > 0 && (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {filteredInvoices.map((invoice) => (
               <div
@@ -285,7 +276,7 @@ export function InvoiceListPage() {
         )}
 
         {/* No Results */}
-        {!loading && invoices.length > 0 && filteredInvoices.length === 0 && (
+        {!isLoading && invoices.length > 0 && filteredInvoices.length === 0 && (
           <div className="text-center py-12">
             <p className="text-slate-400">No invoices match your search</p>
           </div>

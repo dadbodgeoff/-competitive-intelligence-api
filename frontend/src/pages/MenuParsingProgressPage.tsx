@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { PageHeading } from '@/components/layout/PageHeading';
 
 import { menuComparisonAPI } from '@/services/api/menuComparisonApi';
 import { useToast } from '@/hooks/use-toast';
@@ -284,7 +285,7 @@ export function MenuParsingProgressPage() {
               <MenuIcon className="h-8 w-8 text-cyan-400" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Parsing Competitor Menus</h1>
+              <PageHeading>Parsing Competitor Menus</PageHeading>
               <p className="text-slate-400 mt-1">
                 Extracting menu items and pricing from selected competitors
               </p>

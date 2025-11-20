@@ -16,7 +16,7 @@ from services.invoice_duplicate_detector import InvoiceDuplicateDetector
 from services.invoice_monitoring_service import monitoring_service
 from services.error_sanitizer import sanitize_parsing_error
 from services.guest_session_store import get_guest_session
-from api.middleware.auth import get_current_user
+from api.middleware.auth import get_current_membership, AuthenticatedUser
 from api.middleware.rate_limiting import check_invoice_parse_limit, release_rate_limit, rate_limit
 from api.middleware.subscription import check_usage_limits
 
@@ -88,7 +88,7 @@ async def guest_parse_invoice_stream(
 async def parse_invoice_stream(
     file_url: str,
     vendor_hint: Optional[str] = None,
-    current_user: str = Depends(get_current_user)
+    auth: AuthenticatedUser = Depends(get_current_membership)
 ):
     """
     Stream invoice parsing progress and results (SSE)
@@ -105,7 +105,7 @@ async def parse_invoice_stream(
     return StreamingResponse(
         streaming_parser.parse_invoice_streaming(
             file_url=file_url,
-            user_id=current_user,
+            user_id=auth.id,
             vendor_hint=vendor_hint
         ),
         media_type="text/event-stream",
@@ -120,7 +120,7 @@ async def parse_invoice_stream(
 @router.post("/parse")
 async def parse_invoice(
     request: ParseRequest,
-    current_user: str = Depends(get_current_user),
+    auth: AuthenticatedUser = Depends(get_current_membership),
     _rate_limit: None = Depends(check_invoice_parse_limit)
 ):
     """
@@ -135,7 +135,7 @@ async def parse_invoice(
     parse_start = time.time()
     
     # Check usage limits for user's tier (free tier: 1/week + 2 bonus/month)
-    await check_usage_limits(current_user, "invoice_upload")
+    await check_usage_limits(auth.id, "invoice_upload")
     
     try:
         if session_id:
@@ -145,7 +145,7 @@ async def parse_invoice(
         result = await parser_service.parse_invoice(
             file_url=request.file_url,
             vendor_hint=request.vendor_hint,
-            user_id=current_user
+            user_id=auth.id
         )
         
         parse_time = time.time() - parse_start
@@ -154,7 +154,7 @@ async def parse_invoice(
         from services.usage_limit_service import get_usage_limit_service
         usage_service = get_usage_limit_service()
         usage_service.increment_usage(
-            user_id=current_user,
+            user_id=auth.id,
             operation_type='invoice_upload',
             operation_id=None,  # Will be set when invoice is saved
             metadata={'vendor': result['invoice_data'].get('vendor_name')}
@@ -215,7 +215,7 @@ async def check_duplicate(
     vendor_name: str,
     invoice_date: str,
     total: float,
-    current_user: str = Depends(get_current_user)
+    auth: AuthenticatedUser = Depends(get_current_membership)
 ):
     """
     Check if invoice already exists
@@ -224,7 +224,8 @@ async def check_duplicate(
     """
     try:
         duplicate = await duplicate_detector.check_for_duplicate(
-            user_id=current_user,
+            user_id=auth.id,
+            account_id=auth.account_id,
             invoice_number=invoice_number,
             vendor_name=vendor_name,
             invoice_date=invoice_date,

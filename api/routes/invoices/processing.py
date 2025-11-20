@@ -8,7 +8,7 @@ import logging
 
 from services.invoice_processor import InvoiceProcessor
 from services.invoice_monitoring_service import monitoring_service
-from api.middleware.auth import get_current_user
+from api.middleware.auth import get_current_membership, AuthenticatedUser
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/invoices", tags=["invoice-operations"])
@@ -20,7 +20,7 @@ invoice_processor = InvoiceProcessor()
 @router.post("/{invoice_id}/reprocess")
 async def reprocess_invoice(
     invoice_id: str,
-    current_user: str = Depends(get_current_user)
+    _: AuthenticatedUser = Depends(get_current_membership)
 ):
     """
     Manually trigger invoice processing into inventory
@@ -45,7 +45,7 @@ async def reprocess_invoice(
 @router.get("/monitoring/{session_id}")
 async def get_monitoring_metrics(
     session_id: str,
-    current_user: str = Depends(get_current_user)
+    _: AuthenticatedUser = Depends(get_current_membership)
 ):
     """
     Get monitoring metrics for a session

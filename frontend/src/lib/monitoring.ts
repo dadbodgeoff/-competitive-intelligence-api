@@ -7,15 +7,7 @@ export function initSentry() {
     Sentry.init({
       dsn: import.meta.env.VITE_SENTRY_DSN,
       environment: import.meta.env.MODE,
-      integrations: [
-        new Sentry.BrowserTracing({
-          // Set sampling rate for performance monitoring
-          tracePropagationTargets: [
-            'localhost',
-            /^https:\/\/.*\.competitive-intelligence\.com/,
-          ],
-        }),
-      ],
+      integrations: [Sentry.browserTracingIntegration()],
       tracesSampleRate: import.meta.env.MODE === 'production' ? 0.1 : 1.0,
       beforeSend(event) {
         // Filter out non-critical errors in production

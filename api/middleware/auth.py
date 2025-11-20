@@ -1,12 +1,17 @@
 from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from typing import Optional
+from typing import Optional, NamedTuple
 import jwt
 from datetime import datetime, timedelta
 from api.config import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRATION_HOURS
-from database.supabase_client import get_supabase_client
+from database.supabase_client import get_supabase_client, get_supabase_service_client
 
 security = HTTPBearer()
+
+class AuthenticatedUser(NamedTuple):
+    id: str
+    account_id: str
+    role: str
 
 async def get_current_user(
     request: Request,
@@ -48,7 +53,9 @@ async def get_current_user(
             algorithms=[JWT_ALGORITHM]
         )
 
-        user_id: str = payload.get("sub")
+        user_id: Optional[str] = payload.get("sub")
+        account_id: Optional[str] = payload.get("acc")
+        role: Optional[str] = payload.get("role")
         if user_id is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -76,6 +83,31 @@ async def get_current_user(
             # (for offline scenarios)
             pass
 
+        if not account_id or not role:
+            try:
+                service_client = get_supabase_service_client()
+                user_profile = service_client.table("public.users").select(
+                    "primary_account_id, default_account_role"
+                ).eq("id", user_id).limit(1).execute()
+                if user_profile.data:
+                    account_id = user_profile.data[0].get("primary_account_id")
+                    role = user_profile.data[0].get("default_account_role", "member")
+            except Exception:
+                account_id = account_id or ""
+                role = role or "member"
+
+        if not account_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="No account associated with this user"
+            )
+
+        auth_context = AuthenticatedUser(
+            id=user_id,
+            account_id=account_id,
+            role=role or "member"
+        )
+        request.state.auth_context = auth_context
         return user_id
 
     except jwt.PyJWTError:
@@ -109,7 +141,7 @@ async def get_current_user_optional(
     except (jwt.PyJWTError, IndexError):
         return None
 
-def create_jwt_token(user_id: str) -> str:
+def create_jwt_token(user_id: str, account_id: str, role: str) -> str:
     """
     Create a JWT token for the user
     """
@@ -118,8 +150,33 @@ def create_jwt_token(user_id: str) -> str:
         "sub": user_id,
         "exp": expire,
         "iat": datetime.utcnow(),
-        "type": "access"
+        "type": "access",
+        "acc": account_id,
+        "role": role
     }
 
     encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
     return encoded_jwt
+
+
+def get_auth_context(request: Request) -> AuthenticatedUser:
+    """
+    Retrieve the authenticated user context that includes account and role.
+    """
+    auth_context = getattr(request.state, "auth_context", None)
+    if not auth_context:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication context is missing"
+        )
+    return auth_context
+
+
+async def get_current_membership(
+    request: Request,
+    _: str = Depends(get_current_user)
+) -> AuthenticatedUser:
+    """
+    FastAPI dependency that provides the authenticated user with account context.
+    """
+    return get_auth_context(request)

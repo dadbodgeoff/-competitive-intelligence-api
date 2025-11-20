@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { uploadGuestInvoice } from '@/services/api/invoicesApi';
 
 type DemoStatus = 'idle' | 'uploading' | 'parsing' | 'ready' | 'error';
 
@@ -381,23 +382,7 @@ export function useGuestInvoiceDemo() {
         const formData = new FormData();
         formData.append('file', file);
 
-        const response = await fetch(`${API_BASE_URL}/api/v1/invoices/guest-upload`, {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!response.ok) {
-          let detail: string | undefined;
-          try {
-            const error = await response.json();
-            detail = error.detail?.message || error.detail;
-          } catch (_) {
-            // ignore JSON failures
-          }
-          throw new Error(detail || 'Upload failed. Please try again.');
-        }
-
-        const data = await response.json();
+        const data = await uploadGuestInvoice(formData);
         addEvent('success', 'Upload complete. Parsing now…');
         setState(prev => ({
           ...prev,

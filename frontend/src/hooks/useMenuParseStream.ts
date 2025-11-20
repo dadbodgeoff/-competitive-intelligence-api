@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { type SseConnection } from '@/lib/sse';
+import { saveMenu, startMenuParseStream } from '@/services/api/menuApi';
 
 // Transform flat menu_items array into nested categories structure
 function transformMenuData(rawData: any): MenuData {
@@ -108,13 +110,11 @@ export function useMenuParseStream(): UseMenuParseStreamReturn {
   });
 
   const [isConnected, setIsConnected] = useState(false);
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const connectionRef = useRef<SseConnection | null>(null);
 
   const stopParsing = useCallback(() => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-      abortControllerRef.current = null;
-    }
+    connectionRef.current?.stop();
+    connectionRef.current = null;
     setIsConnected(false);
   }, []);
 
@@ -133,84 +133,7 @@ export function useMenuParseStream(): UseMenuParseStreamReturn {
       elapsedSeconds: 0,
     }));
 
-    abortControllerRef.current = new AbortController();
-
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || '';
-      const params = new URLSearchParams({
-        file_url: fileUrl,
-        ...(restaurantHint && { restaurant_name_hint: restaurantHint }),
-      });
-      const streamUrl = `${baseUrl}/api/v1/menu/parse-stream?${params}`;
-
-      const startStreamingRequest = async () => {
-        try {
-          const response = await fetch(streamUrl, {
-            method: 'GET',
-            headers: {
-              'Accept': 'text/event-stream',
-              'Cache-Control': 'no-cache',
-            },
-            credentials: 'include', // Send cookies
-            signal: abortControllerRef.current?.signal,
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-
-          if (!response.body) {
-            throw new Error('No response body for streaming');
-          }
-
-          setIsConnected(true);
-
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder();
-          let currentEventType = '';
-
-          while (true) {
-            const { done, value } = await reader.read();
-            
-            if (done) break;
-
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split('\n');
-
-            for (const line of lines) {
-              if (line.startsWith('event:')) {
-                currentEventType = line.substring(6).trim();
-                continue;
-              }
-
-              if (line.startsWith('data:')) {
-                try {
-                  const data = JSON.parse(line.substring(5).trim());
-                  handleStreamEvent(currentEventType || 'message', data);
-                } catch (e) {
-                  console.warn('Failed to parse SSE data:', line);
-                }
-              }
-            }
-          }
-
-        } catch (error) {
-          if (error instanceof Error && error.name === 'AbortError') {
-            console.log('Parsing request aborted');
-            return;
-          }
-          
-          console.error('Streaming request failed:', error);
-          setState(prev => ({
-            ...prev,
-            status: 'error',
-            error: error instanceof Error ? error.message : 'Parsing failed',
-          }));
-        } finally {
-          setIsConnected(false);
-        }
-      };
-
       const handleStreamEvent = (eventType: string, data: any) => {
         switch (eventType) {
           case 'parsing_started':
@@ -231,12 +154,10 @@ export function useMenuParseStream(): UseMenuParseStreamReturn {
             break;
 
           case 'parsed_data':
-            // Transform flat menu_items into nested categories structure
-            const transformedMenuData = transformMenuData(data.menu_data);
             setState(prev => ({
               ...prev,
               status: 'validating',
-              menuData: transformedMenuData,
+              menuData: transformMenuData(data.menu_data || {}),
               parseMetadata: data.metadata,
               currentStep: 'Validating data...',
               progress: 95,
@@ -249,11 +170,13 @@ export function useMenuParseStream(): UseMenuParseStreamReturn {
               status: 'ready',
               currentStep: 'Menu ready for review',
               progress: 100,
-              parseMetadata: prev.parseMetadata ? {
-                ...prev.parseMetadata,
-                confidence: data.validation?.confidence || 'medium',
-                corrections_made: data.validation?.corrections_made || 0,
-              } : undefined,
+              parseMetadata: prev.parseMetadata
+                ? {
+                    ...prev.parseMetadata,
+                    confidence: data.validation?.confidence || 'medium',
+                    corrections_made: data.post_processing?.corrections_made || 0,
+                  }
+                : undefined,
             }));
             stopParsing();
             break;
@@ -272,7 +195,31 @@ export function useMenuParseStream(): UseMenuParseStreamReturn {
         }
       };
 
-      startStreamingRequest();
+      const connection = startMenuParseStream(
+        {
+          file_url: fileUrl,
+          restaurant_name_hint: restaurantHint,
+        },
+        {
+          onOpen: () => setIsConnected(true),
+          onClose: () => setIsConnected(false),
+          onEvent: ({ event, data }) => handleStreamEvent(event, data),
+          onError: (error) => {
+            console.error('Streaming request failed:', error);
+            setState(prev => ({
+              ...prev,
+              status: 'error',
+              error: error.message || 'Parsing failed',
+            }));
+          },
+        }
+      );
+
+      connection.finished.finally(() => {
+        connectionRef.current = null;
+      });
+
+      connectionRef.current = connection;
 
     } catch (error) {
       console.error('Failed to start parsing:', error);
@@ -421,29 +368,13 @@ export function useMenuParseStream(): UseMenuParseStreamReturn {
     setState(prev => ({ ...prev, status: 'saving' }));
 
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || '';
-      const response = await fetch(`${baseUrl}/api/v1/menu/save`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Send cookies
-        body: JSON.stringify({
-          menu_data: state.menuData,
-          parse_metadata: state.parseMetadata,
-          file_url: state.fileUrl,
-        }),
+      const result = await saveMenu({
+        menu_data: state.menuData,
+        parse_metadata: state.parseMetadata,
+        file_url: state.fileUrl,
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || 'Failed to save menu');
-      }
-
-      const result = await response.json();
-      
       setState(prev => ({ ...prev, status: 'saved' }));
-      
       return result.menu_id;
 
     } catch (error) {

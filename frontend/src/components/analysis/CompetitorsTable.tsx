@@ -116,11 +116,14 @@ export function CompetitorsTable({ competitors }: CompetitorsTableProps) {
                     size="sm"
                     className="w-full border-white/10 text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-400 hover:border-emerald-500/30"
                     onClick={() => {
-                      // TODO: Implement competitor details view
-                      console.log(
-                        'View competitor details:',
-                        competitor.competitor_name || competitor.name
-                      );
+                      const displayName =
+                        competitor.competitor_name || competitor.name || 'Restaurant';
+                      const url = competitor.place_id
+                        ? `https://www.google.com/maps/place/?q=place_id:${competitor.place_id}`
+                        : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                            displayName
+                          )}`;
+                      window.open(url, '_blank', 'noopener,noreferrer');
                     }}
                   >
                     <Eye className="h-3 w-3 mr-2" />

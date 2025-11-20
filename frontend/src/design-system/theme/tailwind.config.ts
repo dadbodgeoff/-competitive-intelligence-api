@@ -22,8 +22,9 @@ const config: Config = {
           700: '#0B1215',
           800: '#080D0F',
           900: '#040607',
-   
-     },
+          light: 'var(--bg-slate-850)',
+          border: 'var(--border-default)',
+        },
         emerald: {
           400: '#34d399',
           500: '#10b981',
@@ -78,6 +79,8 @@ const config: Config = {
         },
         card: {
           DEFAULT: 'var(--bg-slate-850)',
+          dark: 'var(--bg-obsidian)',
+          light: 'var(--bg-slate-800)',
           foreground: 'var(--text-primary)',
         },
       },

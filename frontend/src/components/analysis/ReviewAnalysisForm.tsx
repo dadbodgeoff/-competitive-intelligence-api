@@ -40,7 +40,7 @@ import {
 import { LocationAutocomplete } from './LocationAutocomplete';
 import { TierSelector } from './TierSelector';
 import { StreamingAnalysisResults } from './StreamingAnalysisResults';
-import { reviewAnalysisAPI } from '@/services/ReviewAnalysisAPIService';
+import { createReviewAnalysis } from '@/services/api/reviewAnalysisApi';
 import { useAuthStore } from '@/stores/authStore';
 import { useToast } from '@/hooks/use-toast';
 import { analytics } from '@/lib/monitoring';
@@ -110,7 +110,7 @@ export function ReviewAnalysisForm() {
       } else {
         // Fallback to traditional API call
         console.log('🎯 FORM SUBMISSION: Using traditional API...');
-        const result = await reviewAnalysisAPI.createReviewAnalysis(request);
+        const result = await createReviewAnalysis(request);
         console.log('🎯 FORM SUBMISSION: API call completed successfully');
         return result;
       }

@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { useNavigate } from 'react-router-dom';
 import { Settings, Save, ArrowLeft } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { alertsApi } from '@/services/api/alertsApi';
 import { useToast } from '@/hooks/use-toast';
+import { usePriceAlerts, useUpdateAlertThresholds } from '@/hooks/useAlerts';
 
 export function AlertSettingsPage() {
   const navigate = useNavigate();
@@ -18,13 +18,7 @@ export function AlertSettingsPage() {
     price_drop_alert_threshold_28day: 15.0,
   });
   
-  // Load current thresholds
-  const { data: priceAlerts } = useQuery({
-    queryKey: ['alerts', 'price-increases'],
-    queryFn: () => alertsApi.getPriceIncreaseAlerts(),
-    refetchOnWindowFocus: true,
-    staleTime: 30000,
-  });
+  const { data: priceAlerts } = usePriceAlerts();
   
   useEffect(() => {
     if (priceAlerts?.thresholds) {
@@ -37,23 +31,26 @@ export function AlertSettingsPage() {
     }
   }, [priceAlerts]);
   
-  const updateMutation = useMutation({
-    mutationFn: () => alertsApi.updateThresholds(thresholds),
-    onSuccess: () => {
-      toast({
-        title: 'Settings saved',
-        description: 'Your alert thresholds have been updated.',
-      });
-      navigate(-1);
-    },
-    onError: () => {
-      toast({
-        title: 'Error',
-        description: 'Failed to update thresholds. Please try again.',
-        variant: 'destructive',
-      });
-    }
-  });
+  const updateMutation = useUpdateAlertThresholds();
+  
+  const handleSave = () => {
+    updateMutation.mutate(thresholds, {
+      onSuccess: () => {
+        toast({
+          title: 'Settings saved',
+          description: 'Your alert thresholds have been updated.',
+        });
+        navigate(-1);
+      },
+      onError: () => {
+        toast({
+          title: 'Error',
+          description: 'Failed to update thresholds. Please try again.',
+          variant: 'destructive',
+        });
+      },
+    });
+  };
   
   return (
     <AppShell>
@@ -68,10 +65,10 @@ export function AlertSettingsPage() {
           Back
         </Button>
         <div>
-          <h1 className="text-3xl font-bold text-white flex items-center gap-2">
+          <PageHeading className="flex items-center gap-2">
             <Settings className="h-8 w-8 text-cyan-400" />
             Alert Settings
-          </h1>
+          </PageHeading>
           <p className="text-slate-400 mt-2">
             Configure when you want to be notified about price changes
           </p>
@@ -194,7 +191,7 @@ export function AlertSettingsPage() {
               Cancel
             </Button>
             <Button
-              onClick={() => updateMutation.mutate()}
+              onClick={handleSave}
               disabled={updateMutation.isPending}
               className="flex items-center gap-2"
             >

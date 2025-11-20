@@ -3,33 +3,35 @@
  * For vendor comparison, savings opportunities, and price trends
  */
 
-export interface PriceTrend {
+export interface PriceTrendPoint {
   date: string;
   price: number;
   vendor_name: string;
-  vendor_id: string;
+  quantity: number;
 }
 
-export interface VendorPriceComparison {
-  vendor_id: string;
+export interface PriceTrendsResponse {
+  item_description: string;
+  trends: PriceTrendPoint[];
+  data_points: number;
+}
+
+export interface PriceComparisonVendor {
   vendor_name: string;
   current_price: number;
-  last_ordered: string;
-  pack_size?: string;
-  price_history: PriceTrend[];
+  avg_price: number;
+  min_price: number;
+  max_price: number;
+  purchase_count: number;
+  last_purchase_date: string;
 }
 
-export interface CrossVendorPricesResponse {
-  success: boolean;
-  item: {
-    id: string;
-    name: string;
-    category: string;
-  };
-  vendor_prices: VendorPriceComparison[];
+export interface PriceComparisonResponse {
+  item_description: string;
+  vendors: PriceComparisonVendor[];
   vendor_count: number;
-  lowest_price: number | null;
-  highest_price: number | null;
+  best_vendor?: PriceComparisonVendor | null;
+  message?: string;
 }
 
 export interface SavingsOpportunity {
@@ -76,7 +78,7 @@ export interface VendorPerformance {
 }
 
 export interface VendorPerformanceResponse {
-  success: boolean;
+  success?: boolean;
   performance: VendorPerformance;
 }
 
@@ -95,6 +97,44 @@ export interface DashboardSummaryResponse {
   total_purchases: number;
   total_spend: number;
   analysis_period_days: number;
+}
+
+export interface ItemsListEntry {
+  description: string;
+  last_paid_price: number;
+  last_paid_date: string;
+  last_paid_vendor: string;
+  avg_price_7day: number | null;
+  avg_price_28day: number | null;
+  avg_price_90day: number;
+  avg_price_all: number;
+  price_change_7day_percent: number | null;
+  price_change_28day_percent: number | null;
+  min_price: number;
+  max_price: number;
+  purchase_count: number;
+  purchases_last_7days: number;
+  purchases_last_28days: number;
+}
+
+export interface ItemsListResponse {
+  items: ItemsListEntry[];
+  total_items: number;
+}
+
+export interface ItemPurchaseEntry {
+  date: string;
+  vendor: string;
+  price: number;
+  quantity: number;
+  invoice_number: string;
+}
+
+export interface ItemPurchaseHistoryResponse {
+  success?: boolean;
+  item_description: string;
+  purchases: ItemPurchaseEntry[];
+  total_purchases: number;
 }
 
 // Chart data types

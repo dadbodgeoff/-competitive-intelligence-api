@@ -142,6 +142,7 @@ app.add_middleware(SecurityHeadersMiddleware)
 
 # Include routes
 from api.routes.auth import router as auth_router
+from api.routes.accounts import router as accounts_router
 from api.routes.tier_analysis import router as analysis_router
 from api.routes.streaming_analysis import router as streaming_router
 from api.routes.subscription import router as subscription_router
@@ -149,8 +150,11 @@ from api.routes.usage_limits import router as usage_limits_router
 # New modular invoice routes
 from api.routes.invoices import upload, parsing, management, processing
 # Menu management routes
-from api.routes.menu import upload as menu_upload, parsing as menu_parsing, management as menu_management, recipes as menu_recipes
+from api.routes.menu import upload as menu_upload, parsing as menu_parsing, management as menu_management, recipes as menu_recipes, sales as menu_sales
 from api.routes.menu_comparison import router as menu_comparison_router
+from api.routes.ordering import router as ordering_router
+from api.routes.prep import router as prep_router
+from api.routes.scheduling import router as scheduling_router
 # from api.routes.inventory_operations import router as inventory_router  # REMOVED: Frontend inventory module removed
 from api.routes.user_preferences import router as preferences_router
 from api.routes.price_analytics import router as price_analytics_router
@@ -163,6 +167,7 @@ from api.routes import csp_report
 # Initialize background workers (registers event handlers)
 # import workers.invoice_processor_worker
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
+app.include_router(accounts_router, tags=["Accounts"])
 app.include_router(analysis_router, prefix="/api/v1/analysis", tags=["Analysis"])
 app.include_router(streaming_router, prefix="/api/v1/streaming", tags=["Streaming Analysis"])
 app.include_router(subscription_router, prefix="/api/v1/subscription", tags=["Subscription"])
@@ -183,7 +188,11 @@ app.include_router(menu_upload.router, tags=["Menu Operations"])
 app.include_router(menu_parsing.router, tags=["Menu Operations"])
 app.include_router(menu_management.router, tags=["Menu Operations"])
 app.include_router(menu_recipes.router, tags=["Menu Operations"])
+app.include_router(menu_sales.router, tags=["Menu Sales"])
 app.include_router(menu_comparison_router, tags=["Menu Comparison"])
+app.include_router(ordering_router, tags=["Ordering"])
+app.include_router(scheduling_router)
+app.include_router(prep_router)
 app.include_router(csp_report.router, tags=["Security"])
 
 # Health check endpoint (used by Docker healthcheck)

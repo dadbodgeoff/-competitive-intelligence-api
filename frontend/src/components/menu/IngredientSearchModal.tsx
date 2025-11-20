@@ -61,7 +61,7 @@ export function IngredientSearchModal({
 
       // Reset and close
       handleClose();
-    } catch (error) {
+    } catch {
       // Error handled by parent
     } finally {
       setAdding(false);

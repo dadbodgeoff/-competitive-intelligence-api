@@ -2,7 +2,8 @@
 Invoice Upload Routes
 Handles file upload to storage
 """
-from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, Request
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, Request, BackgroundTasks
+from typing import Optional
 from fastapi.responses import JSONResponse
 import logging
 import time
@@ -13,12 +14,11 @@ from services.invoice_storage_service import InvoiceStorageService
 from services.file_validator import FileValidator
 from services.invoice_monitoring_service import monitoring_service
 from services.invoice_duplicate_detector import InvoiceDuplicateDetector
-from api.middleware.auth import get_current_user
+from api.middleware.auth import get_current_membership, AuthenticatedUser
 from api.middleware.rate_limiting import rate_limit
-from services.guest_session_store import (
-    reserve_guest_upload_slot,
-    store_guest_session,
-)
+from services.guest_session_store import reserve_guest_upload_slot, store_guest_session
+from services.background_tasks import run_post_invoice_upload_tasks
+from services.demo_seed_service import demo_seed_service
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/invoices", tags=["invoice-operations"])
@@ -32,8 +32,9 @@ duplicate_detector = InvoiceDuplicateDetector()
 @router.post("/upload")
 @rate_limit("invoice_parse")
 async def upload_invoice(
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
-    current_user: str = Depends(get_current_user)
+    auth: AuthenticatedUser = Depends(get_current_membership),
 ):
     """
     Upload invoice file to Supabase storage
@@ -46,6 +47,7 @@ async def upload_invoice(
     # Check usage limits FIRST (before any processing)
     from services.usage_limit_service import get_usage_limit_service
     usage_service = get_usage_limit_service()
+    current_user = auth.id
     
     allowed, limit_details = usage_service.check_limit(current_user, 'invoice_upload')
     
@@ -98,6 +100,7 @@ async def upload_invoice(
         # Check for duplicate by file hash (fast check before expensive upload)
         hash_duplicate = await duplicate_detector.check_for_duplicate_by_hash(
             user_id=current_user,
+            account_id=auth.account_id,
             file_hash=file_hash
         )
         
@@ -114,7 +117,7 @@ async def upload_invoice(
             )
         
         # Check if file is currently being processed (race condition protection)
-        if await duplicate_detector.is_processing(current_user, file_hash):
+        if await duplicate_detector.is_processing(current_user, auth.account_id, file_hash):
             logger.warning(f"⚠️ File is currently being processed")
             raise HTTPException(
                 status_code=409,
@@ -125,7 +128,7 @@ async def upload_invoice(
             )
         
         # Mark as processing
-        await duplicate_detector.mark_processing(current_user, file_hash, ttl=300)
+        await duplicate_detector.mark_processing(current_user, auth.account_id, file_hash, ttl=300)
         
         try:
             # Upload to storage
@@ -135,19 +138,30 @@ async def upload_invoice(
             )
         except Exception as e:
             # Clear processing marker on upload failure
-            await duplicate_detector.clear_processing(current_user, file_hash)
+            await duplicate_detector.clear_processing(current_user, auth.account_id, file_hash)
             raise
         
         upload_time = time.time() - upload_start
         monitoring_service.log_upload(session_id, file_url, upload_time)
         
-        return JSONResponse({
+        response = JSONResponse({
             "success": True,
             "file_url": file_url,
             "filename": file.filename,
             "session_id": session_id,
             "file_hash": file_hash  # Return hash for tracking
         })
+        background_tasks.add_task(
+            run_post_invoice_upload_tasks,
+            current_user,
+            session_id,
+            is_guest=False,
+        )
+        background_tasks.add_task(
+            demo_seed_service.mark_seed_consumed,
+            current_user,
+        )
+        return response
         
     except HTTPException:
         raise
@@ -162,8 +176,9 @@ async def upload_invoice(
 
 @router.post("/guest-upload")
 async def guest_upload_invoice(
+    background_tasks: BackgroundTasks,
     request: Request,
-    file: UploadFile = File(...)
+    file: UploadFile = File(...),
 ):
     """
     Upload invoice file for landing page demo (unauthenticated guest mode)
@@ -233,11 +248,18 @@ async def guest_upload_invoice(
         }
         store_guest_session(guest_session_id, session_payload)
 
-        return JSONResponse({
+        response = JSONResponse({
             "success": True,
             "session_id": guest_session_id,
             "filename": file.filename,
         })
+        background_tasks.add_task(
+            run_post_invoice_upload_tasks,
+            guest_user_id,
+            guest_session_id,
+            is_guest=True,
+        )
+        return response
 
     except HTTPException:
         monitoring_service.log_error(monitoring_session_id, "guest_upload", "HTTP error during guest upload")

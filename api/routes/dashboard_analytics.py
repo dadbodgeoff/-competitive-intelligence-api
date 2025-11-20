@@ -8,6 +8,14 @@ from api.middleware.auth import get_current_user
 from database.supabase_client import get_supabase_service_client
 from services.dashboard_analytics_service import DashboardAnalyticsService
 from services.error_sanitizer import ErrorSanitizer
+from services.background_tasks import (
+    dashboard_category_key,
+    dashboard_monthly_key,
+    dashboard_vendor_key,
+    dashboard_weekly_key,
+    get_cached_payload,
+    warm_dashboard_cache,
+)
 
 router = APIRouter(prefix="/api/v1/dashboard", tags=["dashboard_analytics"])
 
@@ -22,6 +30,16 @@ async def get_monthly_summary(
     Returns spending, item counts, and averages for current and last month
     """
     try:
+        cache_key = dashboard_monthly_key(current_user)
+        cached = get_cached_payload(cache_key)
+        if cached:
+            return cached
+
+        warm_dashboard_cache(current_user)
+        cached = get_cached_payload(cache_key)
+        if cached:
+            return cached
+
         supabase = get_supabase_service_client()
         service = DashboardAnalyticsService(supabase)
         return service.get_monthly_summary(current_user)
@@ -94,6 +112,17 @@ async def get_vendor_scorecard(
     Returns most used vendors, highest spend, and average order values
     """
     try:
+        cache_key = None
+        if days == 90:
+            cache_key = dashboard_vendor_key(current_user, days)
+            cached = get_cached_payload(cache_key)
+            if cached:
+                return cached
+            warm_dashboard_cache(current_user)
+            cached = get_cached_payload(cache_key)
+            if cached:
+                return cached
+
         supabase = get_supabase_service_client()
         service = DashboardAnalyticsService(supabase)
         return service.get_vendor_scorecard(current_user, days)
@@ -114,6 +143,25 @@ async def get_spending_by_category(
     Categories inferred from item descriptions
     """
     try:
+        cache_key = None
+        if days == 30:
+            cache_key = dashboard_category_key(current_user, days)
+            cached = get_cached_payload(cache_key)
+            if cached:
+                return {
+                    "categories": cached,
+                    "total_categories": len(cached),
+                    "days_analyzed": days
+                }
+            warm_dashboard_cache(current_user)
+            cached = get_cached_payload(cache_key)
+            if cached:
+                return {
+                    "categories": cached,
+                    "total_categories": len(cached),
+                    "days_analyzed": days
+                }
+
         supabase = get_supabase_service_client()
         service = DashboardAnalyticsService(supabase)
         categories = service.get_spending_by_category(current_user, days)
@@ -139,6 +187,25 @@ async def get_weekly_trend(
     Returns weekly totals for the specified number of weeks
     """
     try:
+        cache_key = None
+        if weeks == 8:
+            cache_key = dashboard_weekly_key(current_user, weeks)
+            cached = get_cached_payload(cache_key)
+            if cached:
+                return {
+                    "trend": cached,
+                    "weeks_analyzed": weeks,
+                    "data_points": len(cached)
+                }
+            warm_dashboard_cache(current_user)
+            cached = get_cached_payload(cache_key)
+            if cached:
+                return {
+                    "trend": cached,
+                    "weeks_analyzed": weeks,
+                    "data_points": len(cached)
+                }
+
         supabase = get_supabase_service_client()
         service = DashboardAnalyticsService(supabase)
         trend = service.get_weekly_trend(current_user, weeks)

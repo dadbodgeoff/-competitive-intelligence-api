@@ -1,144 +1,121 @@
 import { useState } from 'react';
-import { PageHeader } from '../components/layout/PageHeader';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { TrendingDown, Settings } from 'lucide-react';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
-import { alertsApi } from '../services/api/alertsApi';
+import { useSavingsAlerts, useDismissAlert } from '@/hooks/useAlerts';
 import type { SavingsAlert } from '../types/alerts';
+import { AppShell } from '@/components/layout/AppShell';
+import { PageHeading } from '@/components/layout/PageHeading';
 
 export function SavingsOpportunitiesPage() {
   const navigate = useNavigate();
   const [filter, setFilter] = useState<'all' | 'active' | 'dismissed'>('active');
-  const queryClient = useQueryClient();
   
-  const { data: alerts, isLoading } = useQuery({
-    queryKey: ['alerts', 'savings-opportunities'],
-    queryFn: () => alertsApi.getSavingsOpportunities(),
-    refetchOnWindowFocus: true,
-    staleTime: 30000,
-  });
-  
-  const dismissMutation = useMutation({
-    mutationFn: (alertKey: string) => 
-      alertsApi.dismissAlert(alertKey, 'savings_opportunity'),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['alerts'] });
-    }
-  });
+  const { data: alerts, isLoading } = useSavingsAlerts();
+  const dismissAlert = useDismissAlert('savings_opportunity');
   
   return (
-    <div className="min-h-screen bg-obsidian">
-      <PageHeader 
-        breadcrumbs={[
-          { label: 'Dashboard', href: '/dashboard' },
-          { label: 'Price Analytics', href: '/analytics' },
-          { label: 'Savings Opportunities' }
-        ]}
-      />
-      
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="text-gray-400">Loading opportunities...</div>
-          </div>
-        ) : (
-          <>
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h1 className="text-3xl font-bold text-white flex items-center gap-2">
-                  <TrendingDown className="h-8 w-8 text-green-400" />
-                  Savings Opportunities
-                </h1>
-                <p className="text-gray-400 mt-2">
-                  {alerts?.total_count || 0} items with price decreases
-                </p>
-              </div>
-              
-              <Button 
-                variant="outline" 
-                onClick={() => navigate('/settings/alerts')}
-                className="flex items-center gap-2"
-              >
-                <Settings className="h-4 w-4" />
-                Adjust Thresholds
-              </Button>
+    <AppShell maxWidth="wide">
+      {isLoading ? (
+        <div className="flex h-[40vh] items-center justify-center text-gray-400">
+          Loading opportunities...
+        </div>
+      ) : (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <PageHeading className="flex items-center gap-2">
+                <TrendingDown className="h-8 w-8 text-green-400" />
+                Savings Opportunities
+              </PageHeading>
+              <p className="text-gray-400 mt-2">
+                {alerts?.total_count || 0} items with price decreases
+              </p>
             </div>
-            
-            <Tabs value={filter} onValueChange={(v) => setFilter(v as any)} className="w-full">
-              <TabsList className="bg-obsidian-light border border-obsidian-border">
-                <TabsTrigger value="active">Active</TabsTrigger>
-                <TabsTrigger value="all">All</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="active" className="space-y-4 mt-6">
-                {alerts?.alerts && alerts.alerts.length > 0 ? (
-                  alerts.alerts.map((alert: SavingsAlert) => (
-                    <Card key={alert.alert_key} className="p-6 bg-obsidian-light border-green-500/30">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="text-xl font-semibold text-white">
-                            {alert.item_description}
-                          </h3>
-                          <p className="text-gray-400 mt-1">{alert.vendor_name}</p>
-                          
-                          <div className="mt-4 space-y-2">
-                            <div className="flex items-center gap-4">
-                              <span className="text-green-400 font-bold text-2xl">
-                                -{alert.savings_percent.toFixed(1)}%
-                              </span>
-                              <span className="text-gray-400">
-                                vs {alert.trigger.replace('_', '-')} average
-                              </span>
+
+            <Button
+              variant="outline"
+              onClick={() => navigate('/settings/alerts')}
+              className="flex items-center gap-2"
+            >
+              <Settings className="h-4 w-4" />
+              Adjust Thresholds
+            </Button>
+          </div>
+
+          <Tabs value={filter} onValueChange={(v) => setFilter(v as any)} className="w-full">
+            <TabsList className="bg-obsidian-light border border-obsidian-border">
+              <TabsTrigger value="active">Active</TabsTrigger>
+              <TabsTrigger value="all">All</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="active" className="space-y-4 mt-6">
+              {alerts?.alerts && alerts.alerts.length > 0 ? (
+                alerts.alerts.map((alert: SavingsAlert) => (
+                  <Card key={alert.alert_key} className="p-6 bg-obsidian-light border-green-500/30">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="text-xl font-semibold text-white">
+                          {alert.item_description}
+                        </h3>
+                        <p className="text-gray-400 mt-1">{alert.vendor_name}</p>
+
+                        <div className="mt-4 space-y-2">
+                          <div className="flex items-center gap-4">
+                            <span className="text-green-400 font-bold text-2xl">
+                              -{alert.savings_percent.toFixed(1)}%
+                            </span>
+                            <span className="text-gray-400">
+                              vs {alert.trigger.replace('_', '-')} average
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-4 mt-4">
+                            <div>
+                              <p className="text-sm text-gray-500">Expected</p>
+                              <p className="text-lg text-white">${alert.expected_price.toFixed(2)}</p>
                             </div>
-                            
-                            <div className="grid grid-cols-3 gap-4 mt-4">
-                              <div>
-                                <p className="text-sm text-gray-500">Expected</p>
-                                <p className="text-lg text-white">${alert.expected_price.toFixed(2)}</p>
-                              </div>
-                              <div>
-                                <p className="text-sm text-gray-500">Actual</p>
-                                <p className="text-lg text-green-400">${alert.actual_price.toFixed(2)}</p>
-                              </div>
-                              <div>
-                                <p className="text-sm text-gray-500">Savings</p>
-                                <p className="text-lg text-green-400">${alert.savings_amount.toFixed(2)}</p>
-                              </div>
+                            <div>
+                              <p className="text-sm text-gray-500">Actual</p>
+                              <p className="text-lg text-green-400">${alert.actual_price.toFixed(2)}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500">Savings</p>
+                              <p className="text-lg text-green-400">${alert.savings_amount.toFixed(2)}</p>
                             </div>
                           </div>
                         </div>
-                        
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => dismissMutation.mutate(alert.alert_key)}
-                          disabled={dismissMutation.isPending}
-                        >
-                          Dismiss
-                        </Button>
                       </div>
-                    </Card>
-                  ))
-                ) : (
-                  <div className="text-center py-12 text-gray-400">
-                    No savings opportunities found. Keep monitoring for price drops!
-                  </div>
-                )}
-              </TabsContent>
-              
-              <TabsContent value="all" className="space-y-4 mt-6">
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => dismissAlert.mutate(alert.alert_key)}
+                        disabled={dismissAlert.isPending}
+                      >
+                        Dismiss
+                      </Button>
+                    </div>
+                  </Card>
+                ))
+              ) : (
                 <div className="text-center py-12 text-gray-400">
-                  All opportunities view - coming soon
+                  No savings opportunities found. Keep monitoring for price drops!
                 </div>
-              </TabsContent>
-            </Tabs>
-          </>
-        )}
-      </div>
-    </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="all" className="space-y-4 mt-6">
+              <div className="text-center py-12 text-gray-400">
+                All opportunities view - coming soon
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      )}
+    </AppShell>
   );
 }
 

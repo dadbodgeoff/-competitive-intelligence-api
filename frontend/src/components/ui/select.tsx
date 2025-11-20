@@ -4,7 +4,42 @@ import { Check, ChevronDown, ChevronUp } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-const Select = SelectPrimitive.Root
+const EMPTY_ITEM_VALUE = "__empty__"
+
+type SelectRootProps = React.ComponentProps<typeof SelectPrimitive.Root>
+
+const mapToInternalValue = (value?: string) => {
+  if (value === undefined) return undefined
+  return value === "" ? EMPTY_ITEM_VALUE : value
+}
+
+const mapFromInternalValue = (value: string) => {
+  return value === EMPTY_ITEM_VALUE ? "" : value
+}
+
+const Select: React.FC<SelectRootProps> = ({
+  value,
+  defaultValue,
+  onValueChange,
+  ...props
+}: SelectRootProps) => {
+  const handleChange = React.useCallback(
+    (nextValue: string) => {
+      onValueChange?.(mapFromInternalValue(nextValue))
+    },
+    [onValueChange],
+  )
+
+  return (
+    <SelectPrimitive.Root
+      value={mapToInternalValue(value as string | undefined)}
+      defaultValue={mapToInternalValue(defaultValue as string | undefined)}
+      onValueChange={handleChange}
+      {...props}
+    />
+  )
+}
+Select.displayName = "Select"
 
 const SelectGroup = SelectPrimitive.Group
 
@@ -111,25 +146,29 @@ SelectLabel.displayName = SelectPrimitive.Label.displayName
 
 const SelectItem = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
->(({ className, children, ...props }, ref) => (
-  <SelectPrimitive.Item
-    ref={ref}
-    className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-      className
-    )}
-    {...props}
-  >
-    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-      <SelectPrimitive.ItemIndicator>
-        <Check className="h-4 w-4" />
-      </SelectPrimitive.ItemIndicator>
-    </span>
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item> & { value: string }
+>(({ className, children, value, ...props }, ref) => {
+  const internalValue = value === "" ? EMPTY_ITEM_VALUE : value
+  return (
+    <SelectPrimitive.Item
+      ref={ref}
+      value={internalValue}
+      className={cn(
+        "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        className
+      )}
+      {...props}
+    >
+      <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+        <SelectPrimitive.ItemIndicator>
+          <Check className="h-4 w-4" />
+        </SelectPrimitive.ItemIndicator>
+      </span>
 
-    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-  </SelectPrimitive.Item>
-))
+      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+    </SelectPrimitive.Item>
+  )
+})
 SelectItem.displayName = SelectPrimitive.Item.displayName
 
 const SelectSeparator = React.forwardRef<

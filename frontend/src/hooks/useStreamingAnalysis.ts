@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { ReviewAnalysisRequest } from '@/types/analysis';
+import { streamSse, type SseConnection } from '@/lib/sse';
 
 interface StreamingState {
   status: 'idle' | 'streaming' | 'complete' | 'error';
@@ -52,18 +53,11 @@ export function useStreamingAnalysis(): StreamingAnalysisHook {
   });
 
   const [isConnected, setIsConnected] = useState(false);
-  const eventSourceRef = useRef<EventSource | null>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const connectionRef = useRef<SseConnection | null>(null);
 
   const stopAnalysis = useCallback(() => {
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-      eventSourceRef.current = null;
-    }
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-      abortControllerRef.current = null;
-    }
+    connectionRef.current?.stop();
+    connectionRef.current = null;
     setIsConnected(false);
   }, []);
 
@@ -84,86 +78,10 @@ export function useStreamingAnalysis(): StreamingAnalysisHook {
       totalInsights: 0,
     }));
 
-    // Create abort controller for cleanup
-    abortControllerRef.current = new AbortController();
-
     try {
       // Build streaming URL (cookies sent automatically)
       const baseUrl = import.meta.env.VITE_API_URL || '';
       const streamUrl = `${baseUrl}/api/v1/streaming/run/stream`;
-
-      // Create EventSource with POST data (using a workaround)
-      // Since EventSource doesn't support POST, we'll use fetch with streaming
-      const startStreamingRequest = async () => {
-        try {
-          const response = await fetch(streamUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'text/event-stream',
-              'Cache-Control': 'no-cache',
-            },
-            body: JSON.stringify(request),
-            credentials: 'include', // Send cookies
-            signal: abortControllerRef.current?.signal,
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-
-          if (!response.body) {
-            throw new Error('No response body for streaming');
-          }
-
-          setIsConnected(true);
-
-          // Process streaming response
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder();
-          let currentEventType = '';
-
-          while (true) {
-            const { done, value } = await reader.read();
-            
-            if (done) break;
-
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split('\n');
-
-            for (const line of lines) {
-              if (line.startsWith('event:')) {
-                currentEventType = line.substring(6).trim();
-                continue;
-              }
-
-              if (line.startsWith('data:')) {
-                try {
-                  const data = JSON.parse(line.substring(5).trim());
-                  handleStreamEvent(currentEventType || 'message', data);
-                } catch (e) {
-                  console.warn('Failed to parse SSE data:', line);
-                }
-              }
-            }
-          }
-
-        } catch (error) {
-          if (error instanceof Error && error.name === 'AbortError') {
-            console.log('Streaming request aborted');
-            return;
-          }
-          
-          console.error('Streaming request failed:', error);
-          setState(prev => ({
-            ...prev,
-            status: 'error',
-            error: error instanceof Error ? error.message : 'Streaming failed',
-          }));
-        } finally {
-          setIsConnected(false);
-        }
-      };
 
       const handleStreamEvent = (eventType: string, data: any) => {
 
@@ -254,8 +172,32 @@ export function useStreamingAnalysis(): StreamingAnalysisHook {
         }
       };
 
-      // Start the streaming request
-      startStreamingRequest();
+      const connection = streamSse({
+        url: streamUrl,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+        credentials: 'include',
+        onOpen: () => setIsConnected(true),
+        onClose: () => setIsConnected(false),
+        onEvent: ({ event, data }) => handleStreamEvent(event, data),
+        onError: (error) => {
+          console.error('Streaming request failed:', error);
+          setState(prev => ({
+            ...prev,
+            status: 'error',
+            error: error.message || 'Streaming failed',
+          }));
+        },
+      });
+
+      connection.finished.finally(() => {
+        connectionRef.current = null;
+      });
+
+      connectionRef.current = connection;
 
     } catch (error) {
       console.error('Failed to start streaming analysis:', error);

@@ -113,7 +113,8 @@ class InvoiceStorageService:
         parse_metadata: Dict,
         file_url: str,
         status: str,
-        user_id: str
+        user_id: str,
+        account_id: str
     ) -> str:
         """
         Save parsed invoice to database
@@ -148,7 +149,8 @@ class InvoiceStorageService:
             "parse_tokens_used": parse_metadata.get('tokens_used'),
             "status": status,
             "raw_file_url": file_url,
-            "parsed_json": invoice_data
+            "parsed_json": invoice_data,
+            "account_id": account_id
         }
         
         logger.info(f"💾 Attempting to save invoice to database")
@@ -195,7 +197,8 @@ class InvoiceStorageService:
                 "unit_price": float(unit_price),  # Convert back to float for DB
                 "extended_price": float(extended_price),  # Convert back to float for DB
                 "category": item.get('category'),
-                "user_corrected": False
+                "user_corrected": False,
+                "account_id": account_id
             }
             line_items.append(line_item)
         
@@ -214,6 +217,7 @@ class InvoiceStorageService:
         log_record = {
             "invoice_id": invoice_id,
             "user_id": user_id,
+            "account_id": account_id,
             "model_used": parse_metadata['model_used'],
             "tokens_used": parse_metadata.get('tokens_used'),
             "cost": parse_metadata.get('cost'),
@@ -228,6 +232,7 @@ class InvoiceStorageService:
     async def list_invoices(
         self,
         user_id: str,
+        account_id: str,
         limit: int = 20,
         offset: int = 0,
         status: Optional[str] = None,
@@ -240,8 +245,8 @@ class InvoiceStorageService:
             Dict with invoices list, count, and pagination info
         """
         query = self.client.table("invoices").select(
-            "id, invoice_number, vendor_name, invoice_date, total, status, created_at"
-        ).eq("user_id", user_id)
+            "id, invoice_number, vendor_name, invoice_date, total, status, created_at, user_id"
+        ).eq("account_id", account_id)
         
         # Apply filters
         if status:
@@ -250,7 +255,7 @@ class InvoiceStorageService:
             query = query.ilike("vendor_name", f"%{vendor}%")
         
         # Get total count using count parameter
-        count_query = self.client.table("invoices").select("id", count="exact").eq("user_id", user_id)
+        count_query = self.client.table("invoices").select("id", count="exact").eq("account_id", account_id)
         if status:
             count_query = count_query.eq("status", status)
         if vendor:
@@ -272,7 +277,7 @@ class InvoiceStorageService:
             "has_more": (offset + limit) < total_count
         }
     
-    async def get_invoice(self, invoice_id: str, user_id: str) -> Optional[Dict]:
+    async def get_invoice(self, invoice_id: str, user_id: str, account_id: str) -> Optional[Dict]:
         """
         Get full invoice details with line items
         
@@ -282,13 +287,13 @@ class InvoiceStorageService:
         import logging
         logger = logging.getLogger(__name__)
         
-        logger.info(f"🔍 [STORAGE] get_invoice called: invoice_id={invoice_id}, user_id={user_id}")
+        logger.info(f"🔍 [STORAGE] get_invoice called: invoice_id={invoice_id}, user_id={user_id}, account_id={account_id}")
         
         # Get invoice header
         logger.info(f"📥 [STORAGE] Querying invoices table...")
         invoice_result = self.client.table("invoices").select("*").eq(
             "id", invoice_id
-        ).eq("user_id", user_id).execute()
+        ).eq("account_id", account_id).execute()
         
         logger.info(f"📦 [STORAGE] Invoice query result: found={len(invoice_result.data)} records")
         
@@ -303,7 +308,7 @@ class InvoiceStorageService:
         logger.info(f"📥 [STORAGE] Querying invoice_items table...")
         items_result = self.client.table("invoice_items").select("*").eq(
             "invoice_id", invoice_id
-        ).order("created_at").execute()
+        ).eq("account_id", account_id).order("created_at").execute()
         
         logger.info(f"📦 [STORAGE] Items query result: found={len(items_result.data)} items")
         
@@ -311,7 +316,7 @@ class InvoiceStorageService:
         logger.info(f"📥 [STORAGE] Querying invoice_parse_logs table...")
         log_result = self.client.table("invoice_parse_logs").select("*").eq(
             "invoice_id", invoice_id
-        ).order("created_at", desc=True).limit(1).execute()
+        ).eq("account_id", account_id).order("created_at", desc=True).limit(1).execute()
         
         logger.info(f"📦 [STORAGE] Parse logs query result: found={len(log_result.data)} logs")
         
@@ -328,12 +333,13 @@ class InvoiceStorageService:
         self,
         invoice_id: str,
         user_id: str,
+        account_id: str,
         updates: Dict
     ) -> bool:
         """Update invoice header fields"""
         result = self.client.table("invoices").update(updates).eq(
             "id", invoice_id
-        ).eq("user_id", user_id).execute()
+        ).eq("account_id", account_id).execute()
         
         return len(result.data) > 0
     
@@ -341,6 +347,7 @@ class InvoiceStorageService:
         self,
         item_id: str,
         user_id: str,
+        account_id: str,
         updates: Dict
     ) -> bool:
         """Update a line item (marks as user_corrected)"""
@@ -359,7 +366,7 @@ class InvoiceStorageService:
         # Check ownership
         invoice_result = self.client.table("invoices").select("id").eq(
             "id", invoice_id
-        ).eq("user_id", user_id).execute()
+        ).eq("account_id", account_id).execute()
         
         if not invoice_result.data:
             return False
@@ -371,7 +378,7 @@ class InvoiceStorageService:
         
         return len(result.data) > 0
     
-    async def delete_invoice(self, invoice_id: str, user_id: str) -> bool:
+    async def delete_invoice(self, invoice_id: str, user_id: str, account_id: str) -> bool:
         """
         Delete invoice and CASCADE delete related data:
         1. invoice_items (line items from this invoice)

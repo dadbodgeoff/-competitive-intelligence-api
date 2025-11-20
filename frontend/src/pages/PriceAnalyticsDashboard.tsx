@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '../components/layout/PageHeader';
+import { PageHeading } from '../components/layout/PageHeading';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -10,30 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { TrendingUp, TrendingDown, DollarSign, Package, Search, Filter, Lightbulb, Bell } from 'lucide-react';
 import { analyticsApi } from '../services/api/analyticsApi';
 import { formatCurrency, formatPercent } from '../types/analytics';
-import type { DashboardSummaryResponse } from '../types/analytics';
-
-interface InventoryItem {
-  description: string;
-  last_paid_price: number;
-  last_paid_date: string;
-  last_paid_vendor: string;
-  avg_price_7day: number | null;
-  avg_price_28day: number | null;
-  avg_price_all: number;
-  price_change_7day_percent: number | null;
-  price_change_28day_percent: number | null;
-  min_price: number;
-  max_price: number;
-  purchase_count: number;
-  purchases_last_7days: number;
-  purchases_last_28days: number;
-}
-
-interface ItemsListResponse {
-  success: boolean;
-  items: InventoryItem[];
-  total_items: number;
-}
+import type { DashboardSummaryResponse, ItemsListResponse } from '../types/analytics';
 
 export function PriceAnalyticsDashboard() {
   const navigate = useNavigate();
@@ -120,7 +98,7 @@ export function PriceAnalyticsDashboard() {
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Page Title & Quick Actions */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-white mb-2">Price Analytics</h1>
+          <PageHeading>Price Analytics</PageHeading>
           <p className="text-gray-400 mb-4">Track pricing trends and discover savings opportunities</p>
           
           <div className="flex gap-3">

@@ -13,7 +13,9 @@ import type {
   SavedComparisonsListResponse,
   StreamingEvent,
 } from '@/types/menuComparison';
-import { apiClient } from './client';
+import { apiClient, safeRequest } from './client';
+import { streamSse, type SseConnection } from '@/lib/sse';
+import { ensureResponseSuccess } from './validation';
 
 const API_BASE = '/api/v1/menu-comparison';
 
@@ -22,8 +24,20 @@ class MenuComparisonAPIService {
    * Step 1: Discover competitors
    */
   async discoverCompetitors(request: StartComparisonRequest): Promise<DiscoveryResponse> {
-    const response = await apiClient.post(`${API_BASE}/discover`, request);
-    return response.data;
+    const result = await safeRequest<DiscoveryResponse | { success?: boolean; data?: DiscoveryResponse }>(() =>
+      apiClient.post(`${API_BASE}/discover`, request)
+    );
+    const payload = ensureResponseSuccess(result, 'Failed to start competitor discovery');
+    if (
+      payload &&
+      typeof payload === 'object' &&
+      'success' in payload &&
+      'data' in payload &&
+      payload.data
+    ) {
+      return payload.data;
+    }
+    return payload as DiscoveryResponse;
   }
 
   /**
@@ -37,80 +51,45 @@ class MenuComparisonAPIService {
   ): Promise<void> {
     try {
       const baseUrl = import.meta.env.VITE_API_URL || '';
-      const response = await fetch(`${baseUrl}${API_BASE}/analyze/stream`, {
+      let isComplete = false;
+      const connection: SseConnection = streamSse({
+        url: `${baseUrl}${API_BASE}/analyze/stream`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Send cookies
         body: JSON.stringify(request),
+        credentials: 'include',
+        onEvent: ({ event, data }) => {
+          const streamingEvent: StreamingEvent = {
+            type: (event as StreamingEvent['type']) || 'error',
+            data: (data as StreamingEvent['data']) ?? {},
+          };
+
+          onEvent(streamingEvent);
+
+          if (event === 'analysis_complete') {
+            isComplete = true;
+            onComplete();
+            connection.stop();
+          } else if (event === 'error') {
+            isComplete = true;
+            const errorPayload = (data ?? {}) as { error?: string; message?: string };
+            onError(errorPayload.error ?? errorPayload.message ?? 'Analysis failed');
+            connection.stop();
+          }
+        },
+        onError: (error) => {
+          onError(error.message || 'Analysis failed');
+        },
       });
 
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({ detail: 'Network error' }));
-        throw new Error(error.detail || 'Failed to start analysis');
-      }
-
-      // The response should be the SSE stream
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error('No response stream available');
-      }
-
-      const decoder = new TextDecoder();
-      let buffer = '';
-      let currentEventType = '';
-      
       try {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
-          
-          // Keep the last incomplete line in the buffer
-          buffer = lines.pop() || '';
-
-          for (const line of lines) {
-            if (line.startsWith('event: ')) {
-              currentEventType = line.substring(7).trim();
-            } else if (line.startsWith('data: ')) {
-              try {
-                const data = JSON.parse(line.substring(6));
-                const event: StreamingEvent = {
-                  type: (currentEventType as any) || 'error',
-                  data: data,
-                };
-                
-                onEvent(event);
-                
-                if (currentEventType === 'analysis_complete') {
-                  onComplete();
-                  reader.cancel();
-                  return;
-                }
-                
-                if (currentEventType === 'error') {
-                  onError(data.error || 'Analysis failed');
-                  reader.cancel();
-                  return;
-                }
-                
-                // Reset for next event
-                currentEventType = '';
-              } catch (parseError) {
-                console.warn('Failed to parse SSE data:', line);
-              }
-            }
-          }
-        }
-        
-        onComplete();
-      } catch (streamError) {
-        onError(streamError instanceof Error ? streamError.message : 'Stream error');
+        await connection.finished;
       } finally {
-        reader.releaseLock();
+        if (!isComplete) {
+          onComplete();
+        }
       }
 
     } catch (error) {
@@ -123,17 +102,30 @@ class MenuComparisonAPIService {
    * Get analysis status
    */
   async getAnalysisStatus(analysisId: string): Promise<AnalysisStatusResponse> {
-    const response = await apiClient.get(`${API_BASE}/${analysisId}/status`);
-    return response.data;
+    const result = await safeRequest<AnalysisStatusResponse>(() =>
+      apiClient.get(`${API_BASE}/${analysisId}/status`)
+    );
+    return ensureResponseSuccess(result, 'Failed to load analysis status');
   }
 
   /**
    * Get analysis results
    */
   async getAnalysisResults(analysisId: string): Promise<ComparisonResultsResponse> {
-    const response = await apiClient.get(`${API_BASE}/${analysisId}/results`);
-    // Backend returns { success: true, data: {...} }
-    return response.data.data || response.data;
+    const result = await safeRequest<ComparisonResultsResponse | { success?: boolean; data?: ComparisonResultsResponse }>(() =>
+      apiClient.get(`${API_BASE}/${analysisId}/results`)
+    );
+    const payload = ensureResponseSuccess(result, 'Failed to fetch comparison results');
+    if (
+      payload &&
+      typeof payload === 'object' &&
+      'success' in payload &&
+      'data' in payload &&
+      payload.data
+    ) {
+      return payload.data;
+    }
+    return payload as ComparisonResultsResponse;
   }
 
   /**
@@ -146,9 +138,10 @@ class MenuComparisonAPIService {
     console.log('🍪 [MenuComparisonAPI] withCredentials:', apiClient.defaults.withCredentials);
     
     try {
-      const response = await apiClient.post(`${API_BASE}/save`, request);
-      console.log('✅ [MenuComparisonAPI] Success:', response.data);
-      return response.data;
+      const result = await safeRequest<{ success: boolean; saved_id: string; message: string }>(() =>
+        apiClient.post(`${API_BASE}/save`, request)
+      );
+      return ensureResponseSuccess(result, 'Failed to save comparison');
     } catch (error: any) {
       console.error('❌ [MenuComparisonAPI] Error:', error);
       console.error('❌ [MenuComparisonAPI] Error response:', error.response?.data);
@@ -164,18 +157,22 @@ class MenuComparisonAPIService {
     page: number = 1,
     per_page: number = 50
   ): Promise<SavedComparisonsListResponse> {
-    const response = await apiClient.get(`${API_BASE}/saved`, {
-      params: { page, per_page }
-    });
-    return response.data;
+    const result = await safeRequest<SavedComparisonsListResponse>(() =>
+      apiClient.get(`${API_BASE}/saved`, {
+        params: { page, per_page }
+      })
+    );
+    return ensureResponseSuccess(result, 'Failed to load saved comparisons');
   }
 
   /**
    * Archive saved comparison
    */
   async archiveSavedComparison(savedId: string): Promise<{ success: boolean; message: string }> {
-    const response = await apiClient.delete(`${API_BASE}/saved/${savedId}`);
-    return response.data;
+    const result = await safeRequest<{ success: boolean; message: string }>(() =>
+      apiClient.delete(`${API_BASE}/saved/${savedId}`)
+    );
+    return ensureResponseSuccess(result, 'Failed to archive comparison');
   }
 
   /**
@@ -192,8 +189,19 @@ class MenuComparisonAPIService {
       saved_comparisons: number;
     };
   }> {
-    const response = await apiClient.delete(`${API_BASE}/${analysisId}/cascade`);
-    return response.data;
+    const result = await safeRequest<{
+      success: boolean;
+      message: string;
+      deleted_counts: {
+        analysis: number;
+        competitors: number;
+        menu_items: number;
+        insights: number;
+        saved_comparisons: number;
+      };
+    }>(() => apiClient.delete(`${API_BASE}/${analysisId}/cascade`));
+
+    return ensureResponseSuccess(result, 'Failed to delete analysis');
   }
 
   /**

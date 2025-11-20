@@ -19,6 +19,9 @@ services:
       - LOG_LEVEL=INFO
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - CLAMAV_ENABLED=true
+      - CLAMAV_HOST=clamav
+      - CLAMAV_PORT=3310
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
@@ -28,6 +31,8 @@ services:
       start_period: 40s
     depends_on:
       redis:
+        condition: service_healthy
+      clamav:
         condition: service_healthy
 
   # Redis for caching
@@ -45,6 +50,20 @@ services:
       timeout: 3s
       retries: 5
       start_period: 10s
+
+  clamav:
+    build:
+      context: .
+      dockerfile: clamav/Dockerfile
+    restart: unless-stopped
+    expose:
+      - "3310"
+    healthcheck:
+      test: ["CMD", "clamdscan", "--version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
 
 volumes:
   redis_data:

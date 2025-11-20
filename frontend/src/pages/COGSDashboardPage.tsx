@@ -3,12 +3,14 @@
  * Overview of all menu items with cost tracking
  */
 
-import { PageLayout } from '@/components/layout/PageLayout';
+import { AppShell } from '@/components/layout/AppShell';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { Button } from '@/components/ui/button';
 import { InvoiceCard, InvoiceCardContent } from '@/design-system/components';
 import { useCOGSOverview } from '@/hooks/useCOGSOverview';
 import { COGSSummaryCards } from '@/components/cogs/COGSSummaryCards';
 import { COGSTable } from '@/components/cogs/COGSTable';
+import { DailySalesPanel } from '@/components/cogs/DailySalesPanel';
 import { Loader2, RefreshCw, Upload, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -31,27 +33,17 @@ export function COGSDashboardPage() {
 
   if (loading) {
     return (
-      <PageLayout
-        breadcrumbs={[
-          { label: 'Dashboard', href: '/dashboard' },
-          { label: 'COGS Tracker' },
-        ]}
-      >
-        <div className="flex items-center justify-center py-12">
+      <AppShell maxWidth="wide">
+        <div className="flex h-[50vh] items-center justify-center">
           <Loader2 className="h-8 w-8 text-emerald-400 animate-spin" />
         </div>
-      </PageLayout>
+      </AppShell>
     );
   }
 
   if (error) {
     return (
-      <PageLayout
-        breadcrumbs={[
-          { label: 'Dashboard', href: '/dashboard' },
-          { label: 'COGS Tracker' },
-        ]}
-      >
+      <AppShell maxWidth="wide">
         <InvoiceCard variant="elevated">
           <InvoiceCardContent className="py-12">
             <div className="text-center space-y-4">
@@ -71,18 +63,13 @@ export function COGSDashboardPage() {
             </div>
           </InvoiceCardContent>
         </InvoiceCard>
-      </PageLayout>
+      </AppShell>
     );
   }
 
   if (totalItems === 0) {
     return (
-      <PageLayout
-        breadcrumbs={[
-          { label: 'Dashboard', href: '/dashboard' },
-          { label: 'COGS Tracker' },
-        ]}
-      >
+      <AppShell maxWidth="wide">
         <InvoiceCard variant="elevated">
           <InvoiceCardContent className="py-16">
             <div className="text-center space-y-4">
@@ -107,22 +94,17 @@ export function COGSDashboardPage() {
             </div>
           </InvoiceCardContent>
         </InvoiceCard>
-      </PageLayout>
+      </AppShell>
     );
   }
 
   return (
-    <PageLayout
-      breadcrumbs={[
-        { label: 'Dashboard', href: '/dashboard' },
-        { label: 'COGS Tracker' },
-      ]}
-    >
+    <AppShell maxWidth="wide">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">COGS Tracker</h1>
+            <PageHeading>COGS Tracker</PageHeading>
             <p className="text-slate-400">
               Track cost of goods sold and profitability across your menu
             </p>
@@ -158,6 +140,9 @@ export function COGSDashboardPage() {
         {/* Items Table */}
         <COGSTable categories={categories} recipes={recipes} loadingRecipes={loadingRecipes} />
 
+        {/* Daily Sales Tracking */}
+        <DailySalesPanel categories={categories} recipes={recipes} />
+
         {/* Info Card */}
         {noRecipeItems > 0 && (
           <InvoiceCard>
@@ -178,6 +163,6 @@ export function COGSDashboardPage() {
           </InvoiceCard>
         )}
       </div>
-    </PageLayout>
+    </AppShell>
   );
 }

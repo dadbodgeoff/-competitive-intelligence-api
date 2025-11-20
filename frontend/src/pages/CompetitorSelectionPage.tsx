@@ -28,6 +28,8 @@ import {
   Phone,
   Globe,
 } from 'lucide-react';
+import { AppShell } from '@/components/layout/AppShell';
+import { PageHeading } from '@/components/layout/PageHeading';
 
 export function CompetitorSelectionPage() {
   const { analysisId } = useParams<{ analysisId: string }>();
@@ -62,7 +64,7 @@ export function CompetitorSelectionPage() {
     mutationFn: async (request: SelectCompetitorsRequest) => {
       // Navigate to parsing page immediately
       navigate(`/menu-comparison/${analysisId}/parse`);
-      
+
       // Start the streaming analysis
       return new Promise<void>((resolve, reject) => {
         menuComparisonAPI.analyzeCompetitors(
@@ -82,17 +84,17 @@ export function CompetitorSelectionPage() {
     },
     onError: (error) => {
       toast({
-        variant: "destructive",
-        title: "Analysis Failed",
+        variant: 'destructive',
+        title: 'Analysis Failed',
         description: error instanceof Error ? error.message : 'Failed to start analysis',
       });
     },
   });
 
   const handleCompetitorToggle = (competitorId: string) => {
-    setSelectedCompetitors(prev => {
+    setSelectedCompetitors((prev) => {
       if (prev.includes(competitorId)) {
-        return prev.filter(id => id !== competitorId);
+        return prev.filter((id) => id !== competitorId);
       } else if (prev.length < 2) {
         return [...prev, competitorId];
       } else {
@@ -105,9 +107,9 @@ export function CompetitorSelectionPage() {
   const handleStartAnalysis = () => {
     if (selectedCompetitors.length !== 2) {
       toast({
-        variant: "destructive",
-        title: "Selection Required",
-        description: "Please select exactly 2 competitors to analyze.",
+        variant: 'destructive',
+        title: 'Selection Required',
+        description: 'Please select exactly 2 competitors to analyze.',
       });
       return;
     }
@@ -122,96 +124,81 @@ export function CompetitorSelectionPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-obsidian flex items-center justify-center">
-        <div className="text-center">
-          <div className="h-8 w-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Loading competitors...</p>
+      <AppShell maxWidth="wide">
+        <div className="flex h-[50vh] items-center justify-center">
+          <div className="text-center">
+            <div className="h-8 w-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-slate-400">Loading competitors...</p>
+          </div>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
   if (error || !analysisStatus) {
     return (
-      <div className="min-h-screen bg-obsidian">
-        <div className="container mx-auto px-4 py-12 max-w-2xl">
-          <Alert variant="destructive" className="bg-red-500/10 border-red-500/50 text-red-400">
-            <AlertCircle className="h-5 w-5" />
-            <AlertDescription>
-              <p className="font-semibold mb-2">Failed to load analysis</p>
-              <p className="mb-4">
-                {error instanceof Error ? error.message : 'Unknown error'}
-              </p>
-              <Button
-                onClick={() => navigate('/menu-comparison')}
-                className="bg-red-500 hover:bg-red-600"
-              >
-                Start New Analysis
-              </Button>
-            </AlertDescription>
-          </Alert>
-        </div>
-      </div>
+      <AppShell maxWidth="wide">
+        <Alert variant="destructive" className="bg-red-500/10 border-red-500/50 text-red-400">
+          <AlertCircle className="h-5 w-5" />
+          <AlertDescription>
+            <p className="font-semibold mb-2">Failed to load analysis</p>
+            <p className="mb-4">{error instanceof Error ? error.message : 'Unknown error'}</p>
+            <Button onClick={() => navigate('/menu-comparison')} className="bg-red-500 hover:bg-red-600">
+              Start New Analysis
+            </Button>
+          </AlertDescription>
+        </Alert>
+      </AppShell>
     );
   }
 
   const competitors = analysisResults?.competitors || [];
 
   return (
-    <div className="min-h-screen bg-obsidian">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
+    <AppShell maxWidth="wide">
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <Link
+            to="/menu-comparison"
+            className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5" />
+            <span>Back to Search</span>
+          </Link>
 
-      {/* Header */}
-      <div className="relative border-b border-white/10 bg-card-dark/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <Link
-              to="/menu-comparison"
-              className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
-            >
-              <ArrowLeft className="h-5 w-5" />
-              <span>Back to Search</span>
-            </Link>
-            <Link
-              to="/"
-              className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors"
-            >
-              <TrendingUp className="h-6 w-6 text-emerald-500" />
-              <span className="text-xl font-bold">Restaurant CI</span>
-            </Link>
-          </div>
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors"
+          >
+            <TrendingUp className="h-6 w-6 text-emerald-500" />
+            <span className="text-xl font-bold">Restaurant CI</span>
+          </Link>
         </div>
-      </div>
 
-      {/* Main content */}
-      <div className="relative container mx-auto px-4 py-8 max-w-7xl">
-        {/* Header */}
-        <div className="mb-8">
+        <div>
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 rounded-lg bg-emerald-500/10">
               <Users className="h-5 w-5 text-emerald-400" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Select Competitors</h1>
+              <PageHeading>Select Competitors</PageHeading>
               <p className="text-slate-400 mt-1">
                 Choose 2 competitors from the {competitors.length} found near {analysisStatus.location}
               </p>
             </div>
           </div>
 
-          {/* Selection status */}
           <div className="flex items-center gap-4">
-            <Badge 
+            <Badge
               className={`${
-                selectedCompetitors.length === 2 
-                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' 
+                selectedCompetitors.length === 2
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
                   : 'bg-slate-500/10 text-slate-400 border-slate-500/30'
               } border`}
             >
               {selectedCompetitors.length}/2 Selected
             </Badge>
-            
+
             {selectedCompetitors.length === 2 && (
               <div className="flex items-center gap-2 text-emerald-400">
                 <CheckCircle2 className="h-4 w-4" />
@@ -221,7 +208,6 @@ export function CompetitorSelectionPage() {
           </div>
         </div>
 
-        {/* Competitors grid */}
         {competitors.length === 0 ? (
           <Alert className="bg-slate-500/10 border-slate-500/30 text-slate-400">
             <AlertCircle className="h-5 w-5" />
@@ -230,7 +216,7 @@ export function CompetitorSelectionPage() {
             </AlertDescription>
           </Alert>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {competitors.map((competitor) => (
               <CompetitorSelectionCard
                 key={competitor.id}
@@ -243,7 +229,6 @@ export function CompetitorSelectionPage() {
           </div>
         )}
 
-        {/* Action buttons */}
         <div className="flex justify-center gap-4">
           <Button
             variant="outline"
@@ -252,7 +237,7 @@ export function CompetitorSelectionPage() {
           >
             Start Over
           </Button>
-          
+
           <Button
             onClick={handleStartAnalysis}
             disabled={selectedCompetitors.length !== 2 || analyzeMutation.isPending}
@@ -272,7 +257,7 @@ export function CompetitorSelectionPage() {
           </Button>
         </div>
       </div>
-    </div>
+    </AppShell>
   );
 }
 

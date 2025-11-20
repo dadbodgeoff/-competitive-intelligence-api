@@ -1,14 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-
-interface InvoiceData {
-  invoice_number: string;
-  invoice_date: string;
-  vendor_name: string;
-  subtotal: number;
-  tax: number;
-  total: number;
-  line_items: LineItem[];
-}
+import { streamSse, type SseConnection } from '@/lib/sse';
+import { saveInvoice, type SaveInvoicePayload } from '@/services/api/invoicesApi';
+import {
+  attachConversionToLineItem,
+  type PackConversionResult,
+} from '@/utils/invoiceUnits';
 
 interface LineItem {
   item_number?: string;
@@ -18,6 +14,21 @@ interface LineItem {
   unit_price: number;
   extended_price: number;
   category?: 'DRY' | 'REFRIGERATED' | 'FROZEN';
+  converted_quantity?: number;
+  converted_unit?: string;
+  per_pack_quantity?: number;
+  per_pack_unit?: string;
+  conversion?: PackConversionResult;
+}
+
+interface InvoiceData {
+  invoice_number: string;
+  invoice_date: string;
+  vendor_name: string;
+  subtotal: number;
+  tax: number;
+  total: number;
+  line_items: LineItem[];
 }
 
 interface ParseMetadata {
@@ -52,6 +63,17 @@ interface UseInvoiceParseStreamReturn {
   isConnected: boolean;
 }
 
+function enhanceLineItem(item: LineItem): LineItem {
+  return attachConversionToLineItem<LineItem>(item);
+}
+
+function enhanceInvoiceData(invoice: InvoiceData): InvoiceData {
+  return {
+    ...invoice,
+    line_items: invoice.line_items.map(enhanceLineItem),
+  };
+}
+
 export function useInvoiceParseStream(): UseInvoiceParseStreamReturn {
   const [state, setState] = useState<ParseState>({
     status: 'idle',
@@ -61,13 +83,11 @@ export function useInvoiceParseStream(): UseInvoiceParseStreamReturn {
   });
 
   const [isConnected, setIsConnected] = useState(false);
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const connectionRef = useRef<SseConnection | null>(null);
 
   const stopParsing = useCallback(() => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-      abortControllerRef.current = null;
-    }
+    connectionRef.current?.stop();
+    connectionRef.current = null;
     setIsConnected(false);
   }, []);
 
@@ -86,8 +106,6 @@ export function useInvoiceParseStream(): UseInvoiceParseStreamReturn {
       elapsedSeconds: 0,
     }));
 
-    abortControllerRef.current = new AbortController();
-
     try {
       const baseUrl = import.meta.env.VITE_API_URL || '';
       const params = new URLSearchParams({
@@ -95,74 +113,6 @@ export function useInvoiceParseStream(): UseInvoiceParseStreamReturn {
         ...(vendorHint && { vendor_hint: vendorHint }),
       });
       const streamUrl = `${baseUrl}/api/v1/invoices/parse-stream?${params}`;
-
-      const startStreamingRequest = async () => {
-        try {
-          const response = await fetch(streamUrl, {
-            method: 'GET',
-            headers: {
-              'Accept': 'text/event-stream',
-              'Cache-Control': 'no-cache',
-            },
-            credentials: 'include', // Send cookies
-            signal: abortControllerRef.current?.signal,
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-
-          if (!response.body) {
-            throw new Error('No response body for streaming');
-          }
-
-          setIsConnected(true);
-
-          const reader = response.body.getReader();
-          const decoder = new TextDecoder();
-          let currentEventType = '';
-
-          while (true) {
-            const { done, value } = await reader.read();
-            
-            if (done) break;
-
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split('\n');
-
-            for (const line of lines) {
-              if (line.startsWith('event:')) {
-                currentEventType = line.substring(6).trim();
-                continue;
-              }
-
-              if (line.startsWith('data:')) {
-                try {
-                  const data = JSON.parse(line.substring(5).trim());
-                  handleStreamEvent(currentEventType || 'message', data);
-                } catch (e) {
-                  console.warn('Failed to parse SSE data:', line);
-                }
-              }
-            }
-          }
-
-        } catch (error) {
-          if (error instanceof Error && error.name === 'AbortError') {
-            console.log('Parsing request aborted');
-            return;
-          }
-          
-          console.error('Streaming request failed:', error);
-          setState(prev => ({
-            ...prev,
-            status: 'error',
-            error: error instanceof Error ? error.message : 'Parsing failed',
-          }));
-        } finally {
-          setIsConnected(false);
-        }
-      };
 
       const handleStreamEvent = (eventType: string, data: any) => {
         switch (eventType) {
@@ -183,16 +133,18 @@ export function useInvoiceParseStream(): UseInvoiceParseStreamReturn {
             }));
             break;
 
-          case 'parsed_data':
+          case 'parsed_data': {
+            const invoiceData = enhanceInvoiceData(data.invoice_data as InvoiceData);
             setState(prev => ({
               ...prev,
               status: 'validating',
-              invoiceData: data.invoice_data,
+              invoiceData,
               parseMetadata: data.metadata,
               currentStep: 'Validating data...',
               progress: 95,
             }));
             break;
+          }
 
           case 'validation_complete':
             setState(prev => ({
@@ -200,11 +152,13 @@ export function useInvoiceParseStream(): UseInvoiceParseStreamReturn {
               status: 'ready',
               currentStep: 'Invoice ready for review',
               progress: 100,
-              parseMetadata: prev.parseMetadata ? {
-                ...prev.parseMetadata,
-                confidence: data.validation?.confidence || 'medium',
-                corrections_made: data.post_processing?.corrections_made || 0,
-              } : undefined,
+              parseMetadata: prev.parseMetadata
+                ? {
+                    ...prev.parseMetadata,
+                    confidence: data.validation?.confidence || 'medium',
+                    corrections_made: data.post_processing?.corrections_made || 0,
+                  }
+                : undefined,
             }));
             stopParsing();
             break;
@@ -223,7 +177,28 @@ export function useInvoiceParseStream(): UseInvoiceParseStreamReturn {
         }
       };
 
-      startStreamingRequest();
+      const connection = streamSse({
+        url: streamUrl,
+        method: 'GET',
+        credentials: 'include',
+        onOpen: () => setIsConnected(true),
+        onClose: () => setIsConnected(false),
+        onEvent: ({ event, data }) => handleStreamEvent(event, data),
+        onError: (error) => {
+          console.error('Streaming request failed:', error);
+          setState(prev => ({
+            ...prev,
+            status: 'error',
+            error: error.message || 'Parsing failed',
+          }));
+        },
+      });
+
+      connection.finished.finally(() => {
+        connectionRef.current = null;
+      });
+
+      connectionRef.current = connection;
 
     } catch (error) {
       console.error('Failed to start parsing:', error);
@@ -240,13 +215,14 @@ export function useInvoiceParseStream(): UseInvoiceParseStreamReturn {
       if (!prev.invoiceData) return prev;
       
       const newLineItems = [...prev.invoiceData.line_items];
-      newLineItems[index] = { ...newLineItems[index], [field]: value };
+      const updatedItem = { ...newLineItems[index], [field]: value } as LineItem;
       
       // Recalculate extended price if quantity or unit_price changed
       if (field === 'quantity' || field === 'unit_price') {
-        newLineItems[index].extended_price = 
-          newLineItems[index].quantity * newLineItems[index].unit_price;
+        updatedItem.extended_price = updatedItem.quantity * updatedItem.unit_price;
       }
+
+      newLineItems[index] = enhanceLineItem(updatedItem);
       
       // Recalculate totals
       const subtotal = newLineItems.reduce((sum, item) => sum + item.extended_price, 0);
@@ -269,12 +245,12 @@ export function useInvoiceParseStream(): UseInvoiceParseStreamReturn {
     setState(prev => {
       if (!prev.invoiceData) return prev;
       
-      const newItem: LineItem = {
+      const newItem: LineItem = enhanceLineItem({
         description: '',
         quantity: 1,
         unit_price: 0,
         extended_price: 0,
-      };
+      });
       
       return {
         ...prev,
@@ -337,49 +313,15 @@ export function useInvoiceParseStream(): UseInvoiceParseStreamReturn {
     setState(prev => ({ ...prev, status: 'saving' }));
 
     try {
-      const baseUrl = import.meta.env.VITE_API_URL || '';
-      const endpoint = `${baseUrl}/api/v1/invoices/save`;
-      
-      console.log('📤 [SAVE] Sending POST request to:', endpoint);
-      console.log('📦 [SAVE] Payload:', {
-        invoice_number: state.invoiceData.invoice_number,
-        vendor: state.invoiceData.vendor_name,
-        items_count: state.invoiceData.line_items?.length,
-        status: 'reviewed'
-      });
+      const payload: SaveInvoicePayload = {
+        invoice_data: state.invoiceData,
+        parse_metadata: state.parseMetadata,
+        file_url: state.fileUrl,
+        status: 'reviewed',
+      };
 
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Send cookies
-        body: JSON.stringify({
-          invoice_data: state.invoiceData,
-          parse_metadata: state.parseMetadata,
-          file_url: state.fileUrl,
-          status: 'reviewed',
-        }),
-      });
-
-      console.log('📥 [SAVE] Response received:', {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        console.error('❌ [SAVE] Server error:', error);
-        throw new Error(error.detail || 'Failed to save invoice');
-      }
-
-      const result = await response.json();
-      console.log('✅ [SAVE] Save successful:', {
-        invoice_id: result.invoice_id,
-        items_saved: result.items_saved,
-        success: result.success
-      });
+      const result = await saveInvoice(payload);
+      console.log('✅ [SAVE] Save successful:', result);
       
       setState(prev => ({ ...prev, status: 'saved' }));
       

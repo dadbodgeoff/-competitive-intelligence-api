@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, AlertCircle, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -41,6 +41,7 @@ const registerSchema = z
         'Password must contain at least one special character'
       ),
     confirm_password: z.string().min(1, 'Please confirm your password'),
+    invite_token: z.string().optional(),
   })
   .refine((data) => data.password === data.confirm_password, {
     message: "Passwords don't match",
@@ -52,6 +53,12 @@ export function RegisterForm() {
   const { register, isLoading, error, clearError } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [searchParams] = useSearchParams();
+
+  const inviteToken = searchParams.get('token') ?? undefined;
+  const inviteEmail = searchParams.get('email') ?? undefined;
+  const inviteAccountName = searchParams.get('accountName') ?? undefined;
+  const isInviteFlow = Boolean(inviteToken);
 
   const form = useForm<RegisterData>({
     resolver: zodResolver(registerSchema),
@@ -61,13 +68,26 @@ export function RegisterForm() {
       email: '',
       password: '',
       confirm_password: '',
+      invite_token: inviteToken,
     },
   });
+
+  useEffect(() => {
+    if (inviteEmail) {
+      form.setValue('email', inviteEmail);
+    }
+    if (inviteToken) {
+      form.setValue('invite_token', inviteToken);
+    }
+  }, [form, inviteEmail, inviteToken]);
 
   const onSubmit = async (data: RegisterData) => {
     try {
       clearError();
-      await register(data);
+      await register({
+        ...data,
+        invite_token: inviteToken,
+      });
       navigate('/dashboard');
     } catch (error) {
       console.error('Registration error:', error);
@@ -161,6 +181,16 @@ export function RegisterForm() {
             })()}
 
             {/* Google Sign In Button */}
+            {isInviteFlow && (
+              <Alert className="bg-emerald-500/10 border-emerald-500/40 text-emerald-100">
+                <AlertDescription>
+                  {inviteAccountName
+                    ? `You're joining ${inviteAccountName}. Finish creating your login to access the account.`
+                    : 'This invitation will add you to an existing RestaurantIQ account once you finish creating your login.'}
+                </AlertDescription>
+              </Alert>
+            )}
+
             <Button
               type="button"
               variant="outline"
@@ -262,6 +292,7 @@ export function RegisterForm() {
                           placeholder="you@restaurant.com"
                           className="h-11 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20"
                           autoComplete="email"
+                          readOnly={isInviteFlow}
                         />
                       </FormControl>
                       <FormMessage className="text-red-400" />

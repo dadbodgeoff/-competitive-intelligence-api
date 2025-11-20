@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Trash2, Plus, Edit2, Check, X } from 'lucide-react';
+import { formatQuantity, type PackConversionResult } from '@/utils/invoiceUnits';
 
 interface LineItem {
   item_number?: string;
@@ -35,6 +36,11 @@ interface LineItem {
   unit_price: number;
   extended_price: number;
   category?: 'DRY' | 'REFRIGERATED' | 'FROZEN';
+  converted_quantity?: number;
+  converted_unit?: string;
+  per_pack_quantity?: number;
+  per_pack_unit?: string;
+  conversion?: PackConversionResult;
 }
 
 export interface InvoiceReviewTableProps {
@@ -171,14 +177,40 @@ export function InvoiceReviewTable({
                     
                     <TableCell className="text-slate-300 text-sm">
                       {isEditing ? (
-                        <Input
-                          value={editValues.pack_size || ''}
-                          onChange={(e) => setEditValues({ ...editValues, pack_size: e.target.value })}
-                          className="h-8 w-24 input-field"
-                          aria-label="Pack size"
-                        />
+                        <div className="flex flex-col gap-1">
+                          <Input
+                            value={editValues.pack_size || ''}
+                            onChange={(e) => setEditValues({ ...editValues, pack_size: e.target.value })}
+                            className="h-8 w-28 input-field"
+                            aria-label="Pack size"
+                          />
+                          {item.conversion?.hasConversion &&
+                            item.converted_quantity != null &&
+                            item.converted_unit && (
+                              <div className="text-xs text-slate-500 font-mono">
+                                ≈ {formatQuantity(item.converted_quantity, item.converted_unit)}
+                              </div>
+                            )}
+                        </div>
                       ) : (
-                        item.pack_size || '-'
+                        <div className="flex flex-col gap-0.5">
+                          <span>{item.pack_size ? item.pack_size : '-'}</span>
+                          {item.conversion?.hasConversion &&
+                            item.converted_quantity != null &&
+                            item.converted_unit && (
+                              <span className="text-xs text-slate-400 font-mono">
+                                ≈ {formatQuantity(item.converted_quantity, item.converted_unit)}
+                              </span>
+                            )}
+                          {item.conversion?.hasConversion &&
+                            item.per_pack_quantity != null &&
+                            item.per_pack_unit &&
+                            (item.quantity ?? 0) > 1 && (
+                              <span className="text-xs text-slate-500">
+                                {formatQuantity(item.per_pack_quantity, item.per_pack_unit)} per pack
+                              </span>
+                            )}
+                        </div>
                       )}
                     </TableCell>
                     

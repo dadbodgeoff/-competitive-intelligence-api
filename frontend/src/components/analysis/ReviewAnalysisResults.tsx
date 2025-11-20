@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { PageHeading } from '@/components/layout/PageHeading';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { CompetitorsTable } from './CompetitorsTable';
 import { InsightsGridWrapper } from './InsightsGridWrapper';
@@ -17,7 +18,7 @@ import { ReviewEvidenceSection } from './ReviewEvidenceSection';
 import { EvidenceReviewsDisplay } from './EvidenceReviewsDisplay';
 import { ExportButton } from './ExportButton';
 import { PageLoadingSkeleton } from '@/components/ui/LoadingSkeleton';
-import { reviewAnalysisAPI } from '@/services/ReviewAnalysisAPIService';
+import { getReviewAnalysisResults } from '@/services/api/reviewAnalysisApi';
 import {
   MapPin,
   Users,
@@ -64,7 +65,7 @@ export function ReviewAnalysisResults({ analysisId }: ReviewAnalysisResultsProps
   const navigate = useNavigate();
   const { data: analysis, isLoading, error } = useQuery({
     queryKey: ['analysis-results', analysisId],
-    queryFn: () => reviewAnalysisAPI.getReviewAnalysisResults(analysisId),
+    queryFn: () => getReviewAnalysisResults(analysisId),
     retry: 2,
   });
 
@@ -114,9 +115,9 @@ export function ReviewAnalysisResults({ analysisId }: ReviewAnalysisResultsProps
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">
+            <PageHeading className="mb-2">
               {analysis.restaurant_name}
-            </h1>
+            </PageHeading>
             <div className="flex items-center gap-2 text-slate-400 mb-3">
               <MapPin className="h-4 w-4" />
               <span>{analysis.location}</span>

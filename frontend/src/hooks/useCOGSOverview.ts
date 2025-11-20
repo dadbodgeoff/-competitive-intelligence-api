@@ -113,7 +113,7 @@ export function useCOGSOverview() {
           try {
             const recipe = await menuRecipeApi.getRecipe(item.id);
             return { itemId: item.id, recipe };
-          } catch (err) {
+          } catch {
             return { itemId: item.id, recipe: null };
           }
         });

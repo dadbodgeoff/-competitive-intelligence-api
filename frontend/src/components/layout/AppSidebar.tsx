@@ -16,7 +16,11 @@ import {
   LogOut,
   Crown,
   User,
+  Users,
   DollarSign,
+  Truck,
+  Calendar,
+  ClipboardList,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -39,6 +43,7 @@ interface NavItem {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: string;
+  module?: string;
 }
 
 const mainNavItems: NavItem[] = [
@@ -46,6 +51,7 @@ const mainNavItems: NavItem[] = [
     title: 'Dashboard',
     href: '/dashboard',
     icon: Home,
+    module: 'dashboard',
   },
   {
     title: 'Review Analysis',
@@ -56,26 +62,56 @@ const mainNavItems: NavItem[] = [
     title: 'Invoices',
     href: '/invoices',
     icon: FileText,
+    module: 'invoices',
   },
   {
     title: 'Menu Management',
     href: '/menu/dashboard',
     icon: UtensilsCrossed,
+    module: 'menu_management',
   },
   {
     title: 'COGS Tracker',
     href: '/cogs',
     icon: DollarSign,
+    module: 'dashboard',
+  },
+  {
+    title: 'Predictive Ordering',
+    href: '/ordering',
+    icon: Truck,
+    badge: 'NEW',
+    module: 'ordering_predictions',
+  },
+  {
+    title: 'Scheduling',
+    href: '/scheduling',
+    icon: Calendar,
+    module: 'scheduling',
+  },
+  {
+    title: 'Daily Prep',
+    href: '/prep',
+    icon: ClipboardList,
+    module: 'prep',
+  },
+  {
+    title: 'Prep Templates',
+    href: '/prep/templates',
+    icon: ClipboardList,
+    module: 'prep',
   },
   {
     title: 'Menu Comparison',
     href: '/menu-comparison',
     icon: Menu,
+    module: 'menu_comparison',
   },
   {
     title: 'Price Analytics',
     href: '/analytics',
     icon: BarChart3,
+    module: 'pricing_analytics',
   },
 ];
 
@@ -84,11 +120,22 @@ const reportsNavItems: NavItem[] = [
     title: 'Saved Analyses',
     href: '/analysis/saved',
     icon: Search,
+    module: 'dashboard',
   },
   {
     title: 'Saved Comparisons',
     href: '/menu-comparison/saved',
     icon: Menu,
+    module: 'menu_comparison',
+  },
+];
+
+const accountNavItems: NavItem[] = [
+  {
+    title: 'Team & Modules',
+    href: '/settings/team',
+    icon: Users,
+    module: 'dashboard',
   },
 ];
 
@@ -96,6 +143,14 @@ export function AppSidebar() {
   const location = useLocation();
   const { user, logout } = useAuthStore();
   
+  const hasModule = (moduleSlug?: string) => {
+    if (!moduleSlug) return true;
+    if (!user?.module_access) return false;
+    return user.module_access.some(
+      (mod) => mod.module_slug === moduleSlug && mod.can_access
+    );
+  };
+
   const isActive = (href: string) => {
     if (href === '/dashboard') {
       return location.pathname === '/dashboard';
@@ -126,7 +181,9 @@ export function AppSidebar() {
           <SidebarGroupLabel>Main Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainNavItems.map((item) => {
+              {mainNavItems
+                .filter((item) => hasModule(item.module))
+                .map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.href);
                 
@@ -155,7 +212,9 @@ export function AppSidebar() {
           <SidebarGroupLabel>Reports</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {reportsNavItems.map((item) => {
+              {reportsNavItems
+                .filter((item) => hasModule(item.module))
+                .map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.href);
                 
@@ -173,6 +232,32 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* Account */}
+        {hasModule('dashboard') && user?.account_role === 'owner' && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Account</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {accountNavItems.map((item) => {
+                  const Icon = item.icon;
+                  const active = isActive(item.href);
+
+                  return (
+                    <SidebarMenuItem key={item.href}>
+                      <SidebarMenuButton asChild isActive={active}>
+                        <Link to={item.href}>
+                          <Icon className="h-4 w-4" />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
       
       <SidebarFooter className="border-t border-white/10 p-4">

@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Zap, Crown, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface TierSelectorProps {
   value: 'free' | 'premium';
@@ -15,6 +16,7 @@ export function TierSelector({
   onChange,
   userTier,
 }: TierSelectorProps) {
+  const navigate = useNavigate();
   const tiers = [
     {
       id: 'free' as const,
@@ -126,8 +128,7 @@ export function TierSelector({
                       className="text-xs border-amber-500/30 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300"
                       onClick={(e) => {
                         e.stopPropagation();
-                        // TODO: Navigate to upgrade page
-                        console.log('Navigate to upgrade');
+                      navigate('/pricing');
                       }}
                     >
                       <Crown className="h-3 w-3 mr-1" />

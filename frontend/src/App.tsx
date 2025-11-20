@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
+import { AcceptInvitePage } from './pages/AcceptInvitePage';
 import { DashboardPage } from './pages/DashboardPage';
 import { DashboardPageNew } from './pages/DashboardPageNew';
 import { NewAnalysisPage } from './pages/NewAnalysisPage';
@@ -25,6 +26,11 @@ import { PriceAnalyticsDashboard } from './pages/PriceAnalyticsDashboard';
 import { PriceAlertsPage } from './pages/PriceAlertsPage';
 import { SavingsOpportunitiesPage } from './pages/SavingsOpportunitiesPage';
 import { AlertSettingsPage } from './pages/AlertSettingsPage';
+import { OrderingPredictionsPage } from './pages/OrderingPredictionsPage';
+import { TeamSettingsPage } from './pages/TeamSettingsPage';
+import { SchedulingDashboardPage } from './pages/SchedulingDashboardPage';
+import { PrepDashboardPage } from './pages/PrepDashboardPage';
+import { PrepTemplatesPage } from './pages/PrepTemplatesPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { Toaster } from './components/ui/toaster';
 import './App.css';
@@ -51,6 +57,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/accept-invite" element={<AcceptInvitePage />} />
 
           {/* Protected routes */}
           <Route
@@ -186,6 +193,46 @@ function App() {
             element={
               <ProtectedRoute>
                 <SavingsOpportunitiesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ordering"
+            element={
+              <ProtectedRoute>
+                <OrderingPredictionsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings/team"
+            element={
+              <ProtectedRoute>
+                <TeamSettingsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/scheduling"
+            element={
+              <ProtectedRoute>
+                <SchedulingDashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/prep"
+            element={
+              <ProtectedRoute>
+                <PrepDashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/prep/templates"
+            element={
+              <ProtectedRoute>
+                <PrepTemplatesPage />
               </ProtectedRoute>
             }
           />

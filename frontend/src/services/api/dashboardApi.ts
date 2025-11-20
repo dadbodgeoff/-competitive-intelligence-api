@@ -3,7 +3,9 @@
  * Aggregates data from multiple endpoints for dashboard display
  */
 
-import { apiClient } from './client';
+import { apiClient, safeRequest } from './client';
+import { parseResponse } from './validation';
+import { z } from 'zod';
 
 export interface DashboardKPIData {
   negativeAlerts: number;
@@ -40,18 +42,132 @@ export interface SavingsOpportunity {
   savings_percent: number;
 }
 
+const anomaliesSchema = z
+  .object({
+    anomalies: z
+      .array(
+        z
+          .object({
+            description: z.string().optional(),
+            last_paid_vendor: z.string().optional(),
+            last_paid_price: z.number().optional(),
+            last_paid_date: z.string().optional(),
+            price_change_7day_percent: z.number().optional(),
+            price_change_28day_percent: z.number().optional(),
+          })
+          .passthrough()
+      )
+      .optional(),
+    total_anomalies: z.number().optional(),
+    success: z.boolean().optional(),
+  })
+  .passthrough();
+
+const opportunitiesSchema = z
+  .object({
+    opportunities: z
+      .array(
+        z
+          .object({
+            item_description: z.string().optional(),
+            current_vendor: z.string().optional(),
+            current_price: z.number().optional(),
+            cheaper_vendor: z.string().optional(),
+            cheaper_price: z.number().optional(),
+            potential_savings: z.number().optional(),
+            savings_percent: z.number().optional(),
+          })
+          .passthrough()
+      )
+      .optional(),
+    total_opportunities: z.number().optional(),
+    success: z.boolean().optional(),
+  })
+  .passthrough();
+
+const invoiceListSchema = z
+  .object({
+    success: z.boolean().optional(),
+    data: z.array(z.record(z.any())).optional(),
+    pagination: z.object({
+      total_count: z.number(),
+      page: z.number().optional(),
+      per_page: z.number().optional(),
+      total_pages: z.number().optional(),
+      has_next: z.boolean().optional(),
+      has_prev: z.boolean().optional(),
+    }),
+  })
+  .passthrough();
+
+const menuListSchema = z
+  .object({
+    success: z.boolean().optional(),
+    data: z
+      .array(
+        z
+          .object({
+            parse_metadata: z
+              .union([z.record(z.any()), z.null()])
+              .optional(),
+            items_saved: z.number().optional(),
+            items_count: z.number().optional(),
+          })
+          .passthrough()
+      )
+      .optional(),
+    pagination: z
+      .object({
+        total_count: z.number().optional(),
+        page: z.number().optional(),
+        per_page: z.number().optional(),
+        total_pages: z.number().optional(),
+        has_next: z.boolean().optional(),
+        has_prev: z.boolean().optional(),
+      })
+      .optional(),
+  })
+  .passthrough();
+
+const itemsListSchema = z
+  .object({
+    items: z
+      .array(
+        z
+          .object({
+            description: z.string().optional(),
+            last_paid_vendor: z.string().optional(),
+            last_paid_price: z.number().optional(),
+            last_paid_date: z.string().optional(),
+            price_change_7day_percent: z.number().optional(),
+            price_change_28day_percent: z.number().optional(),
+          })
+          .passthrough()
+      )
+      .optional(),
+    total_items: z.number().optional(),
+    success: z.boolean().optional(),
+  })
+  .passthrough();
+
 export const dashboardApi = {
   /**
    * Get count of negative price alerts (anomalies)
    */
   async getNegativeAlertsCount(): Promise<number> {
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/analytics/price-anomalies', {
+        params: { days_back: 30, min_change_percent: 10 },
+      })
+    );
     try {
-      const response = await apiClient.get(
-        '/api/v1/analytics/price-anomalies?days_back=30&min_change_percent=10'
-      );
-      return response.data?.anomalies?.length || 0;
+      const parsed = parseResponse(result, anomaliesSchema, 'Failed to fetch negative alerts');
+      if (typeof parsed.total_anomalies === 'number') {
+        return parsed.total_anomalies;
+      }
+      return parsed.anomalies?.length ?? 0;
     } catch (error) {
-      console.error('Failed to fetch negative alerts:', error);
+      console.error('Failed to parse negative alerts response', error);
       return 0;
     }
   },
@@ -60,13 +176,26 @@ export const dashboardApi = {
    * Get negative alerts details
    */
   async getNegativeAlerts(): Promise<PriceAnomaly[]> {
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/analytics/price-anomalies', {
+        params: { days_back: 30, min_change_percent: 10 },
+      })
+    );
     try {
-      const response = await apiClient.get(
-        '/api/v1/analytics/price-anomalies?days_back=30&min_change_percent=10'
-      );
-      return response.data?.anomalies || [];
+      const parsed = parseResponse(result, anomaliesSchema, 'Failed to fetch negative alerts');
+    return (
+      parsed.anomalies?.map((item) => ({
+        item_description: item.description ?? 'Unknown Item',
+        old_price: 0,
+        new_price: item.last_paid_price ?? 0,
+        change_percent:
+          item.price_change_7day_percent ?? item.price_change_28day_percent ?? 0,
+        vendor_name: item.last_paid_vendor ?? 'Unknown Vendor',
+        date: item.last_paid_date ?? new Date().toISOString(),
+      })) ?? []
+    );
     } catch (error) {
-      console.error('Failed to fetch negative alerts:', error);
+      console.error('Failed to parse negative alerts response', error);
       return [];
     }
   },
@@ -75,13 +204,19 @@ export const dashboardApi = {
    * Get count of positive alerts (savings opportunities)
    */
   async getPositiveAlertsCount(): Promise<number> {
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/analytics/savings-opportunities', {
+        params: { min_savings_percent: 5, days_back: 30 },
+      })
+    );
     try {
-      const response = await apiClient.get(
-        '/api/v1/analytics/savings-opportunities?min_savings_percent=5&days_back=30'
-      );
-      return response.data?.opportunities?.length || 0;
+      const parsed = parseResponse(result, opportunitiesSchema, 'Failed to fetch savings opportunities');
+      if (typeof parsed.total_opportunities === 'number') {
+        return parsed.total_opportunities;
+      }
+      return parsed.opportunities?.length ?? 0;
     } catch (error) {
-      console.error('Failed to fetch positive alerts:', error);
+      console.error('Failed to parse positive alerts response', error);
       return 0;
     }
   },
@@ -90,13 +225,26 @@ export const dashboardApi = {
    * Get positive alerts details
    */
   async getPositiveAlerts(): Promise<SavingsOpportunity[]> {
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/analytics/savings-opportunities', {
+        params: { min_savings_percent: 5, days_back: 30 },
+      })
+    );
     try {
-      const response = await apiClient.get(
-        '/api/v1/analytics/savings-opportunities?min_savings_percent=5&days_back=30'
-      );
-      return response.data?.opportunities || [];
+      const parsed = parseResponse(result, opportunitiesSchema, 'Failed to fetch savings opportunities');
+    return (
+      parsed.opportunities?.map((item) => ({
+        item_description: item.item_description ?? 'Unknown Item',
+        current_vendor: item.current_vendor ?? 'Unknown Vendor',
+        current_price: item.current_price ?? 0,
+        cheaper_vendor: item.cheaper_vendor ?? 'Unknown Vendor',
+        cheaper_price: item.cheaper_price ?? 0,
+        potential_savings: item.potential_savings ?? 0,
+        savings_percent: item.savings_percent ?? 0,
+      })) ?? []
+    );
     } catch (error) {
-      console.error('Failed to fetch positive alerts:', error);
+      console.error('Failed to parse positive alerts response', error);
       return [];
     }
   },
@@ -105,14 +253,19 @@ export const dashboardApi = {
    * Get count of recent invoices (last 7 days)
    */
   async getRecentInvoicesCount(): Promise<number> {
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/invoices', {
+        params: { page: 1, per_page: 10 },
+      })
+    );
     try {
-      // Only fetch first page with minimal data to get total count
-      const response = await apiClient.get('/api/v1/invoices?page=1&per_page=10');
-      
-      // Use pagination metadata for total count
-      return response.data?.pagination?.total_count || 0;
+      const parsed = parseResponse(result, invoiceListSchema, 'Failed to fetch invoices');
+      if (parsed.pagination?.total_count !== undefined) {
+        return parsed.pagination.total_count;
+      }
+      return Array.isArray(parsed.data) ? parsed.data.length : 0;
     } catch (error) {
-      console.error('Failed to fetch recent invoices:', error);
+      console.error('Failed to parse invoices pagination response', error);
       return 0;
     }
   },
@@ -121,20 +274,41 @@ export const dashboardApi = {
    * Get count of menu items
    */
   async getMenuItemsCount(): Promise<number> {
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/menu/list', {
+        params: { page: 1, per_page: 10 },
+      })
+    );
     try {
-      // Only fetch first page with minimal data to get total count
-      const response = await apiClient.get('/api/v1/menu/list?page=1&per_page=10');
-      const menus = response.data?.data || [];
-      
-      // Count total menu items across all menus
-      let totalItems = 0;
-      for (const menu of menus) {
-        totalItems += menu.item_count || 0;
+      const parsed = parseResponse(result, menuListSchema, 'Failed to fetch menus');
+      const menus = parsed.data ?? [];
+
+      const derivedCount = menus.reduce((total, menu) => {
+        const metadata = menu.parse_metadata as
+          | { items_saved?: number; items_count?: number; total_items?: number }
+          | null
+          | undefined;
+        const menuLevelCount =
+          menu.items_count ??
+          menu.items_saved ??
+          (metadata && (metadata.items_saved ?? metadata.items_count ?? metadata.total_items));
+        if (typeof menuLevelCount === 'number' && Number.isFinite(menuLevelCount)) {
+          return total + menuLevelCount;
+        }
+        return total;
+      }, 0);
+
+      if (derivedCount > 0) {
+        return derivedCount;
       }
-      
-      return totalItems;
+
+      if (parsed.pagination?.total_count !== undefined) {
+        return parsed.pagination.total_count;
+      }
+
+      return menus.length;
     } catch (error) {
-      console.error('Failed to fetch menu items:', error);
+      console.error('Failed to parse menu list response', error);
       return 0;
     }
   },
@@ -166,52 +340,47 @@ export const dashboardApi = {
     page: number = 0,
     limit: number = 10
   ): Promise<{ items: RecentlyOrderedItem[]; total: number }> {
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/analytics/items-list', {
+        params: { days_back: 90 },
+      })
+    );
+    let allItems: z.infer<typeof itemsListSchema>['items'];
     try {
-      const response = await apiClient.get(
-        `/api/v1/analytics/items-list?days_back=90`
-      );
-      
-      const allItems = response.data?.items || [];
-      
-      // Sort by most recent first
-      const sortedItems = allItems.sort((a: any, b: any) => {
-        const dateA = new Date(a.last_paid_date || 0);
-        const dateB = new Date(b.last_paid_date || 0);
-        return dateB.getTime() - dateA.getTime();
-      });
-
-      // Map to our interface - using the correct field names from the API
-      const mappedItems: RecentlyOrderedItem[] = sortedItems.map((item: any) => {
-        // Determine trend based on price changes
-        let trend: 'up' | 'down' | 'stable' = 'stable';
-        const priceChange = item.price_change_7day_percent || item.price_change_28day_percent;
-        if (priceChange) {
-          if (priceChange > 5) trend = 'up';
-          else if (priceChange < -5) trend = 'down';
-        }
-
-        return {
-          item_description: item.description || 'Unknown Item',
-          vendor_name: item.last_paid_vendor || 'Unknown Vendor',
-          last_price: item.last_paid_price || 0,
-          last_ordered: item.last_paid_date || new Date().toISOString(),
-          trend,
-          price_change_percent: priceChange || 0,
-        };
-      });
-
-      // Paginate
-      const start = page * limit;
-      const end = start + limit;
-      const paginatedItems = mappedItems.slice(start, end);
-
-      return {
-        items: paginatedItems,
-        total: mappedItems.length,
-      };
+      const parsed = parseResponse(result, itemsListSchema, 'Failed to fetch recently ordered items');
+      allItems = parsed.items ?? [];
     } catch (error) {
-      console.error('Failed to fetch recently ordered items:', error);
+      console.error('Failed to parse items list response', error);
       return { items: [], total: 0 };
     }
+
+    const sortedItems = (allItems ?? []).sort((a, b) => {
+      const dateA = new Date(a.last_paid_date ?? 0);
+      const dateB = new Date(b.last_paid_date ?? 0);
+      return dateB.getTime() - dateA.getTime();
+    });
+
+    const mappedItems: RecentlyOrderedItem[] = sortedItems.map((item) => {
+      let trend: 'up' | 'down' | 'stable' = 'stable';
+      const priceChange = item.price_change_7day_percent ?? item.price_change_28day_percent;
+      if (priceChange !== undefined && priceChange !== null) {
+        if (priceChange > 5) trend = 'up';
+        else if (priceChange < -5) trend = 'down';
+      }
+
+      return {
+        item_description: item.description ?? 'Unknown Item',
+        vendor_name: item.last_paid_vendor ?? 'Unknown Vendor',
+        last_price: item.last_paid_price ?? 0,
+        last_ordered: item.last_paid_date ?? new Date().toISOString(),
+        trend,
+        price_change_percent: priceChange ?? 0,
+      };
+    });
+
+    const start = page * limit;
+    const pagedItems = mappedItems.slice(start, start + limit);
+
+    return { items: pagedItems, total: mappedItems.length };
   },
 };

@@ -23,6 +23,9 @@ import {
   Loader2,
   AlertCircle,
   CheckCircle2,
+  Calendar,
+  ClipboardList,
+  Users,
 } from 'lucide-react';
 import { useUsageSummary } from '@/hooks/useUsageLimits';
 
@@ -60,7 +63,7 @@ export function DashboardPage() {
           <h2 className="text-xl md:text-2xl font-bold text-white mb-6">
             Quick Actions
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {/* Start Analysis */}
             <ActionCard
               icon={<Search className="h-6 w-6" />}
@@ -103,6 +106,39 @@ export function DashboardPage() {
               buttonIcon={<BarChart3 className="h-4 w-4 mr-2" />}
               linkTo="/analytics"
               colorClass="purple"
+            />
+
+            {/* Scheduling */}
+            <ActionCard
+              icon={<Calendar className="h-6 w-6" />}
+              title="Scheduling"
+              description="Build and manage shift schedules for your team"
+              buttonText="Open Scheduling"
+              buttonIcon={<Calendar className="h-4 w-4 mr-2" />}
+              linkTo="/scheduling"
+              colorClass="sky"
+            />
+
+            {/* Daily Prep */}
+            <ActionCard
+              icon={<ClipboardList className="h-6 w-6" />}
+              title="Daily Prep"
+              description="Plan tomorrow's prep work and assign tasks"
+              buttonText="Open Prep Dashboard"
+              buttonIcon={<ClipboardList className="h-4 w-4 mr-2" />}
+              linkTo="/prep"
+              colorClass="emerald"
+            />
+
+            {/* Prep Templates */}
+            <ActionCard
+              icon={<ClipboardList className="h-6 w-6" />}
+              title="Prep Templates"
+              description="Design reusable prep lists for every daypart"
+              buttonText="Manage Templates"
+              buttonIcon={<ClipboardList className="h-4 w-4 mr-2" />}
+              linkTo="/prep/templates"
+              colorClass="cyan"
             />
           </div>
         </section>
@@ -176,6 +212,31 @@ export function DashboardPage() {
             <div className="md:col-span-2 lg:col-span-1">
               <UserProfile />
             </div>
+
+            {/* Team & Modules */}
+            <Card className="bg-card-dark border-white/10 hover:border-emerald-500/50 transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/10">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
+                    <Users className="h-5 w-5" />
+                  </div>
+                  <CardTitle className="text-white text-lg">
+                    Team &amp; Modules
+                  </CardTitle>
+                </div>
+                <CardDescription className="text-slate-400 text-sm">
+                  Manage teammates, access levels, and module availability
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Link to="/settings/team">
+                  <Button className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white">
+                    <Users className="h-4 w-4 mr-2" />
+                    Manage Team
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
           </div>
         </section>
     </AppShell>

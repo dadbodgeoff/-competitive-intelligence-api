@@ -3,23 +3,40 @@
  * Handles all price analytics and vendor comparison API calls
  */
 
-import { apiClient } from './client';
+import { apiClient, safeRequest } from './client';
+import {
+  dashboardSummaryResponseSchema,
+  itemPurchaseHistoryResponseSchema,
+  itemsListResponseSchema,
+  priceAnomaliesResponseSchema,
+  priceComparisonResponseSchema,
+  priceTrendsResponseSchema,
+  savingsOpportunitiesResponseSchema,
+  vendorPerformanceResponseSchema,
+} from './schemas';
+import { parseResponse } from './validation';
 import type {
-  SavingsOpportunitiesResponse,
-  PriceAnomaliesResponse,
-  VendorPerformanceResponse,
   DashboardSummaryResponse,
+  ItemPurchaseHistoryResponse,
+  ItemsListResponse,
+  PriceAnomaliesResponse,
+  PriceComparisonResponse,
+  PriceTrendsResponse,
+  SavingsOpportunitiesResponse,
+  VendorPerformanceResponse,
 } from '@/types/analytics';
 
 export const analyticsApi = {
   /**
    * Get list of all items with price tracking metrics
    */
-  async getItemsList(daysBack = 90): Promise<any> {
-    const response = await apiClient.get(
-      `/api/v1/analytics/items-list?days_back=${daysBack}`
+  async getItemsList(daysBack = 90): Promise<ItemsListResponse> {
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/analytics/items-list', {
+        params: { days_back: daysBack },
+      })
     );
-    return response.data;
+    return parseResponse(result, itemsListResponseSchema, 'Failed to fetch items list');
   },
 
   /**
@@ -28,21 +45,31 @@ export const analyticsApi = {
   async getPriceComparison(
     itemDescription: string,
     daysBack = 90
-  ): Promise<any> {
-    const response = await apiClient.get(
-      `/api/v1/analytics/price-comparison?item_description=${encodeURIComponent(itemDescription)}&days_back=${daysBack}`
+  ): Promise<PriceComparisonResponse> {
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/analytics/price-comparison', {
+        params: {
+          item_description: itemDescription,
+          days_back: daysBack,
+        },
+      })
     );
-    return response.data;
+    return parseResponse(result, priceComparisonResponseSchema, 'Failed to fetch price comparison');
   },
 
   /**
    * Get price trends for charting (by description)
    */
-  async getPriceTrends(itemDescription: string, days = 90): Promise<any> {
-    const response = await apiClient.get(
-      `/api/v1/analytics/price-trends?item_description=${encodeURIComponent(itemDescription)}&days=${days}`
+  async getPriceTrends(itemDescription: string, days = 90): Promise<PriceTrendsResponse> {
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/analytics/price-trends', {
+        params: {
+          item_description: itemDescription,
+          days,
+        },
+      })
     );
-    return response.data;
+    return parseResponse(result, priceTrendsResponseSchema, 'Failed to fetch price trends');
   },
 
   /**
@@ -52,10 +79,15 @@ export const analyticsApi = {
     minSavingsPercent = 5.0,
     daysBack = 90
   ): Promise<SavingsOpportunitiesResponse> {
-    const response = await apiClient.get(
-      `/api/v1/analytics/savings-opportunities?min_savings_percent=${minSavingsPercent}&days_back=${daysBack}`
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/analytics/savings-opportunities', {
+        params: {
+          min_savings_percent: minSavingsPercent,
+          days_back: daysBack,
+        },
+      })
     );
-    return response.data;
+    return parseResponse(result, savingsOpportunitiesResponseSchema, 'Failed to fetch savings opportunities');
   },
 
   /**
@@ -65,10 +97,15 @@ export const analyticsApi = {
     vendorName: string,
     daysBack = 90
   ): Promise<VendorPerformanceResponse> {
-    const response = await apiClient.get(
-      `/api/v1/analytics/vendor-performance?vendor_name=${encodeURIComponent(vendorName)}&days_back=${daysBack}`
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/analytics/vendor-performance', {
+        params: {
+          vendor_name: vendorName,
+          days_back: daysBack,
+        },
+      })
     );
-    return response.data;
+    return parseResponse(result, vendorPerformanceResponseSchema, 'Failed to fetch vendor performance');
   },
 
   /**
@@ -78,29 +115,38 @@ export const analyticsApi = {
     daysBack = 90,
     minChangePercent = 20.0
   ): Promise<PriceAnomaliesResponse> {
-    const response = await apiClient.get(
-      `/api/v1/analytics/price-anomalies?days_back=${daysBack}&min_change_percent=${minChangePercent}`
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/analytics/price-anomalies', {
+        params: {
+          days_back: daysBack,
+          min_change_percent: minChangePercent,
+        },
+      })
     );
-    return response.data;
+    return parseResponse(result, priceAnomaliesResponseSchema, 'Failed to fetch price anomalies');
   },
 
   /**
    * Get dashboard summary metrics
    */
   async getDashboardSummary(daysBack = 90): Promise<DashboardSummaryResponse> {
-    const response = await apiClient.get(
-      `/api/v1/analytics/dashboard-summary?days_back=${daysBack}`
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/analytics/dashboard-summary', {
+        params: { days_back: daysBack },
+      })
     );
-    return response.data;
+    return parseResponse(result, dashboardSummaryResponseSchema, 'Failed to fetch dashboard summary');
   },
 
   /**
    * Get purchase history for a specific item
    */
-  async getItemPurchaseHistory(itemDescription: string): Promise<any> {
-    const response = await apiClient.get(
-      `/api/v1/analytics/item-history?item_description=${encodeURIComponent(itemDescription)}`
+  async getItemPurchaseHistory(itemDescription: string): Promise<ItemPurchaseHistoryResponse> {
+    const result = await safeRequest<unknown>(() =>
+      apiClient.get('/api/v1/analytics/item-history', {
+        params: { item_description: itemDescription },
+      })
     );
-    return response.data;
+    return parseResponse(result, itemPurchaseHistoryResponseSchema, 'Failed to fetch item history');
   },
 };

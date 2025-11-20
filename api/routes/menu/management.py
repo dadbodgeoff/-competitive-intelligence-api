@@ -3,6 +3,8 @@ Menu Management Routes
 Handles save, list, get, delete operations
 Pattern: Follows api/routes/invoices/management.py
 """
+import asyncio
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
 from typing import Optional
@@ -13,6 +15,7 @@ import time
 from services.menu_storage_service import MenuStorageService
 from services.menu_validator_service import MenuValidatorService
 from api.middleware.auth import get_current_user
+from services.demo_seed_service import demo_seed_service
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/menu", tags=["menu-operations"])
@@ -97,6 +100,13 @@ async def save_menu(
         )
         
         logger.info(f"✅ Menu {menu_id} saved successfully in {save_time:.2f}s")
+
+        try:
+            asyncio.get_running_loop().create_task(
+                asyncio.to_thread(demo_seed_service.mark_seed_consumed, current_user)
+            )
+        except RuntimeError:
+            demo_seed_service.mark_seed_consumed(current_user)
         
         return JSONResponse({
             "success": True,

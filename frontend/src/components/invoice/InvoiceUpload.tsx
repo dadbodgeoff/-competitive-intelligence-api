@@ -15,6 +15,7 @@ import { useDropzone } from 'react-dropzone';
 import { cn } from '@/design-system';
 import { useUsageLimit } from '@/hooks/useUsageLimits';
 import { UsageLimitWarning, UsageCounter } from '@/components/common/UsageLimitWarning';
+import { PageHeading } from '@/components/layout/PageHeading';
 import {
   InvoiceCard,
   InvoiceCardHeader,
@@ -37,6 +38,7 @@ import {
   X,
   Loader2,
 } from 'lucide-react';
+import { uploadInvoiceFile } from '@/services/api/invoicesApi';
 
 export interface InvoiceUploadProps {
   onSuccess?: (invoiceId: string) => void;
@@ -62,32 +64,13 @@ export function InvoiceUpload({ onSuccess, className }: InvoiceUploadProps) {
   } = useInvoiceParseStream();
 
   // Check upload limit using centralized hook
-  const { limit: uploadLimit, loading: _checkingLimit, isBlocked } = useUsageLimit('invoice_upload');
+  const { limit: uploadLimit, isBlocked } = useUsageLimit('invoice_upload');
 
   const uploadFile = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append('file', file);
 
-    const baseUrl = import.meta.env.VITE_API_URL || '';
-    const response = await fetch(`${baseUrl}/api/v1/invoices/upload`, {
-      method: 'POST',
-      credentials: 'include', // Send cookies
-      body: formData,
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      
-      // Handle usage limit errors specially
-      if (response.status === 429) {
-        const limitError = error.detail || error;
-        throw new Error(limitError.message || 'Usage limit exceeded');
-      }
-      
-      throw new Error(error.detail || 'Upload failed');
-    }
-
-    const result = await response.json();
+    const result = await uploadInvoiceFile(formData);
     return result.file_url;
   };
 
@@ -189,7 +172,7 @@ export function InvoiceUpload({ onSuccess, className }: InvoiceUploadProps) {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Upload Invoice</h1>
+            <PageHeading>Upload Invoice</PageHeading>
             <p className="text-slate-400">
               Upload your invoice and we'll extract the data automatically
             </p>

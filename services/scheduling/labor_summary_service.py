@@ -70,7 +70,10 @@ class LaborSummaryService:
             "updated_at": datetime.utcnow().isoformat(),
         }
 
-        self.client.table("scheduling_labor_day_summary").upsert(payload).execute()
+        self.client.table("scheduling_labor_day_summary").upsert(
+            payload,
+            on_conflict="account_id,day_id",
+        ).execute()
 
     def recompute_week(self, week_id: str) -> None:
         week = (
@@ -112,7 +115,10 @@ class LaborSummaryService:
             "updated_at": datetime.utcnow().isoformat(),
         }
 
-        self.client.table("scheduling_labor_week_summary").upsert(payload).execute()
+        self.client.table("scheduling_labor_week_summary").upsert(
+            payload,
+            on_conflict="account_id,week_id",
+        ).execute()
 
     def get_week_totals(self, week_id: str) -> Dict:
         week_record = (

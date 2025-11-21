@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   fetchAccountSummary,
@@ -21,11 +20,6 @@ export function TeamSettingsPage() {
   const { user } = useAuthStore();
   const isOwner = user?.account_role === 'owner';
 
-  const [inviteEmail, setInviteEmail] = useState('');
-  const [inviteRole, setInviteRole] = useState<'owner' | 'admin' | 'member'>('member');
-  const [pin, setPinValue] = useState('');
-  const [pinConfirm, setPinConfirm] = useState('');
-
   const { data, isLoading, isError } = useQuery({
     queryKey: ['account-summary'],
     queryFn: fetchAccountSummary,
@@ -34,8 +28,6 @@ export function TeamSettingsPage() {
   const clockPinMutation = useMutation({
     mutationFn: (pinCode: string) => setClockPin(pinCode),
     onSuccess: () => {
-      setPinValue('');
-      setPinConfirm('');
       queryClient.invalidateQueries({ queryKey: ['account-summary'] });
       toast({
         title: 'PIN updated',
@@ -92,8 +84,6 @@ export function TeamSettingsPage() {
   const inviteMutation = useMutation({
     mutationFn: (payload: { email: string; role: 'owner' | 'admin' | 'member' }) => inviteAccountMember(payload),
     onSuccess: () => {
-      setInviteEmail('');
-      setInviteRole('member');
       queryClient.invalidateQueries({ queryKey: ['account-summary'] });
       toast({
         title: 'Invitation sent',

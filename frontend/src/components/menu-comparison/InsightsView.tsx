@@ -1,27 +1,21 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { AlertCircle } from 'lucide-react'
-
-interface Insight {
-  id: string
-  title: string
-  description?: string
-  insight_type?: string
-  priority?: number
-  confidence?: string
-  user_item_name?: string
-  user_item_price?: number
-  competitor_item_name?: string
-  competitor_item_price?: number
-  competitor_business_name?: string
-  price_difference?: number
-  price_difference_percent?: number
-  evidence?: string[]
-  completion_note?: string
-}
+import type { ComparisonInsight } from '@/types/menuComparison'
 
 interface InsightsViewProps {
-  insights: Insight[]
+  insights: ComparisonInsight[]
+}
+
+function toEvidenceList(evidence?: ComparisonInsight['evidence']): string[] {
+  if (!evidence) return []
+  if (Array.isArray(evidence)) {
+    return evidence.map((entry) => String(entry))
+  }
+  if (typeof evidence === 'object') {
+    return Object.entries(evidence).map(([key, value]) => `${key}: ${String(value)}`)
+  }
+  return [String(evidence)]
 }
 
 export function InsightsView({ insights }: InsightsViewProps) {
@@ -41,7 +35,7 @@ export function InsightsView({ insights }: InsightsViewProps) {
     if (!acc[type]) acc[type] = []
     acc[type].push(insight)
     return acc
-  }, {} as Record<string, Insight[]>)
+  }, {} as Record<string, ComparisonInsight[]>)
 
   return (
     <div className="space-y-6">
@@ -116,11 +110,11 @@ export function InsightsView({ insights }: InsightsViewProps) {
                     </div>
                   )}
 
-                  {insight.evidence && insight.evidence.length > 0 && (
+                  {toEvidenceList(insight.evidence).length > 0 && (
                     <div className="mt-4 pt-4 border-t border-white/5">
                       <div className="text-xs text-slate-500 mb-2">Evidence:</div>
                       <ul className="space-y-1">
-                        {insight.evidence.map((entry, idx) => (
+                        {toEvidenceList(insight.evidence).map((entry, idx) => (
                           <li key={idx} className="text-sm text-slate-400 flex items-start gap-2">
                             <span className="text-emerald-400 mt-1">•</span>
                             <span>{entry}</span>

@@ -10,6 +10,8 @@ from zoneinfo import ZoneInfo
 from database.supabase_client import get_supabase_service_client
 from services.account_service import AccountService
 from services.scheduling.labor_summary_service import LaborSummaryService
+from services.scheduling.week_service import SchedulingWeekService
+from services.scheduling.shift_service import SchedulingShiftService
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +27,8 @@ class ClockService:
         self.client = get_supabase_service_client()
         self.account_service = AccountService()
         self.summary_service = LaborSummaryService(account_id=account_id)
+        self.week_service = SchedulingWeekService(account_id)
+        self.shift_service = SchedulingShiftService(account_id)
         self._tzinfo: Optional[ZoneInfo] = None
 
     # ------------------------------------------------------------------#
@@ -159,7 +163,8 @@ class ClockService:
 
         shift_ids = [row["shift_id"] for row in assignments if row.get("shift_id")]
         if not shift_ids:
-            raise ValueError("No scheduled shifts assigned to this member")
+            logger.info("No scheduled shifts assigned to user %s; creating ad-hoc shift", member_user_id)
+            return self._create_ad_hoc_shift(member_user_id)
 
         shifts = (
             self.client.table("scheduling_shifts")
@@ -223,7 +228,8 @@ class ClockService:
 
         chosen = best_active[1] if best_active else (best_upcoming[1] if best_upcoming else None)
         if not chosen:
-            raise ValueError("No eligible shift found for this member right now")
+            logger.info("No eligible scheduled shift window for user %s; creating ad-hoc shift", member_user_id)
+            return self._create_ad_hoc_shift(member_user_id)
         return chosen["id"]
 
     # ------------------------------------------------------------------#
@@ -297,6 +303,86 @@ class ClockService:
             rate_type=payload.get("rate_type", "hourly"),
             currency=payload.get("currency", "USD"),
         )
+
+    def _ensure_day_for_date(self, schedule_date: date) -> Tuple[str, str]:
+        """Ensure there is a scheduling day for the given date and return (week_id, day_id)."""
+        day_result = (
+            self.client.table("scheduling_days")
+            .select("id, week_id")
+            .eq("account_id", self.account_id)
+            .eq("schedule_date", schedule_date.isoformat())
+            .limit(1)
+            .execute()
+        )
+        if day_result.data:
+            row = day_result.data[0]
+            return row["week_id"], row["id"]
+
+        week_start = schedule_date - timedelta(days=schedule_date.weekday())
+        week_result = (
+            self.client.table("scheduling_weeks")
+            .select("id")
+            .eq("account_id", self.account_id)
+            .eq("week_start_date", week_start.isoformat())
+            .limit(1)
+            .execute()
+        )
+        if week_result.data:
+            week_id = week_result.data[0]["id"]
+        else:
+            week = self.week_service.create_week(week_start_date=week_start)
+            week_id = week["id"]
+
+        # After ensuring the week, try fetching (it may have been created by create_week)
+        day_result = (
+            self.client.table("scheduling_days")
+            .select("id, week_id")
+            .eq("account_id", self.account_id)
+            .eq("schedule_date", schedule_date.isoformat())
+            .limit(1)
+            .execute()
+        )
+        if day_result.data:
+            row = day_result.data[0]
+            return row["week_id"], row["id"]
+
+        insert_result = (
+            self.client.table("scheduling_days")
+            .insert(
+                {
+                    "account_id": self.account_id,
+                    "week_id": week_id,
+                    "schedule_date": schedule_date.isoformat(),
+                    "created_at": datetime.utcnow().isoformat(),
+                }
+            )
+            .execute()
+        )
+        day = insert_result.data[0]
+        return day["week_id"], day["id"]
+
+    def _create_ad_hoc_shift(self, member_user_id: str) -> str:
+        """Create a same-day ad-hoc shift so unscheduled members can clock in."""
+        tzinfo = self._get_timezone()
+        now_local = datetime.now(tzinfo)
+        schedule_date = now_local.date()
+        week_id, day_id = self._ensure_day_for_date(schedule_date)
+
+        start_time = (now_local - timedelta(minutes=5)).time().strftime("%H:%M:%S")
+        end_time = (now_local + timedelta(hours=8)).time().strftime("%H:%M:%S")
+
+        shift = self.shift_service.create_shift(
+            day_id=day_id,
+            week_id=week_id,
+            shift_type="unscheduled",
+            start_time=start_time,
+            end_time=end_time,
+            role_label="Unscheduled",
+            notes="Auto-created from PIN clock-in",
+            assigned_member_id=member_user_id,
+        )
+        logger.info("Created ad-hoc shift %s for user %s on %s", shift["id"], member_user_id, schedule_date)
+        return shift["id"]
 
     @staticmethod
     def _calculate_cost_cents(rate_cents: int, rate_type: Optional[str], paid_minutes: int) -> int:

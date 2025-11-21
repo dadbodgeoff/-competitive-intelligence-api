@@ -254,14 +254,17 @@ async def get_invoice(
     
     Returns invoice header, all line items, and parse metadata
     """
+    current_user = auth.id
+    account_id = auth.account_id
+
     logger.info(f"📥 [GET_INVOICE] Request for invoice_id={invoice_id}, user={current_user}")
     
     try:
         logger.info(f"🔍 [GET_INVOICE] Calling storage_service.get_invoice...")
         invoice = await storage_service.get_invoice(
             invoice_id=invoice_id,
-            user_id=auth.id,
-            account_id=auth.account_id
+            user_id=current_user,
+            account_id=account_id
         )
         
         logger.info(f"📦 [GET_INVOICE] Storage service returned: {invoice is not None}")

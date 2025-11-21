@@ -1,7 +1,8 @@
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, status, Response, Request, BackgroundTasks
-from typing import TYPE_CHECKING
+import asyncio
 import logging
+from typing import TYPE_CHECKING
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Request, BackgroundTasks
 from api.schemas.auth_schemas import (
     UserRegister, UserLogin, UserResponse, TokenResponse, RefreshTokenRequest
 )
@@ -100,19 +101,38 @@ async def register_user(
             # Create an account and assign ownership
             account_name = (f"{user_data.first_name or ''} {user_data.last_name or ''}").strip() or user.email.split("@")[0]
             logger.info("🔵 Creating tenant account for new owner: %s", account_name)
-            account_result = service_client.rpc(
-                "create_account_with_owner",
-                {
-                    "p_owner_user_id": user_id,
-                    "p_account_name": account_name
-                }
-            ).execute()
-            account_id = account_result.data if isinstance(account_result.data, str) else None
-            if not account_id and isinstance(account_result.data, list) and account_result.data:
-                account_id = account_result.data[0]
+
+            account_result = None
+            account_creation_error = None
+            for attempt in range(3):
+                try:
+                    account_result = service_client.rpc(
+                        "create_account_with_owner",
+                        {
+                            "p_owner_user_id": user_id,
+                            "p_account_name": account_name
+                        }
+                    ).execute()
+                    break
+                except Exception as exc:  # pylint: disable=broad-except
+                    account_creation_error = exc
+                    message = str(exc)
+                    # Allow Supabase a moment to finish persisting auth.users
+                    if "accounts_owner_user_id_fkey" in message and attempt < 2:
+                        logger.warning("⏳ Account creation race detected for %s, retrying...", user.email)
+                        await asyncio.sleep(0.5)
+                        continue
+                    raise
+
+            account_id = None
+            if account_result is not None:
+                if isinstance(account_result.data, str):
+                    account_id = account_result.data
+                elif isinstance(account_result.data, list) and account_result.data:
+                    account_id = account_result.data[0]
 
             if not account_id:
-                logger.error("❌ Failed to create account for user %s", user_id)
+                logger.error("❌ Failed to create account for user %s: %s", user_id, account_creation_error)
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     detail="Failed to initialize account"

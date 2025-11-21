@@ -28,7 +28,7 @@ export function OrderingPredictionsPage() {
   const detectPatterns = useDetectDeliveryPatterns()
 
   const predictions = data?.predictions ?? []
-  const deliveryGroups = useMemo(() => groupPredictionsByDelivery(predictions), [predictions])
+  const deliveryGroups = useMemo(() => buildDeliveryGroups(predictions), [predictions])
   const deliveryPatterns = patternsQuery.data?.patterns ?? []
 
   const isEmpty = !isLoading && predictions.length === 0
@@ -98,68 +98,99 @@ export function OrderingPredictionsPage() {
                     <div key={group.key} className="rounded-xl border border-white/5 bg-obsidian/80 shadow-inner">
                       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/5 px-4 py-3">
                         <div>
-                          <p className="text-xs uppercase tracking-wide text-slate-400">Upcoming delivery</p>
-                          <p className="text-lg font-semibold text-white">{group.label}</p>
+                          <p className="text-xs uppercase tracking-wide text-slate-400">
+                            Order #{group.orderIndex + 1}
+                          </p>
+                          <p className="text-lg font-semibold text-white">
+                            {group.date ? formatDateLabel(group.date) : group.label}
+                          </p>
                           {group.leadTimeHint && (
                             <p className="text-xs text-slate-400">{group.leadTimeHint}</p>
                           )}
                         </div>
                         <Badge variant="outline" className="border-emerald-500/60 text-emerald-300">
-                          {group.items.length} item{group.items.length === 1 ? '' : 's'}
+                          {group.items.length > 0
+                            ? `${group.items.length} item${group.items.length === 1 ? '' : 's'}`
+                            : 'Forecast pending'}
                         </Badge>
                       </div>
-                      <div className="divide-y divide-white/5">
-                        {group.items.map((prediction) => (
-                          <div
-                            key={`${prediction.normalized_ingredient_id}-${prediction.delivery_date ?? prediction.forecast_date}-${prediction.vendor_name ?? 'vendor'}`}
-                            className="flex flex-wrap items-center justify-between gap-4 px-4 py-3"
-                          >
-                            <div className="flex-1 space-y-1">
-                              <div>
-                                <p className="text-white font-medium">
-                                  {prediction.item_name ??
-                                    prediction.canonical_name ??
-                                    prediction.normalized_item_id}
-                                </p>
-                                <p className="text-xs text-slate-400">
-                                  {prediction.vendor_name ? `Vendor ${prediction.vendor_name}` : 'Vendor TBD'}
-                                  {prediction.base_unit && ` • ${prediction.base_unit}`}
-                                </p>
+                      {group.items.length === 0 ? (
+                        <div className="px-4 py-6 text-sm text-slate-500">
+                          We’re still learning this delivery window. Upload another invoice to unlock suggestions.
+                        </div>
+                      ) : (
+                        <div className="divide-y divide-white/5">
+                          {group.items.map((prediction) => {
+                            const weeklyAverage =
+                              prediction.weekly_usage_units ??
+                              prediction.avg_weekly_usage ??
+                              prediction.avg_quantity_7d
+                            const fallbackBadge = shouldHighlightFallback(prediction.window_used)
+                            const confidenceLabel = formatConfidence(prediction.delivery_pattern_confidence)
+                            return (
+                              <div
+                                key={`${prediction.normalized_ingredient_id}-${prediction.delivery_date ?? prediction.forecast_date}-${prediction.vendor_name ?? 'vendor'}`}
+                                className="flex flex-wrap items-center justify-between gap-4 px-4 py-3"
+                              >
+                                <div className="flex-1 space-y-2">
+                                  <div>
+                                    <p className="text-white font-medium">
+                                      {prediction.item_name ??
+                                        prediction.canonical_name ??
+                                        prediction.normalized_item_id}
+                                    </p>
+                                    <p className="text-xs text-slate-400">
+                                      {prediction.vendor_name ? `Vendor ${prediction.vendor_name}` : 'Vendor TBD'}
+                                      {prediction.base_unit && ` • ${prediction.base_unit}`}
+                                    </p>
+                                  </div>
+                                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+                                    <span>Ordered {formatOrderCount(prediction.orders_last_28d)} in last 28d</span>
+                                    {weeklyAverage != null && (
+                                      <span>Avg usage / wk {formatQuantity(weeklyAverage, prediction.base_unit)}</span>
+                                    )}
+                                    {fallbackBadge && (
+                                      <Badge
+                                        variant="secondary"
+                                        className="bg-amber-500/20 text-amber-100 border-amber-400/40"
+                                      >
+                                        90d fallback
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  <div className="text-xs text-slate-500 flex flex-wrap gap-3">
+                                    <span>
+                                      Last ordered:{' '}
+                                      <span className="text-slate-300">
+                                        {formatDateLabel(prediction.last_ordered_at)}
+                                      </span>
+                                    </span>
+                                    {confidenceLabel && <span>{confidenceLabel}</span>}
+                                  </div>
+                                  {prediction.suggested_boxes ? (
+                                    <p className="text-sm text-emerald-300 font-medium">
+                                      Order {prediction.suggested_boxes}{' '}
+                                      {prediction.pack_label?.toLowerCase() ?? 'cases'} (
+                                      {formatQuantity(prediction.forecast_quantity, prediction.base_unit)})
+                                    </p>
+                                  ) : null}
+                                </div>
+                                <div className="text-right">
+                                  <p className="text-emerald-400 text-lg font-semibold">
+                                    {formatQuantity(prediction.forecast_quantity, prediction.base_unit)}
+                                  </p>
+                                  {prediction.lower_bound != null && prediction.upper_bound != null && (
+                                    <p className="text-xs text-slate-400">
+                                      Range {formatQuantity(prediction.lower_bound, prediction.base_unit)} –{' '}
+                                      {formatQuantity(prediction.upper_bound, prediction.base_unit)}
+                                    </p>
+                                  )}
+                                </div>
                               </div>
-                              <div className="text-xs text-slate-500">
-                                <span className="mr-3">
-                                  Avg usage / wk:{' '}
-                                  <span className="text-slate-300">
-                                    {formatQuantity(prediction.avg_weekly_usage, prediction.base_unit)}
-                                  </span>
-                                </span>
-                                <span>
-                                  Last ordered:{' '}
-                                  <span className="text-slate-300">{formatDateLabel(prediction.last_ordered_at)}</span>
-                                </span>
-                              </div>
-                              {prediction.suggested_boxes ? (
-                                <p className="text-sm text-emerald-300 font-medium">
-                                  Order {prediction.suggested_boxes}{' '}
-                                  {prediction.pack_label?.toLowerCase() ?? 'cases'} (
-                                  {formatQuantity(prediction.forecast_quantity, prediction.base_unit)})
-                                </p>
-                              ) : null}
-                            </div>
-                            <div className="text-right">
-                              <p className="text-emerald-400 text-lg font-semibold">
-                                {formatQuantity(prediction.forecast_quantity, prediction.base_unit)}
-                              </p>
-                              {prediction.lower_bound != null && prediction.upper_bound != null && (
-                                <p className="text-xs text-slate-400">
-                                  Range {formatQuantity(prediction.lower_bound, prediction.base_unit)} –{' '}
-                                  {formatQuantity(prediction.upper_bound, prediction.base_unit)}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                            )
+                          })}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -243,7 +274,62 @@ export function OrderingPredictionsPage() {
   )
 }
 
-function groupPredictionsByDelivery(predictions: OrderingPrediction[]) {
+type DeliveryGroup = {
+  key: string
+  label: string
+  date?: Date
+  items: OrderingPrediction[]
+  leadTimeHint?: string
+  orderIndex: number
+}
+
+function buildDeliveryGroups(predictions: OrderingPrediction[]): DeliveryGroup[] {
+  const hasOrderIndex = predictions.some((prediction) => typeof prediction.order_index === 'number')
+  if (!hasOrderIndex) {
+    return groupPredictionsByDeliveryDate(predictions).map((group, index) => ({
+      ...group,
+      orderIndex: index,
+    }))
+  }
+
+  const buckets: DeliveryGroup[] = Array.from({ length: 4 }, (_, index) => ({
+    key: `order-${index}`,
+    label: `Order #${index + 1}`,
+    orderIndex: index,
+    items: [],
+  }))
+
+  predictions.forEach((prediction) => {
+    const rawIndex = typeof prediction.order_index === 'number' ? prediction.order_index : 0
+    const bucketIndex = Math.min(Math.max(Math.floor(rawIndex), 0), buckets.length - 1)
+    const bucket = buckets[bucketIndex]
+    bucket.items.push(prediction)
+
+    const deliveryKey = prediction.delivery_date ?? prediction.forecast_date
+    if (deliveryKey) {
+      const deliveryDate = new Date(deliveryKey)
+      if (!bucket.date || deliveryDate < bucket.date) {
+        bucket.date = deliveryDate
+      }
+    }
+
+    const leadTimeHint = formatLeadTime(prediction.lead_time_days)
+    if (!bucket.leadTimeHint && leadTimeHint) {
+      bucket.leadTimeHint = leadTimeHint
+    }
+  })
+
+  return buckets.map((bucket) => ({
+    ...bucket,
+    label:
+      bucket.date != null
+        ? bucket.date.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })
+        : bucket.label,
+    items: sortPredictionItems(bucket.items),
+  }))
+}
+
+function groupPredictionsByDeliveryDate(predictions: OrderingPrediction[]) {
   const groups = new Map<
     string,
     { key: string; label: string; date: Date; items: OrderingPrediction[]; leadTimeHint?: string }
@@ -255,11 +341,9 @@ function groupPredictionsByDelivery(predictions: OrderingPrediction[]) {
     const group = groups.get(deliveryKey)
     const deliveryDate = new Date(deliveryKey)
     const label =
-      prediction.delivery_window_label ?? `${deliveryDate.toLocaleDateString(undefined, { weekday: 'long' })}`
-    const leadTimeHint =
-      typeof prediction.lead_time_days === 'number'
-        ? `${prediction.lead_time_days} day${Math.abs(prediction.lead_time_days) === 1 ? '' : 's'} lead time`
-        : undefined
+      prediction.delivery_window_label ??
+      deliveryDate.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })
+    const leadTimeHint = formatLeadTime(prediction.lead_time_days)
 
     if (!group) {
       groups.set(deliveryKey, {
@@ -279,16 +363,18 @@ function groupPredictionsByDelivery(predictions: OrderingPrediction[]) {
     .sort((a, b) => a.date.getTime() - b.date.getTime())
     .map((group) => ({
       ...group,
-      items: [...group.items].sort((a, b) => {
-        const vendorCompare = (a.vendor_name || '').localeCompare(b.vendor_name || '')
-        if (vendorCompare !== 0) return vendorCompare
-        return (
-          (a.item_name || a.canonical_name || a.normalized_item_id).localeCompare(
-            b.item_name || b.canonical_name || b.normalized_item_id
-          )
-        )
-      }),
+      items: sortPredictionItems(group.items),
     }))
+}
+
+function sortPredictionItems(items: OrderingPrediction[]) {
+  return [...items].sort((a, b) => {
+    const vendorCompare = (a.vendor_name || '').localeCompare(b.vendor_name || '')
+    if (vendorCompare !== 0) return vendorCompare
+    return (a.item_name || a.canonical_name || a.normalized_item_id).localeCompare(
+      b.item_name || b.canonical_name || b.normalized_item_id
+    )
+  })
 }
 
 function formatWeekdays(weekdays: number[]) {
@@ -304,12 +390,37 @@ function formatQuantity(value?: number | null, unit?: string) {
   return `${formatted} ${unit ?? ''}`.trim()
 }
 
-function formatDateLabel(value?: string | null) {
+function formatDateLabel(value?: string | Date | null) {
   if (!value) return '—'
   try {
-    return new Date(value).toLocaleDateString()
+    const dateValue = value instanceof Date ? value : new Date(value)
+    if (Number.isNaN(dateValue.getTime())) {
+      return typeof value === 'string' ? value : '—'
+    }
+    return dateValue.toLocaleDateString()
   } catch {
-    return value
+    return typeof value === 'string' ? value : '—'
   }
 }
 
+function formatOrderCount(value?: number | null) {
+  if (value == null) return '—'
+  return `${value}×`
+}
+
+function shouldHighlightFallback(windowUsed?: string | null) {
+  if (!windowUsed) return false
+  return windowUsed.toLowerCase().includes('90')
+}
+
+function formatLeadTime(days?: number | null) {
+  if (typeof days !== 'number') return undefined
+  const absolute = Math.abs(days)
+  return `${days} day${absolute === 1 ? '' : 's'} lead time`
+}
+
+function formatConfidence(value?: number | null) {
+  if (value == null) return undefined
+  const numeric = value <= 1 ? value * 100 : value
+  return `Pattern confidence ${numeric.toFixed(0)}%`
+}

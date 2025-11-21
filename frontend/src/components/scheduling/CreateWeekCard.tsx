@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Plus } from 'lucide-react'
 import { format } from 'date-fns'
 
@@ -19,6 +20,12 @@ interface CreateWeekCardProps {
   selectedWeekEndDate: Date | null
   weekStartMismatch: boolean
   preferenceLabel: string | null
+  canCopyFromWeek: boolean
+  copySourceLabel: string | null
+  copyShifts: boolean
+  copyForecasts: boolean
+  onToggleCopyShifts: (value: boolean) => void
+  onToggleCopyForecasts: (value: boolean) => void
 }
 
 export function CreateWeekCard({
@@ -34,6 +41,12 @@ export function CreateWeekCard({
   selectedWeekEndDate,
   weekStartMismatch,
   preferenceLabel,
+  canCopyFromWeek,
+  copySourceLabel,
+  copyShifts,
+  copyForecasts,
+  onToggleCopyShifts,
+  onToggleCopyForecasts,
 }: CreateWeekCardProps) {
   return (
     <Card className="bg-card-dark border-white/10">
@@ -79,6 +92,36 @@ export function CreateWeekCard({
             onChange={(event) => onNotesChange(event.target.value)}
             className="bg-obsidian border-white/10 text-white"
           />
+        </div>
+        <div className="md:col-span-5 rounded-lg border border-white/10 bg-white/5 p-4 space-y-3">
+          <div className="space-y-1">
+            <Label>Reuse selected week</Label>
+            <p className="text-xs text-slate-400">
+              {canCopyFromWeek && copySourceLabel
+                ? `Copy from ${copySourceLabel}`
+                : 'Select a week to enable copying the last schedule'}
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <label className="flex items-center gap-3 text-sm text-slate-200">
+              <Checkbox
+                id="copy-shifts"
+                checked={copyShifts}
+                disabled={!canCopyFromWeek}
+                onCheckedChange={(checked) => onToggleCopyShifts(Boolean(checked))}
+              />
+              <span>Copy shifts & assignments</span>
+            </label>
+            <label className="flex items-center gap-3 text-sm text-slate-200">
+              <Checkbox
+                id="copy-forecast"
+                checked={copyForecasts}
+                disabled={!canCopyFromWeek}
+                onCheckedChange={(checked) => onToggleCopyForecasts(Boolean(checked))}
+              />
+              <span>Copy forecasts & notes</span>
+            </label>
+          </div>
         </div>
         <div className="md:col-span-5 flex justify-end">
           <Button className="btn-primary" onClick={onCreateWeek} disabled={creating}>

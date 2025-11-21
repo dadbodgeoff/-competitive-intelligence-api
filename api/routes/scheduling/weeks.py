@@ -4,7 +4,7 @@ from datetime import date
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, ValidationInfo, field_validator
 
 from api.middleware.auth import get_current_user
 from services.account_service import AccountService
@@ -23,7 +23,18 @@ class WeekCreateRequest(BaseModel):
     week_start_date: date
     expected_sales_total: Optional[float] = Field(default=None, ge=0)
     expected_guest_count: Optional[int] = Field(default=None, ge=0)
+    notes: Optional[str] = None
     day_forecasts: Optional[List[DayForecastPayload]] = None
+    copy_from_week_id: Optional[str] = None
+    copy_shifts: bool = False
+    copy_forecasts: bool = False
+
+    @field_validator("copy_shifts", "copy_forecasts", mode="before")
+    @classmethod
+    def copy_flags_require_source(cls, value: bool, info: ValidationInfo):
+        if value and not info.data.get("copy_from_week_id"):
+            raise ValueError(f"{info.field_name} requires copy_from_week_id to be set")
+        return value
 
 
 class WeekUpdateRequest(BaseModel):
@@ -71,6 +82,7 @@ async def create_scheduling_week(
         week_start_date=payload.week_start_date,
         expected_sales_total=payload.expected_sales_total,
         expected_guest_count=payload.expected_guest_count,
+        notes=payload.notes,
         day_forecasts=[
             {
                 "date": forecast.date.isoformat(),
@@ -79,6 +91,9 @@ async def create_scheduling_week(
             }
             for forecast in payload.day_forecasts or []
         ],
+        copy_from_week_id=payload.copy_from_week_id,
+        copy_shifts=payload.copy_shifts,
+        copy_forecasts=payload.copy_forecasts,
     )
     return {"week": week}
 

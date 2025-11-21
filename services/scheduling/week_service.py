@@ -210,10 +210,35 @@ class SchedulingWeekService:
         expected_sales_total: Optional[float] = None,
         expected_guest_count: Optional[int] = None,
         day_forecasts: Optional[List[Dict[str, Any]]] = None,
+        notes: Optional[str] = None,
+        copy_from_week_id: Optional[str] = None,
+        copy_shifts: bool = False,
+        copy_forecasts: bool = False,
     ) -> Dict[str, Any]:
         """Create a new scheduling week and associated day records."""
         aligned_start = week_start_date
         week_end_date = aligned_start + timedelta(days=6)
+
+        source_week: Optional[Dict[str, Any]] = None
+        source_start_date: Optional[date] = None
+        source_days_by_offset: Dict[int, Dict[str, Any]] = {}
+        if copy_from_week_id:
+            source_week = self.get_week(copy_from_week_id)
+            if not source_week:
+                raise ValueError("Source week not found for copying")
+            source_start_date = date.fromisoformat(source_week["week_start_date"])
+            for day in source_week.get("days", []):
+                src_date = date.fromisoformat(day["schedule_date"])
+                offset = (src_date - source_start_date).days
+                source_days_by_offset[offset] = day
+
+        if copy_forecasts and source_week:
+            if expected_sales_total is None:
+                expected_sales_total = source_week.get("expected_sales_total")
+            if expected_guest_count is None:
+                expected_guest_count = source_week.get("expected_guest_count")
+            if notes is None:
+                notes = source_week.get("notes")
 
         payload = {
             "account_id": self.account_id,
@@ -222,6 +247,8 @@ class SchedulingWeekService:
             "expected_sales_total": expected_sales_total,
             "expected_guest_count": expected_guest_count,
         }
+        if notes is not None:
+            payload["notes"] = notes
 
         result = self.client.table("scheduling_weeks").insert(payload).execute()
         week = result.data[0]
@@ -234,24 +261,38 @@ class SchedulingWeekService:
         for offset in range(7):
             day_date = aligned_start + timedelta(days=offset)
             forecast = forecasts_by_date.get(day_date, {})
+            # Source lookup for copying forecasts
+            source_day = source_days_by_offset.get(offset) if copy_forecasts else None
             day_rows.append(
                 {
                     "id": str(uuid_generate_v4()),
                     "account_id": self.account_id,
                     "week_id": week["id"],
                     "schedule_date": day_date.isoformat(),
-                    "expected_sales": forecast.get("expected_sales"),
-                    "expected_guest_count": forecast.get("expected_guest_count"),
+                    "expected_sales": forecast.get("expected_sales")
+                    if forecast.get("expected_sales") is not None
+                    else (source_day.get("expected_sales") if source_day else None),
+                    "expected_guest_count": forecast.get("expected_guest_count")
+                    if forecast.get("expected_guest_count") is not None
+                    else (source_day.get("expected_guest_count") if source_day else None),
+                    "notes": forecast.get("notes")
+                    if forecast.get("notes") is not None
+                    else (source_day.get("notes") if source_day else None),
                     "created_at": datetime.utcnow().isoformat(),
                 }
             )
 
         self.client.table("scheduling_days").insert(day_rows).execute()
         enriched_week = self.get_week(week["id"])
-        if enriched_week:
-            return enriched_week
-        week["days"] = day_rows
-        return week
+        if not enriched_week:
+            week["days"] = day_rows
+            return week
+
+        if source_week and copy_shifts:
+            self._copy_shifts_from_week(source_week, enriched_week)
+            enriched_week = self.get_week(week["id"]) or enriched_week
+
+        return enriched_week
 
     def update_week(
         self,
@@ -321,6 +362,43 @@ class SchedulingWeekService:
         for item in items:
             grouped.setdefault(item[key], []).append(item)
         return grouped
+
+    def _copy_shifts_from_week(self, source_week: Dict[str, Any], target_week: Dict[str, Any]) -> None:
+        source_start = date.fromisoformat(source_week["week_start_date"])
+        target_start = date.fromisoformat(target_week["week_start_date"])
+
+        target_days_by_offset: Dict[int, Dict[str, Any]] = {}
+        for day in target_week.get("days", []):
+            tgt_date = date.fromisoformat(day["schedule_date"])
+            offset = (tgt_date - target_start).days
+            target_days_by_offset[offset] = day
+
+        for day in source_week.get("days", []):
+            src_date = date.fromisoformat(day["schedule_date"])
+            offset = (src_date - source_start).days
+            target_day = target_days_by_offset.get(offset)
+            if not target_day:
+                continue
+
+            for shift in day.get("shifts", []):
+                wage_override = None
+                if shift.get("wage_override_cents") is not None:
+                    wage_override = shift["wage_override_cents"] / 100
+                self.create_shift(
+                    day_id=target_day["id"],
+                    week_id=target_week["id"],
+                    shift_type=shift.get("shift_type", "other"),
+                    start_time=shift["start_time"],
+                    end_time=shift["end_time"],
+                    role_label=shift.get("role_label"),
+                    break_minutes=shift.get("break_minutes"),
+                    wage_type=shift.get("wage_type"),
+                    wage_rate=shift.get("wage_rate"),
+                    wage_currency=shift.get("wage_currency"),
+                    notes=shift.get("notes"),
+                    assigned_member_id=shift.get("assigned_member_id"),
+                    assignment_wage_override=wage_override,
+                )
 
 
 def uuid_generate_v4() -> str:

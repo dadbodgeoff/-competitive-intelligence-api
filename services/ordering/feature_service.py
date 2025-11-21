@@ -86,6 +86,10 @@ class OrderingFeatureService:
                         "last_invoice_item_id": usage["last_invoice_item_id"],
                         "pack_units_per_case": usage["pack_units_per_case"],
                         "suggested_case_label": usage["pack_label"],
+                        "orders_last_28d": usage["orders_last_28d"],
+                        "orders_last_90d": usage["orders_last_90d"],
+                        "total_quantity_28d": usage["total_quantity_28d"],
+                        "total_quantity_90d": usage["total_quantity_90d"],
                         "generated_at": datetime.utcnow().isoformat(),
                         "updated_at": datetime.utcnow().isoformat(),
                     }
@@ -96,9 +100,15 @@ class OrderingFeatureService:
             return
 
         try:
-            self.client.table("inventory_item_features").upsert(feature_rows).execute()
+            self.client.table("inventory_item_features").upsert(
+                feature_rows,
+                on_conflict="user_id,normalized_item_id,feature_date",
+            ).execute()
             if usage_rows:
-                self.client.table("inventory_item_usage_metrics").upsert(usage_rows).execute()
+                self.client.table("inventory_item_usage_metrics").upsert(
+                    usage_rows,
+                    on_conflict="user_id,normalized_item_id",
+                ).execute()
             logger.info(
                 "[Ordering] Refreshed ordering features for %s items (user=%s)",
                 len(feature_rows),
@@ -211,9 +221,31 @@ class OrderingFeatureService:
 
         deliveries = sorted(entries, key=lambda entry: entry[0])
         total_quantity = sum(quantity for _, quantity, *_ in deliveries)
-        span_days = (deliveries[-1][0] - deliveries[0][0]).days or 1
-        weeks_span = span_days / 7
-        weekly_usage = total_quantity / weeks_span if weeks_span > 0 else total_quantity
+        span_days = max((deliveries[-1][0] - deliveries[0][0]).days, 1)
+        weeks_span = span_days / 7 if span_days > 0 else 0
+
+        window_28 = today - timedelta(days=28)
+        window_90 = today - timedelta(days=90)
+        orders_last_28d = 0
+        orders_last_90d = 0
+        total_quantity_28d = 0.0
+        total_quantity_90d = 0.0
+
+        for delivery_dt, quantity, *_ in deliveries:
+            if delivery_dt >= window_90:
+                orders_last_90d += 1
+                total_quantity_90d += quantity
+            if delivery_dt >= window_28:
+                orders_last_28d += 1
+                total_quantity_28d += quantity
+
+        weekly_usage_28d = (total_quantity_28d / 4) if orders_last_28d else None
+        weekly_usage_90d = (total_quantity_90d / 13) if orders_last_90d else None
+        weekly_usage = (
+            weekly_usage_28d
+            or weekly_usage_90d
+            or (total_quantity / weeks_span if weeks_span > 0 else total_quantity)
+        )
 
         intervals = [
             (deliveries[i][0] - deliveries[i - 1][0]).days
@@ -222,29 +254,42 @@ class OrderingFeatureService:
         ]
         reorder_interval = sum(intervals) / len(intervals) if intervals else None
 
-        deliveries_per_week = len(deliveries) / weeks_span if weeks_span > 0 else None
-        if reorder_interval:
+        deliveries_per_week = None
+        if orders_last_28d:
+            deliveries_per_week = orders_last_28d / 4
+        elif orders_last_90d:
+            deliveries_per_week = orders_last_90d / 13
+        elif weeks_span > 0:
+            deliveries_per_week = len(deliveries) / weeks_span
+
+        if reorder_interval and reorder_interval > 0:
             deliveries_per_week = 7 / reorder_interval
 
-        units_per_delivery = total_quantity / len(deliveries)
+        if deliveries_per_week and deliveries_per_week > 0 and weekly_usage is not None:
+            units_per_delivery = weekly_usage / deliveries_per_week
+        else:
+            units_per_delivery = total_quantity / len(deliveries)
 
         last_delivery = deliveries[-1][0]
         last_delivery_entry = deliveries[-1]
         pack_units_per_case = last_delivery_entry[1] if last_delivery_entry[1] else None
-        pack_label = last_delivery_entry[4] or (last_delivery_entry[2] or "case")
+        pack_label = last_delivery_entry[4] or (last_delivery_entry[2] or 'case')
         last_invoice_item_id = last_delivery_entry[3]
 
         return {
-            "weekly_usage": weekly_usage,
-            "reorder_interval": reorder_interval,
-            "deliveries_per_week": deliveries_per_week,
-            "units_per_delivery": units_per_delivery,
-            "last_delivery": last_delivery,
-            "last_invoice_item_id": last_invoice_item_id,
-            "pack_units_per_case": pack_units_per_case,
-            "pack_label": pack_label,
+            'weekly_usage': weekly_usage,
+            'reorder_interval': reorder_interval,
+            'deliveries_per_week': deliveries_per_week,
+            'units_per_delivery': units_per_delivery,
+            'last_delivery': last_delivery,
+            'last_invoice_item_id': last_invoice_item_id,
+            'pack_units_per_case': pack_units_per_case,
+            'pack_label': pack_label,
+            'orders_last_28d': orders_last_28d,
+            'orders_last_90d': orders_last_90d,
+            'total_quantity_28d': total_quantity_28d if orders_last_28d else None,
+            'total_quantity_90d': total_quantity_90d if orders_last_90d else None,
         }
-
     @staticmethod
     def _safe_average(values: List[float]) -> Optional[float]:
         if not values:

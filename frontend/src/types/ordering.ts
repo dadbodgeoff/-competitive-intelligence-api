@@ -9,6 +9,7 @@ export interface OrderingPrediction {
   delivery_window_label?: string | null
   horizon_days: number
   lead_time_days?: number | null
+  order_index?: number | null
   forecast_quantity: number
   lower_bound?: number | null
   upper_bound?: number | null
@@ -16,11 +17,17 @@ export interface OrderingPrediction {
   model_version?: string | null
   generated_at: string
   avg_weekly_usage?: number | null
+  avg_quantity_7d?: number | null
   suggested_boxes?: number | null
   pack_label?: string | null
   last_ordered_at?: string | null
   units_per_delivery?: number | null
   deliveries_per_week?: number | null
+  orders_last_28d?: number | null
+  orders_last_90d?: number | null
+  weekly_usage_units?: number | null
+  window_used?: string | null
+  delivery_pattern_confidence?: number | null
 }
 
 export interface OrderingPredictionsResponse {

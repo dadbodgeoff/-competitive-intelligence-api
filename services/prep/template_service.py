@@ -97,7 +97,7 @@ class PrepTemplateService:
             .select("*")
             .eq("account_id", self.account_id)
             .eq("template_id", template_id)
-            .order("display_order", asc=True)
+            .order("display_order")
             .execute()
         )
         return result.data or []

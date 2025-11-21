@@ -20,8 +20,10 @@ class DeliveryPatternService:
     LOOKBACK_DAYS = 180
     MIN_WEEKS_REQUIRED = 6
     CONSISTENCY_THRESHOLD = 0.8
-    MAX_FACT_ROWS = 5000
-    CHUNK_SIZE = 500
+    RECENT_WINDOW_DAYS = 35
+    RECENT_MIN_DELIVERIES = 6
+    MAX_FACT_ROWS = 2000
+    CHUNK_SIZE = 200
 
     def __init__(self) -> None:
         self.client = get_supabase_service_client()
@@ -52,21 +54,33 @@ class DeliveryPatternService:
         if not records:
             return []
 
-        vendor_stats = self._build_weekday_stats(records)
+        recent_cutoff = date.today() - timedelta(days=self.RECENT_WINDOW_DAYS)
+        vendor_stats = self._build_weekday_stats(records, recent_cutoff=recent_cutoff)
         patterns: List[Dict] = []
 
         for vendor_name, stats in vendor_stats.items():
-            total_weeks = len(stats["weeks"])
-            if total_weeks < self.MIN_WEEKS_REQUIRED:
-                continue
-
             weekdays: List[int] = []
             confidence_values: List[float] = []
-            for weekday, weeks in stats["weekday_weeks"].items():
-                frequency = len(weeks) / total_weeks
-                if frequency >= self.CONSISTENCY_THRESHOLD:
-                    weekdays.append(weekday)
-                    confidence_values.append(frequency)
+            detection_method = "historical"
+
+            total_weeks = len(stats["weeks"])
+            if total_weeks >= self.MIN_WEEKS_REQUIRED:
+                for weekday, weeks in stats["weekday_weeks"].items():
+                    frequency = len(weeks) / total_weeks
+                    if frequency >= self.CONSISTENCY_THRESHOLD:
+                        weekdays.append(weekday)
+                        confidence_values.append(frequency)
+
+            if not weekdays:
+                recent_total = stats.get("recent_total", 0)
+                recent_counts: Dict[int, int] = stats.get("recent_counts", {}) or {}
+                if recent_total >= self.RECENT_MIN_DELIVERIES:
+                    for weekday, count in recent_counts.items():
+                        if count >= 2:
+                            weekdays.append(weekday)
+                            confidence_values.append(count / recent_total if recent_total else 0)
+                    if weekdays:
+                        detection_method = "recent_window"
 
             if not weekdays:
                 continue
@@ -75,9 +89,9 @@ class DeliveryPatternService:
             patterns.append(
                 {
                     "vendor_name": vendor_name,
-                    "delivery_weekdays": sorted(weekdays),
+                    "delivery_weekdays": sorted(set(weekdays)),
                     "confidence_score": round(avg_confidence, 2),
-                    "detection_method": "historical",
+                    "detection_method": detection_method,
                 }
             )
 
@@ -209,7 +223,11 @@ class DeliveryPatternService:
         return mapping
 
     @staticmethod
-    def _build_weekday_stats(records: Sequence[Tuple[str, date]]) -> Dict[str, Dict[str, Dict[int, Set[Tuple[int, int]]]]]:
+    def _build_weekday_stats(
+        records: Sequence[Tuple[str, date]],
+        *,
+        recent_cutoff: date,
+    ) -> Dict[str, Dict]:
         stats: Dict[str, Dict] = {}
         for vendor_name, delivery_dt in records:
             key = vendor_name.strip()
@@ -217,13 +235,21 @@ class DeliveryPatternService:
                 continue
             vendor_stat = stats.setdefault(
                 key,
-                {"weeks": set(), "weekday_weeks": defaultdict(set)},
+                {
+                    "weeks": set(),
+                    "weekday_weeks": defaultdict(set),
+                    "recent_counts": defaultdict(int),
+                    "recent_total": 0,
+                },
             )
             iso_year, iso_week, _ = delivery_dt.isocalendar()
             week_key = (iso_year, iso_week)
             vendor_stat["weeks"].add(week_key)
             weekday = delivery_dt.weekday()
             vendor_stat["weekday_weeks"][weekday].add(week_key)
+            if delivery_dt >= recent_cutoff:
+                vendor_stat["recent_counts"][weekday] += 1
+                vendor_stat["recent_total"] += 1
         return stats
 
     @classmethod

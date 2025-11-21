@@ -243,39 +243,37 @@ export function PriceAnalyticsDashboard() {
           </CardHeader>
           <CardContent>
             {itemsLoading ? (
-                <div className="text-center py-8 text-slate-400">Loading inventory data...</div>
+              <div className="text-center py-8 text-slate-400">Loading inventory data...</div>
             ) : filteredItems.length === 0 ? (
-                <div className="text-center py-8 text-slate-400">No items found matching your filters</div>
+              <div className="text-center py-8 text-slate-400">No items found matching your filters</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                      <tr className="border-b border-white/10">
-                        <th className="text-left py-3 px-4 text-slate-300 font-medium">Item Name</th>
-                        <th className="text-right py-3 px-4 text-slate-300 font-medium">Last Price</th>
-                        <th className="text-right py-3 px-4 text-slate-300 font-medium">7-Day Avg</th>
-                        <th className="text-right py-3 px-4 text-slate-300 font-medium">28-Day Avg</th>
-                        <th className="text-center py-3 px-4 text-slate-300 font-medium">7-Day Trend</th>
-                        <th className="text-right py-3 px-4 text-slate-300 font-medium">Last Purchase</th>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-3 px-4 text-slate-300 font-medium">Item Name</th>
+                      <th className="text-right py-3 px-4 text-slate-300 font-medium">Last Price</th>
+                      <th className="text-right py-3 px-4 text-slate-300 font-medium">7-Day Avg</th>
+                      <th className="text-right py-3 px-4 text-slate-300 font-medium">28-Day Avg</th>
+                      <th className="text-center py-3 px-4 text-slate-300 font-medium">7-Day Trend</th>
+                      <th className="text-right py-3 px-4 text-slate-300 font-medium">Last Purchase</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredItems.map((item, index) => (
-                        <tr key={index} className="border-b border-white/5/50 hover:bg-white/5">
+                      <tr key={index} className="border-b border-white/5/50 hover:bg-white/5">
                         <td className="py-3 px-4 text-white font-medium">{item.description}</td>
                         <td className="py-3 px-4 text-right text-white">
                           {item.last_paid_price ? formatCurrency(item.last_paid_price) : '-'}
                         </td>
-                          <td className="py-3 px-4 text-right text-slate-300">
+                        <td className="py-3 px-4 text-right text-slate-300">
                           {item.avg_price_7day ? formatCurrency(item.avg_price_7day) : '-'}
                         </td>
-                          <td className="py-3 px-4 text-right text-slate-300">
+                        <td className="py-3 px-4 text-right text-slate-300">
                           {item.avg_price_28day ? formatCurrency(item.avg_price_28day) : '-'}
                         </td>
-                        <td className="py-3 px-4 text-center">
-                          {getTrendBadge(item.price_change_7day_percent)}
-                        </td>
-                          <td className="py-3 px-4 text-right text-slate-400 text-sm">
+                        <td className="py-3 px-4 text-center">{getTrendBadge(item.price_change_7day_percent)}</td>
+                        <td className="py-3 px-4 text-right text-slate-400 text-sm">
                           {item.last_paid_date ? new Date(item.last_paid_date).toLocaleDateString() : '-'}
                         </td>
                       </tr>
@@ -286,7 +284,6 @@ export function PriceAnalyticsDashboard() {
             )}
           </CardContent>
         </Card>
-      </div>
       </div>
     </AppShell>
   );

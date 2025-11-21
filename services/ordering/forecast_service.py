@@ -172,7 +172,7 @@ class OrderingForecastService:
                 if info.get("invoice_item_id")
             ],
         )
-        vendor_weekdays = self._build_vendor_pattern_map(user_id)
+        vendor_weekdays, vendor_confidence = self._build_vendor_pattern_map(user_id)
 
         today = date.today()
         payload = []
@@ -189,51 +189,97 @@ class OrderingForecastService:
             base_unit = latest_info.get("base_unit")
             invoice_item_id = latest_info.get("invoice_item_id")
             vendor_name = vendor_map.get(invoice_item_id)
-            delivery_dates = self._next_delivery_dates(
-                vendor_weekdays.get(vendor_name or "", []),
-                today=today,
+            pattern_weekdays = vendor_weekdays.get(vendor_name or "", [])
+            pattern_confidence = vendor_confidence.get(vendor_name or "")
+
+            usage = usage_metrics.get(slug)
+            if not usage:
+                logger.debug("[Ordering] Skipping %s: insufficient usage history for user=%s", slug, user_id)
+                continue
+
+            model_usage_params: Dict[str, Optional[float | str | int]] = {}
+            weekly_usage_units = None
+            deliveries_per_week = None
+            per_delivery_units = None
+            window_used: Optional[str] = None
+
+            orders_last_28d = self._safe_int(usage.get("orders_last_28d"))
+            orders_last_90d = self._safe_int(usage.get("orders_last_90d"))
+            counts_available = (orders_last_28d is not None) or (orders_last_90d is not None)
+            safe_orders_28d = orders_last_28d or 0
+            safe_orders_90d = orders_last_90d or 0
+            if counts_available and safe_orders_28d < 2 and safe_orders_90d < 2:
+                logger.debug(
+                    "[Ordering] Skipping %s: fewer than two invoices detected (user=%s)",
+                    slug,
+                    user_id,
+                )
+                continue
+
+            total_quantity_28d = self._safe_float(usage.get("total_quantity_28d"))
+            if safe_orders_28d >= 2 and total_quantity_28d is not None:
+                weekly_usage_units = total_quantity_28d / 4
+                deliveries_per_week = safe_orders_28d / 4
+                window_used = "28d"
+
+            total_quantity_90d = self._safe_float(usage.get("total_quantity_90d"))
+            if weekly_usage_units is None and safe_orders_90d >= 2 and total_quantity_90d is not None:
+                weekly_usage_units = total_quantity_90d / 13
+                deliveries_per_week = safe_orders_90d / 13
+                window_used = window_used or "90d"
+
+            if weekly_usage_units is None:
+                weekly_usage_units = self._safe_float(usage.get("average_weekly_usage"))
+            if deliveries_per_week is None:
+                deliveries_per_week = self._safe_float(usage.get("deliveries_per_week"))
+            if deliveries_per_week and deliveries_per_week <= 0:
+                deliveries_per_week = None
+            if not deliveries_per_week and pattern_weekdays:
+                deliveries_per_week = float(len(pattern_weekdays))
+            if not deliveries_per_week or deliveries_per_week <= 0:
+                deliveries_per_week = 1.0
+
+            per_delivery_units = self._safe_float(usage.get("units_per_delivery"))
+            if per_delivery_units is None and weekly_usage_units is not None and deliveries_per_week:
+                per_delivery_units = weekly_usage_units / deliveries_per_week
+            if per_delivery_units is not None and per_delivery_units > 0:
+                forecast_quantity = per_delivery_units
+                source = "usage_per_delivery"
+
+            pack_units = self._safe_float(usage.get("pack_units_per_case")) or per_delivery_units
+            suggested_boxes = None
+            if pack_units and pack_units > 0 and per_delivery_units:
+                suggested_boxes = max(1, math.ceil(per_delivery_units / pack_units))
+
+            model_usage_params.update(
+                {
+                    "avg_weekly_usage": weekly_usage_units,
+                    "deliveries_per_week": deliveries_per_week,
+                    "units_per_delivery": per_delivery_units,
+                    "pack_units_per_case": pack_units,
+                    "suggested_boxes": suggested_boxes,
+                    "pack_label": usage.get("suggested_case_label"),
+                    "last_ordered_at": usage.get("last_delivery_date"),
+                    "orders_last_28d": safe_orders_28d,
+                    "orders_last_90d": safe_orders_90d,
+                    "window_used": window_used or ("90d" if safe_orders_90d >= 2 else "historical"),
+                    "weekly_usage_units": weekly_usage_units,
+                    "delivery_pattern_confidence": pattern_confidence,
+                    "avg_quantity_7d": feature.get("avg_quantity_7d"),
+                }
             )
+
+            last_delivery_dt = self._safe_date(usage.get("last_delivery_date"))
+            delivery_dates = self._next_delivery_dates(pattern_weekdays, today=today)
             if not delivery_dates:
-                delivery_dates = [today + timedelta(days=self.DEFAULT_HORIZON_DAYS)]
+                delivery_dates = self._fallback_delivery_dates(
+                    deliveries_per_week,
+                    today=today,
+                    last_delivery=last_delivery_dt,
+                )
 
-            for delivery_date in delivery_dates:
+            for order_index, delivery_date in enumerate(delivery_dates):
                 days_ahead = (delivery_date - today).days
-                usage = usage_metrics.get(slug)
-                model_usage_params: Dict[str, Optional[float | str | int]] = {}
-                if usage:
-                    weekly_usage = self._safe_float(usage.get("average_weekly_usage"))
-                    deliveries_per_week = self._safe_float(usage.get("deliveries_per_week"))
-                    pattern_weekdays = vendor_weekdays.get(vendor_name or "", [])
-                    pattern_deliveries = len(pattern_weekdays) if pattern_weekdays else None
-                    if (not deliveries_per_week or deliveries_per_week <= 0) and pattern_deliveries:
-                        deliveries_per_week = float(pattern_deliveries)
-                    if not deliveries_per_week or deliveries_per_week <= 0:
-                        deliveries_per_week = 1.0
-
-                    per_delivery_units = self._safe_float(usage.get("units_per_delivery"))
-                    if per_delivery_units is None and weekly_usage is not None:
-                        per_delivery_units = weekly_usage / deliveries_per_week
-                    if per_delivery_units is not None and per_delivery_units > 0:
-                        forecast_quantity = per_delivery_units
-                        source = "usage_per_delivery"
-
-                    pack_units = self._safe_float(usage.get("pack_units_per_case")) or per_delivery_units
-                    suggested_boxes = None
-                    if pack_units and pack_units > 0 and per_delivery_units:
-                        suggested_boxes = max(1, math.ceil(per_delivery_units / pack_units))
-
-                    model_usage_params.update(
-                        {
-                            "avg_weekly_usage": weekly_usage,
-                            "deliveries_per_week": deliveries_per_week,
-                            "units_per_delivery": per_delivery_units,
-                            "pack_units_per_case": pack_units,
-                            "suggested_boxes": suggested_boxes,
-                            "pack_label": usage.get("suggested_case_label"),
-                            "last_ordered_at": usage.get("last_delivery_date"),
-                        }
-                    )
-
                 lower_bound, upper_bound = self._compute_bounds(feature, forecast_quantity)
                 record = {
                     "user_id": user_id,
@@ -248,6 +294,7 @@ class OrderingForecastService:
                     "upper_bound": float(upper_bound) if upper_bound is not None else None,
                     "vendor_name": vendor_name,
                     "delivery_window_label": self._format_delivery_label(delivery_date, vendor_name),
+                    "order_index": order_index,
                     "model_version": "baseline_v1",
                     "model_params": {
                         "method": "rolling_average",
@@ -259,13 +306,15 @@ class OrderingForecastService:
                     "updated_at": datetime.utcnow().isoformat(),
                 }
                 payload.append(record)
-
         if not payload:
             logger.info("[Ordering] Forecast generation produced no records (user=%s)", user_id)
             return
 
         try:
-            self.client.table("inventory_item_forecasts").upsert(payload).execute()
+            self.client.table("inventory_item_forecasts").upsert(
+                payload,
+                on_conflict="user_id,normalized_item_id,forecast_date,horizon_days",
+            ).execute()
             logger.info("[Ordering] Generated %s forecasts for user=%s", len(payload), user_id)
             self.cache.warm_forecasts(user_id, payload)
         except Exception as exc:  # pylint: disable=broad-except
@@ -402,20 +451,22 @@ class OrderingForecastService:
                 result[row["id"]] = vendor
         return result
 
-    def _build_vendor_pattern_map(self, user_id: str) -> Dict[str, List[int]]:
+    def _build_vendor_pattern_map(self, user_id: str) -> Tuple[Dict[str, List[int]], Dict[str, Optional[float]]]:
         try:
             patterns = self.delivery_patterns.get_patterns(user_id)
         except Exception:  # pylint: disable=broad-except
-            return {}
+            return {}, {}
 
         pattern_map: Dict[str, List[int]] = {}
+        confidence_map: Dict[str, Optional[float]] = {}
         for row in patterns or []:
             vendor_name = (row.get("vendor_name") or "").strip()
             if not vendor_name:
                 continue
             weekdays = row.get("delivery_weekdays") or []
             pattern_map[vendor_name] = [int(day) for day in weekdays if isinstance(day, int)]
-        return pattern_map
+            confidence_map[vendor_name] = self._safe_float(row.get("confidence_score"))
+        return pattern_map, confidence_map
 
     def _fetch_usage_metrics(
         self,
@@ -453,11 +504,47 @@ class OrderingForecastService:
         return dates
 
     @staticmethod
+    def _fallback_delivery_dates(
+        deliveries_per_week: Optional[float],
+        *,
+        today: date,
+        last_delivery: Optional[date],
+        count: int = 4,
+    ) -> List[date]:
+        cadence = deliveries_per_week if deliveries_per_week and deliveries_per_week > 0 else 1.0
+        interval_days = max(1, int(round(7 / cadence)))
+        anchor = last_delivery if last_delivery and last_delivery >= today else today
+        cursor = anchor
+        dates: List[date] = []
+        while len(dates) < count:
+            cursor = cursor + timedelta(days=interval_days)
+            dates.append(cursor)
+        return dates
+
+    @staticmethod
     def _format_delivery_label(delivery_date: date, vendor_name: Optional[str]) -> str:
         label = delivery_date.strftime("%A, %b %d").replace(" 0", " ")
         if vendor_name:
             return f"{vendor_name} • {label}"
         return label
+
+    @staticmethod
+    def _safe_int(value) -> Optional[int]:
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _safe_date(value) -> Optional[date]:
+        if isinstance(value, date):
+            return value
+        if not value:
+            return None
+        try:
+            return date.fromisoformat(str(value))
+        except (TypeError, ValueError):
+            return None
 
     @staticmethod
     def _safe_float(value) -> Optional[float]:
@@ -475,17 +562,30 @@ class OrderingForecastService:
             "last_ordered_at",
             "units_per_delivery",
             "deliveries_per_week",
+            "avg_quantity_7d",
+            "orders_last_28d",
+            "orders_last_90d",
+            "window_used",
+            "weekly_usage_units",
+            "delivery_pattern_confidence",
         )
         for field in usage_fields:
             value = params.get(field)
             if value is None:
                 continue
-            if field == "suggested_boxes":
+            if field in {"suggested_boxes", "orders_last_28d", "orders_last_90d"}:
                 try:
                     value = int(value)
                 except (TypeError, ValueError):
                     continue
-            elif field in {"avg_weekly_usage", "units_per_delivery", "deliveries_per_week"}:
+            elif field in {
+                "avg_weekly_usage",
+                "units_per_delivery",
+                "deliveries_per_week",
+                "avg_quantity_7d",
+                "weekly_usage_units",
+                "delivery_pattern_confidence",
+            }:
                 try:
                     value = float(value)
                 except (TypeError, ValueError):

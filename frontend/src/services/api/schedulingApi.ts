@@ -63,6 +63,9 @@ export async function createSchedulingWeek(payload: {
   expected_guest_count?: number
   day_forecasts?: Array<{ date: string; expected_sales?: number; expected_guest_count?: number }>
   notes?: string
+  copy_from_week_id?: string
+  copy_shifts?: boolean
+  copy_forecasts?: boolean
 }) {
   const result = await safeRequest<SchedulingWeekResponse>(() =>
     apiClient.post('/api/v1/scheduling/weeks', payload)
@@ -107,6 +110,7 @@ export async function createSchedulingShift(payload: {
   wage_rate?: number
   wage_currency?: string
   notes?: string
+  assigned_member_id?: string
 }) {
   const result = await safeRequest<SchedulingShiftResponse>(() =>
     apiClient.post('/api/v1/scheduling/shifts', payload)

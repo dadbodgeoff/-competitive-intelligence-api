@@ -24,6 +24,7 @@ class ShiftCreateRequest(BaseModel):
     wage_rate: Optional[float] = Field(default=None, ge=0)
     wage_currency: Optional[str] = None
     notes: Optional[str] = None
+    assigned_member_id: Optional[str] = None
 
 
 class ShiftAssignRequest(BaseModel):
@@ -68,6 +69,7 @@ async def create_shift(
         wage_rate=payload.wage_rate,
         wage_currency=payload.wage_currency,
         notes=payload.notes,
+        assigned_member_id=payload.assigned_member_id,
     )
     return {"shift": shift}
 

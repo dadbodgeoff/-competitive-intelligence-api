@@ -34,6 +34,9 @@ class SchedulingShiftService:
         wage_rate: Optional[float] = None,
         wage_currency: Optional[str] = None,
         notes: Optional[str] = None,
+        assigned_member_id: Optional[str] = None,
+        assignment_wage_override: Optional[float] = None,
+        assignment_wage_type_override: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Create a shift for a specific scheduling day."""
         if not self._day_belongs_to_account(day_id):
@@ -64,7 +67,27 @@ class SchedulingShiftService:
 
         result = self.client.table("scheduling_shifts").insert(payload).execute()
         shift_record = result.data[0]
-        self.labor_summary_service.recompute_for_shift(shift_id=shift_record["id"])
+
+        if assigned_member_id:
+            self.assign_member(
+                shift_record["id"],
+                assigned_member_id,
+                wage_override=assignment_wage_override,
+                wage_type_override=assignment_wage_type_override,
+            )
+            refreshed = (
+                self.client.table("scheduling_shifts")
+                .select("*")
+                .eq("id", shift_record["id"])
+                .eq("account_id", self.account_id)
+                .limit(1)
+                .execute()
+            )
+            if refreshed.data:
+                shift_record = refreshed.data[0]
+        else:
+            self.labor_summary_service.recompute_for_shift(shift_id=shift_record["id"])
+
         return shift_record
 
     def assign_member(

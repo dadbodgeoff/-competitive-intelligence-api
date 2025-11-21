@@ -182,6 +182,7 @@ export const orderingPredictionSchema = z.object({
   delivery_window_label: z.string().nullable().optional(),
   horizon_days: z.number(),
   lead_time_days: z.number().nullable().optional(),
+  order_index: z.number().nullable().optional(),
   forecast_quantity: z.number(),
   lower_bound: z.number().nullable().optional(),
   upper_bound: z.number().nullable().optional(),
@@ -189,11 +190,17 @@ export const orderingPredictionSchema = z.object({
   model_version: z.string().nullable().optional(),
   generated_at: z.string(),
   avg_weekly_usage: z.number().nullable().optional(),
+  avg_quantity_7d: z.number().nullable().optional(),
   suggested_boxes: z.number().nullable().optional(),
   pack_label: z.string().nullable().optional(),
   last_ordered_at: z.string().nullable().optional(),
   units_per_delivery: z.number().nullable().optional(),
   deliveries_per_week: z.number().nullable().optional(),
+  orders_last_28d: z.number().nullable().optional(),
+  orders_last_90d: z.number().nullable().optional(),
+  weekly_usage_units: z.number().nullable().optional(),
+  window_used: z.string().nullable().optional(),
+  delivery_pattern_confidence: z.number().nullable().optional(),
 });
 
 export const orderingPredictionsResponseSchema = z.object({
@@ -250,6 +257,12 @@ export const schedulingShiftSchema = z.object({
   wage_rate: z.number().nullable().optional(),
   wage_currency: z.string().nullable().optional(),
   notes: z.string().nullable().optional(),
+  assigned_member_id: z.string().nullable().optional(),
+  wage_override_cents: z.number().nullable().optional(),
+  wage_override_currency: z.string().nullable().optional(),
+  shift_notes: z.string().nullable().optional(),
+  scheduled_minutes: z.number().nullable().optional(),
+  scheduled_cost_cents: z.number().nullable().optional(),
   assignments: z.array(schedulingShiftAssignmentSchema).optional(),
 });
 

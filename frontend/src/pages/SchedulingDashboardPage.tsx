@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { addDays, parseISO } from 'date-fns'
+import { addDays, format, parseISO } from 'date-fns'
 import { AppShell } from '@/components/layout/AppShell'
 import { PageHeading } from '@/components/layout/PageHeading'
 import { useToast } from '@/hooks/use-toast'
@@ -53,6 +53,8 @@ export function SchedulingDashboardPage() {
   const [userChangedWeekStart, setUserChangedWeekStart] = useState(false)
   const [newWeekSales, setNewWeekSales] = useState('')
   const [newWeekNotes, setNewWeekNotes] = useState('')
+  const [copyShiftsFromPrevious, setCopyShiftsFromPrevious] = useState(false)
+  const [copyForecastsFromPrevious, setCopyForecastsFromPrevious] = useState(false)
 
   useEffect(() => {
     if (!selectedWeekId && weeks.length > 0) {
@@ -107,6 +109,14 @@ export function SchedulingDashboardPage() {
     return [unassignedMember, ...roster]
   }, [gridData?.members])
 
+  const templateWeek = useMemo(
+    () => weeks.find((week) => week.id === selectedWeekId),
+    [weeks, selectedWeekId]
+  )
+  const copySourceLabel = templateWeek
+    ? `${format(parseISO(templateWeek.week_start_date), 'MMM d')}`
+    : null
+
   const tableSkeleton = (
     <div className="space-y-3">
       <Skeleton className="h-6 w-48 rounded-md bg-white/10" />
@@ -159,17 +169,12 @@ export function SchedulingDashboardPage() {
       break_minutes: Number(formState.break_minutes || 0),
       role_label: formState.role_label || undefined,
       notes: formState.notes || undefined,
+      assigned_member_id: formState.assigned_member_id || undefined,
     }
 
     try {
       if (dialogMode === 'create') {
-        const created = await createShiftMutation.mutateAsync(payload)
-        if (formState.assigned_member_id && created.shift.id) {
-          await assignShiftMutation.mutateAsync({
-            shiftId: created.shift.id,
-            payload: { member_user_id: formState.assigned_member_id },
-          })
-        }
+        await createShiftMutation.mutateAsync(payload)
       } else if (dialogMode === 'edit' && formState.id) {
         await updateShiftMutation.mutateAsync({
           shiftId: formState.id,
@@ -256,11 +261,16 @@ export function SchedulingDashboardPage() {
       toast({ title: 'Pick a start date', variant: 'destructive' })
       return
     }
+    const canCopyFromSelected =
+      Boolean(selectedWeekId) && (copyShiftsFromPrevious || copyForecastsFromPrevious)
     try {
       const response = await createWeekMutation.mutateAsync({
         week_start_date: newWeekStart,
         expected_sales_total: newWeekSales ? Number(newWeekSales) : undefined,
         notes: newWeekNotes || undefined,
+        copy_from_week_id: canCopyFromSelected ? selectedWeekId : undefined,
+        copy_shifts: canCopyFromSelected ? copyShiftsFromPrevious : undefined,
+        copy_forecasts: canCopyFromSelected ? copyForecastsFromPrevious : undefined,
       })
       toast({ title: 'Week created', description: 'Scheduling week is ready.' })
       setNewWeekStart('')
@@ -325,6 +335,12 @@ export function SchedulingDashboardPage() {
           selectedWeekEndDate={selectedWeekEndDate}
           weekStartMismatch={weekStartMismatch}
           preferenceLabel={preferenceLabel ?? null}
+          canCopyFromWeek={Boolean(selectedWeekId)}
+          copySourceLabel={copySourceLabel}
+          copyShifts={copyShiftsFromPrevious}
+          copyForecasts={copyForecastsFromPrevious}
+          onToggleCopyShifts={(value) => setCopyShiftsFromPrevious(value)}
+          onToggleCopyForecasts={(value) => setCopyForecastsFromPrevious(value)}
         />
 
         <WeekSelectorCard

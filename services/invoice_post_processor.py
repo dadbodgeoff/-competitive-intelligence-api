@@ -36,6 +36,10 @@ class InvoicePostProcessor:
         if not pack_size or pack_size.strip() == '':
             return {"valid": True, "reason": None, "suggested_fix": None}
         
+        normalized = pack_size.strip().upper()
+        if normalized in {'CATCH WEIGHT', 'VARIABLE'}:
+            return {"valid": True, "reason": None, "suggested_fix": None}
+        
         # Try to convert and see if it results in zero
         try:
             from services.unit_converter import UnitConverter
@@ -72,20 +76,22 @@ class InvoicePostProcessor:
         for i, item in enumerate(invoice['line_items']):
             original_item = item.copy()
             
-            # Step 1: Detect special pricing types
-            item = self.detect_weight_based_pricing(item)
-            
-            # Step 2: Normalize price decimals
-            item = self.normalize_prices(item)
-            
-            # Step 3: Normalize category
-            item['category'] = self.normalize_category(item.get('category', 'DRY'))
-            
-            # Step 4: Correct pack size formatting
+            # Step 1: Correct pack size formatting and enhance with known patterns
             item['pack_size'] = self.correct_pack_size(
                 item.get('pack_size', ''),
                 item.get('description', '')
             )
+            
+            item = self.enhance_pack_size(item)
+            
+            # Step 2: Detect special pricing types
+            item = self.detect_weight_based_pricing(item)
+            
+            # Step 3: Normalize price decimals
+            item = self.normalize_prices(item)
+            
+            # Step 4: Normalize category
+            item['category'] = self.normalize_category(item.get('category', 'DRY'))
             
             # Step 5: Validate pack size conversion
             pack_size_validation = self._validate_pack_size_conversion(item.get('pack_size', ''))
@@ -237,6 +243,9 @@ class InvoicePostProcessor:
         Detect weight-based pricing (per-pound items)
         These have different math: qty × unit_price × actual_weight = extended
         """
+        if item.get('pricing_type') == 'weight_based':
+            return item
+        
         pack = item.get('pack_size') or ''
         desc = item.get('description') or ''
         
@@ -287,6 +296,159 @@ class InvoicePostProcessor:
         item['unit_price'] = round(float(unit), 4)
         
         return item
+    
+    def enhance_pack_size(self, item: Dict) -> Dict:
+        """
+        Normalize common commercial foodservice pack size patterns
+        and backfill pack size from description when missing.
+        """
+        pack = (item.get('pack_size') or '').strip()
+        description = item.get('description') or ''
+        
+        if pack and 'original_pack_size' not in item:
+            item['original_pack_size'] = pack
+        
+        combined_text = f"{pack} {description}".upper()
+        
+        # Catch weight indicators override pack handling
+        if re.search(r'\b(CATCH\s*WT|CWT|RANDOM\s*WEIGHT)\b', combined_text):
+            item['pack_size'] = 'CATCH WEIGHT'
+            item['pricing_type'] = 'weight_based'
+            item['skip_qty_validation'] = True
+            item.setdefault('correction_reason', 'catch_weight_detected')
+            return item
+        
+        normalized = self._normalize_pack_string(pack.upper())
+        
+        if not normalized:
+            extracted = self._extract_pack_from_description(description)
+            if extracted:
+                normalized = extracted
+        
+        if normalized:
+            item['pack_size'] = normalized
+        
+        return item
+    
+    def _normalize_pack_string(self, pack: str) -> str:
+        """Apply hard-coded normalization rules for pack formats."""
+        if not pack:
+            return ''
+        
+        text = pack.replace('-', ' ')
+        text = re.sub(r'[,;]', ' ', text)
+        
+        # Normalize special #10 can patterns and variations
+        text = re.sub(r'\b(\d+)\s*/\s*#\s*(\d+)\b', r'\1 \2', text, flags=re.IGNORECASE)
+        text = re.sub(r'\b(\d+)\s*/\s*(\d+)#\b', r'\1 \2', text, flags=re.IGNORECASE)
+        text = re.sub(r'\b(\d+)\s*#\s*(\d+)\s*(?:CAN|CANS|TIN|TINS)?\b', r'\1 \2', text, flags=re.IGNORECASE)
+        
+        # Reverse format like 10#/4 → 10 4 LB
+        def reverse_hash_repl(match: re.Match) -> str:
+            count = match.group(1)
+            size = match.group(2)
+            return f"{count} {size} LB"
+        
+        text = re.sub(r'\b(\d+)#\s*/\s*(\d+(?:\.\d+)?)\b', reverse_hash_repl, text, flags=re.IGNORECASE)
+        
+        # Slash notation with optional unit (4/5 LB, 2/10 LB AVG)
+        def slash_repl(match: re.Match) -> str:
+            count = match.group(1)
+            size = match.group(2)
+            unit = self._normalize_unit_token(match.group(3))
+            if not unit and count == '1' and size == '1':
+                return '1 EA'
+            return f"{count} {size} {unit}".strip()
+        
+        text = re.sub(
+            r'\b(\d+)\s*/\s*(\d+(?:\.\d+)?)(?:\s*(LB|LBS|#|OZ|OZS|KG|G|GAL|GA|QT|PT|CT|PK|EA|EACH|DZ|PKG))?\b',
+            slash_repl,
+            text,
+            flags=re.IGNORECASE
+        )
+        
+        # Remove packaging descriptors without losing units
+        text = re.sub(r'\b(AVG|AV|IW|I/W|I\.W\.|I\.W|NET WT|NETWT|NET)\b', '', text, flags=re.IGNORECASE)
+        text = re.sub(r'\b(BAG|BAGS|TUB|TUBS|CARTON|CARTONS|TRAY|TRAYS|BOX|BOXES|BTL|BTLS|BOTTLE|BOTTLES)\b', '', text, flags=re.IGNORECASE)
+        
+        # Normalize EA/EACH cases
+        if re.fullmatch(r'\s*(EACH|EA)\s*', text, flags=re.IGNORECASE):
+            return '1 EA'
+        
+        text = re.sub(r'\bEACH\b', 'EA', text, flags=re.IGNORECASE)
+        
+        # Collapse whitespace
+        text = re.sub(r'\s+', ' ', text).strip()
+        
+        if not text:
+            return ''
+        
+        # Remove trailing CASE/CS unless it's the only token
+        tokens = text.split()
+        if len(tokens) > 2 and tokens[-1] in {'CS', 'CASE'}:
+            tokens = tokens[:-1]
+        text = ' '.join(tokens)
+        
+        # Normalize tokens again after trimming
+        text = re.sub(r'\s+', ' ', text).strip()
+        
+        if text.upper() in {'1/1', '1 1'}:
+            return '1 EA'
+        
+        if text.upper() in {'CS', 'CASE'}:
+            return '1 CS'
+        
+        return text.upper()
+    
+    def _normalize_unit_token(self, token: str) -> str:
+        """Normalize unit tokens to canonical forms."""
+        if not token:
+            return ''
+        
+        unit = token.upper()
+        mapping = {
+            '#': 'LB',
+            'LBS': 'LB',
+            'POUND': 'LB',
+            'POUNDS': 'LB',
+            'OZS': 'OZ',
+            'OUNCE': 'OZ',
+            'OUNCES': 'OZ',
+            'CTS': 'CT',
+            'CTN': 'CT',
+            'PKG': 'PK',
+            'PKGS': 'PK',
+            'PACK': 'PK',
+            'EACH': 'EA',
+            'GA': 'GAL'
+        }
+        return mapping.get(unit, unit)
+    
+    def _extract_pack_from_description(self, description: str) -> str:
+        """Pull pack size clues out of the description when missing."""
+        if not description:
+            return ''
+        
+        text = description.upper()
+        
+        net_match = re.search(r'NET\s*WT\.?\s*(\d+(?:\.\d+)?)\s*(LB|LBS|#|OZ|OZS|KG|G|GAL|GA|QT|PT)', text)
+        if net_match:
+            unit = self._normalize_unit_token(net_match.group(2))
+            return f"{net_match.group(1)} {unit}"
+        
+        # General weight/volume capture, skipping drained weight references
+        for match in re.finditer(r'(\d+(?:\.\d+)?)\s*(LB|LBS|#|OZ|OZS|KG|G|GAL|GA|QT|PT)\b', text):
+            context = text[max(0, match.start() - 12):match.start()]
+            if re.search(r'\bDR(?:AINED)?\s*WT\b', context):
+                continue
+            unit = self._normalize_unit_token(match.group(2))
+            return f"{match.group(1)} {unit}"
+        
+        ct_match = re.search(r'(\d+)\s*CT\b', text)
+        if ct_match:
+            return f"{ct_match.group(1)} CT"
+        
+        return ''
     
     def normalize_category(self, category: str) -> str:
         """
@@ -386,6 +548,15 @@ class InvoicePostProcessor:
         if not item.get('skip_qty_validation'):
             if abs(qty * unit - extended) > self.tolerance:
                 score -= 20
+        
+        pack_size = (item.get('pack_size') or '').upper()
+        if 'CATCH WEIGHT' in pack_size:
+            score -= 15
+        if '/' in (item.get('original_pack_size') or item.get('pack_size') or ''):
+            score -= 10
+        quantity = item.get('quantity') or 0
+        if 'EA' in pack_size and quantity and quantity > 20:
+            score -= 20
         
         # Return confidence level
         if score >= 90:

@@ -155,6 +155,18 @@ class UnitConverter:
         
         pack_size = pack_size.lower().strip()
         
+        simple_can_match = re.match(r'^(?P<count>\d+)\s+(?P<can>10|5|2)\s*(?:cs|case)?$', pack_size)
+        if simple_can_match:
+            can_sizes_oz = {'10': 96, '5': 56, '2': 20}
+            can_num = simple_can_match.group('can')
+            weight_oz = can_sizes_oz.get(can_num, 96)
+            return {
+                'count': int(simple_can_match.group('count')),
+                'size': Decimal(str(weight_oz)),
+                'unit': 'oz',
+                'type': 'can_size'
+            }
+        
         for pattern, pattern_type in self.PACK_PATTERNS:
             match = re.search(pattern, pack_size, re.IGNORECASE)
             if match:

@@ -1,10 +1,12 @@
-import React, { useCallback, useRef, useState } from 'react';
-import { ArrowRight, Upload, Loader2, CheckCircle2, AlertTriangle, PlayCircle } from 'lucide-react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { ArrowRight, Upload, Loader2, CheckCircle2, AlertTriangle, PlayCircle, ShieldCheck, FileText } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/design-system/shadcn/components/card';
 import { Badge } from '@/design-system/shadcn/components/badge';
 import { Button } from '@/design-system/shadcn/components/button';
-import { useGuestInvoiceDemo } from '@/hooks/useGuestInvoiceDemo';
+import { useGuestInvoiceDemo, type GuestPolicyConsentPayload } from '@/hooks/useGuestInvoiceDemo';
 import { Link } from 'react-router-dom';
+import { PolicyAgreementDialog } from '@/components/legal/PolicyAgreementDialog';
+import { POLICY_METADATA, type PolicyAcceptance, type PolicyKey } from '@/config/legal';
 
 const eventColors: Record<string, string> = {
   info: 'text-slate-300',
@@ -17,15 +19,82 @@ export const InvoiceDemoCard: React.FC = () => {
   const { state, uploadInvoice, reset, simulateDemo } = useGuestInvoiceDemo();
   const [isDragging, setIsDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const [guestConsents, setGuestConsents] = useState<Record<PolicyKey, PolicyAcceptance | null>>({
+    terms: null,
+    privacy: null,
+  });
+  const [guestDialogPolicy, setGuestDialogPolicy] = useState<PolicyKey | null>(null);
+  const pendingFileRef = useRef<File | null>(null);
+  const consentFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat(undefined, {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      }),
+    [],
+  );
+  const policyOrder = useMemo(() => ['terms', 'privacy'] as PolicyKey[], []);
+
+  const buildConsentPayload = useCallback(
+    (source: Record<PolicyKey, PolicyAcceptance | null> = guestConsents): GuestPolicyConsentPayload | null => {
+      if (!source.terms || !source.privacy) {
+        return null;
+      }
+      return {
+        terms_version: source.terms.version,
+        privacy_version: source.privacy.version,
+        consent_timestamp: new Date().toISOString(),
+      };
+    },
+    [guestConsents],
+  );
+
+  const determineMissingPolicy = useCallback(
+    (consents: Record<PolicyKey, PolicyAcceptance | null>): PolicyKey | null => {
+      if (!consents.terms) return 'terms';
+      if (!consents.privacy) return 'privacy';
+      return null;
+    },
+    [],
+  );
+
+  const allConsentsComplete = useMemo(
+    () => Boolean(guestConsents.terms && guestConsents.privacy),
+    [guestConsents],
+  );
+
+  const handleReset = useCallback(() => {
+    pendingFileRef.current = null;
+    setGuestDialogPolicy(null);
+    reset();
+  }, [reset]);
 
   const disabled = state.status === 'uploading' || state.status === 'parsing';
 
   const handleFiles = useCallback(
     (files: FileList | null) => {
       if (!files || !files[0]) return;
-      uploadInvoice(files[0]);
+      if (disabled) return;
+
+      const file = files[0];
+      const pendingPolicy = determineMissingPolicy(guestConsents);
+
+      if (pendingPolicy) {
+        pendingFileRef.current = file;
+        setGuestDialogPolicy(pendingPolicy);
+        return;
+      }
+
+      const consentPayload = buildConsentPayload();
+      if (!consentPayload) {
+        pendingFileRef.current = file;
+        setGuestDialogPolicy('terms');
+        return;
+      }
+
+      uploadInvoice(file, consentPayload);
     },
-    [uploadInvoice]
+    [buildConsentPayload, determineMissingPolicy, disabled, guestConsents, uploadInvoice]
   );
 
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -58,6 +127,38 @@ export const InvoiceDemoCard: React.FC = () => {
     event.target.value = '';
   };
 
+  const handleGuestPolicyAccepted = useCallback(
+    (acceptance: PolicyAcceptance) => {
+      const updatedConsents: Record<PolicyKey, PolicyAcceptance | null> = {
+        ...guestConsents,
+        [acceptance.policy]: acceptance,
+      };
+      setGuestConsents(updatedConsents);
+
+      const missingPolicy = determineMissingPolicy(updatedConsents);
+      const hasPendingFile = Boolean(pendingFileRef.current);
+
+      if (missingPolicy && hasPendingFile && missingPolicy !== acceptance.policy) {
+        setGuestDialogPolicy(missingPolicy);
+        return;
+      }
+
+      if (!missingPolicy && hasPendingFile) {
+        const fileToUpload = pendingFileRef.current;
+        pendingFileRef.current = null;
+        const payload = buildConsentPayload(updatedConsents);
+        if (fileToUpload && payload) {
+          uploadInvoice(fileToUpload, payload);
+        }
+      }
+
+      if (!hasPendingFile || !missingPolicy) {
+        setGuestDialogPolicy(null);
+      }
+    },
+    [buildConsentPayload, determineMissingPolicy, guestConsents, uploadInvoice]
+  );
+
   const renderStatusIcon = () => {
     if (state.status === 'uploading' || state.status === 'parsing') {
       return <Loader2 className="w-10 h-10 text-emerald-400 animate-spin" />;
@@ -72,7 +173,8 @@ export const InvoiceDemoCard: React.FC = () => {
   };
 
   return (
-    <Card className="gradient-outline surface-glass-muted w-full border-2 border-dashed border-white/10 bg-slate-900/60">
+    <>
+      <Card className="gradient-outline surface-glass-muted w-full border-2 border-dashed border-white/10 bg-slate-900/60">
       <CardHeader className="text-center space-y-3">
         <Badge className="mx-auto bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-4 py-1">
           Start parsing in under a minute
@@ -144,12 +246,73 @@ export const InvoiceDemoCard: React.FC = () => {
                 className="text-slate-400 hover:text-white"
                 onClick={(event) => {
                   event.stopPropagation();
-                  reset();
+                  handleReset();
                 }}
               >
                 Start over
               </Button>
             )}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-4 space-y-4 text-left">
+          <div className="flex items-center gap-2 text-sm text-slate-300">
+            <ShieldCheck className="h-4 w-4 text-emerald-400" />
+            {allConsentsComplete
+              ? 'Thanks for acknowledging our policies. You can upload whenever you’re ready.'
+              : 'Before uploading, review and agree to our policies so you know exactly how the demo handles your data.'}
+          </div>
+          <div className="space-y-3">
+            {policyOrder.map((policy) => {
+              const metadata = POLICY_METADATA[policy];
+              const consent = guestConsents[policy];
+              const acceptedDisplay = consent
+                ? (() => {
+                    try {
+                      return consentFormatter.format(new Date(consent.acceptedAt));
+                    } catch {
+                      return consent.acceptedAt;
+                    }
+                  })()
+                : null;
+
+              return (
+                <div
+                  key={policy}
+                  className="flex flex-col gap-2 rounded-xl border border-slate-800 bg-slate-950/40 p-3 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="flex flex-col gap-1">
+                    <span className="flex items-center gap-2 text-sm font-medium text-slate-200">
+                      <FileText className="h-4 w-4 text-emerald-400" />
+                      {metadata.title}
+                    </span>
+                    <span className="text-xs text-slate-400">
+                      Version {metadata.version}{' '}
+                      {acceptedDisplay ? `· Accepted ${acceptedDisplay}` : '· Action required'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      className={
+                        consent
+                          ? 'border-emerald-500/40 bg-emerald-500/20 text-emerald-200'
+                          : 'border-amber-500/40 bg-amber-500/10 text-amber-200'
+                      }
+                    >
+                      {consent ? 'Accepted' : 'Required'}
+                    </Badge>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="border-slate-700 text-slate-200 hover:text-white"
+                      onClick={() => setGuestDialogPolicy(policy)}
+                    >
+                      {consent ? 'View' : 'Review'}
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -259,13 +422,26 @@ export const InvoiceDemoCard: React.FC = () => {
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
-              <Button variant="outline" className="flex-1 border-slate-600 text-white" onClick={reset}>
+              <Button variant="outline" className="flex-1 border-slate-600 text-white" onClick={handleReset}>
                 Upload another invoice
               </Button>
             </div>
           </div>
         )}
       </CardContent>
-    </Card>
+      </Card>
+      {guestDialogPolicy && (
+        <PolicyAgreementDialog
+          policy={guestDialogPolicy}
+          open={Boolean(guestDialogPolicy)}
+          onOpenChange={(open) => {
+            if (!open) {
+              setGuestDialogPolicy(null);
+            }
+          }}
+          onAccept={handleGuestPolicyAccepted}
+        />
+      )}
+    </>
   );
 };

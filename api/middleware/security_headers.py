@@ -72,7 +72,8 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         csp_directives = {
             "default-src": ["'self'"],
             "script-src": ["'self'"],
-            "style-src": ["'self'"],
+            "style-src": ["'self'", "'unsafe-inline'"],
+            "style-src-elem": ["'self'", "'unsafe-inline'"],
             "img-src": ["'self'", "data:", "blob:"],
             "font-src": ["'self'"],
             "connect-src": ["'self'"],
@@ -86,6 +87,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         use_google_fonts = os.getenv("USE_GOOGLE_FONTS", "true").lower() == "true"
         if use_google_fonts:
             csp_directives["style-src"].append("https://fonts.googleapis.com")
+            csp_directives["style-src-elem"].append("https://fonts.googleapis.com")
             csp_directives["font-src"].append("https://fonts.gstatic.com")
         
         # Add Supabase Storage for images

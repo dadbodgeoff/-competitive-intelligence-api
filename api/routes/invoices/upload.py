@@ -2,7 +2,7 @@
 Invoice Upload Routes
 Handles file upload to storage
 """
-from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, Request, BackgroundTasks
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, Request, BackgroundTasks, Form
 from typing import Optional
 from fastapi.responses import JSONResponse
 import logging
@@ -179,10 +179,37 @@ async def guest_upload_invoice(
     background_tasks: BackgroundTasks,
     request: Request,
     file: UploadFile = File(...),
+    policies_acknowledged: bool = Form(...),
+    terms_version: str = Form(...),
+    privacy_version: str = Form(...),
+    consent_timestamp: Optional[str] = Form(None),
 ):
     """
     Upload invoice file for landing page demo (unauthenticated guest mode)
     """
+    if not policies_acknowledged:
+        raise HTTPException(
+            status_code=400,
+            detail="Policy acknowledgement is required before uploading an invoice.",
+        )
+
+    if not terms_version or not privacy_version:
+        raise HTTPException(
+            status_code=400,
+            detail="Policy acknowledgement is incomplete. Please review the Terms of Service and Privacy Policy.",
+        )
+
+    consent_recorded_at = consent_timestamp
+    if consent_timestamp:
+        try:
+            consent_recorded_at = datetime.fromisoformat(
+                consent_timestamp.replace("Z", "+00:00")
+            ).isoformat()
+        except ValueError:
+            consent_recorded_at = datetime.utcnow().isoformat()
+    else:
+        consent_recorded_at = datetime.utcnow().isoformat()
+
     client_ip = request.client.host if request.client else "unknown"
     wait_seconds = reserve_guest_upload_slot(client_ip or "unknown")
 
@@ -245,6 +272,12 @@ async def guest_upload_invoice(
             "guest_user_id": guest_user_id,
             "monitoring_session_id": monitoring_session_id,
             "uploaded_at": datetime.utcnow().isoformat(),
+            "policies": {
+                "acknowledged": bool(policies_acknowledged),
+                "terms_version": terms_version,
+                "privacy_version": privacy_version,
+                "acknowledged_at": consent_recorded_at,
+            },
         }
         store_guest_session(guest_session_id, session_payload)
 

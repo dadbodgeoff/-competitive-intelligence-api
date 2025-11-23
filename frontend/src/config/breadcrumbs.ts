@@ -3,7 +3,7 @@
  * Auto-generates breadcrumbs based on route paths
  */
 
-import { Home, Search, FileText, UtensilsCrossed, Menu, BarChart3, Settings, DollarSign, Truck, Calendar, ClipboardList } from 'lucide-react';
+import { Home, Search, FileText, UtensilsCrossed, Menu, BarChart3, Settings, DollarSign, Truck, Calendar, ClipboardList, Palette } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export interface BreadcrumbConfig {
@@ -152,5 +152,10 @@ export const breadcrumbConfig: Record<string, BreadcrumbConfig> = {
     label: 'Team & Modules',
     parent: '/dashboard',
     icon: Settings,
+  },
+  '/creative': {
+    label: 'Creative Studio',
+    parent: '/dashboard',
+    icon: Palette,
   },
 };

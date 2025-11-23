@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from enum import Enum
@@ -10,6 +11,12 @@ class UserRegister(BaseModel):
     invite_token: Optional[str] = Field(
         None, description="Optional invitation token when joining an existing account"
     )
+    terms_accepted: bool = Field(..., description="User agreed to the Terms of Service")
+    terms_version: str = Field(..., description="Version of the Terms of Service accepted")
+    terms_accepted_at: datetime = Field(..., description="Timestamp when terms were accepted")
+    privacy_accepted: bool = Field(..., description="User agreed to the Privacy Policy")
+    privacy_version: str = Field(..., description="Version of the Privacy Policy accepted")
+    privacy_accepted_at: datetime = Field(..., description="Timestamp when privacy policy was accepted")
 
     model_config = {
         "json_schema_extra": {
@@ -17,7 +24,13 @@ class UserRegister(BaseModel):
                 "email": "user@example.com",
                 "password": "password123",
                 "first_name": "John",
-                "last_name": "Doe"
+                "last_name": "Doe",
+                "terms_accepted": True,
+                "terms_version": "2025-11-20",
+                "terms_accepted_at": "2025-11-22T15:30:00Z",
+                "privacy_accepted": True,
+                "privacy_version": "2025-11-20",
+                "privacy_accepted_at": "2025-11-22T15:30:00Z",
             }
         }
     }

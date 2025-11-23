@@ -162,6 +162,7 @@ from api.routes.alert_management import router as alert_management_router
 from api.routes.dashboard_analytics import router as dashboard_analytics_router
 from api.routes.competitive_intelligence_summary import router as competitive_intelligence_router
 from api.routes import csp_report
+from api.routes.nano_banana import router as nano_banana_router
 
 # DISABLED: Inventory processing removed - invoices are source of truth only
 # Initialize background workers (registers event handlers)
@@ -193,6 +194,7 @@ app.include_router(menu_comparison_router, tags=["Menu Comparison"])
 app.include_router(ordering_router, tags=["Ordering"])
 app.include_router(scheduling_router)
 app.include_router(prep_router)
+app.include_router(nano_banana_router, tags=["Nano Banana"])
 app.include_router(csp_report.router, tags=["Security"])
 
 # Health check endpoint (used by Docker healthcheck)

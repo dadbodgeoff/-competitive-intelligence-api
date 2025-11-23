@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
+import { TermsPage } from './pages/TermsPage';
+import { PrivacyPage } from './pages/PrivacyPage';
 import { AcceptInvitePage } from './pages/AcceptInvitePage';
 import { TimeClockPage } from './pages/TimeClockPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -32,6 +34,7 @@ import { TeamSettingsPage } from './pages/TeamSettingsPage';
 import { SchedulingDashboardPage } from './pages/SchedulingDashboardPage';
 import { PrepDashboardPage } from './pages/PrepDashboardPage';
 import { PrepTemplatesPage } from './pages/PrepTemplatesPage';
+import { CreativeStudioPage } from './pages/CreativeStudioPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { Toaster } from './components/ui/toaster';
 import './App.css';
@@ -58,6 +61,8 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/legal/terms" element={<TermsPage />} />
+          <Route path="/legal/privacy" element={<PrivacyPage />} />
           <Route path="/accept-invite" element={<AcceptInvitePage />} />
           <Route path="/time" element={<TimeClockPage />} />
 
@@ -235,6 +240,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <PrepTemplatesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/creative"
+            element={
+              <ProtectedRoute>
+                <CreativeStudioPage />
               </ProtectedRoute>
             }
           />

@@ -50,6 +50,12 @@ export const LandingNav: React.FC = () => {
               >
                 Pricing
               </a>
+              <Link
+                to="/legal/terms"
+                className="text-slate-300 hover:text-white transition-colors text-sm font-medium"
+              >
+                Policies
+              </Link>
               <Link to="/login">
                 <Button variant="ghost" className="text-slate-300 hover:text-white h-10 hover:bg-white/5">
                   Sign In
@@ -84,6 +90,13 @@ export const LandingNav: React.FC = () => {
               >
                 Pricing
               </a>
+              <Link
+                to="/legal/terms"
+                className="text-slate-200 py-3 min-h-[44px]"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Policies
+              </Link>
               <Link 
                 to="/login" 
                 className="text-slate-200 py-3 min-h-[44px]"

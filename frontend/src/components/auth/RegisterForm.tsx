@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
-import { Eye, EyeOff, AlertCircle, TrendingUp } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, TrendingUp, ShieldCheck, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -27,6 +27,15 @@ import { RegisterData } from '@/types/auth';
 import { parseAuthError } from '@/utils/errorMessages';
 import { supabase, isSupabaseEnabled } from '@/utils/supabase';
 import { toast } from '@/hooks/use-toast';
+import {
+  PolicyAgreementDialog,
+} from '@/components/legal/PolicyAgreementDialog';
+import {
+  POLICY_METADATA,
+  type PolicyAcceptance,
+  type PolicyKey,
+} from '@/config/legal';
+import { Badge } from '@/design-system/shadcn/components/badge';
 
 const registerSchema = z
   .object({
@@ -42,6 +51,20 @@ const registerSchema = z
       ),
     confirm_password: z.string().min(1, 'Please confirm your password'),
     invite_token: z.string().optional(),
+    terms_accepted: z.literal(true, {
+      errorMap: () => ({
+        message: 'You must agree to the Terms of Service to create an account.',
+      }),
+    }),
+    terms_version: z.string().min(1),
+    terms_accepted_at: z.string().min(1),
+    privacy_accepted: z.literal(true, {
+      errorMap: () => ({
+        message: 'You must agree to the Privacy Policy to create an account.',
+      }),
+    }),
+    privacy_version: z.string().min(1),
+    privacy_accepted_at: z.string().min(1),
   })
   .refine((data) => data.password === data.confirm_password, {
     message: "Passwords don't match",
@@ -54,11 +77,24 @@ export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [searchParams] = useSearchParams();
+  const [dialogPolicy, setDialogPolicy] = useState<PolicyKey | null>(null);
+  const [consents, setConsents] = useState<Record<PolicyKey, PolicyAcceptance | null>>({
+    terms: null,
+    privacy: null,
+  });
 
   const inviteToken = searchParams.get('token') ?? undefined;
   const inviteEmail = searchParams.get('email') ?? undefined;
   const inviteAccountName = searchParams.get('accountName') ?? undefined;
   const isInviteFlow = Boolean(inviteToken);
+  const consentFormatter = useMemo(
+    () =>
+      new Intl.DateTimeFormat(undefined, {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      }),
+    [],
+  );
 
   const form = useForm<RegisterData>({
     resolver: zodResolver(registerSchema),
@@ -69,6 +105,12 @@ export function RegisterForm() {
       password: '',
       confirm_password: '',
       invite_token: inviteToken,
+    terms_accepted: false,
+    terms_version: '',
+    terms_accepted_at: '',
+    privacy_accepted: false,
+    privacy_version: '',
+    privacy_accepted_at: '',
     },
   });
 
@@ -80,6 +122,37 @@ export function RegisterForm() {
       form.setValue('invite_token', inviteToken);
     }
   }, [form, inviteEmail, inviteToken]);
+
+  const formatConsentTimestamp = (timestamp?: string) => {
+    if (!timestamp) {
+      return '';
+    }
+    try {
+      return consentFormatter.format(new Date(timestamp));
+    } catch (formatError) {
+      console.warn('Failed to format consent timestamp', formatError);
+      return timestamp;
+    }
+  };
+
+  const handlePolicyAccepted = (acceptance: PolicyAcceptance) => {
+    const { policy, acceptedAt, version } = acceptance;
+
+    if (policy === 'terms') {
+      form.setValue('terms_accepted', true, { shouldDirty: true, shouldValidate: true });
+      form.setValue('terms_version', version, { shouldDirty: true });
+      form.setValue('terms_accepted_at', acceptedAt, { shouldDirty: true });
+    } else {
+      form.setValue('privacy_accepted', true, { shouldDirty: true, shouldValidate: true });
+      form.setValue('privacy_version', version, { shouldDirty: true });
+      form.setValue('privacy_accepted_at', acceptedAt, { shouldDirty: true });
+    }
+
+    setConsents((previous) => ({
+      ...previous,
+      [policy]: acceptance,
+    }));
+  };
 
   const onSubmit = async (data: RegisterData) => {
     try {
@@ -233,6 +306,11 @@ export function RegisterForm() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4"
               >
+        <input type="hidden" {...form.register('terms_version')} />
+        <input type="hidden" {...form.register('terms_accepted_at')} />
+        <input type="hidden" {...form.register('privacy_version')} />
+        <input type="hidden" {...form.register('privacy_accepted_at')} />
+
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -372,6 +450,125 @@ export function RegisterForm() {
                   )}
                 />
 
+                <div className="space-y-4 rounded-2xl border border-white/10 bg-obsidian/50 p-4">
+                  <h3 className="text-lg font-semibold text-white">Review &amp; agree to continue</h3>
+                  <p className="text-sm text-slate-400">
+                    We need your acknowledgement of the RestaurantIQ policies before creating your workspace.
+                  </p>
+
+                  <FormField
+                    control={form.control}
+                    name="terms_accepted"
+                    render={({ field }) => {
+                      const consent = consents.terms;
+                      return (
+                        <FormItem className="space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+                          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                            <div className="space-y-2">
+                              <FormLabel className="flex items-center gap-2 text-slate-200">
+                                <FileText className="h-4 w-4 text-emerald-400" />
+                                {POLICY_METADATA.terms.title}
+                              </FormLabel>
+                              <p className="text-sm text-slate-400">
+                                Review version {POLICY_METADATA.terms.version} and agree to continue.
+                              </p>
+                              {field.value && consent && (
+                                <p className="flex items-center gap-2 text-xs text-emerald-300">
+                                  <ShieldCheck className="h-4 w-4" />
+                                  Accepted {formatConsentTimestamp(consent.acceptedAt)}
+                                </p>
+                              )}
+                              {!field.value && (
+                                <p className="text-xs text-amber-300">Awaiting acknowledgement.</p>
+                              )}
+                            </div>
+                            <div className="flex items-end justify-end gap-3 lg:flex-col lg:items-end">
+                              <Badge
+                                className={
+                                  field.value
+                                    ? 'border-emerald-500/40 bg-emerald-500/20 text-emerald-200'
+                                    : 'border-amber-500/40 bg-amber-500/10 text-amber-200'
+                                }
+                              >
+                                {field.value ? 'Accepted' : 'Required'}
+                              </Badge>
+                              <Button
+                                type="button"
+                                variant={field.value ? 'outline' : 'default'}
+                                className={
+                                  field.value
+                                    ? 'border-slate-700 text-slate-200 hover:text-white'
+                                    : 'bg-emerald-500 text-slate-950 hover:bg-emerald-400'
+                                }
+                                onClick={() => setDialogPolicy('terms')}
+                              >
+                                {field.value ? 'View document' : 'Review & agree'}
+                              </Button>
+                            </div>
+                          </div>
+                          <FormMessage className="text-xs text-red-400" />
+                        </FormItem>
+                      );
+                    }}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="privacy_accepted"
+                    render={({ field }) => {
+                      const consent = consents.privacy;
+                      return (
+                        <FormItem className="space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+                          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                            <div className="space-y-2">
+                              <FormLabel className="flex items-center gap-2 text-slate-200">
+                                <FileText className="h-4 w-4 text-emerald-400" />
+                                {POLICY_METADATA.privacy.title}
+                              </FormLabel>
+                              <p className="text-sm text-slate-400">
+                                Review version {POLICY_METADATA.privacy.version} before you proceed.
+                              </p>
+                              {field.value && consent && (
+                                <p className="flex items-center gap-2 text-xs text-emerald-300">
+                                  <ShieldCheck className="h-4 w-4" />
+                                  Accepted {formatConsentTimestamp(consent.acceptedAt)}
+                                </p>
+                              )}
+                              {!field.value && (
+                                <p className="text-xs text-amber-300">Awaiting acknowledgement.</p>
+                              )}
+                            </div>
+                            <div className="flex items-end justify-end gap-3 lg:flex-col lg:items-end">
+                              <Badge
+                                className={
+                                  field.value
+                                    ? 'border-emerald-500/40 bg-emerald-500/20 text-emerald-200'
+                                    : 'border-amber-500/40 bg-amber-500/10 text-amber-200'
+                                }
+                              >
+                                {field.value ? 'Accepted' : 'Required'}
+                              </Badge>
+                              <Button
+                                type="button"
+                                variant={field.value ? 'outline' : 'default'}
+                                className={
+                                  field.value
+                                    ? 'border-slate-700 text-slate-200 hover:text-white'
+                                    : 'bg-emerald-500 text-slate-950 hover:bg-emerald-400'
+                                }
+                                onClick={() => setDialogPolicy('privacy')}
+                              >
+                                {field.value ? 'View document' : 'Review & agree'}
+                              </Button>
+                            </div>
+                          </div>
+                          <FormMessage className="text-xs text-red-400" />
+                        </FormItem>
+                      );
+                    }}
+                  />
+                </div>
+
                 <Button
                   type="submit"
                   className="w-full h-12 text-base font-semibold bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/25 transition-all duration-200 mt-6"
@@ -423,6 +620,22 @@ export function RegisterForm() {
             ← Back to home
           </Link>
         </div>
+
+        {dialogPolicy && (
+          <PolicyAgreementDialog
+            policy={dialogPolicy}
+            open={Boolean(dialogPolicy)}
+            onOpenChange={(open) => {
+              if (!open) {
+                setDialogPolicy(null);
+              }
+            }}
+            onAccept={(acceptance) => {
+              handlePolicyAccepted(acceptance);
+              setDialogPolicy(null);
+            }}
+          />
+        )}
       </div>
     </div>
   );

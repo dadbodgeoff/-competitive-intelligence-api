@@ -33,6 +33,13 @@ async def register_user(
     try:
         logger.info(f"🔵 Registration attempt for email: {user_data.email}")
         
+        if not user_data.terms_accepted or not user_data.privacy_accepted:
+            logger.warning("❌ Registration attempt without mandatory policy acceptance: %s", user_data.email)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="You must accept the Terms of Service and Privacy Policy to create an account."
+            )
+
         # Register user with Supabase Auth
         logger.info(f"🔵 Calling Supabase sign_up...")
         auth_response = supabase.auth.sign_up({
@@ -67,7 +74,11 @@ async def register_user(
             "first_name": user_data.first_name,
             "last_name": user_data.last_name,
             "subscription_tier": "free",
-            "is_active": True
+            "is_active": True,
+            "terms_version": user_data.terms_version,
+            "terms_accepted_at": user_data.terms_accepted_at.isoformat(),
+            "privacy_version": user_data.privacy_version,
+            "privacy_accepted_at": user_data.privacy_accepted_at.isoformat(),
         }
         try:
             logger.info("🔵 Ensuring public.users profile exists...")

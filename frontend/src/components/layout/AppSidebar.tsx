@@ -21,6 +21,7 @@ import {
   Truck,
   Calendar,
   ClipboardList,
+  Palette,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -106,6 +107,13 @@ const mainNavItems: NavItem[] = [
     href: '/menu-comparison',
     icon: Menu,
     module: 'menu_comparison',
+  },
+  {
+    title: 'Creative Studio',
+    href: '/creative',
+    icon: Palette,
+    module: 'dashboard',
+    badge: 'NEW',
   },
   {
     title: 'Price Analytics',

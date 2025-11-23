@@ -7,6 +7,7 @@ from typing import Dict, Optional, Callable
 from fastapi import HTTPException, status, Request, Depends
 from collections import defaultdict, deque
 from functools import wraps
+import inspect
 import logging
 
 logger = logging.getLogger(__name__)
@@ -352,5 +353,10 @@ def rate_limit(operation: str):
                 # Release the concurrent slot
                 rate_limiter.release_request(user_id, operation)
         
+        try:
+            wrapper.__signature__ = inspect.signature(func)
+        except (ValueError, TypeError):
+            pass
+
         return wrapper
     return decorator

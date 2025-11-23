@@ -29,9 +29,23 @@ export const LandingFooter: React.FC = () => {
           </div>
           <div>
             <h4 className="font-bold text-white mb-4">Legal</h4>
-             <ul className="space-y-2 text-slate-400">
-              <li><Link to="#" className="hover:text-emerald-400 transition-colors">Privacy Policy</Link></li>
-              <li><Link to="#" className="hover:text-emerald-400 transition-colors">Terms of Service</Link></li>
+            <ul className="space-y-2 text-slate-400">
+              <li>
+                <Link
+                  to="/legal/privacy"
+                  className="hover:text-emerald-400 transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/legal/terms"
+                  className="hover:text-emerald-400 transition-colors"
+                >
+                  Terms of Service
+                </Link>
+              </li>
             </ul>
           </div>
            <div className="col-span-2 md:col-span-2">

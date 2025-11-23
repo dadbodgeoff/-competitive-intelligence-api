@@ -63,6 +63,12 @@ interface GuestDemoState {
   fileName?: string;
 }
 
+export interface GuestPolicyConsentPayload {
+  terms_version: string;
+  privacy_version: string;
+  consent_timestamp: string;
+}
+
 const STORAGE_KEY = 'guest_invoice_demo';
 const API_BASE_URL =
   import.meta.env?.VITE_API_URL ??
@@ -368,7 +374,7 @@ export function useGuestInvoiceDemo() {
   );
 
   const uploadInvoice = useCallback(
-    async (file: File) => {
+    async (file: File, consent?: GuestPolicyConsentPayload) => {
       try {
         reset();
         setState(prev => ({
@@ -381,6 +387,12 @@ export function useGuestInvoiceDemo() {
 
         const formData = new FormData();
         formData.append('file', file);
+        if (consent) {
+          formData.append('policies_acknowledged', 'true');
+          formData.append('terms_version', consent.terms_version);
+          formData.append('privacy_version', consent.privacy_version);
+          formData.append('consent_timestamp', consent.consent_timestamp);
+        }
 
         const data = await uploadGuestInvoice(formData);
         addEvent('success', 'Upload complete. Parsing now…');

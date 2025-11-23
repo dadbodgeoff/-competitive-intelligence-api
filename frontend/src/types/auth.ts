@@ -30,6 +30,12 @@ export interface RegisterData {
   password: string;
   confirm_password: string;
   invite_token?: string;
+  terms_accepted: boolean;
+  terms_version: string;
+  terms_accepted_at: string;
+  privacy_accepted: boolean;
+  privacy_version: string;
+  privacy_accepted_at: string;
 }
 
 // Login/Register response (cookies set automatically by backend)

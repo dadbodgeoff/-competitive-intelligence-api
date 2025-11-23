@@ -47,7 +47,8 @@ async def check_usage_limit(
         'free_analysis',
         'menu_comparison',
         'menu_upload',
-        'premium_analysis'
+        'premium_analysis',
+        'image_generation'
     ]
     
     if operation_type not in valid_types:

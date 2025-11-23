@@ -3,7 +3,7 @@
  * Centralized hook for checking and displaying usage limits across the app
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { apiClient } from '@/services/api/client';
 
 export interface UsageLimit {
@@ -18,6 +18,7 @@ export interface UsageLimit {
 export interface UsageSummary {
   subscription_tier: string;
   unlimited: boolean;
+  message?: string;
   weekly?: {
     invoice_uploads: { used: number; limit: number; reset_date: string };
     free_analyses: { used: number; limit: number; reset_date: string };
@@ -26,7 +27,11 @@ export interface UsageSummary {
     premium_analyses: { used: number; limit: number; reset_date: string };
   };
   monthly?: {
-    bonus_invoices: { used: number; limit: number; reset_date: string };
+    bonus_invoices?: { used: number; limit: number; reset_date: string };
+    image_generations?: { used: number; limit: number; reset_date: string };
+  };
+  creative?: {
+    image_generations?: { used: number; limit: number; reset_date: string };
   };
 }
 
@@ -35,15 +40,23 @@ export interface UsageSummary {
  * @param operationType - Type of operation to check
  * @param autoCheck - Whether to check on mount (default: true)
  */
+export type UsageOperation =
+  | 'invoice_upload'
+  | 'free_analysis'
+  | 'menu_comparison'
+  | 'menu_upload'
+  | 'premium_analysis'
+  | 'image_generation';
+
 export function useUsageLimit(
-  operationType: 'invoice_upload' | 'free_analysis' | 'menu_comparison' | 'menu_upload' | 'premium_analysis',
+  operationType: UsageOperation,
   autoCheck: boolean = true
 ) {
   const [limit, setLimit] = useState<UsageLimit | null>(null);
   const [loading, setLoading] = useState(autoCheck);
   const [error, setError] = useState<string | null>(null);
 
-  const checkLimit = async () => {
+  const checkLimit = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -61,13 +74,13 @@ export function useUsageLimit(
     } finally {
       setLoading(false);
     }
-  };
+  }, [operationType]);
 
   useEffect(() => {
     if (autoCheck) {
       checkLimit();
     }
-  }, [operationType, autoCheck]);
+  }, [checkLimit, autoCheck]);
 
   return {
     limit,

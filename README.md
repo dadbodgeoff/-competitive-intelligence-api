@@ -10,6 +10,11 @@ A full-stack SaaS platform for restaurant operators to manage invoices, track pr
 - **Competitor Analysis**: Compare your menu against competitors
 - **Review Analysis**: AI-powered analysis of customer reviews
 - **Multi-tier Subscriptions**: Free, Pro, and Enterprise tiers
+- **Creative Marketing Assets**: Generate on-brand Nano Banana campaigns with themed templates and auto-variation
+  - *Menu & Event Drops*: Pizza, bar & grill, mixed-vertical, and winter seasonal themes.
+  - *Social Proof Review Showcases*: Kitchen spike receipts, neon brick quotes, felt letter boards, and other review-to-visual templates optimized for Instagram/Social.
+  - *Talent Acquisition Flyers* **(NEW)**: Selvedge aprons, heat-lamp passes, knife-roll invites, and other “Now Hiring” scenes that attract the right candidates instead of generic help-wanted posts.
+  - *Events & Promotions* **(NEW)**: Live-music setlists, game-day pigskin macros, trivia sheets, spotlight comedy nights, kids’ balloon promos, and hot sauce challenges for experiential campaigns.
 
 ### New: Daily Sales Tracking
 
@@ -134,6 +139,15 @@ GOOGLE_PLACES_API_KEY=your-places-key
 # External Services
 SERPAPI_KEY=your-serpapi-key
 OUTSCRAPER_API_KEY=your-outscraper-key
+
+# Nano Banana Creative Generation
+NANO_BANANA_BASE_URL=https://api.nanobanana.ai
+# Optional dedicated key; falls back to GEMINI_API_KEY/GOOGLE_GEMINI_API_KEY if omitted
+NANO_BANANA_API_KEY=your-nano-banana-api-key
+# Optional: only required if using webhooks
+NANO_BANANA_WEBHOOK_SECRET=your-webhook-signing-secret
+# Supabase bucket used to cache generated assets locally
+CREATIVE_ASSETS_BUCKET=creative-assets
 
 # Time Clock PINs
 CLOCK_PIN_PEPPER=strong-random-string-used-for-pin-hashing

@@ -17,24 +17,24 @@ interface QuickActionsGridProps {
 
 const colorClasses = {
   emerald: {
-    icon: 'text-emerald-400 bg-emerald-500/10',
-    button: 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700',
-    border: 'hover:border-emerald-500/50',
+    icon: 'text-primary-500 bg-primary-500/10',
+    button: 'bg-gradient-to-r bg-primary-500 hover:bg-primary-400',
+    border: 'hover:border-primary-500/50',
   },
   cyan: {
-    icon: 'text-cyan-400 bg-cyan-500/10',
-    button: 'bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700',
-    border: 'hover:border-cyan-500/50',
+    icon: 'text-accent-400 bg-accent-500/10',
+    button: 'bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700',
+    border: 'hover:border-accent-500/50',
   },
   orange: {
-    icon: 'text-orange-400 bg-orange-500/10',
-    button: 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700',
-    border: 'hover:border-orange-500/50',
+    icon: 'text-primary-500 bg-primary-500/10',
+    button: 'bg-gradient-to-r from-primary-600 to-primary-600 hover:from-primary-500 hover:to-primary-600',
+    border: 'hover:border-primary-600/50',
   },
   purple: {
-    icon: 'text-purple-400 bg-purple-500/10',
-    button: 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700',
-    border: 'hover:border-purple-500/50',
+    icon: 'text-accent-400 bg-accent-500/10',
+    button: 'bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700',
+    border: 'hover:border-accent-500/50',
   },
 };
 

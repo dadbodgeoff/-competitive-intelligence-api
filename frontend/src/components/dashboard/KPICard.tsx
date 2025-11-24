@@ -50,7 +50,7 @@ export function KPICard({
         {trend && (
           <p
             className={`text-xs mt-1 ${
-              trend.isPositive ? 'text-emerald-400' : 'text-red-400'
+              trend.isPositive ? 'text-primary-500' : 'text-destructive'
             }`}
           >
             {trend.isPositive ? '+' : ''}

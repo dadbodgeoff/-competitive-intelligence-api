@@ -83,7 +83,7 @@ export function CreativeBrandProfilesPage() {
             </Button>
             <div>
               <h1 className="text-3xl font-bold text-white flex items-center gap-2">
-                <Palette className="h-8 w-8 text-emerald-500" />
+                <Palette className="h-8 w-8 text-primary-500" />
                 Brand Profiles
               </h1>
               <p className="text-slate-400 mt-1">
@@ -92,7 +92,7 @@ export function CreativeBrandProfilesPage() {
             </div>
           </div>
           {!showForm && (
-            <Button onClick={handleCreate} className="bg-emerald-500 hover:bg-emerald-600">
+            <Button onClick={handleCreate} className="bg-primary-500 hover:bg-primary-500">
               <Plus className="h-4 w-4 mr-2" />
               Create Profile
             </Button>
@@ -121,7 +121,7 @@ export function CreativeBrandProfilesPage() {
             )}
 
             {profilesQuery.error && (
-              <Alert variant="destructive" className="bg-red-500/10 border-red-500/50">
+              <Alert variant="destructive" className="bg-destructive/10 border-red-500/50">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
                   {profilesQuery.error instanceof Error
@@ -142,7 +142,7 @@ export function CreativeBrandProfilesPage() {
                     Create your first brand profile to maintain consistent styling across all
                     your creative assets.
                   </p>
-                  <Button onClick={handleCreate} className="bg-emerald-500 hover:bg-emerald-600">
+                  <Button onClick={handleCreate} className="bg-primary-500 hover:bg-primary-500">
                     <Plus className="h-4 w-4 mr-2" />
                     Create First Profile
                   </Button>

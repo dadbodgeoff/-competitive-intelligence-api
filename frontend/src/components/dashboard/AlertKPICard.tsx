@@ -24,14 +24,14 @@ export function AlertKPICard({
 }: AlertKPICardProps) {
   const colorClasses = {
     negative: {
-      icon: 'text-red-400 bg-red-500/10',
+      icon: 'text-destructive bg-destructive/10',
       border: 'hover:border-red-500/50',
-      text: 'text-red-400',
+      text: 'text-destructive',
     },
     positive: {
-      icon: 'text-emerald-400 bg-emerald-500/10',
-      border: 'hover:border-emerald-500/50',
-      text: 'text-emerald-400',
+      icon: 'text-primary-500 bg-primary-500/10',
+      border: 'hover:border-primary-500/50',
+      text: 'text-primary-500',
     },
   };
 

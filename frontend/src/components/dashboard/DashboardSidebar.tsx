@@ -94,7 +94,7 @@ export function DashboardSidebar() {
     <Sidebar>
       <SidebarHeader className="border-b border-white/10 p-4">
         <Link to="/dashboard" className="flex items-center gap-2">
-          <TrendingUp className="h-6 w-6 text-emerald-500" />
+          <TrendingUp className="h-6 w-6 text-primary-500" />
           <span className="text-lg font-bold text-white">RestaurantIQ</span>
         </Link>
       </SidebarHeader>
@@ -169,16 +169,16 @@ export function DashboardSidebar() {
 
       <SidebarFooter className="border-t border-white/10 p-4">
         {isPremium ? (
-          <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 p-3">
-            <Crown className="h-4 w-4 text-emerald-400" />
-            <span className="text-sm font-medium text-emerald-400">
+          <div className="flex items-center gap-2 rounded-lg bg-primary-500/10 p-3">
+            <Crown className="h-4 w-4 text-primary-500" />
+            <span className="text-sm font-medium text-primary-500">
               Premium
             </span>
           </div>
         ) : (
           <Link to="/pricing">
-            <div className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 p-3 hover:from-emerald-500/20 hover:to-cyan-500/20 transition-colors">
-              <Crown className="h-4 w-4 text-emerald-400" />
+            <div className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-primary-500/10 to-accent-500/10 p-3 hover:from-primary-500/20 hover:to-accent-500/20 transition-colors">
+              <Crown className="h-4 w-4 text-primary-500" />
               <span className="text-sm font-medium text-white">
                 Upgrade to Premium
               </span>

@@ -71,17 +71,17 @@ export function PriceAnalyticsDashboard() {
     if (trend === null) return <Badge variant="secondary">No Data</Badge>;
     
     if (trend > 5) {
-      return <Badge className="bg-red-500/20 text-red-400 border-red-500/30">
+      return <Badge className="bg-destructive/20 text-destructive border-red-500/30">
         <TrendingUp className="h-3 w-3 mr-1" />
         {formatPercent(trend)}
       </Badge>;
     } else if (trend < -5) {
-      return <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+      return <Badge className="bg-success-500/20 text-success-400 border-success-500/30">
         <TrendingDown className="h-3 w-3 mr-1" />
         {formatPercent(Math.abs(trend))}
       </Badge>;
     } else {
-      return <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+      return <Badge className="bg-accent-500/20 text-accent-400 border-accent-500/30">
         Stable {formatPercent(Math.abs(trend))}
       </Badge>;
     }
@@ -104,14 +104,14 @@ export function PriceAnalyticsDashboard() {
           <div className="flex gap-3">
             <Button
               onClick={() => navigate('/analytics/opportunities')}
-              className="bg-green-600 hover:bg-green-700 text-white"
+              className="bg-success-600 hover:bg-success-700 text-white"
             >
               <Lightbulb className="h-4 w-4 mr-2" />
               Savings Opportunities
             </Button>
             <Button
               onClick={() => navigate('/analytics/alerts')}
-              className="bg-orange-600 hover:bg-orange-700 text-white"
+              className="bg-primary-500 hover:bg-primary-700 text-white"
             >
               <Bell className="h-4 w-4 mr-2" />
               Price Alerts
@@ -125,7 +125,7 @@ export function PriceAnalyticsDashboard() {
               <CardTitle className="text-sm font-medium text-slate-300">
                 Items Tracked
               </CardTitle>
-              <Package className="h-4 w-4 text-blue-400" />
+              <Package className="h-4 w-4 text-accent-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">
@@ -142,7 +142,7 @@ export function PriceAnalyticsDashboard() {
               <CardTitle className="text-sm font-medium text-slate-300">
                 Active Vendors
               </CardTitle>
-              <TrendingUp className="h-4 w-4 text-green-400" />
+              <TrendingUp className="h-4 w-4 text-success-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">
@@ -159,7 +159,7 @@ export function PriceAnalyticsDashboard() {
               <CardTitle className="text-sm font-medium text-slate-300">
                 Total Purchases
               </CardTitle>
-              <Package className="h-4 w-4 text-purple-400" />
+              <Package className="h-4 w-4 text-accent-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">
@@ -176,7 +176,7 @@ export function PriceAnalyticsDashboard() {
               <CardTitle className="text-sm font-medium text-slate-300">
                 Total Spend
               </CardTitle>
-              <DollarSign className="h-4 w-4 text-green-400" />
+              <DollarSign className="h-4 w-4 text-success-400" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">

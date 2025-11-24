@@ -23,7 +23,7 @@ export function CompetitorsOverview({ competitors }: CompetitorsOverviewProps) {
             <div className="flex items-start justify-between gap-3">
               <CardTitle className="text-lg text-white">{competitor.business_name}</CardTitle>
               {competitor.rating != null && (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-semibold border bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-semibold border bg-primary-500/15 text-primary-500 border-white/10">
                   <Star className="w-3.5 h-3.5 fill-current" />
                   {competitor.rating.toFixed(1)}
                 </div>
@@ -51,10 +51,10 @@ export function CompetitorsOverview({ competitors }: CompetitorsOverviewProps) {
               )}
               {competitor.distance_miles && (
                 <div className="flex items-center gap-2 text-sm">
-                  <Navigation className="w-4 h-4 text-cyan-500" />
+                  <Navigation className="w-4 h-4 text-accent-500" />
                   <div>
                     <div className="text-slate-400 text-xs">Distance</div>
-                    <div className="text-cyan-400 font-semibold">{competitor.distance_miles.toFixed(1)} mi</div>
+                    <div className="text-accent-400 font-semibold">{competitor.distance_miles.toFixed(1)} mi</div>
                   </div>
                 </div>
               )}

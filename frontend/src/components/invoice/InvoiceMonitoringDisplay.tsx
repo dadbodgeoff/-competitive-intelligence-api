@@ -67,7 +67,7 @@ export const InvoiceMonitoringDisplay: React.FC<Props> = ({ metrics, show }) => 
           </div>
           <div className="w-full bg-gray-200 rounded-full h-1.5">
             <div
-              className="bg-blue-500 h-1.5 rounded-full"
+              className="bg-accent-500 h-1.5 rounded-full"
               style={{
                 width: `${(performance.upload_time / performance.total_time) * 100}%`,
               }}
@@ -84,7 +84,7 @@ export const InvoiceMonitoringDisplay: React.FC<Props> = ({ metrics, show }) => 
           </div>
           <div className="w-full bg-gray-200 rounded-full h-1.5">
             <div
-              className="bg-purple-500 h-1.5 rounded-full"
+              className="bg-accent-500 h-1.5 rounded-full"
               style={{
                 width: `${(performance.parse_time / performance.total_time) * 100}%`,
               }}
@@ -101,7 +101,7 @@ export const InvoiceMonitoringDisplay: React.FC<Props> = ({ metrics, show }) => 
           </div>
           <div className="w-full bg-gray-200 rounded-full h-1.5">
             <div
-              className="bg-green-500 h-1.5 rounded-full"
+              className="bg-success-500 h-1.5 rounded-full"
               style={{
                 width: `${(performance.save_time / performance.total_time) * 100}%`,
               }}
@@ -118,7 +118,7 @@ export const InvoiceMonitoringDisplay: React.FC<Props> = ({ metrics, show }) => 
           </div>
           <div className="w-full bg-gray-200 rounded-full h-1.5">
             <div
-              className="bg-orange-500 h-1.5 rounded-full"
+              className="bg-primary-500 h-1.5 rounded-full"
               style={{
                 width: `${(performance.inventory_time / performance.total_time) * 100}%`,
               }}
@@ -158,26 +158,26 @@ export const InvoiceMonitoringDisplay: React.FC<Props> = ({ metrics, show }) => 
           Inventory Impact
         </h4>
         <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="bg-green-50 rounded p-2">
-            <div className="text-green-600 font-medium">
+          <div className="bg-success-50 rounded p-2">
+            <div className="text-success-600 font-medium">
               {inventory.items_created}
             </div>
             <div className="text-gray-600">New Items</div>
           </div>
-          <div className="bg-blue-50 rounded p-2">
-            <div className="text-blue-600 font-medium">
+          <div className="bg-accent-50 rounded p-2">
+            <div className="text-accent-600 font-medium">
               {inventory.items_updated}
             </div>
             <div className="text-gray-600">Updated</div>
           </div>
-          <div className="bg-purple-50 rounded p-2">
-            <div className="text-purple-600 font-medium">
+          <div className="bg-accent-50 rounded p-2">
+            <div className="text-accent-600 font-medium">
               {inventory.fuzzy_matches}
             </div>
             <div className="text-gray-600">Fuzzy Matched</div>
           </div>
-          <div className="bg-indigo-50 rounded p-2">
-            <div className="text-indigo-600 font-medium">
+          <div className="bg-primary-500/10 rounded p-2">
+            <div className="text-primary-600 font-medium">
               {inventory.exact_matches}
             </div>
             <div className="text-gray-600">Exact Matched</div>
@@ -207,14 +207,14 @@ export const InvoiceMonitoringDisplay: React.FC<Props> = ({ metrics, show }) => 
           )}
           {warnings.length > 0 && (
             <div>
-              <h4 className="text-xs font-semibold text-yellow-700 mb-1">
+              <h4 className="text-xs font-semibold text-primary-700 mb-1">
                 ⚠️ Warnings ({warnings.length})
               </h4>
               <div className="space-y-1">
                 {warnings.map((warning, idx) => (
                   <div
                     key={idx}
-                    className="text-xs text-yellow-600 bg-yellow-50 rounded p-2"
+                    className="text-xs text-primary-600 bg-primary-50 rounded p-2"
                   >
                     <div className="font-medium">{warning.phase}</div>
                     <div>{warning.warning}</div>

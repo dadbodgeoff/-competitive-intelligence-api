@@ -21,7 +21,7 @@ export function InvoiceCard({
   const variants = {
     default: 'border-white/10',
     elevated: 'border-white/10 shadow-lg',
-    interactive: 'border-white/10 hover:border-cyan-500/30 hover:-translate-y-1 hover:shadow-lg cursor-pointer',
+    interactive: 'border-white/10 hover:border-accent-500/30 hover:-translate-y-1 hover:shadow-lg cursor-pointer',
   };
 
   return (

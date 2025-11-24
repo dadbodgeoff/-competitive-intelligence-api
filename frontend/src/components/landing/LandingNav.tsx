@@ -18,8 +18,8 @@ export const LandingNav: React.FC = () => {
 
   const headerClasses = `fixed top-0 w-full h-16 z-50 transition-all duration-300 ${
     isScrolled
-      ? 'bg-slate-950/75 backdrop-blur-2xl border-b border-emerald-500/20 shadow-[0_10px_40px_-25px_rgba(16,185,129,0.65)]'
-      : 'bg-slate-950/40 backdrop-blur-xl border-b border-white/10'
+      ? 'bg-[#121212]/90 backdrop-blur-2xl border-b shadow-[0_10px_40px_-25px_rgba(176,137,104,0.65)]'
+      : 'bg-[#121212]/60 backdrop-blur-xl border-b'
   }`;
 
   return (
@@ -27,7 +27,7 @@ export const LandingNav: React.FC = () => {
       {/* Skip to Main - Accessibility */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-[9999] focus:bg-emerald-500 focus:text-white focus:px-6 focus:py-3 focus:font-semibold focus:rounded-br-lg"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-[9999] focus:bg-primary-500 focus:text-white focus:px-6 focus:py-3 focus:font-semibold focus:rounded-br-lg"
       >
         Skip to main content
       </a>
@@ -36,41 +36,44 @@ export const LandingNav: React.FC = () => {
       <header className={headerClasses}>
         <div className="max-w-7xl mx-auto h-full px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between h-full">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 transition-colors hover:text-emerald-300">
-              <span className="text-emerald-400 font-bold text-2xl">R</span>
-              <span className="text-white font-semibold text-lg">RestaurantIQ</span>
+            {/* Logo - BRAND COLORS */}
+            <Link to="/" className="flex items-center gap-2 transition-colors">
+              <span className="font-bold text-2xl" style={{ color: '#B08968' }}>R</span>
+              <span className="font-semibold text-lg" style={{ color: '#E0E0E0' }}>RestaurantIQ</span>
             </Link>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Navigation - BRAND COLORS */}
             <nav className="hidden md:flex items-center gap-6 lg:gap-8">
               <a 
                 href="#pricing" 
-                className="text-slate-300 hover:text-white transition-colors text-sm font-medium"
+                className="transition-colors text-sm font-medium"
+                style={{ color: '#A8B1B9' }}
               >
                 Pricing
               </a>
               <Link
                 to="/legal/terms"
-                className="text-slate-300 hover:text-white transition-colors text-sm font-medium"
+                className="transition-colors text-sm font-medium"
+                style={{ color: '#A8B1B9' }}
               >
                 Policies
               </Link>
               <Link to="/login">
-                <Button variant="ghost" className="btn-small text-slate-300 hover:text-white hover:bg-white/5">
+                <Button variant="ghost" className="btn-small hover:bg-white/5" style={{ color: '#A8B1B9' }}>
                   Sign In
                 </Button>
               </Link>
               <Link to="/register">
-                <Button className="btn-small bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 shadow-lg hover:shadow-emerald-500/40">
+                <Button className="btn-small text-white font-semibold shadow-lg transition-all" style={{ backgroundColor: '#B08968' }}>
                   Get Started
                 </Button>
               </Link>
             </nav>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - BRAND COLORS */}
             <button 
-              className="md:hidden text-emerald-400 min-h-[44px] min-w-[44px] flex items-center justify-center" 
+              className="md:hidden min-h-[44px] min-w-[44px] flex items-center justify-center" 
+              style={{ color: '#B08968' }}
               aria-label="Toggle menu"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
@@ -79,34 +82,38 @@ export const LandingNav: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - BRAND COLORS */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-slate-950/90 backdrop-blur-xl border-t border-emerald-500/20">
-            <nav className="flex flex-col p-4 gap-2">
+          <div className="md:hidden backdrop-blur-xl border-t" style={{ backgroundColor: 'rgba(18, 18, 18, 0.95)', borderColor: 'rgba(176, 137, 104, 0.2)' }}>
+            <nav className="flex flex-col p-6 gap-4">
               <a 
                 href="#pricing" 
-                className="text-slate-300 hover:text-emerald-300 py-3 min-h-[44px]"
+                className="py-3 min-h-[44px]"
+                style={{ color: '#A8B1B9' }}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Pricing
               </a>
               <Link
                 to="/legal/terms"
-                className="text-slate-200 py-3 min-h-[44px]"
+                className="py-3 min-h-[44px]"
+                style={{ color: '#E0E0E0' }}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Policies
               </Link>
               <Link 
                 to="/login" 
-                className="text-slate-200 py-3 min-h-[44px]"
+                className="py-3 min-h-[44px]"
+                style={{ color: '#E0E0E0' }}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Sign In
               </Link>
               <Link 
                 to="/register" 
-                className="text-emerald-400 py-3 font-semibold min-h-[44px]"
+                className="py-3 font-semibold min-h-[44px]"
+                style={{ color: '#B08968' }}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Get Started

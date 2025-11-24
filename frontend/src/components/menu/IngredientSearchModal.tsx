@@ -79,7 +79,7 @@ export function IngredientSearchModal({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="bg-slate-900 border-white/10 max-w-2xl max-h-[80vh] overflow-y-auto" aria-describedby="ingredient-search-description">
+      <DialogContent className="bg-obsidian border-white/10 max-w-2xl max-h-[80vh] overflow-y-auto" aria-describedby="ingredient-search-description">
         <DialogHeader>
           <DialogTitle className="text-white">Add Ingredient</DialogTitle>
         </DialogHeader>
@@ -102,7 +102,7 @@ export function IngredientSearchModal({
                   autoFocus
                 />
                 {loading && (
-                  <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-cyan-400 animate-spin" />
+                  <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-accent-400 animate-spin" />
                 )}
               </div>
               <p className="text-xs text-slate-500 mt-1">
@@ -120,7 +120,7 @@ export function IngredientSearchModal({
                   <div
                     key={item.id}
                     onClick={() => handleSelect(item)}
-                    className="w-full text-left p-4 rounded-lg border border-white/10 bg-obsidian/50 hover:bg-white/5 hover:border-cyan-500/30 transition-colors cursor-pointer"
+                    className="w-full text-left p-4 rounded-lg border border-white/10 bg-obsidian/50 hover:bg-white/5 hover:border-accent-500/30 transition-colors cursor-pointer"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -130,7 +130,7 @@ export function IngredientSearchModal({
                             ${(item.calculated_unit_cost || 0).toFixed(4)}/{item.base_unit}
                           </span>
                           {item.pack_size && (
-                            <Badge className="bg-emerald-700/50 text-emerald-300 text-xs">
+                            <Badge className="bg-primary-700/50 text-primary-300 text-xs">
                               Pack: {item.pack_size}
                             </Badge>
                           )}
@@ -140,10 +140,10 @@ export function IngredientSearchModal({
                           {item.match_confidence && (
                             <Badge className={
                               item.match_confidence.confidence === 'high' 
-                                ? 'bg-emerald-500/20 text-emerald-400 text-xs border border-emerald-500/30'
+                                ? 'bg-primary-500/20 text-primary-500 text-xs border border-white/10'
                                 : item.match_confidence.confidence === 'medium'
-                                ? 'bg-cyan-500/20 text-cyan-400 text-xs border border-cyan-500/30'
-                                : 'bg-yellow-500/20 text-yellow-400 text-xs border border-yellow-500/30'
+                                ? 'bg-accent-500/20 text-accent-400 text-xs border border-accent-500/30'
+                                : 'bg-primary-500/20 text-primary-500 text-xs border border-primary-600/30'
                             }>
                               {item.match_confidence.confidence === 'high' ? '✓ ' : ''}
                               {Math.round((item.similarity_score || 0) * 100)}% match
@@ -156,7 +156,7 @@ export function IngredientSearchModal({
                           </p>
                         )}
                         {item.warnings && item.warnings.length > 0 && (
-                          <p className="text-xs text-yellow-500 mt-1">
+                          <p className="text-xs text-primary-600 mt-1">
                             ⚠️ {item.warnings[0]}
                           </p>
                         )}
@@ -187,7 +187,7 @@ export function IngredientSearchModal({
           {selectedItem && (
             <div className="space-y-4">
               {/* Selected item display */}
-              <div className="p-4 rounded-lg border border-cyan-500/30 bg-cyan-500/5">
+              <div className="p-4 rounded-lg border border-accent-500/30 bg-accent-500/5">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <h4 className="font-semibold text-white mb-1">{selectedItem.name}</h4>
@@ -261,7 +261,7 @@ export function IngredientSearchModal({
                 <Button
                   onClick={handleAdd}
                   disabled={adding || !quantity || parseFloat(quantity) <= 0}
-                  className="btn-primary shadow-emerald flex-1"
+                  className="btn-primary shadow-primary flex-1"
                 >
                   {adding ? (
                     <>

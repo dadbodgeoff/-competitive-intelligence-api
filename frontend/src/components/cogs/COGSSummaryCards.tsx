@@ -29,8 +29,8 @@ export function COGSSummaryCards({
       <InvoiceCard>
         <InvoiceCardContent className="p-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-              <DollarSign className="h-5 w-5 text-cyan-400" />
+            <div className="h-10 w-10 rounded-lg bg-accent-500/10 flex items-center justify-center">
+              <DollarSign className="h-5 w-5 text-accent-400" />
             </div>
             <div>
               <p className="text-xs text-slate-400">Items with COGS</p>
@@ -47,12 +47,12 @@ export function COGSSummaryCards({
       <InvoiceCard>
         <InvoiceCardContent className="p-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-              <TrendingUp className="h-5 w-5 text-emerald-400" />
+            <div className="h-10 w-10 rounded-lg bg-primary-500/10 flex items-center justify-center">
+              <TrendingUp className="h-5 w-5 text-primary-500" />
             </div>
             <div>
               <p className="text-xs text-slate-400">Avg Margin</p>
-              <p className="text-2xl font-bold text-emerald-400 font-mono">
+              <p className="text-2xl font-bold text-primary-500 font-mono">
                 ${averageMargin.toFixed(2)}
               </p>
             </div>
@@ -67,19 +67,19 @@ export function COGSSummaryCards({
             <div
               className={`h-10 w-10 rounded-lg flex items-center justify-center ${
                 averageFoodCostPercent < 30
-                  ? 'bg-emerald-500/10'
+                  ? 'bg-primary-500/10'
                   : averageFoodCostPercent < 35
-                  ? 'bg-orange-500/10'
-                  : 'bg-red-500/10'
+                  ? 'bg-primary-500/10'
+                  : 'bg-destructive/10'
               }`}
             >
               <CheckCircle
                 className={`h-5 w-5 ${
                   averageFoodCostPercent < 30
-                    ? 'text-emerald-400'
+                    ? 'text-primary-500'
                     : averageFoodCostPercent < 35
-                    ? 'text-orange-400'
-                    : 'text-red-400'
+                    ? 'text-primary-500'
+                    : 'text-destructive'
                 }`}
               />
             </div>
@@ -97,8 +97,8 @@ export function COGSSummaryCards({
       <InvoiceCard>
         <InvoiceCardContent className="p-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
-              <AlertCircle className="h-5 w-5 text-orange-400" />
+            <div className="h-10 w-10 rounded-lg bg-primary-500/10 flex items-center justify-center">
+              <AlertCircle className="h-5 w-5 text-primary-500" />
             </div>
             <div>
               <p className="text-xs text-slate-400">Need Attention</p>

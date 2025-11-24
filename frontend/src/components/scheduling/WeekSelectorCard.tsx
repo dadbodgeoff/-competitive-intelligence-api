@@ -36,7 +36,7 @@ export function WeekSelectorCard({
               const value = event.target.value
               onSelectWeek(value || undefined)
             }}
-            className="w-64 rounded-md border border-white/10 bg-obsidian px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-64 rounded-md border border-white/10 bg-obsidian px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
             <option value="" disabled>
               {weeksLoading ? 'Loading…' : 'Select a week…'}

@@ -8,7 +8,7 @@ import { LandingFooter } from '@/components/landing/LandingFooter';
 
 export const LandingPage: React.FC = () => {
   return (
-    <div className="text-slate-100 min-h-screen">
+    <div className="text-[#E0E0E0] min-h-screen bg-[#121212]">
       <LandingNav />
       
       <StreamlinedHero />

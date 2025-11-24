@@ -33,7 +33,7 @@ export function MenuItemRecipePage() {
     return (
       <AppShell>
         <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 text-emerald-400 animate-spin" />
+          <Loader2 className="h-8 w-8 text-primary-500 animate-spin" />
         </div>
       </AppShell>
     );

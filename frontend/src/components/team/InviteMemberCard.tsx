@@ -64,7 +64,7 @@ export function InviteMemberCard({ isOwner, isInviting, invitations, onInvite }:
             setInviteRole('member')
           }}
           disabled={!isOwner || isInviting || !inviteEmail}
-          className="bg-emerald-600 hover:bg-emerald-500"
+          className="bg-primary-500 hover:bg-primary-500"
         >
           Send Invite
         </Button>

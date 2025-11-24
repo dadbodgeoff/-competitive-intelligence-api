@@ -187,8 +187,8 @@ export function MenuComparisonPage({ onStateChange }: MenuComparisonPageProps) {
         <Card className="bg-card-dark border-white/10 shadow-2xl">
           <CardHeader className="space-y-3 pb-8">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-emerald-500/10">
-                <MenuIcon className="h-6 w-6 text-emerald-400" />
+              <div className="p-3 rounded-xl bg-primary-500/10">
+                <MenuIcon className="h-6 w-6 text-primary-500" />
               </div>
               <div>
                 <CardTitle className="text-3xl font-bold text-white">
@@ -208,7 +208,7 @@ export function MenuComparisonPage({ onStateChange }: MenuComparisonPageProps) {
             {currentState.error && (
               <Alert
                 variant="destructive"
-                className="bg-red-500/10 border-red-500/50 text-red-400"
+                className="bg-destructive/10 border-red-500/50 text-destructive"
               >
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>{currentState.error}</AlertDescription>
@@ -233,10 +233,10 @@ export function MenuComparisonPage({ onStateChange }: MenuComparisonPageProps) {
                         <Input
                           {...field}
                           placeholder="e.g., Park Ave Pizza"
-                          className="h-12 text-base bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20"
+                          className="h-12 text-base bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20"
                         />
                       </FormControl>
-                      <FormMessage className="text-red-400" />
+                      <FormMessage className="text-destructive" />
                     </FormItem>
                   )}
                 />
@@ -257,7 +257,7 @@ export function MenuComparisonPage({ onStateChange }: MenuComparisonPageProps) {
                           className="h-12 text-base"
                         />
                       </FormControl>
-                      <FormMessage className="text-red-400" />
+                      <FormMessage className="text-destructive" />
                     </FormItem>
                   )}
                 />
@@ -292,7 +292,7 @@ export function MenuComparisonPage({ onStateChange }: MenuComparisonPageProps) {
                             ))}
                           </SelectContent>
                         </Select>
-                        <FormMessage className="text-red-400" />
+                        <FormMessage className="text-destructive" />
                       </FormItem>
                     )}
                   />
@@ -314,10 +314,10 @@ export function MenuComparisonPage({ onStateChange }: MenuComparisonPageProps) {
                             max="10"
                             step="0.5"
                             onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                            className="h-12 text-base bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20"
+                            className="h-12 text-base bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20"
                           />
                         </FormControl>
-                        <FormMessage className="text-red-400" />
+                        <FormMessage className="text-destructive" />
                       </FormItem>
                     )}
                   />
@@ -326,7 +326,7 @@ export function MenuComparisonPage({ onStateChange }: MenuComparisonPageProps) {
                 <div className="pt-4">
                   <Button
                     type="submit"
-                    className="w-full h-14 text-base font-semibold bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/25 transition-all duration-200"
+                    className="w-full h-14 text-base font-semibold bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25 transition-all duration-200"
                     disabled={currentState.isLoading || isBlocked}
                   >
                     {currentState.isLoading ? (
@@ -350,19 +350,19 @@ export function MenuComparisonPage({ onStateChange }: MenuComparisonPageProps) {
               <h3 className="text-lg font-semibold text-white mb-3">How it works:</h3>
               <div className="space-y-2 text-sm text-slate-400">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">1</div>
+                  <div className="w-6 h-6 rounded-full bg-primary-500/20 text-primary-500 flex items-center justify-center text-xs font-bold">1</div>
                   <span>We'll find 5 nearby competitors in your area</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xs font-bold">2</div>
+                  <div className="w-6 h-6 rounded-full bg-accent-500/20 text-accent-400 flex items-center justify-center text-xs font-bold">2</div>
                   <span>You select 2 competitors to analyze</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs font-bold">3</div>
+                  <div className="w-6 h-6 rounded-full bg-primary-500/20 text-primary-500 flex items-center justify-center text-xs font-bold">3</div>
                   <span>We analyze their menus and extract pricing data</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">4</div>
+                  <div className="w-6 h-6 rounded-full bg-primary-500/20 text-primary-500 flex items-center justify-center text-xs font-bold">4</div>
                   <span>Review competitor menus and save to your account</span>
                 </div>
               </div>

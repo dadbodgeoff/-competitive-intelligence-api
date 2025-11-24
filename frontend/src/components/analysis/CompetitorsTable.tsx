@@ -17,22 +17,22 @@ export function CompetitorsTable({ competitors }: CompetitorsTableProps) {
   const getRatingConfig = (rating: number) => {
     if (rating >= 4.5)
       return {
-        color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-        textColor: 'text-emerald-400',
+        color: 'bg-primary-500/10 text-primary-500 border-white/10',
+        textColor: 'text-primary-500',
       };
     if (rating >= 4.0)
       return {
-        color: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
-        textColor: 'text-cyan-400',
+        color: 'bg-accent-500/10 text-accent-400 border-accent-500/30',
+        textColor: 'text-accent-400',
       };
     if (rating >= 3.5)
       return {
-        color: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-        textColor: 'text-amber-400',
+        color: 'bg-primary-500/10 text-primary-500 border-primary-600/30',
+        textColor: 'text-primary-500',
       };
     return {
-      color: 'bg-red-500/10 text-red-400 border-red-500/30',
-      textColor: 'text-red-400',
+      color: 'bg-destructive/10 text-destructive border-red-500/30',
+      textColor: 'text-destructive',
     };
   };
 
@@ -67,11 +67,11 @@ export function CompetitorsTable({ competitors }: CompetitorsTableProps) {
                 competitor.id ||
                 index
               }
-              className="bg-obsidian/50 border-white/10 hover:border-emerald-500/30 transition-all duration-200 group"
+              className="bg-obsidian/50 border-white/10 hover:border-white/10 transition-all duration-200 group"
             >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-3">
-                  <CardTitle className="text-base leading-tight text-white group-hover:text-emerald-400 transition-colors">
+                  <CardTitle className="text-base leading-tight text-white group-hover:text-primary-500 transition-colors">
                     {competitor.competitor_name ||
                       competitor.name ||
                       'Unknown Restaurant'}
@@ -105,7 +105,7 @@ export function CompetitorsTable({ competitors }: CompetitorsTableProps) {
                     <Navigation className="h-4 w-4" />
                     <span>Distance</span>
                   </div>
-                  <span className="font-semibold text-cyan-400">
+                  <span className="font-semibold text-accent-400">
                     {formatDistance(competitor.distance_miles)}
                   </span>
                 </div>
@@ -114,7 +114,7 @@ export function CompetitorsTable({ competitors }: CompetitorsTableProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="w-full border-white/10 text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-400 hover:border-emerald-500/30"
+                    className="w-full border-white/10 text-slate-300 hover:bg-primary-500/10 hover:text-primary-500 hover:border-white/10"
                     onClick={() => {
                       const displayName =
                         competitor.competitor_name || competitor.name || 'Restaurant';
@@ -172,7 +172,7 @@ export function CompetitorsTable({ competitors }: CompetitorsTableProps) {
                           competitor.id ||
                           index
                         }
-                        className="border-b border-white/5 hover:bg-emerald-500/5 transition-colors"
+                        className="border-b border-white/5 hover:bg-primary-500/5 transition-colors"
                       >
                         <td className="p-4 font-medium text-white">
                           {competitor.competitor_name ||
@@ -188,7 +188,7 @@ export function CompetitorsTable({ competitors }: CompetitorsTableProps) {
                         <td className="p-4 text-white">
                           {competitor.review_count.toLocaleString()}
                         </td>
-                        <td className="p-4 text-cyan-400 font-medium">
+                        <td className="p-4 text-accent-400 font-medium">
                           {formatDistance(competitor.distance_miles)}
                         </td>
                         <td className="p-4 text-sm text-slate-400 max-w-xs truncate">

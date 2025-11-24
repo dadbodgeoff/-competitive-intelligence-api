@@ -5,10 +5,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background:
-    radial-gradient(120% 120% at 80% 0%, rgba(14, 116, 144, 0.18) 0%, rgba(2, 8, 24, 0) 55%),
-    radial-gradient(140% 140% at 10% 0%, rgba(16, 185, 129, 0.14) 0%, rgba(5, 9, 15, 0) 50%),
-    linear-gradient(180deg, #04070d 0%, #05090f 55%, #020308 100%);
+  background: #121212;
   background-attachment: fixed;
 }
 

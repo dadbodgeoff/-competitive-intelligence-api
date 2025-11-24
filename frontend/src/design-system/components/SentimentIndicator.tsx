@@ -26,7 +26,7 @@ export function SentimentIndicator({
   const sentimentConfig = {
     positive: {
       icon: ThumbsUp,
-      color: 'text-emerald-400 bg-emerald-500/15 border-emerald-500/30',
+      color: 'text-primary-500 bg-primary-500/15 border-white/10',
       label: label || 'Positive',
     },
     neutral: {
@@ -36,7 +36,7 @@ export function SentimentIndicator({
     },
     negative: {
       icon: ThumbsDown,
-      color: 'text-red-400 bg-red-500/15 border-red-500/30',
+      color: 'text-destructive bg-destructive/15 border-red-500/30',
       label: label || 'Negative',
     },
   };

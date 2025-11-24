@@ -40,7 +40,7 @@ interface StatCardProps {
   color?: string;
 }
 
-function StatCard({ label, value, description, icon, color = 'text-emerald-400' }: StatCardProps) {
+function StatCard({ label, value, description, icon, color = 'text-primary-500' }: StatCardProps) {
   return (
     <Card className="bg-obsidian/50 border-white/10">
       <CardContent className="p-5">
@@ -77,7 +77,7 @@ export function ReviewAnalysisResults({ analysisId }: ReviewAnalysisResultsProps
     return (
       <Alert
         variant="destructive"
-        className="bg-red-500/10 border-red-500/50 text-red-400"
+        className="bg-destructive/10 border-red-500/50 text-destructive"
       >
         <AlertCircle className="h-5 w-5" />
         <AlertDescription>
@@ -87,7 +87,7 @@ export function ReviewAnalysisResults({ analysisId }: ReviewAnalysisResultsProps
           </p>
           <Button
             onClick={() => window.location.reload()}
-            className="bg-red-500 hover:bg-red-600"
+            className="bg-destructive hover:bg-red-600"
           >
             Retry
           </Button>
@@ -128,7 +128,7 @@ export function ReviewAnalysisResults({ analysisId }: ReviewAnalysisResultsProps
                   .replace('_', ' ')
                   .replace(/\b\w/g, (l) => l.toUpperCase())}
               </Badge>
-              <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 border">
+              <Badge className="bg-primary-500/10 text-primary-500 border-white/10 border">
                 <CheckCircle2 className="h-3 w-3 mr-1" />
                 {analysis.status.charAt(0).toUpperCase() + analysis.status.slice(1)}
               </Badge>
@@ -138,7 +138,7 @@ export function ReviewAnalysisResults({ analysisId }: ReviewAnalysisResultsProps
           <div className="flex gap-3">
             <Button
               onClick={() => navigate('/analysis/new')}
-              className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/25"
+              className="bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25"
             >
               <Sparkles className="h-4 w-4 mr-2" />
               New Analysis
@@ -151,8 +151,8 @@ export function ReviewAnalysisResults({ analysisId }: ReviewAnalysisResultsProps
         <Card className="bg-card-dark border-white/10 shadow-2xl">
           <CardHeader>
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-emerald-500/10">
-                <BarChart3 className="h-5 w-5 text-emerald-400" />
+              <div className="p-2 rounded-lg bg-primary-500/10">
+                <BarChart3 className="h-5 w-5 text-primary-500" />
               </div>
               <div>
                 <CardTitle className="text-white">Analysis Summary</CardTitle>
@@ -171,28 +171,28 @@ export function ReviewAnalysisResults({ analysisId }: ReviewAnalysisResultsProps
                 value={analysis.competitors.length}
                 description="Nearby restaurants"
                 icon={<Users className="h-5 w-5" />}
-                color="text-emerald-400"
+                color="text-primary-500"
               />
               <StatCard
                 label="Total Insights"
                 value={analysis.insights.length}
                 description="Generated insights"
                 icon={<Sparkles className="h-5 w-5" />}
-                color="text-cyan-400"
+                color="text-accent-400"
               />
               <StatCard
                 label="High Confidence"
                 value={highConfidenceInsights}
                 description="Reliable insights"
                 icon={<CheckCircle2 className="h-5 w-5" />}
-                color="text-emerald-400"
+                color="text-primary-500"
               />
               <StatCard
                 label="Threats / Opportunities"
                 value={`${threatCount} / ${opportunityCount}`}
                 description="Risk vs reward"
                 icon={<TrendingUp className="h-5 w-5" />}
-                color={threatCount > opportunityCount ? 'text-red-400' : 'text-emerald-400'}
+                color={threatCount > opportunityCount ? 'text-destructive' : 'text-primary-500'}
               />
             </div>
           </CardContent>
@@ -203,14 +203,14 @@ export function ReviewAnalysisResults({ analysisId }: ReviewAnalysisResultsProps
           <TabsList className="grid w-full grid-cols-3 h-12 bg-obsidian/50 border border-white/10">
             <TabsTrigger
               value="competitors"
-              className="text-sm data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-400"
+              className="text-sm data-[state=active]:bg-primary-500/10 data-[state=active]:text-primary-500"
             >
               <Users className="h-4 w-4 mr-2" />
               Competitors
             </TabsTrigger>
             <TabsTrigger
               value="insights"
-              className="text-sm data-[state=active]:bg-cyan-500/10 data-[state=active]:text-cyan-400"
+              className="text-sm data-[state=active]:bg-accent-500/10 data-[state=active]:text-accent-400"
             >
               <Sparkles className="h-4 w-4 mr-2" />
               Insights

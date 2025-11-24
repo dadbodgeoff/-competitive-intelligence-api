@@ -32,9 +32,9 @@ export function PageHeader({
         <div className="flex items-center justify-between mb-4">
           <Link
             to="/dashboard"
-            className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors"
+            className="flex items-center gap-2 text-white hover:text-primary-500 transition-colors"
           >
-            <TrendingUp className="h-6 w-6 text-emerald-500" />
+            <TrendingUp className="h-6 w-6 text-primary-500" />
             <span className="text-xl font-bold">RestaurantIQ</span>
           </Link>
 
@@ -46,7 +46,7 @@ export function PageHeader({
                 {crumb.href ? (
                   <Link
                     to={crumb.href}
-                    className="text-slate-400 hover:text-emerald-400 transition-colors"
+                    className="text-slate-400 hover:text-primary-500 transition-colors"
                   >
                     {crumb.label}
                   </Link>

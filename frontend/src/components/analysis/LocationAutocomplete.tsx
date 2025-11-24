@@ -118,7 +118,7 @@ export const LocationAutocomplete = forwardRef<HTMLInputElement, LocationAutocom
           onBlur={handleBlur}
           onFocus={() => inputValue.length > 2 && setShowSuggestions(true)}
           className={cn(
-            'bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20',
+            'bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20',
             className
           )}
           autoComplete="off"
@@ -130,7 +130,7 @@ export const LocationAutocomplete = forwardRef<HTMLInputElement, LocationAutocom
               <button
                 key={index}
                 type="button"
-                className="w-full px-4 py-3 text-left text-white hover:bg-emerald-500/10 focus:bg-emerald-500/10 text-sm border-b border-white/5 last:border-b-0 transition-colors"
+                className="w-full px-4 py-3 text-left text-white hover:bg-primary-500/10 focus:bg-primary-500/10 text-sm border-b border-white/5 last:border-b-0 transition-colors"
                 onClick={() => handleSuggestionClick(suggestion)}
                 style={{ minHeight: '44px' }}
               >

@@ -53,32 +53,32 @@ export function SchedulerGridView({
     return (
       <div
         key={shift.id}
-        className="rounded-md border border-emerald-400/30 bg-emerald-500/10 p-3 text-emerald-100 space-y-1"
+        className="rounded-md border border-primary-400/30 bg-primary-500/10 p-3 text-primary-100 space-y-1"
       >
         <div className="flex items-center justify-between text-sm font-semibold">
           <span>
             {shift.start_time.slice(0, 5)} – {shift.end_time.slice(0, 5)}
           </span>
           {assigned?.compensation?.rate_cents && (
-            <span className="text-xs text-emerald-200">
+            <span className="text-xs text-primary-200">
               ${(assigned.compensation.rate_cents / 100).toFixed(2)}/h
             </span>
           )}
         </div>
-        {shift.role_label && <p className="text-xs text-emerald-200">{shift.role_label}</p>}
-        <div className="flex items-center justify-between text-xs text-emerald-300">
+        {shift.role_label && <p className="text-xs text-primary-200">{shift.role_label}</p>}
+        <div className="flex items-center justify-between text-xs text-primary-300">
           <span>{formatHours(scheduledMinutes)}</span>
           <span>{formatCurrency((scheduledCost ?? 0) / 100)}</span>
         </div>
         <div className="flex gap-2 pt-1">
-          <Button variant="ghost" size="sm" className="text-emerald-200 hover:text-white" onClick={() => onEditShift(shift)}>
+          <Button variant="ghost" size="sm" className="text-primary-200 hover:text-white" onClick={() => onEditShift(shift)}>
             Edit
           </Button>
           {shift.assigned_member_id && (
             <Button
               variant="ghost"
               size="sm"
-              className="text-emerald-200 hover:text-white"
+              className="text-primary-200 hover:text-white"
               onClick={() => onUnassignShift(shift.id, shift.assigned_member_id!)}
             >
               Unassign
@@ -113,19 +113,19 @@ export function SchedulerGridView({
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3 text-sm text-slate-200">
-        <Badge variant="outline" className="border-emerald-400/40 bg-emerald-500/10 text-emerald-100">
+        <Badge variant="outline" className="border-primary-400/40 bg-primary-500/10 text-primary-100">
           Scheduled labor: {scheduledLaborLabel} • {scheduledHoursLabel}
         </Badge>
-        <Badge variant="outline" className="border-purple-400/40 bg-purple-500/10 text-purple-100">
+        <Badge variant="outline" className="border-accent-400/40 bg-accent-500/10 text-accent-100">
           Actual labor: {actualLaborLabel} • {actualHoursLabel}
         </Badge>
-        <Badge variant="outline" className="border-amber-400/40 bg-amber-500/10 text-amber-100">
+        <Badge variant="outline" className="border-primary-400/40 bg-primary-500/10 text-primary-100">
           Live labor: {liveLaborLabel} • {liveHoursLabel}
         </Badge>
-        <Badge variant="outline" className="border-sky-400/40 bg-sky-500/10 text-sky-100">
+        <Badge variant="outline" className="border-primary-400/40 bg-primary-500/10 text-[#E0E0E0]">
           Forecast sales: {forecastSalesLabel}
         </Badge>
-        <Badge variant="outline" className="border-cyan-400/40 bg-cyan-500/10 text-cyan-100">
+        <Badge variant="outline" className="border-accent-400/40 bg-accent-500/10 text-accent-100">
           {laborPercentDescriptor}: {laborPercentLabel}
         </Badge>
       </div>
@@ -155,7 +155,7 @@ export function SchedulerGridView({
                         'h-10 w-10 rounded-full border flex items-center justify-center',
                         member.user_id === 'unassigned'
                           ? 'border-slate-500/50 bg-slate-500/10 text-slate-200'
-                          : 'border-emerald-500/40 bg-emerald-500/10 text-emerald-100'
+                          : 'border-white/10 bg-primary-500/10 text-primary-100'
                       )}
                     >
                       <Users className="h-4 w-4" />

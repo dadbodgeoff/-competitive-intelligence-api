@@ -59,7 +59,7 @@ export function CreativeHistoryPage() {
             </Button>
             <div>
               <h1 className="text-3xl font-bold text-white flex items-center gap-2">
-                <Sparkles className="h-8 w-8 text-emerald-500" />
+                <Sparkles className="h-8 w-8 text-primary-500" />
                 Generation History
               </h1>
               <p className="text-slate-400 mt-1">
@@ -69,7 +69,7 @@ export function CreativeHistoryPage() {
           </div>
           <Button
             onClick={() => navigate('/creative/generate')}
-            className="bg-emerald-500 hover:bg-emerald-600"
+            className="bg-primary-500 hover:bg-primary-500"
           >
             <Plus className="h-4 w-4 mr-2" />
             Generate New

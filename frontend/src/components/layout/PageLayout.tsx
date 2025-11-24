@@ -26,7 +26,7 @@ export function PageLayout({
   return (
     <div className="min-h-screen bg-obsidian">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-accent-500/5 pointer-events-none" />
 
       {/* Header */}
       <PageHeader

@@ -35,7 +35,7 @@ export function COGSDashboardPage() {
     return (
       <AppShell maxWidth="wide">
         <div className="flex h-[50vh] items-center justify-center">
-          <Loader2 className="h-8 w-8 text-emerald-400 animate-spin" />
+          <Loader2 className="h-8 w-8 text-primary-500 animate-spin" />
         </div>
       </AppShell>
     );
@@ -48,14 +48,14 @@ export function COGSDashboardPage() {
           <InvoiceCardContent className="py-12">
             <div className="text-center space-y-4">
               <div className="flex justify-center">
-                <div className="h-16 w-16 rounded-full bg-red-500/10 flex items-center justify-center">
-                  <AlertCircle className="h-8 w-8 text-red-400" />
+                <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center">
+                  <AlertCircle className="h-8 w-8 text-destructive" />
                 </div>
               </div>
               <div>
                 <h3 className="text-xl font-semibold text-white mb-2">Error Loading Data</h3>
                 <p className="text-slate-400 mb-6">{error}</p>
-                <Button onClick={refetch} className="btn-primary shadow-emerald">
+                <Button onClick={refetch} className="btn-primary shadow-primary">
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Try Again
                 </Button>
@@ -74,7 +74,7 @@ export function COGSDashboardPage() {
           <InvoiceCardContent className="py-16">
             <div className="text-center space-y-4">
               <div className="flex justify-center">
-                <div className="h-16 w-16 rounded-full bg-slate-800 flex items-center justify-center">
+                <div className="h-16 w-16 rounded-full bg-card-dark flex items-center justify-center">
                   <Upload className="h-8 w-8 text-slate-400" />
                 </div>
               </div>
@@ -85,7 +85,7 @@ export function COGSDashboardPage() {
                 </p>
                 <Button
                   onClick={() => navigate('/menu/upload')}
-                  className="btn-primary shadow-emerald"
+                  className="btn-primary shadow-primary"
                 >
                   <Upload className="h-4 w-4 mr-2" />
                   Upload Menu
@@ -148,7 +148,7 @@ export function COGSDashboardPage() {
           <InvoiceCard>
             <InvoiceCardContent className="py-4">
               <div className="flex items-start gap-3 text-sm">
-                <AlertCircle className="h-5 w-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="h-5 w-5 text-accent-400 flex-shrink-0 mt-0.5" />
                 <div className="text-slate-400">
                   <p className="font-semibold text-white mb-1">
                     {noRecipeItems} item{noRecipeItems !== 1 ? 's' : ''} without recipes

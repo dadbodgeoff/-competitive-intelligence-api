@@ -99,14 +99,14 @@ export function PolicyAgreementDialog({
       >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3 text-2xl font-semibold">
-            <FileText className="h-6 w-6 text-emerald-400" />
+            <FileText className="h-6 w-6 text-primary-500" />
             {metadata.title}
           </DialogTitle>
           <DialogDescription className="text-slate-400">
             {metadata.description}
           </DialogDescription>
           <div className="flex items-center gap-3 text-sm text-slate-400">
-            <Badge variant="outline" className="border-emerald-500/30 text-emerald-300">
+            <Badge variant="outline" className="border-white/10 text-primary-300">
               Version {metadata.version}
             </Badge>
             {pageCount > 0 && (
@@ -131,20 +131,20 @@ export function PolicyAgreementDialog({
           >
             {renderState === 'loading' && (
               <div className="flex flex-col items-center gap-2 py-20 text-slate-300">
-                <Loader2 className="h-8 w-8 animate-spin text-emerald-400" />
+                <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
                 <p className="text-sm font-medium">Preparing the document…</p>
               </div>
             )}
           </div>
 
           {renderError && (
-            <div className="mt-4 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-200">
+            <div className="mt-4 rounded-lg border border-primary-600/40 bg-primary-500/10 p-4 text-sm text-primary-200">
               {renderError}{' '}
               <a
                 href={metadata.file}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-1 underline hover:text-amber-100"
+                className="ml-1 underline hover:text-primary-100"
               >
                 Download the PDF
               </a>
@@ -169,7 +169,7 @@ export function PolicyAgreementDialog({
             </Button>
             <Button
               type="button"
-              className="bg-emerald-500 text-slate-950 hover:bg-emerald-400"
+              className="bg-primary-500 text-slate-950 hover:bg-primary-400"
               disabled={!isAgreeEnabled}
               onClick={handleAccept}
             >

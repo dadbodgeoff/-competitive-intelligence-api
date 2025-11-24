@@ -18,6 +18,8 @@ export interface ThemeSummary {
   default_fonts: Record<string, unknown>;
   default_hashtags: string[];
   category?: string | null;
+  hero_image_url?: string | null;
+  icon_name?: string | null;
 }
 
 export interface TemplateSummary {
@@ -27,6 +29,11 @@ export interface TemplateSummary {
   variation_tags: string[];
   input_schema: TemplateInputSchema;
   prompt_version?: string | null;
+  thumbnail_url?: string | null;
+  preview_image_url?: string | null;
+  example_output_url?: string | null;
+  usage_count?: number;
+  last_used_at?: string | null;
 }
 
 export interface TemplateInputSchema {

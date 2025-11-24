@@ -85,14 +85,14 @@ export function AcceptInvitePage() {
 
   return (
     <div className="min-h-screen bg-obsidian flex items-center justify-center px-4 py-12">
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-accent-500/5 pointer-events-none" />
       <div className="relative w-full max-w-xl space-y-6">
         <Card className="bg-card-dark border-white/10 shadow-2xl">
           <CardHeader className="space-y-2">
             <CardTitle className="flex items-center gap-2 text-white text-3xl font-bold">
-              {state === 'ready' && <CheckCircle2 className="h-6 w-6 text-emerald-400" />}
+              {state === 'ready' && <CheckCircle2 className="h-6 w-6 text-primary-500" />}
               {state === 'loading' && <Loader2 className="h-6 w-6 animate-spin text-slate-300" />}
-              {state !== 'ready' && state !== 'loading' && <AlertTriangle className="h-6 w-6 text-amber-400" />}
+              {state !== 'ready' && state !== 'loading' && <AlertTriangle className="h-6 w-6 text-primary-500" />}
               Accept Invitation
             </CardTitle>
             <CardDescription className="text-slate-400 text-base">
@@ -110,7 +110,7 @@ export function AcceptInvitePage() {
             )}
 
             {(state === 'expired' || state === 'invalid' || state === 'error' || state === 'accepted') && (
-              <Alert variant="destructive" className="bg-red-500/10 border-red-500/40 text-red-200">
+              <Alert variant="destructive" className="bg-destructive/10 border-red-500/40 text-red-200">
                 <AlertDescription>
                   {state === 'expired' && (
                     <>
@@ -137,7 +137,7 @@ export function AcceptInvitePage() {
                 </div>
 
                 {isAuthenticated && (
-                  <Alert className="bg-amber-500/10 border-amber-500/30 text-amber-100">
+                  <Alert className="bg-primary-500/10 border-primary-600/30 text-primary-100">
                     <AlertDescription>
                       You’re already signed in. If this invite is for a different user, sign out first or open this link
                       in a private window.

@@ -52,7 +52,7 @@ export function TopOrderedItemsCard() {
     <Card className="bg-card-dark border-white/10">
       <CardHeader>
         <CardTitle className="text-white text-lg flex items-center gap-2">
-          <Flame className="h-5 w-5 text-orange-400" />
+          <Flame className="h-5 w-5 text-primary-500" />
           Most Ordered (30 days)
         </CardTitle>
       </CardHeader>
@@ -61,10 +61,10 @@ export function TopOrderedItemsCard() {
           {items.map((item, index) => (
             <div
               key={index}
-              className="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 hover:bg-slate-800/50 transition-colors"
+              className="flex items-center justify-between p-3 rounded-lg bg-card-dark/30 hover:bg-card-dark/50 transition-colors"
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-xs font-bold">
+                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-500/20 text-primary-500 flex items-center justify-center text-xs font-bold">
                   {index + 1}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -77,7 +77,7 @@ export function TopOrderedItemsCard() {
                 </div>
               </div>
               <div className="text-right flex-shrink-0 ml-3">
-                <div className="text-sm font-semibold text-emerald-400">
+                <div className="text-sm font-semibold text-primary-500">
                   ${item.total_cost.toLocaleString()}
                 </div>
               </div>

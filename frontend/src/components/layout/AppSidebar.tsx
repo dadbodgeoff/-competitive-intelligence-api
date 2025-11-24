@@ -170,13 +170,13 @@ export function AppSidebar() {
   
   return (
     <Sidebar>
-      <SidebarHeader className="border-b border-white/10 p-4">
+      <SidebarHeader className="border-b p-6" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
         <Link to="/dashboard" className="flex items-center gap-2">
-          <TrendingUp className="h-6 w-6 text-emerald-500" />
-          <span className="text-xl font-bold text-white">RestaurantIQ</span>
+          <TrendingUp className="h-6 w-6" style={{ color: '#B08968' }} />
+          <span className="text-xl font-bold" style={{ color: '#E0E0E0' }}>RestaurantIQ</span>
         </Link>
         {isPremium && (
-          <Badge className="mt-2 bg-gradient-to-r from-emerald-500 to-cyan-500 text-white border-0">
+          <Badge className="mt-2 text-white border-0" style={{ background: 'linear-gradient(to right, #B08968, #4A6572)' }}>
             <Crown className="h-3 w-3 mr-1" />
             Premium
           </Badge>
@@ -268,9 +268,9 @@ export function AppSidebar() {
         )}
       </SidebarContent>
       
-      <SidebarFooter className="border-t border-white/10 p-4">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 text-sm text-slate-400 mb-2">
+      <SidebarFooter className="border-t p-6" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-sm mb-2" style={{ color: '#A8B1B9' }}>
             <User className="h-4 w-4" />
             <span className="truncate">{user?.email}</span>
           </div>
@@ -278,7 +278,8 @@ export function AppSidebar() {
             variant="outline"
             size="sm"
             onClick={logout}
-            className="w-full border-white/10 text-slate-400 hover:text-white hover:bg-white/5"
+            className="w-full"
+            style={{ borderColor: 'rgba(255, 255, 255, 0.1)', color: '#A8B1B9' }}
           >
             <LogOut className="h-4 w-4 mr-2" />
             Sign Out

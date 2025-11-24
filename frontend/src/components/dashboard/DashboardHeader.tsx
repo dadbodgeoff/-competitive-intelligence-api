@@ -50,13 +50,13 @@ export function DashboardHeader() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                 <Avatar>
-                  <AvatarFallback className="bg-emerald-500/10 text-emerald-400">
+                  <AvatarFallback className="bg-primary-500/10 text-primary-500">
                     {userInitials}
                   </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-slate-850 border-white/10">
+            <DropdownMenuContent align="end" className="w-56 bg-card-dark border-white/10">
               <DropdownMenuLabel className="text-white">
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium">
@@ -66,14 +66,14 @@ export function DashboardHeader() {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-white/10" />
-              <DropdownMenuItem className="text-slate-300 focus:text-white focus:bg-slate-800">
+              <DropdownMenuItem className="text-slate-300 focus:text-white focus:bg-card-dark">
                 <User className="mr-2 h-4 w-4" />
                 Profile
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-white/10" />
               <DropdownMenuItem
                 onClick={handleLogout}
-                className="text-red-400 focus:text-red-300 focus:bg-red-500/10"
+                className="text-destructive focus:text-red-300 focus:bg-destructive/10"
               >
                 Log out
               </DropdownMenuItem>

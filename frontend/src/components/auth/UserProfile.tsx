@@ -18,17 +18,17 @@ export function UserProfile() {
     switch (tier) {
       case 'premium':
         return {
-          color: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+          color: 'bg-accent-500/10 text-accent-400 border-accent-500/30',
           icon: Crown,
         };
       case 'enterprise':
         return {
-          color: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
+          color: 'bg-accent-500/10 text-accent-400 border-accent-500/30',
           icon: Zap,
         };
       default:
         return {
-          color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+          color: 'bg-primary-500/10 text-primary-500 border-white/10',
           icon: User,
         };
     }
@@ -96,7 +96,7 @@ export function UserProfile() {
           <Button
             variant="outline"
             onClick={logout}
-            className="w-full border-white/10 text-slate-300 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 transition-colors"
+            className="w-full border-white/10 text-slate-300 hover:bg-destructive/10 hover:text-destructive hover:border-red-500/30 transition-colors"
           >
             <LogOut className="h-4 w-4 mr-2" />
             Sign Out

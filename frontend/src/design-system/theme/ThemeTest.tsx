@@ -24,15 +24,15 @@ export const ThemeTest: React.FC = () => {
           <h2 className="text-3xl font-bold mb-6">Brand Colors</h2>
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <div className="h-20 bg-emerald-500 rounded-lg"></div>
+              <div className="h-20 bg-primary-500 rounded-lg"></div>
               <p className="text-sm text-tertiary">Emerald 500</p>
             </div>
             <div className="space-y-2">
-              <div className="h-20 bg-cyan-500 rounded-lg"></div>
+              <div className="h-20 bg-accent-500 rounded-lg"></div>
               <p className="text-sm text-tertiary">Cyan 500</p>
             </div>
             <div className="space-y-2">
-              <div className="h-20 bg-slate-850 rounded-lg border border-default"></div>
+              <div className="h-20 bg-card-dark rounded-lg border border-default"></div>
               <p className="text-sm text-tertiary">Slate 850</p>
             </div>
           </div>
@@ -51,7 +51,7 @@ export const ThemeTest: React.FC = () => {
             <p className="text-base text-secondary">
               Body text - Inter font family with smooth antialiasing
             </p>
-            <code className="font-mono text-sm bg-slate-800 px-2 py-1 rounded">
+            <code className="font-mono text-sm bg-card-dark px-2 py-1 rounded">
               Monospace - JetBrains Mono
             </code>
           </div>
@@ -127,16 +127,16 @@ export const ThemeTest: React.FC = () => {
         <section className="card-elevated p-8">
           <h2 className="text-3xl font-bold mb-6">Animations</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-slate-850 p-4 rounded-lg animate-fade-in">
+            <div className="bg-card-dark p-4 rounded-lg animate-fade-in">
               <p className="text-sm text-center">Fade In</p>
             </div>
-            <div className="bg-slate-850 p-4 rounded-lg animate-slide-up">
+            <div className="bg-card-dark p-4 rounded-lg animate-slide-up">
               <p className="text-sm text-center">Slide Up</p>
             </div>
-            <div className="bg-slate-850 p-4 rounded-lg animate-scale-in">
+            <div className="bg-card-dark p-4 rounded-lg animate-scale-in">
               <p className="text-sm text-center">Scale In</p>
             </div>
-            <div className="bg-slate-850 p-4 rounded-lg animate-pulse">
+            <div className="bg-card-dark p-4 rounded-lg animate-pulse">
               <p className="text-sm text-center">Pulse</p>
             </div>
           </div>
@@ -146,13 +146,13 @@ export const ThemeTest: React.FC = () => {
         <section className="card-elevated p-8">
           <h2 className="text-3xl font-bold mb-6">Hover Effects</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-slate-850 p-6 rounded-lg hover-lift">
+            <div className="bg-card-dark p-6 rounded-lg hover-lift">
               <p className="text-center">Hover Lift</p>
             </div>
-            <div className="bg-slate-850 p-6 rounded-lg hover-glow">
+            <div className="bg-card-dark p-6 rounded-lg hover-glow">
               <p className="text-center">Hover Glow</p>
             </div>
-            <div className="bg-slate-850 p-6 rounded-lg hover-scale">
+            <div className="bg-card-dark p-6 rounded-lg hover-scale">
               <p className="text-center">Hover Scale</p>
             </div>
           </div>
@@ -181,16 +181,16 @@ export const ThemeTest: React.FC = () => {
         <section className="card-elevated p-8">
           <h2 className="text-3xl font-bold mb-6">Shadows</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="bg-slate-850 p-4 rounded-lg shadow-sm">
+            <div className="bg-card-dark p-4 rounded-lg shadow-sm">
               <p className="text-sm text-center">Small</p>
             </div>
-            <div className="bg-slate-850 p-4 rounded-lg shadow-md">
+            <div className="bg-card-dark p-4 rounded-lg shadow-md">
               <p className="text-sm text-center">Medium</p>
             </div>
-            <div className="bg-slate-850 p-4 rounded-lg shadow-lg">
+            <div className="bg-card-dark p-4 rounded-lg shadow-lg">
               <p className="text-sm text-center">Large</p>
             </div>
-            <div className="bg-slate-850 p-4 rounded-lg shadow-xl">
+            <div className="bg-card-dark p-4 rounded-lg shadow-xl">
               <p className="text-sm text-center">XL</p>
             </div>
           </div>

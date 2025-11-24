@@ -107,7 +107,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
         'inline-flex items-center justify-center',
         'rounded-lg',
         'transition-all duration-200',
-        'hover:bg-slate-800',
+        'hover:bg-card-dark',
         'focus:outline-none focus:ring-2 focus:ring-primary-500/50',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         'touch-target-sm',
@@ -144,7 +144,7 @@ export const IconWithBadge: React.FC<IconWithBadgeProps> = ({
     <div className={cn('relative inline-flex', className)}>
       <Icon icon={icon} size={size} variant={variant} />
       {showBadge && (
-        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-white">
           {badgeCount !== undefined && badgeCount > 0 ? (
             badgeCount > 9 ? '9+' : badgeCount
           ) : (
@@ -176,8 +176,8 @@ export const StatusIcon: React.FC<StatusIconProps> = ({
 }) => {
   const statusColors = {
     success: 'bg-success-500',
-    warning: 'bg-primary-600',
-    error: 'bg-red-500',
+    warning: 'bg-primary-500',
+    error: 'bg-destructive',
     idle: 'bg-slate-500',
   };
 

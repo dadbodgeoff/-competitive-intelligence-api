@@ -294,7 +294,7 @@ export function CreativeGeneratePage() {
             </Button>
             <div>
               <h1 className="text-3xl font-bold text-white flex items-center gap-2">
-                <Sparkles className="h-8 w-8 text-emerald-500" />
+                <Sparkles className="h-8 w-8 text-primary-500" />
                 Generate Creative Assets
               </h1>
               <p className="text-slate-400 mt-1">
@@ -305,7 +305,7 @@ export function CreativeGeneratePage() {
           {hasCompletedJob && (
             <Button
               onClick={handleStartNew}
-              className="bg-emerald-500 hover:bg-emerald-600"
+              className="bg-primary-500 hover:bg-primary-500"
             >
               Generate Another
             </Button>
@@ -323,9 +323,9 @@ export function CreativeGeneratePage() {
 
         {/* Completed Assets - Show when done */}
         {hasCompletedJob && completedJob && (
-          <div className="rounded-lg border-2 border-emerald-500/50 bg-emerald-500/5 p-6">
+          <div className="rounded-lg border-2 border-primary-500/50 bg-primary-500/5 p-6">
             <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="h-5 w-5 text-emerald-500" />
+              <Sparkles className="h-5 w-5 text-primary-500" />
               <h2 className="text-xl font-bold text-white">Your Assets Are Ready!</h2>
             </div>
             <p className="text-slate-400 mb-6">
@@ -351,7 +351,7 @@ export function CreativeGeneratePage() {
                 <TabsTrigger
                   key={key}
                   value={key}
-                  className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white"
+                  className="data-[state=active]:bg-primary-500 data-[state=active]:text-white"
                 >
                   <span className="mr-2">{label}</span>
                   {typeof tabCounts?.[key as CreativeTab] === 'number' && (
@@ -377,10 +377,10 @@ export function CreativeGeneratePage() {
                     value={restaurantVerticalFilter}
                     onValueChange={setRestaurantVerticalFilter}
                   >
-                    <SelectTrigger className="w-[200px] bg-slate-900/50 border-white/10 text-white">
+                    <SelectTrigger className="w-[200px] bg-obsidian/50 border-white/10 text-white">
                       <SelectValue placeholder="All Types" />
                     </SelectTrigger>
-                    <SelectContent className="bg-slate-900 border-white/10">
+                    <SelectContent className="bg-obsidian border-white/10">
                       <SelectItem value="all" className="text-white hover:bg-white/10">
                         All Types ({themesByCategory.campaigns.length})
                       </SelectItem>

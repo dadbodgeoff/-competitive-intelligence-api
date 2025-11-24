@@ -68,7 +68,7 @@ export function DashboardPageNew() {
                     value={kpiData?.recentInvoicesCount || 0}
                     icon={FileText}
                     loading={loading}
-                    className="bg-card-dark border-white/10 hover:border-cyan-500/50 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg cursor-pointer h-full"
+                    className="bg-card-dark border-white/10 hover:border-accent-500/50 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg cursor-pointer h-full"
                   />
                 </Link>
                 <Link to="/menu/dashboard" className="block">
@@ -77,7 +77,7 @@ export function DashboardPageNew() {
                     value={kpiData?.menuItemsCount || 0}
                     icon={UtensilsCrossed}
                     loading={loading}
-                    className="bg-card-dark border-white/10 hover:border-orange-500/50 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg cursor-pointer h-full"
+                    className="bg-card-dark border-white/10 hover:border-primary-600/50 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg cursor-pointer h-full"
                   />
                 </Link>
               </div>

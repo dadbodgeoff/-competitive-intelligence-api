@@ -72,7 +72,7 @@ function ReviewCard({ review, competitorName }: ReviewCardProps) {
         key={i}
         className={cn(
           'h-4 w-4',
-          i < rating ? 'text-amber-400 fill-current' : 'text-slate-600'
+          i < rating ? 'text-primary-500 fill-current' : 'text-slate-600'
         )}
       />
     ));
@@ -84,7 +84,7 @@ function ReviewCard({ review, competitorName }: ReviewCardProps) {
   };
 
   return (
-    <Card className="bg-obsidian/50 border-white/10 hover:border-emerald-500/30 transition-all duration-200">
+    <Card className="bg-obsidian/50 border-white/10 hover:border-white/10 transition-all duration-200">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1">
@@ -117,7 +117,7 @@ function ReviewCard({ review, competitorName }: ReviewCardProps) {
             {review.quality_score && (
               <div className="flex items-center gap-2 text-xs">
                 <span className="text-slate-500">Quality:</span>
-                <Badge className="bg-cyan-500/10 text-cyan-400 border-cyan-500/30 border">
+                <Badge className="bg-accent-500/10 text-accent-400 border-accent-500/30 border">
                   {Math.round(review.quality_score * 100)}%
                 </Badge>
               </div>
@@ -205,7 +205,7 @@ export function EvidenceReviewsDisplay({ analysisId, competitors }: EvidenceRevi
   if (loading) {
     return (
       <div className="text-center py-12">
-        <Loader2 className="h-10 w-10 mx-auto mb-3 text-emerald-400 animate-spin" />
+        <Loader2 className="h-10 w-10 mx-auto mb-3 text-primary-500 animate-spin" />
         <p className="text-slate-400">Loading review evidence...</p>
       </div>
     );
@@ -215,7 +215,7 @@ export function EvidenceReviewsDisplay({ analysisId, competitors }: EvidenceRevi
     return (
       <Alert
         variant="destructive"
-        className="bg-red-500/10 border-red-500/50 text-red-400"
+        className="bg-destructive/10 border-red-500/50 text-destructive"
       >
         <AlertDescription>{error}</AlertDescription>
       </Alert>
@@ -281,7 +281,7 @@ export function EvidenceReviewsDisplay({ analysisId, competitors }: EvidenceRevi
               placeholder="Search reviews..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="h-11 pl-10 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20"
+              className="h-11 pl-10 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20"
             />
           </div>
 
@@ -340,32 +340,32 @@ export function EvidenceReviewsDisplay({ analysisId, competitors }: EvidenceRevi
       <Card className="bg-card-dark border-white/10">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <MessageSquare className="h-5 w-5 text-cyan-400" />
+            <MessageSquare className="h-5 w-5 text-accent-400" />
             <CardTitle className="text-base text-white">Review Summary</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
             <div>
-              <div className="text-3xl font-bold text-cyan-400">
+              <div className="text-3xl font-bold text-accent-400">
                 {reviewStats.total}
               </div>
               <div className="text-sm text-slate-500 mt-1">Total Reviews</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-emerald-400">
+              <div className="text-3xl font-bold text-primary-500">
                 {reviewStats.high}
               </div>
               <div className="text-sm text-slate-500 mt-1">4-5 Stars</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-amber-400">
+              <div className="text-3xl font-bold text-primary-500">
                 {reviewStats.medium}
               </div>
               <div className="text-sm text-slate-500 mt-1">3 Stars</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-red-400">
+              <div className="text-3xl font-bold text-destructive">
                 {reviewStats.low}
               </div>
               <div className="text-sm text-slate-500 mt-1">1-2 Stars</div>

@@ -51,7 +51,7 @@ export function ClockPinCard({ status, onSave, onRemove, saving, removing }: Clo
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-slate-400 text-sm">
-          Choose a 4-digit PIN to clock in from the public <code className="text-emerald-300">/time</code> page. This PIN
+          Choose a 4-digit PIN to clock in from the public <code className="text-primary-300">/time</code> page. This PIN
           is private to you and can be updated anytime.
         </p>
         <div className="text-sm text-slate-300">
@@ -94,7 +94,7 @@ export function ClockPinCard({ status, onSave, onRemove, saving, removing }: Clo
             />
           </div>
           <div className="col-span-full flex flex-wrap gap-3">
-            <Button type="submit" className="bg-emerald-600 hover:bg-emerald-500" disabled={saving}>
+            <Button type="submit" className="bg-primary-500 hover:bg-primary-500" disabled={saving}>
               Save PIN
             </Button>
             <Button

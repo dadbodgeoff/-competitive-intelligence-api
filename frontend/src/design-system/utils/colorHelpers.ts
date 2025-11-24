@@ -19,9 +19,9 @@ export function getInsightClasses(type: InsightType) {
   const colors = getInsightColor(type);
   
   const classMap = {
-    opportunity: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400',
+    opportunity: 'bg-primary-500/10 border-primary-500/30 text-primary-400',
     threat: 'bg-red-500/10 border-red-500/30 text-red-400',
-    watch: 'bg-amber-500/10 border-amber-500/30 text-amber-400',
+    watch: 'bg-primary-600/10 border-primary-600/30 text-primary-400',
   };
   
   return {
@@ -37,8 +37,8 @@ export function getConfidenceClasses(level: ConfidenceLevel) {
   const colors = getConfidenceColor(level);
   
   const classMap = {
-    high: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
-    medium: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+    high: 'bg-primary-500/15 text-primary-400 border-primary-500/30',
+    medium: 'bg-primary-600/15 text-primary-400 border-primary-600/30',
     low: 'bg-slate-500/15 text-slate-400 border-slate-500/30',
   };
   
@@ -55,10 +55,10 @@ export function getSemanticClasses(type: SemanticType) {
   const colors = getSemanticColor(type);
   
   const classMap = {
-    success: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400',
+    success: 'bg-primary-500/10 border-primary-500/30 text-primary-400',
     error: 'bg-red-500/10 border-red-500/30 text-red-400',
-    warning: 'bg-amber-500/10 border-amber-500/30 text-amber-400',
-    info: 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400',
+    warning: 'bg-primary-600/10 border-primary-600/30 text-primary-400',
+    info: 'bg-accent-500/10 border-accent-500/30 text-accent-400',
     neutral: 'bg-slate-500/10 border-slate-500/20 text-slate-400',
   };
   
@@ -72,9 +72,9 @@ export function getSemanticClasses(type: SemanticType) {
  * Get rating color classes (for star ratings)
  */
 export function getRatingClasses(rating: number) {
-  if (rating >= 4.5) return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-400';
-  if (rating >= 4.0) return 'bg-cyan-100 text-cyan-800 dark:bg-cyan-500/15 dark:text-cyan-400';
-  if (rating >= 3.5) return 'bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-400';
+  if (rating >= 4.5) return 'bg-primary-100 text-primary-800 dark:bg-primary-500/15 dark:text-primary-400';
+  if (rating >= 4.0) return 'bg-accent-100 text-accent-800 dark:bg-accent-500/15 dark:text-accent-400';
+  if (rating >= 3.5) return 'bg-primary-100 text-primary-800 dark:bg-primary-600/15 dark:text-primary-400';
   return 'bg-red-100 text-red-800 dark:bg-red-500/15 dark:text-red-400';
 }
 

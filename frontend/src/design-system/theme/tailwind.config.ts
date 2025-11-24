@@ -26,19 +26,23 @@ const config: Config = {
           border: 'rgba(255, 255, 255, 0.1)',
         },
         primary: {
-          400: '#C9A882',
+          DEFAULT: '#B08968',
+          foreground: '#ffffff',
+          400: '#B08968',
           500: '#B08968',
           600: '#9A5C4A',
         },
         accent: {
-          400: '#5A7F8E',
+          DEFAULT: '#4A6572',
+          foreground: '#E0E0E0',
+          400: '#4A6572',
           500: '#4A6572',
-          600: '#3A5462',
+          600: '#4A6572',
         },
         success: {
-          400: '#2F7A6A',
+          400: '#264653',
           500: '#264653',
-          600: '#1D3540',
+          600: '#264653',
         },
         slate: {
           850: '#1E1E1E',
@@ -58,25 +62,21 @@ const config: Config = {
         ring: '#B08968',
         background: '#121212',
         foreground: '#E0E0E0',
-        primary: {
-          DEFAULT: '#B08968',
-          foreground: '#ffffff',
-        },
         secondary: {
           DEFAULT: '#1E1E1E',
           foreground: '#E0E0E0',
         },
         destructive: {
           DEFAULT: '#B75553',
-          foreground: '#E0E0E0',
+          foreground: '#ffffff',
+        },
+        warning: {
+          DEFAULT: '#9A5C4A',
+          foreground: '#ffffff',
         },
         muted: {
           DEFAULT: '#1A1A1A',
           foreground: '#A8B1B9',
-        },
-        accent: {
-          DEFAULT: '#4A6572',
-          foreground: '#E0E0E0',
         },
         popover: {
           DEFAULT: '#1E1E1E',
@@ -134,8 +134,8 @@ const config: Config = {
         lg: 'var(--shadow-lg)',
         xl: 'var(--shadow-xl)',
         '2xl': 'var(--shadow-2xl)',
-        emerald: 'var(--shadow-emerald)',
-        cyan: 'var(--shadow-cyan)',
+        emerald: 'var(--shadow-primary)',
+        cyan: 'var(--shadow-accent)',
         none: 'none',
       },
       borderRadius: {
@@ -239,6 +239,14 @@ const config: Config = {
         narrow: '42rem',
         content: '56rem',
         wide: '72rem',
+        'enterprise': '1200px', // Enterprise standard: center-aligned max width
+        'enterprise-wide': '1600px',
+      },
+      minWidth: {
+        'card': '320px', // Enterprise standard: minimum card width
+      },
+      minHeight: {
+        'card': '180px', // Enterprise standard: minimum card height
       },
       backgroundImage: {
         'gradient-primary': 'var(--gradient-primary)',

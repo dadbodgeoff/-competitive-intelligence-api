@@ -127,7 +127,7 @@ export function CompetitorSelectionPage() {
       <AppShell maxWidth="wide">
         <div className="flex h-[50vh] items-center justify-center">
           <div className="text-center">
-            <div className="h-8 w-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <div className="h-8 w-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
             <p className="text-slate-400">Loading competitors...</p>
           </div>
         </div>
@@ -138,12 +138,12 @@ export function CompetitorSelectionPage() {
   if (error || !analysisStatus) {
     return (
       <AppShell maxWidth="wide">
-        <Alert variant="destructive" className="bg-red-500/10 border-red-500/50 text-red-400">
+        <Alert variant="destructive" className="bg-destructive/10 border-red-500/50 text-destructive">
           <AlertCircle className="h-5 w-5" />
           <AlertDescription>
             <p className="font-semibold mb-2">Failed to load analysis</p>
             <p className="mb-4">{error instanceof Error ? error.message : 'Unknown error'}</p>
-            <Button onClick={() => navigate('/menu-comparison')} className="bg-red-500 hover:bg-red-600">
+            <Button onClick={() => navigate('/menu-comparison')} className="bg-destructive hover:bg-red-600">
               Start New Analysis
             </Button>
           </AlertDescription>
@@ -168,17 +168,17 @@ export function CompetitorSelectionPage() {
 
           <Link
             to="/"
-            className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors"
+            className="flex items-center gap-2 text-white hover:text-primary-500 transition-colors"
           >
-            <TrendingUp className="h-6 w-6 text-emerald-500" />
-            <span className="text-xl font-bold">Restaurant CI</span>
+            <TrendingUp className="h-6 w-6 text-primary-500" />
+            <span className="text-xl font-bold">RestaurantIQ</span>
           </Link>
         </div>
 
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-lg bg-emerald-500/10">
-              <Users className="h-5 w-5 text-emerald-400" />
+            <div className="p-2 rounded-lg bg-primary-500/10">
+              <Users className="h-5 w-5 text-primary-500" />
             </div>
             <div>
               <PageHeading>Select Competitors</PageHeading>
@@ -192,7 +192,7 @@ export function CompetitorSelectionPage() {
             <Badge
               className={`${
                 selectedCompetitors.length === 2
-                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                  ? 'bg-primary-500/10 text-primary-500 border-white/10'
                   : 'bg-slate-500/10 text-slate-400 border-slate-500/30'
               } border`}
             >
@@ -200,7 +200,7 @@ export function CompetitorSelectionPage() {
             </Badge>
 
             {selectedCompetitors.length === 2 && (
-              <div className="flex items-center gap-2 text-emerald-400">
+              <div className="flex items-center gap-2 text-primary-500">
                 <CheckCircle2 className="h-4 w-4" />
                 <span className="text-sm">Ready to analyze</span>
               </div>
@@ -241,7 +241,7 @@ export function CompetitorSelectionPage() {
           <Button
             onClick={handleStartAnalysis}
             disabled={selectedCompetitors.length !== 2 || analyzeMutation.isPending}
-            className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/25"
+            className="bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25"
           >
             {analyzeMutation.isPending ? (
               <span className="flex items-center gap-2">
@@ -270,10 +270,10 @@ interface CompetitorSelectionCardProps {
 
 function CompetitorSelectionCard({ competitor, isSelected, onToggle, disabled }: CompetitorSelectionCardProps) {
   const getRatingColor = (rating: number) => {
-    if (rating >= 4.5) return 'text-emerald-400 bg-emerald-500/15 border-emerald-500/30';
-    if (rating >= 4.0) return 'text-cyan-400 bg-cyan-500/15 border-cyan-500/30';
-    if (rating >= 3.5) return 'text-amber-400 bg-amber-500/15 border-amber-500/30';
-    return 'text-red-400 bg-red-500/15 border-red-500/30';
+    if (rating >= 4.5) return 'text-primary-500 bg-primary-500/15 border-white/10';
+    if (rating >= 4.0) return 'text-accent-400 bg-accent-500/15 border-accent-500/30';
+    if (rating >= 3.5) return 'text-primary-500 bg-primary-500/15 border-primary-600/30';
+    return 'text-destructive bg-destructive/15 border-red-500/30';
   };
 
   const formatDistance = (miles: number) => {
@@ -287,10 +287,10 @@ function CompetitorSelectionCard({ competitor, isSelected, onToggle, disabled }:
     <Card
       className={`cursor-pointer transition-all duration-200 ${
         isSelected
-          ? 'bg-emerald-500/10 border-emerald-500/50 ring-2 ring-emerald-500/30'
+          ? 'bg-primary-500/10 border-primary-500/50 ring-2 ring-primary-500/30'
           : disabled
           ? 'bg-slate-500/5 border-slate-500/20 opacity-50 cursor-not-allowed'
-          : 'bg-card-dark border-white/10 hover:border-cyan-500/30 hover:-translate-y-1'
+          : 'bg-card-dark border-white/10 hover:border-accent-500/30 hover:-translate-y-1'
       }`}
       onClick={disabled ? undefined : onToggle}
     >
@@ -301,7 +301,7 @@ function CompetitorSelectionCard({ competitor, isSelected, onToggle, disabled }:
           </CardTitle>
           
           {isSelected && (
-            <div className="p-1 rounded-full bg-emerald-500">
+            <div className="p-1 rounded-full bg-primary-500">
               <CheckCircle2 className="h-4 w-4 text-white" />
             </div>
           )}
@@ -339,10 +339,10 @@ function CompetitorSelectionCard({ competitor, isSelected, onToggle, disabled }:
 
           {competitor.distance_miles && (
             <div className="flex items-center gap-2 text-sm">
-              <Navigation className="w-4 h-4 text-cyan-500" />
+              <Navigation className="w-4 h-4 text-accent-500" />
               <div>
                 <div className="text-slate-400 text-xs">Distance</div>
-                <div className="text-cyan-400 font-semibold">
+                <div className="text-accent-400 font-semibold">
                   {formatDistance(competitor.distance_miles)}
                 </div>
               </div>

@@ -180,8 +180,8 @@ export function getSeverityColor(severity: 'low' | 'medium' | 'high'): string {
 
 export function getSeverityBadgeClass(severity: 'low' | 'medium' | 'high'): string {
   const classes = {
-    low: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-    medium: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+    low: 'bg-primary-500/20 text-primary-400 border-primary-500/30',
+    medium: 'bg-primary-600/20 text-primary-400 border-primary-600/30',
     high: 'bg-red-500/20 text-red-400 border-red-500/30',
   };
   return classes[severity];

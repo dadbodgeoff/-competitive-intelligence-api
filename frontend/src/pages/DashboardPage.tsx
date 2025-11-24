@@ -35,18 +35,18 @@ export function DashboardPage() {
 
   return (
     <AppShell maxWidth="wide">
-        {/* Welcome section */}
-        <div className="mb-8 md:mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+        {/* Welcome section - BRAND STANDARD: 32px Dashboard Header */}
+        <div className="mb-6">
+          <h1 className="text-[32px] font-bold leading-[38px] mb-2" style={{ color: '#E0E0E0' }}>
             Welcome back, {user?.first_name || 'there'}! 👋
           </h1>
-          <p className="text-base md:text-lg text-slate-400">
+          <p className="text-base" style={{ color: '#A8B1B9' }}>
             Your command center for competitive intelligence and operational insights
           </p>
         </div>
 
         {/* ZONE 1: HERO - Weekly Pulse & Upgrade CTA */}
-        <section className="mb-10 md:mb-12">
+        <section className="mb-6">
           <WeeklyPulse
             summary={summary}
             loading={loading}
@@ -56,14 +56,14 @@ export function DashboardPage() {
         </section>
 
         {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-10 md:mb-12" />
+        <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-6" />
 
-        {/* ZONE 2: ACTION - Primary Features */}
-        <section className="mb-10 md:mb-12">
-          <h2 className="text-xl md:text-2xl font-bold text-white mb-6">
+        {/* ZONE 2: ACTION - Primary Features - BRAND STANDARD: 24px gutters */}
+        <section className="mb-6">
+          <h2 className="text-2xl font-bold leading-[30px] mb-6" style={{ color: '#E0E0E0' }}>
             Quick Actions
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {/* Start Analysis */}
             <ActionCard
               icon={<Search className="h-6 w-6" />}
@@ -145,15 +145,15 @@ export function DashboardPage() {
 
         {/* ZONE 3: INSIGHTS - Secondary Features & Profile */}
         <section>
-          <h2 className="text-xl md:text-2xl font-bold text-white mb-6">
+          <h2 className="text-2xl font-bold leading-[30px] mb-6" style={{ color: '#E0E0E0' }}>
             Reports & Account
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {/* Menu Comparison */}
-            <Card className="bg-card-dark border-white/10 hover:border-violet-500/50 transition-all duration-200 hover:shadow-lg hover:shadow-violet-500/10">
+            <Card className="bg-card-dark border-white/10 hover:border-accent-500/50 transition-all duration-200 hover:shadow-lg hover:shadow-accent-500/10">
               <CardHeader>
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 rounded-lg bg-violet-500/10 text-violet-400">
+                  <div className="p-2 rounded-lg bg-accent-500/10 text-accent-400">
                     <Menu className="h-5 w-5" />
                   </div>
                   <CardTitle className="text-white text-lg">
@@ -166,7 +166,7 @@ export function DashboardPage() {
               </CardHeader>
               <CardContent className="space-y-2">
                 <Link to="/menu-comparison">
-                  <Button className="w-full bg-gradient-to-r from-violet-500 to-violet-600 hover:from-violet-600 hover:to-violet-700 text-white">
+                  <Button className="w-full bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 text-white">
                     <Menu className="h-4 w-4 mr-2" />
                     Compare Menus
                   </Button>
@@ -174,7 +174,7 @@ export function DashboardPage() {
                 <Link to="/menu-comparison/saved">
                   <Button
                     variant="outline"
-                    className="w-full border-violet-500/30 text-violet-400 hover:bg-violet-500/10"
+                    className="w-full border-accent-500/30 text-accent-400 hover:bg-accent-500/10"
                   >
                     <FileText className="h-4 w-4 mr-2" />
                     Saved Reports
@@ -214,10 +214,10 @@ export function DashboardPage() {
             </div>
 
             {/* Team & Modules */}
-            <Card className="bg-card-dark border-white/10 hover:border-emerald-500/50 transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/10">
+            <Card className="bg-card-dark border-white/10 hover:border-primary-500/50 transition-all duration-200 hover:shadow-lg hover:shadow-primary-500/10">
               <CardHeader>
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
+                  <div className="p-2 rounded-lg bg-primary-500/10 text-primary-500">
                     <Users className="h-5 w-5" />
                   </div>
                   <CardTitle className="text-white text-lg">
@@ -230,7 +230,7 @@ export function DashboardPage() {
               </CardHeader>
               <CardContent className="space-y-2">
                 <Link to="/settings/team">
-                  <Button className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white">
+                  <Button className="w-full bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white">
                     <Users className="h-4 w-4 mr-2" />
                     Manage Team
                   </Button>
@@ -272,15 +272,15 @@ function WeeklyPulse({
 
   if (isUnlimited) {
     return (
-      <Card className="bg-gradient-to-br from-emerald-500/10 to-cyan-500/10 border-emerald-500/30">
+      <Card className="bg-gradient-to-br from-primary-500/10 to-accent-500/10 border-white/10">
         <CardHeader>
           <CardTitle className="text-white flex items-center gap-2 text-xl">
-            <Crown className="h-6 w-6 text-emerald-400" />
+            <Crown className="h-6 w-6 text-primary-500" />
             Premium Account
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center gap-2 text-emerald-400 mb-2">
+          <div className="flex items-center gap-2 text-primary-500 mb-2">
             <CheckCircle2 className="h-5 w-5" />
             <span className="font-semibold text-lg">Unlimited Access</span>
           </div>
@@ -297,7 +297,7 @@ function WeeklyPulse({
       <Card className="bg-card-dark border-white/10">
         <CardHeader>
           <CardTitle className="text-white flex items-center gap-2">
-            <AlertCircle className="h-5 w-5 text-yellow-400" />
+            <AlertCircle className="h-5 w-5 text-primary-500" />
             Usage Limits
           </CardTitle>
         </CardHeader>
@@ -376,25 +376,25 @@ function WeeklyPulse({
                     {isAtLimit && (
                       <Badge
                         variant="outline"
-                        className="text-xs text-red-400 border-red-500/30 bg-red-500/10"
+                        className="text-xs text-destructive border-red-500/30 bg-destructive/10"
                       >
                         Limit Reached
                       </Badge>
                     )}
                   </div>
                 </div>
-                <div className="w-full bg-slate-800 rounded-full h-2">
+                <div className="w-full bg-card-dark rounded-full h-2">
                   <div
                     className={`h-2 rounded-full transition-all ${
                       isAtLimit
-                        ? 'bg-red-500'
+                        ? 'bg-destructive'
                         : feature.color === 'emerald'
-                        ? 'bg-emerald-400'
+                        ? 'bg-primary-400'
                         : feature.color === 'cyan'
-                        ? 'bg-cyan-400'
+                        ? 'bg-accent-400'
                         : feature.color === 'blue'
-                        ? 'bg-blue-400'
-                        : 'bg-purple-400'
+                        ? 'bg-accent-400'
+                        : 'bg-accent-400'
                     }`}
                     style={{ width: `${Math.min(percentage, 100)}%` }}
                   />
@@ -410,7 +410,7 @@ function WeeklyPulse({
             <Link to="/pricing" className="block">
               <Button
                 size="lg"
-                className="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:opacity-90 text-white font-semibold shadow-lg shadow-emerald-500/25"
+                className="w-full bg-gradient-to-r from-primary-500 to-accent-500 hover:opacity-90 text-white font-semibold shadow-lg shadow-primary-500/25"
               >
                 <Crown className="h-4 w-4 mr-2" />
                 Upgrade for Unlimited Access

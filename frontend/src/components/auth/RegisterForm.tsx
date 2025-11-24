@@ -213,16 +213,16 @@ export function RegisterForm() {
   return (
     <div className="min-h-screen bg-obsidian flex items-center justify-center px-4 py-12">
       {/* Background gradient effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-accent-500/5 pointer-events-none" />
 
       <div className="relative w-full max-w-lg">
         {/* Logo/Brand */}
         <div className="text-center mb-8">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-white hover:text-emerald-400 transition-colors"
+            className="inline-flex items-center gap-2 text-white hover:text-primary-500 transition-colors"
           >
-            <TrendingUp className="h-8 w-8 text-emerald-500" />
+            <TrendingUp className="h-8 w-8 text-primary-500" />
             <span className="text-2xl font-bold">RestaurantIQ</span>
           </Link>
         </div>
@@ -243,7 +243,7 @@ export function RegisterForm() {
               return (
                 <Alert
                   variant="destructive"
-                  className="bg-red-500/10 border-red-500/50 text-red-400"
+                  className="bg-destructive/10 border-red-500/50 text-destructive"
                 >
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
@@ -263,7 +263,7 @@ export function RegisterForm() {
 
             {/* Google Sign In Button */}
             {isInviteFlow && (
-              <Alert className="bg-emerald-500/10 border-emerald-500/40 text-emerald-100">
+              <Alert className="bg-primary-500/10 border-white/10 text-primary-100">
                 <AlertDescription>
                   {inviteAccountName
                     ? `You're joining ${inviteAccountName}. Finish creating your login to access the account.`
@@ -332,11 +332,11 @@ export function RegisterForm() {
                           <Input
                             {...field}
                             placeholder="John"
-                            className="h-11 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20"
+                            className="h-11 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20"
                             autoComplete="given-name"
                           />
                         </FormControl>
-                        <FormMessage className="text-red-400" />
+                        <FormMessage className="text-destructive" />
                       </FormItem>
                     )}
                   />
@@ -353,11 +353,11 @@ export function RegisterForm() {
                           <Input
                             {...field}
                             placeholder="Doe"
-                            className="h-11 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20"
+                            className="h-11 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20"
                             autoComplete="family-name"
                           />
                         </FormControl>
-                        <FormMessage className="text-red-400" />
+                        <FormMessage className="text-destructive" />
                       </FormItem>
                     )}
                   />
@@ -376,12 +376,12 @@ export function RegisterForm() {
                           {...field}
                           type="email"
                           placeholder="you@restaurant.com"
-                          className="h-11 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20"
+                          className="h-11 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20"
                           autoComplete="email"
                           readOnly={isInviteFlow}
                         />
                       </FormControl>
-                      <FormMessage className="text-red-400" />
+                      <FormMessage className="text-destructive" />
                     </FormItem>
                   )}
                 />
@@ -400,7 +400,7 @@ export function RegisterForm() {
                             {...field}
                             type={showPassword ? 'text' : 'password'}
                             placeholder="Min. 8 characters with special char"
-                            className="h-11 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20 pr-12"
+                            className="h-11 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20 pr-12"
                             autoComplete="new-password"
                           />
                           <button
@@ -416,7 +416,7 @@ export function RegisterForm() {
                           </button>
                         </div>
                       </FormControl>
-                      <FormMessage className="text-red-400" />
+                      <FormMessage className="text-destructive" />
                     </FormItem>
                   )}
                 />
@@ -435,7 +435,7 @@ export function RegisterForm() {
                             {...field}
                             type={showConfirmPassword ? 'text' : 'password'}
                             placeholder="Re-enter your password"
-                            className="h-11 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20 pr-12"
+                            className="h-11 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20 pr-12"
                             autoComplete="new-password"
                           />
                           <button
@@ -453,7 +453,7 @@ export function RegisterForm() {
                           </button>
                         </div>
                       </FormControl>
-                      <FormMessage className="text-red-400" />
+                      <FormMessage className="text-destructive" />
                     </FormItem>
                   )}
                 />
@@ -474,28 +474,28 @@ export function RegisterForm() {
                           <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                             <div className="space-y-2">
                               <FormLabel className="flex items-center gap-2 text-slate-200">
-                                <FileText className="h-4 w-4 text-emerald-400" />
+                                <FileText className="h-4 w-4 text-primary-500" />
                                 {POLICY_METADATA.terms.title}
                               </FormLabel>
                               <p className="text-sm text-slate-400">
                                 Review version {POLICY_METADATA.terms.version} and agree to continue.
                               </p>
                               {field.value && consent && (
-                                <p className="flex items-center gap-2 text-xs text-emerald-300">
+                                <p className="flex items-center gap-2 text-xs text-primary-300">
                                   <ShieldCheck className="h-4 w-4" />
                                   Accepted {formatConsentTimestamp(consent.acceptedAt)}
                                 </p>
                               )}
                               {!field.value && (
-                                <p className="text-xs text-amber-300">Awaiting acknowledgement.</p>
+                                <p className="text-xs text-primary-300">Awaiting acknowledgement.</p>
                               )}
                             </div>
                             <div className="flex items-end justify-end gap-3 lg:flex-col lg:items-end">
                               <Badge
                                 className={
                                   field.value
-                                    ? 'border-emerald-500/40 bg-emerald-500/20 text-emerald-200'
-                                    : 'border-amber-500/40 bg-amber-500/10 text-amber-200'
+                                    ? 'border-white/10 bg-primary-500/20 text-primary-200'
+                                    : 'border-primary-600/40 bg-primary-500/10 text-primary-200'
                                 }
                               >
                                 {field.value ? 'Accepted' : 'Required'}
@@ -506,7 +506,7 @@ export function RegisterForm() {
                                 className={
                                   field.value
                                     ? 'border-slate-700 text-slate-200 hover:text-white'
-                                    : 'bg-emerald-500 text-slate-950 hover:bg-emerald-400'
+                                    : 'bg-primary-500 text-slate-950 hover:bg-primary-400'
                                 }
                                 onClick={() => setDialogPolicy('terms')}
                               >
@@ -514,7 +514,7 @@ export function RegisterForm() {
                               </Button>
                             </div>
                           </div>
-                          <FormMessage className="text-xs text-red-400" />
+                          <FormMessage className="text-xs text-destructive" />
                         </FormItem>
                       );
                     }}
@@ -530,28 +530,28 @@ export function RegisterForm() {
                           <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                             <div className="space-y-2">
                               <FormLabel className="flex items-center gap-2 text-slate-200">
-                                <FileText className="h-4 w-4 text-emerald-400" />
+                                <FileText className="h-4 w-4 text-primary-500" />
                                 {POLICY_METADATA.privacy.title}
                               </FormLabel>
                               <p className="text-sm text-slate-400">
                                 Review version {POLICY_METADATA.privacy.version} before you proceed.
                               </p>
                               {field.value && consent && (
-                                <p className="flex items-center gap-2 text-xs text-emerald-300">
+                                <p className="flex items-center gap-2 text-xs text-primary-300">
                                   <ShieldCheck className="h-4 w-4" />
                                   Accepted {formatConsentTimestamp(consent.acceptedAt)}
                                 </p>
                               )}
                               {!field.value && (
-                                <p className="text-xs text-amber-300">Awaiting acknowledgement.</p>
+                                <p className="text-xs text-primary-300">Awaiting acknowledgement.</p>
                               )}
                             </div>
                             <div className="flex items-end justify-end gap-3 lg:flex-col lg:items-end">
                               <Badge
                                 className={
                                   field.value
-                                    ? 'border-emerald-500/40 bg-emerald-500/20 text-emerald-200'
-                                    : 'border-amber-500/40 bg-amber-500/10 text-amber-200'
+                                    ? 'border-white/10 bg-primary-500/20 text-primary-200'
+                                    : 'border-primary-600/40 bg-primary-500/10 text-primary-200'
                                 }
                               >
                                 {field.value ? 'Accepted' : 'Required'}
@@ -562,7 +562,7 @@ export function RegisterForm() {
                                 className={
                                   field.value
                                     ? 'border-slate-700 text-slate-200 hover:text-white'
-                                    : 'bg-emerald-500 text-slate-950 hover:bg-emerald-400'
+                                    : 'bg-primary-500 text-slate-950 hover:bg-primary-400'
                                 }
                                 onClick={() => setDialogPolicy('privacy')}
                               >
@@ -570,7 +570,7 @@ export function RegisterForm() {
                               </Button>
                             </div>
                           </div>
-                          <FormMessage className="text-xs text-red-400" />
+                          <FormMessage className="text-xs text-destructive" />
                         </FormItem>
                       );
                     }}
@@ -579,7 +579,7 @@ export function RegisterForm() {
 
                 <Button
                   type="submit"
-                  className="w-full h-12 text-base font-semibold bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/25 transition-all duration-200 mt-6"
+                  className="w-full h-12 text-base font-semibold bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25 transition-all duration-200 mt-6"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -610,7 +610,7 @@ export function RegisterForm() {
                 Already have an account?{' '}
                 <Link
                   to="/login"
-                  className="font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
+                  className="font-semibold text-primary-500 hover:text-primary-300 transition-colors"
                 >
                   Sign in
                 </Link>

@@ -16,7 +16,7 @@ export function FinancialIntelligenceSection() {
     <div className="space-y-3">
       {/* Section Header */}
       <div className="flex items-center gap-2">
-        <TrendingUp className="h-5 w-5 text-emerald-400" />
+        <TrendingUp className="h-5 w-5 text-primary-500" />
         <h2 className="text-xl font-bold text-white">Financial Intelligence</h2>
       </div>
 
@@ -24,13 +24,13 @@ export function FinancialIntelligenceSection() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Monthly Summary - Compact */}
         <Card 
-          className="bg-card-dark border-white/10 hover:border-emerald-500/30 transition-all cursor-pointer"
+          className="bg-card-dark border-white/10 hover:border-white/10 transition-all cursor-pointer"
           onClick={() => toggleCard('monthly')}
         >
           <CardHeader className="pb-3">
             <CardTitle className="text-white text-base flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <DollarSign className="h-4 w-4 text-emerald-400" />
+                <DollarSign className="h-4 w-4 text-primary-500" />
                 <span>This Month</span>
               </div>
               {expandedCard === 'monthly' ? (
@@ -49,13 +49,13 @@ export function FinancialIntelligenceSection() {
 
         {/* Top Ordered - Compact */}
         <Card 
-          className="bg-card-dark border-white/10 hover:border-orange-500/30 transition-all cursor-pointer"
+          className="bg-card-dark border-white/10 hover:border-primary-600/30 transition-all cursor-pointer"
           onClick={() => toggleCard('ordered')}
         >
           <CardHeader className="pb-3">
             <CardTitle className="text-white text-base flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Flame className="h-4 w-4 text-orange-400" />
+                <Flame className="h-4 w-4 text-primary-500" />
                 <span>Most Ordered</span>
               </div>
               {expandedCard === 'ordered' ? (
@@ -80,7 +80,7 @@ export function FinancialIntelligenceSection() {
           <CardHeader className="pb-3">
             <CardTitle className="text-white text-base flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-red-400" />
+                <AlertTriangle className="h-4 w-4 text-destructive" />
                 <span>Rising Costs</span>
               </div>
               {expandedCard === 'rising' ? (

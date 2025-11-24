@@ -12,14 +12,17 @@
 
 /* CSS Variables - RestaurantIQ Dark Theme */
 :root {
-  /* Brand Colors */
+  /* Brand Colors - RestaurantIQ */
   --color-obsidian: #0B1215;
-  --color-emerald-400: #34d399;
-  --color-emerald-500: #10b981;
-  --color-emerald-600: #059669;
-  --color-cyan-400: #22d3ee;
-  --color-cyan-500: #06b6d4;
-  --color-cyan-600: #0891b2;
+  --color-primary-400: #C9A882;
+  --color-primary-500: #B08968;
+  --color-primary-600: #9A5C4A;
+  --color-accent-400: #5A7F8E;
+  --color-accent-500: #4A6572;
+  --color-accent-600: #3A5462;
+  --color-success-400: #2F7A6A;
+  --color-success-500: #264653;
+  --color-success-600: #1D3540;
 
   /* Background Colors */
   --bg-obsidian: #0B1215;
@@ -42,25 +45,25 @@
   --text-h6: #94a3b8;
 
   /* Link Colors */
-  --link-default: #22d3ee;
-  --link-hover: #06b6d4;
-  --link-visited: #0891b2;
-  --link-active: #0e7490;
+  --link-default: #4A6572;
+  --link-hover: #5A7F8E;
+  --link-visited: #3A5462;
+  --link-active: #2A4452;
   --link-muted: #64748b;
 
   /* Border Colors */
   --border-default: rgba(255, 255, 255, 0.1);
   --border-input: rgba(255, 255, 255, 0.15);
   --border-divider: rgba(255, 255, 255, 0.08);
-  --border-focus: #10b981;
+  --border-focus: #B08968;
   --border-hover: rgba(255, 255, 255, 0.2);
-  --border-accent: rgba(16, 185, 129, 0.3);
+  --border-accent: rgba(176, 137, 104, 0.3);
 
   /* Semantic Colors - Success */
-  --success-bg: rgba(16, 185, 129, 0.1);
-  --success-border: #059669;
-  --success-text: #34d399;
-  --success-icon: #10b981;
+  --success-bg: rgba(38, 70, 83, 0.1);
+  --success-border: #264653;
+  --success-text: #2F7A6A;
+  --success-icon: #264653;
 
   /* Semantic Colors - Error */
   --error-bg: rgba(239, 68, 68, 0.1);
@@ -75,10 +78,10 @@
   --warning-icon: #f59e0b;
 
   /* Semantic Colors - Info */
-  --info-bg: rgba(34, 211, 238, 0.1);
-  --info-border: #0891b2;
-  --info-text: #22d3ee;
-  --info-icon: #06b6d4;
+  --info-bg: rgba(74, 101, 114, 0.1);
+  --info-border: #4A6572;
+  --info-text: #5A7F8E;
+  --info-icon: #4A6572;
 
   /* Semantic Colors - Neutral */
   --neutral-bg: rgba(148, 163, 184, 0.1);
@@ -87,9 +90,9 @@
   --neutral-icon: #94a3b8;
 
   /* Button Colors - Primary */
-  --btn-primary-bg: #10b981;
-  --btn-primary-hover: #059669;
-  --btn-primary-active: #047857;
+  --btn-primary-bg: #B08968;
+  --btn-primary-hover: #C9A882;
+  --btn-primary-active: #9A5C4A;
   --btn-primary-disabled: #334155;
 
   /* Button Colors - Secondary */
@@ -113,48 +116,48 @@
   /* Form Elements - Dropdown */
   --dropdown-bg: #1a2332;
   --dropdown-hover: #334155;
-  --dropdown-selected: #10b981;
+  --dropdown-selected: #B08968;
 
   /* Form Elements - Checkbox */
   --checkbox-bg: #1a2332;
-  --checkbox-checked: #10b981;
+  --checkbox-checked: #B08968;
   --checkbox-border: #475569;
 
   /* Form Elements - Toggle */
   --toggle-bg-off: #334155;
-  --toggle-bg-on: #10b981;
+  --toggle-bg-on: #B08968;
   --toggle-handle: #ffffff;
 
   /* Form Elements - Radio */
   --radio-bg: #1a2332;
-  --radio-selected: #10b981;
+  --radio-selected: #B08968;
   --radio-border: #475569;
 
   /* Navigation Colors */
   --nav-item-inactive: #94a3b8;
-  --nav-item-active: #10b981;
+  --nav-item-active: #B08968;
   --nav-item-hover: #cbd5e1;
-  --nav-bg-active: rgba(16, 185, 129, 0.1);
-  --nav-indicator: #10b981;
+  --nav-bg-active: rgba(176, 137, 104, 0.1);
+  --nav-indicator: #B08968;
   --nav-badge: #ef4444;
 
   /* Data Visualization - Chart Colors */
-  --chart-1: #10b981;
-  --chart-2: #22d3ee;
-  --chart-3: #a78bfa;
-  --chart-4: #fb923c;
-  --chart-5: #f472b6;
-  --chart-6: #fbbf24;
+  --chart-1: #B08968;
+  --chart-2: #4A6572;
+  --chart-3: #264653;
+  --chart-4: #9A5C4A;
+  --chart-5: #C9A882;
+  --chart-6: #5A7F8E;
 
   /* Progress Colors */
   --progress-bg: #1e293b;
-  --progress-fill: #10b981;
+  --progress-fill: #B08968;
   --progress-text: #cbd5e1;
 
   /* Badge/Tag Colors - Confidence */
-  --badge-confidence-high-bg: rgba(16, 185, 129, 0.15);
-  --badge-confidence-high-text: #34d399;
-  --badge-confidence-high-border: #059669;
+  --badge-confidence-high-bg: rgba(38, 70, 83, 0.15);
+  --badge-confidence-high-text: #2F7A6A;
+  --badge-confidence-high-border: #264653;
   --badge-confidence-medium-bg: rgba(245, 158, 11, 0.15);
   --badge-confidence-medium-text: #fbbf24;
   --badge-confidence-medium-border: #d97706;
@@ -163,9 +166,9 @@
   --badge-confidence-low-border: #64748b;
 
   /* Badge/Tag Colors - Insight Types */
-  --badge-opportunity-bg: rgba(16, 185, 129, 0.15);
-  --badge-opportunity-text: #34d399;
-  --badge-opportunity-border: #059669;
+  --badge-opportunity-bg: rgba(38, 70, 83, 0.15);
+  --badge-opportunity-text: #2F7A6A;
+  --badge-opportunity-border: #264653;
   --badge-threat-bg: rgba(239, 68, 68, 0.15);
   --badge-threat-text: #f87171;
   --badge-threat-border: #dc2626;
@@ -186,8 +189,9 @@
   --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
 
   /* Colored Shadows */
-  --shadow-emerald: 0 8px 16px rgba(16, 185, 129, 0.25);
-  --shadow-cyan: 0 8px 16px rgba(6, 182, 212, 0.25);
+  --shadow-primary: 0 8px 16px rgba(176, 137, 104, 0.25);
+  --shadow-accent: 0 8px 16px rgba(74, 101, 114, 0.25);
+  --shadow-success: 0 8px 16px rgba(38, 70, 83, 0.25);
 
   /* Overlay Colors */
   --overlay-light: rgba(11, 18, 21, 0.4);
@@ -196,12 +200,12 @@
   --overlay-gradient: linear-gradient(180deg, rgba(11, 18, 21, 0) 0%, rgba(11, 18, 21, 0.8) 100%);
 
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #10b981, #059669);
-  --gradient-secondary: linear-gradient(135deg, #22d3ee, #0891b2);
-  --gradient-accent: linear-gradient(135deg, #10b981, #22d3ee);
+  --gradient-primary: linear-gradient(135deg, #B08968, #9A5C4A);
+  --gradient-secondary: linear-gradient(135deg, #4A6572, #3A5462);
+  --gradient-accent: linear-gradient(135deg, #B08968, #4A6572);
   --gradient-dark: linear-gradient(135deg, #0f172a, #0B1215);
   --gradient-card: linear-gradient(135deg, #1a2332, #141c1f);
-  --gradient-glow: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.15), transparent 70%);
+  --gradient-glow: radial-gradient(circle at 50% 0%, rgba(176, 137, 104, 0.15), transparent 70%);
 
   /* Spacing Scale */
   --space-0: 0;
@@ -362,7 +366,7 @@
 
   /* Selection */
   ::selection {
-    background-color: rgba(16, 185, 129, 0.3);
+    background-color: rgba(176, 137, 104, 0.3);
     color: var(--text-primary);
   }
 

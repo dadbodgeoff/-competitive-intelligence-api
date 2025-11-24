@@ -30,7 +30,7 @@ export function COGSCalculator({
     <InvoiceCard variant="elevated">
       <InvoiceCardHeader>
         <div className="flex items-center gap-2">
-          <DollarSign className="h-5 w-5 text-emerald-400" />
+          <DollarSign className="h-5 w-5 text-primary-500" />
           <h3 className="text-lg font-semibold text-white">Cost Breakdown</h3>
         </div>
       </InvoiceCardHeader>
@@ -45,14 +45,14 @@ export function COGSCalculator({
           </div>
           <div className="flex justify-between items-center">
             <span className="text-slate-400">Menu Price</span>
-            <span className="text-xl font-mono font-bold text-emerald-400">
+            <span className="text-xl font-mono font-bold text-primary-500">
               ${menuPrice.toFixed(2)}
             </span>
           </div>
           <div className="border-t border-white/10 pt-3">
             <div className="flex justify-between items-center">
               <span className="text-slate-400">Gross Profit</span>
-              <span className="text-xl font-mono font-bold text-cyan-400">
+              <span className="text-xl font-mono font-bold text-accent-400">
                 ${grossProfit.toFixed(2)}
               </span>
             </div>
@@ -67,13 +67,13 @@ export function COGSCalculator({
 
         {/* Progress bar */}
         <div className="space-y-2">
-          <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
+          <div className="h-3 bg-card-dark rounded-full overflow-hidden">
             <div
               className={cn(
                 'h-full transition-all duration-500',
-                isHealthy && 'bg-emerald-500',
-                isWarning && 'bg-orange-500',
-                isDanger && 'bg-red-500'
+                isHealthy && 'bg-primary-500',
+                isWarning && 'bg-primary-500',
+                isDanger && 'bg-destructive'
               )}
               style={{ width: `${Math.min(foodCostPercent, 100)}%` }}
             />
@@ -88,7 +88,7 @@ export function COGSCalculator({
         {/* Status badge */}
         <div className="pt-2">
           {totalCogs === 0 ? (
-            <div className="text-sm text-slate-400 bg-slate-800/50 rounded-lg p-3 border border-white/10">
+            <div className="text-sm text-slate-400 bg-card-dark/50 rounded-lg p-3 border border-white/10">
               <p className="font-semibold text-white mb-1">👈 Add ingredients to calculate COGS</p>
               <p className="text-xs">
                 Costs are automatically pulled from your latest invoice prices
@@ -97,19 +97,19 @@ export function COGSCalculator({
           ) : (
             <>
               {isHealthy && (
-                <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30">
+                <Badge className="bg-primary-500/10 text-primary-500 border-white/10">
                   <TrendingUp className="h-3 w-3 mr-1" />
                   Healthy margin (target: &lt;30%)
                 </Badge>
               )}
               {isWarning && (
-                <Badge className="bg-orange-500/10 text-orange-400 border-orange-500/30">
+                <Badge className="bg-primary-500/10 text-primary-500 border-primary-600/30">
                   <TrendingDown className="h-3 w-3 mr-1" />
                   Warning: Above 30% target
                 </Badge>
               )}
               {isDanger && (
-                <Badge className="bg-red-500/10 text-red-400 border-red-500/30">
+                <Badge className="bg-destructive/10 text-destructive border-red-500/30">
                   <TrendingDown className="h-3 w-3 mr-1" />
                   High cost: Review pricing
                 </Badge>

@@ -189,7 +189,7 @@ export function BrandProfileForm({
           {/* Brand Name */}
           <div className="space-y-2">
             <Label className="text-sm text-slate-200">
-              Brand Name <span className="text-emerald-300">*</span>
+              Brand Name <span className="text-primary-300">*</span>
             </Label>
             <Input
               {...register('brand_name')}
@@ -197,14 +197,14 @@ export function BrandProfileForm({
               className="bg-white/5 border-white/10 text-white"
             />
             {errors.brand_name && (
-              <p className="text-sm text-red-400">{errors.brand_name.message}</p>
+              <p className="text-sm text-destructive">{errors.brand_name.message}</p>
             )}
           </div>
 
           {/* Color Palette */}
           <div className="space-y-2">
             <Label className="text-sm text-slate-200">
-              Color Palette <span className="text-emerald-300">*</span>
+              Color Palette <span className="text-primary-300">*</span>
             </Label>
             <ColorPalettePicker
               primary={primaryColor}
@@ -215,7 +215,7 @@ export function BrandProfileForm({
               onAccentChange={(color) => setValue('accent_color', color)}
             />
             {(errors.primary_color || errors.secondary_color || errors.accent_color) && (
-              <p className="text-sm text-red-400">Please provide valid hex colors</p>
+              <p className="text-sm text-destructive">Please provide valid hex colors</p>
             )}
           </div>
 
@@ -254,7 +254,7 @@ export function BrandProfileForm({
                 >
                   <option value="">Select voice...</option>
                   {BRAND_VOICES.map((voice) => (
-                    <option key={voice} value={voice} className="bg-slate-900">
+                    <option key={voice} value={voice} className="bg-obsidian">
                       {voice.charAt(0).toUpperCase() + voice.slice(1)}
                     </option>
                   ))}
@@ -268,7 +268,7 @@ export function BrandProfileForm({
                 >
                   <option value="">Select audience...</option>
                   {TARGET_DEMOGRAPHICS.map((demo) => (
-                    <option key={demo} value={demo} className="bg-slate-900">
+                    <option key={demo} value={demo} className="bg-obsidian">
                       {demo.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                     </option>
                   ))}
@@ -297,7 +297,7 @@ export function BrandProfileForm({
                   onClick={() => toggleArrayValue('visual_styles', style)}
                   className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
                     visualStyles.includes(style)
-                      ? 'bg-emerald-500 text-white'
+                      ? 'bg-primary-500 text-white'
                       : 'bg-white/5 text-slate-300 hover:bg-white/10'
                   }`}
                 >
@@ -318,7 +318,7 @@ export function BrandProfileForm({
               >
                 <option value="">Select cuisine...</option>
                 {CUISINE_TYPES.map((cuisine) => (
-                  <option key={cuisine} value={cuisine} className="bg-slate-900">
+                  <option key={cuisine} value={cuisine} className="bg-obsidian">
                     {cuisine.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                   </option>
                 ))}
@@ -345,7 +345,7 @@ export function BrandProfileForm({
                   {cuisineSpecialties.map((specialty) => (
                     <span
                       key={specialty}
-                      className="px-2 py-1 bg-emerald-500/20 text-emerald-300 text-xs rounded-md flex items-center gap-1"
+                      className="px-2 py-1 bg-primary-500/20 text-primary-300 text-xs rounded-md flex items-center gap-1"
                     >
                       {specialty}
                       <button
@@ -373,7 +373,7 @@ export function BrandProfileForm({
                   onClick={() => toggleArrayValue('atmosphere_tags', tag)}
                   className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
                     atmosphereTags.includes(tag)
-                      ? 'bg-emerald-500 text-white'
+                      ? 'bg-primary-500 text-white'
                       : 'bg-white/5 text-slate-300 hover:bg-white/10'
                   }`}
                 >
@@ -384,9 +384,9 @@ export function BrandProfileForm({
           </div>
 
           {/* Phase 2: Logo & Branding */}
-          <Card className="bg-slate-900/50 border-white/10">
+          <Card className="bg-obsidian/50 border-white/10">
             <CardHeader>
-              <CardTitle className="text-base text-emerald-400">Logo & Branding (Optional)</CardTitle>
+              <CardTitle className="text-base text-primary-500">Logo & Branding (Optional)</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
@@ -397,7 +397,7 @@ export function BrandProfileForm({
                     className="w-full rounded-md bg-white/5 border border-white/10 text-white px-3 py-2 text-sm"
                   >
                     {LOGO_PLACEMENTS.map((placement) => (
-                      <option key={placement} value={placement} className="bg-slate-900">
+                      <option key={placement} value={placement} className="bg-obsidian">
                         {placement.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                       </option>
                     ))}
@@ -410,7 +410,7 @@ export function BrandProfileForm({
                     className="w-full rounded-md bg-white/5 border border-white/10 text-white px-3 py-2 text-sm"
                   >
                     {WATERMARK_STYLES.map((style) => (
-                      <option key={style} value={style} className="bg-slate-900">
+                      <option key={style} value={style} className="bg-obsidian">
                         {style.charAt(0).toUpperCase() + style.slice(1)}
                       </option>
                     ))}
@@ -421,9 +421,9 @@ export function BrandProfileForm({
           </Card>
 
           {/* Phase 2: Compliance & Restrictions */}
-          <Card className="bg-slate-900/50 border-white/10">
+          <Card className="bg-obsidian/50 border-white/10">
             <CardHeader>
-              <CardTitle className="text-base text-emerald-400">Compliance & Restrictions</CardTitle>
+              <CardTitle className="text-base text-primary-500">Compliance & Restrictions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -437,7 +437,7 @@ export function BrandProfileForm({
                       onClick={() => toggleArrayValue('prohibited_elements', item)}
                       className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
                         prohibitedElements.includes(item)
-                          ? 'bg-red-500 text-white'
+                          ? 'bg-destructive text-white'
                           : 'bg-white/5 text-slate-300 hover:bg-white/10'
                       }`}
                     >
@@ -458,7 +458,7 @@ export function BrandProfileForm({
                       onClick={() => toggleArrayValue('allergen_warnings', allergen)}
                       className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
                         allergenWarnings.includes(allergen)
-                          ? 'bg-amber-500 text-white'
+                          ? 'bg-primary-500 text-white'
                           : 'bg-white/5 text-slate-300 hover:bg-white/10'
                       }`}
                     >
@@ -471,9 +471,9 @@ export function BrandProfileForm({
           </Card>
 
           {/* Phase 2: Social Media Preferences */}
-          <Card className="bg-slate-900/50 border-white/10">
+          <Card className="bg-obsidian/50 border-white/10">
             <CardHeader>
-              <CardTitle className="text-base text-emerald-400">Social Media Preferences</CardTitle>
+              <CardTitle className="text-base text-primary-500">Social Media Preferences</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -486,7 +486,7 @@ export function BrandProfileForm({
                       onClick={() => toggleArrayValue('primary_social_platforms', platform)}
                       className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
                         socialPlatforms.includes(platform)
-                          ? 'bg-emerald-500 text-white'
+                          ? 'bg-primary-500 text-white'
                           : 'bg-white/5 text-slate-300 hover:bg-white/10'
                       }`}
                     >
@@ -506,7 +506,7 @@ export function BrandProfileForm({
                       onClick={() => toggleArrayValue('preferred_aspect_ratios', ratio)}
                       className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
                         aspectRatios.includes(ratio)
-                          ? 'bg-emerald-500 text-white'
+                          ? 'bg-primary-500 text-white'
                           : 'bg-white/5 text-slate-300 hover:bg-white/10'
                       }`}
                     >
@@ -547,7 +547,7 @@ export function BrandProfileForm({
                     {brandHashtags.map((hashtag) => (
                       <span
                         key={hashtag}
-                        className="px-2 py-1 bg-emerald-500/20 text-emerald-300 text-xs rounded-md flex items-center gap-1"
+                        className="px-2 py-1 bg-primary-500/20 text-primary-300 text-xs rounded-md flex items-center gap-1"
                       >
                         {hashtag}
                         <button
@@ -566,9 +566,9 @@ export function BrandProfileForm({
           </Card>
 
           {/* Phase 3: Seasonal & Events */}
-          <Card className="bg-slate-900/50 border-white/10">
+          <Card className="bg-obsidian/50 border-white/10">
             <CardHeader>
-              <CardTitle className="text-base text-emerald-400">Seasonal & Events (Optional)</CardTitle>
+              <CardTitle className="text-base text-primary-500">Seasonal & Events (Optional)</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -581,7 +581,7 @@ export function BrandProfileForm({
                       onClick={() => toggleArrayValue('active_seasons', season)}
                       className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
                         activeSeasons.includes(season)
-                          ? 'bg-emerald-500 text-white'
+                          ? 'bg-primary-500 text-white'
                           : 'bg-white/5 text-slate-300 hover:bg-white/10'
                       }`}
                     >
@@ -601,7 +601,7 @@ export function BrandProfileForm({
                       onClick={() => toggleArrayValue('holiday_participation', holiday)}
                       className={`px-3 py-1.5 rounded-md text-sm transition-colors ${
                         holidayParticipation.includes(holiday)
-                          ? 'bg-emerald-500 text-white'
+                          ? 'bg-primary-500 text-white'
                           : 'bg-white/5 text-slate-300 hover:bg-white/10'
                       }`}
                     >
@@ -626,9 +626,9 @@ export function BrandProfileForm({
           </Card>
 
           {/* Phase 3: Location Context */}
-          <Card className="bg-slate-900/50 border-white/10">
+          <Card className="bg-obsidian/50 border-white/10">
             <CardHeader>
-              <CardTitle className="text-base text-emerald-400">Location Context (Optional)</CardTitle>
+              <CardTitle className="text-base text-primary-500">Location Context (Optional)</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-3">
@@ -667,7 +667,7 @@ export function BrandProfileForm({
                   >
                     <option value="">Select type...</option>
                     {LOCATION_TYPES.map((type) => (
-                      <option key={type} value={type} className="bg-slate-900">
+                      <option key={type} value={type} className="bg-obsidian">
                         {type.charAt(0).toUpperCase() + type.slice(1)}
                       </option>
                     ))}
@@ -681,7 +681,7 @@ export function BrandProfileForm({
                   >
                     <option value="">Select style...</option>
                     {REGIONAL_STYLES.map((style) => (
-                      <option key={style} value={style} className="bg-slate-900">
+                      <option key={style} value={style} className="bg-obsidian">
                         {style.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                       </option>
                     ))}
@@ -702,9 +702,9 @@ export function BrandProfileForm({
           </Card>
 
           {/* Phase 3: Price Positioning */}
-          <Card className="bg-slate-900/50 border-white/10">
+          <Card className="bg-obsidian/50 border-white/10">
             <CardHeader>
-              <CardTitle className="text-base text-emerald-400">Price Positioning (Optional)</CardTitle>
+              <CardTitle className="text-base text-primary-500">Price Positioning (Optional)</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
@@ -716,7 +716,7 @@ export function BrandProfileForm({
                   >
                     <option value="">Select range...</option>
                     {PRICE_RANGES.map((range) => (
-                      <option key={range} value={range} className="bg-slate-900">
+                      <option key={range} value={range} className="bg-obsidian">
                         {range}
                       </option>
                     ))}
@@ -730,7 +730,7 @@ export function BrandProfileForm({
                   >
                     <option value="">Select proposition...</option>
                     {VALUE_PROPOSITIONS.map((prop) => (
-                      <option key={prop} value={prop} className="bg-slate-900">
+                      <option key={prop} value={prop} className="bg-obsidian">
                         {prop.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                       </option>
                     ))}
@@ -773,7 +773,7 @@ export function BrandProfileForm({
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="bg-emerald-500 hover:bg-emerald-600"
+          className="bg-primary-500 hover:bg-primary-500"
         >
           {isSubmitting ? 'Saving...' : profile ? 'Update Profile' : 'Create Profile'}
         </Button>

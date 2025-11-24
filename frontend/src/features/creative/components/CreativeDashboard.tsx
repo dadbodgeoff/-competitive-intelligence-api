@@ -254,7 +254,7 @@ export function CreativeDashboard() {
           </Button>
           <Button
             onClick={() => window.location.href = '/creative/generate'}
-            className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/25"
+            className="bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25"
           >
             <span className="mr-2">✨</span>
             Generate New Asset
@@ -295,7 +295,7 @@ export function CreativeDashboard() {
         {/* Generation Wizard - Only show when template is selected */}
         {selectedTemplate && (
           <div id="generation-form" className="scroll-mt-8">
-            <div className="rounded-lg border-2 border-emerald-500/50 bg-emerald-500/5 p-1">
+            <div className="rounded-lg border-2 border-primary-500/50 bg-primary-500/5 p-1">
               <GenerationWizard
                 theme={selectedTheme}
                 template={selectedTemplate}

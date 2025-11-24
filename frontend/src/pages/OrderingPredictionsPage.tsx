@@ -46,7 +46,7 @@ export function OrderingPredictionsPage() {
           </div>
         </header>
 
-        <Alert className="border-emerald-500/50 bg-emerald-500/10 text-emerald-100">
+        <Alert className="border-primary-500/50 bg-primary-500/10 text-primary-100">
           <Sparkles className="h-4 w-4" />
           <AlertTitle>Delivery-aware forecasting</AlertTitle>
           <AlertDescription>
@@ -108,7 +108,7 @@ export function OrderingPredictionsPage() {
                             <p className="text-xs text-slate-400">{group.leadTimeHint}</p>
                           )}
                         </div>
-                        <Badge variant="outline" className="border-emerald-500/60 text-emerald-300">
+                        <Badge variant="outline" className="border-primary-500/60 text-primary-300">
                           {group.items.length > 0
                             ? `${group.items.length} item${group.items.length === 1 ? '' : 's'}`
                             : 'Forecast pending'}
@@ -152,7 +152,7 @@ export function OrderingPredictionsPage() {
                                     {fallbackBadge && (
                                       <Badge
                                         variant="secondary"
-                                        className="bg-amber-500/20 text-amber-100 border-amber-400/40"
+                                        className="bg-primary-500/20 text-primary-100 border-primary-400/40"
                                       >
                                         90d fallback
                                       </Badge>
@@ -168,7 +168,7 @@ export function OrderingPredictionsPage() {
                                     {confidenceLabel && <span>{confidenceLabel}</span>}
                                   </div>
                                   {prediction.suggested_boxes ? (
-                                    <p className="text-sm text-emerald-300 font-medium">
+                                    <p className="text-sm text-primary-300 font-medium">
                                       Order {prediction.suggested_boxes}{' '}
                                       {prediction.pack_label?.toLowerCase() ?? 'cases'} (
                                       {formatQuantity(prediction.forecast_quantity, prediction.base_unit)})
@@ -176,7 +176,7 @@ export function OrderingPredictionsPage() {
                                   ) : null}
                                 </div>
                                 <div className="text-right">
-                                  <p className="text-emerald-400 text-lg font-semibold">
+                                  <p className="text-primary-500 text-lg font-semibold">
                                     {formatQuantity(prediction.forecast_quantity, prediction.base_unit)}
                                   </p>
                                   {prediction.lower_bound != null && prediction.upper_bound != null && (
@@ -244,7 +244,7 @@ export function OrderingPredictionsPage() {
                     <div key={pattern.vendor_name} className="rounded-lg border border-white/5 p-3">
                       <div className="flex items-center justify-between">
                         <p className="text-white font-medium">{pattern.vendor_name}</p>
-                        <span className="text-xs text-emerald-300">
+                        <span className="text-xs text-primary-300">
                           {(pattern.confidence_score * 100).toFixed(0)}% confidence
                         </span>
                       </div>

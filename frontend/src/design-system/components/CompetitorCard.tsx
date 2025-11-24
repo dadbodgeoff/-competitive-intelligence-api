@@ -27,10 +27,10 @@ export function CompetitorCard({
 }: CompetitorCardProps) {
   // Rating color based on value
   const getRatingColor = (rating: number) => {
-    if (rating >= 4.5) return 'text-emerald-400 bg-emerald-500/15 border-emerald-500/30';
-    if (rating >= 4.0) return 'text-cyan-400 bg-cyan-500/15 border-cyan-500/30';
-    if (rating >= 3.5) return 'text-amber-400 bg-amber-500/15 border-amber-500/30';
-    return 'text-red-400 bg-red-500/15 border-red-500/30';
+    if (rating >= 4.5) return 'text-primary-500 bg-primary-500/15 border-white/10';
+    if (rating >= 4.0) return 'text-accent-400 bg-accent-500/15 border-accent-500/30';
+    if (rating >= 3.5) return 'text-primary-500 bg-primary-500/15 border-primary-600/30';
+    return 'text-destructive bg-destructive/15 border-red-500/30';
   };
 
   // Format distance
@@ -46,7 +46,7 @@ export function CompetitorCard({
       className={cn(
         'group relative overflow-hidden rounded-lg border border-white/10',
         'bg-gradient-to-br from-slate-850 to-slate-900',
-        'transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-cyan-500/30',
+        'transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-accent-500/30',
         className
       )}
     >
@@ -86,10 +86,10 @@ export function CompetitorCard({
           </div>
 
           <div className="flex items-center gap-2 text-sm">
-            <Navigation className="w-4 h-4 text-cyan-500" />
+            <Navigation className="w-4 h-4 text-accent-500" />
             <div>
               <div className="text-slate-400 text-xs">Distance</div>
-              <div className="text-cyan-400 font-semibold">
+              <div className="text-accent-400 font-semibold">
                 {formatDistance(distance)}
               </div>
             </div>
@@ -104,8 +104,8 @@ export function CompetitorCard({
             onClick={onViewDetails}
             className={cn(
               'w-full px-4 py-2 rounded-md text-sm font-medium',
-              'bg-white/5 text-cyan-400 border border-cyan-400/30',
-              'hover:bg-cyan-400/10 hover:border-cyan-400/50',
+              'bg-white/5 text-accent-400 border border-accent-400/30',
+              'hover:bg-accent-400/10 hover:border-accent-400/50',
               'transition-all duration-200'
             )}
           >
@@ -115,7 +115,7 @@ export function CompetitorCard({
       )}
 
       {/* Hover glow effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-accent-500/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
     </div>
   );
 }

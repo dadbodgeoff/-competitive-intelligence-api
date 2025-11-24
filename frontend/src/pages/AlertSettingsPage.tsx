@@ -66,7 +66,7 @@ export function AlertSettingsPage() {
         </Button>
         <div>
           <PageHeading className="flex items-center gap-2">
-            <Settings className="h-8 w-8 text-cyan-400" />
+            <Settings className="h-8 w-8 text-accent-400" />
             Alert Settings
           </PageHeading>
           <p className="text-slate-400 mt-2">
@@ -100,7 +100,7 @@ export function AlertSettingsPage() {
                     ...thresholds,
                     price_alert_threshold_7day: parseFloat(e.target.value)
                   })}
-                  className="w-full px-4 py-2 bg-obsidian border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full px-4 py-2 bg-obsidian border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent-500"
                 />
                 <p className="text-xs text-slate-500 mt-1">
                   Alert if price increases more than this % vs 7-day average
@@ -121,7 +121,7 @@ export function AlertSettingsPage() {
                     ...thresholds,
                     price_alert_threshold_28day: parseFloat(e.target.value)
                   })}
-                  className="w-full px-4 py-2 bg-obsidian border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full px-4 py-2 bg-obsidian border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent-500"
                 />
                 <p className="text-xs text-slate-500 mt-1">
                   Alert if price increases more than this % vs 28-day average
@@ -153,7 +153,7 @@ export function AlertSettingsPage() {
                     ...thresholds,
                     price_drop_alert_threshold_7day: parseFloat(e.target.value)
                   })}
-                  className="w-full px-4 py-2 bg-obsidian border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full px-4 py-2 bg-obsidian border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-success-500"
                 />
                 <p className="text-xs text-slate-500 mt-1">
                   Alert if price decreases more than this % vs 7-day average
@@ -174,7 +174,7 @@ export function AlertSettingsPage() {
                     ...thresholds,
                     price_drop_alert_threshold_28day: parseFloat(e.target.value)
                   })}
-                  className="w-full px-4 py-2 bg-obsidian border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-full px-4 py-2 bg-obsidian border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-success-500"
                 />
                 <p className="text-xs text-slate-500 mt-1">
                   Alert if price decreases more than this % vs 28-day average

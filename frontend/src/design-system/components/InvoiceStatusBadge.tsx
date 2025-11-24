@@ -16,19 +16,19 @@ export function InvoiceStatusBadge({ status, className }: InvoiceStatusBadgeProp
   const statusConfig: Record<InvoiceStatus, { label: string; classes: string }> = {
     parsed: {
       label: 'Parsed',
-      classes: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+      classes: 'bg-accent-500/10 text-accent-400 border-accent-500/30',
     },
     reviewed: {
       label: 'Reviewed',
-      classes: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+      classes: 'bg-primary-500/10 text-primary-500 border-primary-600/30',
     },
     approved: {
       label: 'Approved',
-      classes: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+      classes: 'bg-primary-500/10 text-primary-500 border-white/10',
     },
     completed: {
       label: 'Completed',
-      classes: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+      classes: 'bg-primary-500/10 text-primary-500 border-white/10',
     },
     pending: {
       label: 'Pending',
@@ -36,11 +36,11 @@ export function InvoiceStatusBadge({ status, className }: InvoiceStatusBadgeProp
     },
     processing: {
       label: 'Processing',
-      classes: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+      classes: 'bg-accent-500/10 text-accent-400 border-accent-500/30',
     },
     error: {
       label: 'Error',
-      classes: 'bg-red-500/10 text-red-400 border-red-500/30',
+      classes: 'bg-destructive/10 text-destructive border-red-500/30',
     },
   };
 

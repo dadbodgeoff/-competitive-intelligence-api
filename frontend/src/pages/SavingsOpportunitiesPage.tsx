@@ -27,7 +27,7 @@ export function SavingsOpportunitiesPage() {
           <div className="flex items-center justify-between">
             <div>
               <PageHeading className="flex items-center gap-2">
-                <TrendingDown className="h-8 w-8 text-green-400" />
+                <TrendingDown className="h-8 w-8 text-success-400" />
                 Savings Opportunities
               </PageHeading>
               <p className="text-gray-400 mt-2">
@@ -54,7 +54,7 @@ export function SavingsOpportunitiesPage() {
             <TabsContent value="active" className="space-y-4 mt-6">
               {alerts?.alerts && alerts.alerts.length > 0 ? (
                 alerts.alerts.map((alert: SavingsAlert) => (
-                  <Card key={alert.alert_key} className="p-6 bg-obsidian-light border-green-500/30">
+                  <Card key={alert.alert_key} className="p-6 bg-obsidian-light border-success-500/30">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <h3 className="text-xl font-semibold text-white">
@@ -64,7 +64,7 @@ export function SavingsOpportunitiesPage() {
 
                         <div className="mt-4 space-y-2">
                           <div className="flex items-center gap-4">
-                            <span className="text-green-400 font-bold text-2xl">
+                            <span className="text-success-400 font-bold text-2xl">
                               -{alert.savings_percent.toFixed(1)}%
                             </span>
                             <span className="text-gray-400">
@@ -79,11 +79,11 @@ export function SavingsOpportunitiesPage() {
                             </div>
                             <div>
                               <p className="text-sm text-gray-500">Actual</p>
-                              <p className="text-lg text-green-400">${alert.actual_price.toFixed(2)}</p>
+                              <p className="text-lg text-success-400">${alert.actual_price.toFixed(2)}</p>
                             </div>
                             <div>
                               <p className="text-sm text-gray-500">Savings</p>
-                              <p className="text-lg text-green-400">${alert.savings_amount.toFixed(2)}</p>
+                              <p className="text-lg text-success-400">${alert.savings_amount.toFixed(2)}</p>
                             </div>
                           </div>
                         </div>

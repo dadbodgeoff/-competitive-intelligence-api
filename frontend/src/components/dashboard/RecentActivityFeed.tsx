@@ -23,30 +23,30 @@ interface RecentActivityFeedProps {
 const activityConfig = {
   invoice: {
     icon: FileText,
-    color: 'text-cyan-400',
-    bgColor: 'bg-cyan-500/10',
+    color: 'text-accent-400',
+    bgColor: 'bg-accent-500/10',
   },
   menu: {
     icon: UtensilsCrossed,
-    color: 'text-orange-400',
-    bgColor: 'bg-orange-500/10',
+    color: 'text-primary-500',
+    bgColor: 'bg-primary-500/10',
   },
   analysis: {
     icon: Search,
-    color: 'text-emerald-400',
-    bgColor: 'bg-emerald-500/10',
+    color: 'text-primary-500',
+    bgColor: 'bg-primary-500/10',
   },
   comparison: {
     icon: Search,
-    color: 'text-purple-400',
-    bgColor: 'bg-purple-500/10',
+    color: 'text-accent-400',
+    bgColor: 'bg-accent-500/10',
   },
 };
 
 const statusConfig = {
-  completed: { label: 'Completed', color: 'bg-emerald-500/10 text-emerald-400' },
-  processing: { label: 'Processing', color: 'bg-blue-500/10 text-blue-400' },
-  failed: { label: 'Failed', color: 'bg-red-500/10 text-red-400' },
+  completed: { label: 'Completed', color: 'bg-primary-500/10 text-primary-500' },
+  processing: { label: 'Processing', color: 'bg-accent-500/10 text-accent-400' },
+  failed: { label: 'Failed', color: 'bg-destructive/10 text-destructive' },
 };
 
 export function RecentActivityFeed({ activities, loading }: RecentActivityFeedProps) {
@@ -107,7 +107,7 @@ export function RecentActivityFeed({ activities, loading }: RecentActivityFeedPr
                     <Icon className={`h-5 w-5 ${config.color}`} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white group-hover:text-emerald-400 transition-colors truncate">
+                    <p className="text-sm font-medium text-white group-hover:text-primary-500 transition-colors truncate">
                       {activity.title}
                     </p>
                     <div className="flex items-center gap-2 mt-1">

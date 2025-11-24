@@ -53,7 +53,7 @@ export function FastestRisingCostsCard() {
       <Card className="bg-card-dark border-white/10">
         <CardHeader>
           <CardTitle className="text-white text-lg flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-red-400" />
+            <TrendingUp className="h-5 w-5 text-destructive" />
             Fastest Rising Costs
           </CardTitle>
         </CardHeader>
@@ -70,7 +70,7 @@ export function FastestRisingCostsCard() {
     <Card className="bg-card-dark border-white/10 border-red-500/20">
       <CardHeader>
         <CardTitle className="text-white text-lg flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5 text-red-400" />
+          <AlertTriangle className="h-5 w-5 text-destructive" />
           Fastest Rising Costs (30 days)
         </CardTitle>
       </CardHeader>
@@ -79,7 +79,7 @@ export function FastestRisingCostsCard() {
           {items.map((item, index) => (
             <div
               key={index}
-              className="flex items-center justify-between p-3 rounded-lg bg-red-500/5 border border-red-500/20 hover:bg-red-500/10 transition-colors"
+              className="flex items-center justify-between p-3 rounded-lg bg-destructive/5 border border-red-500/20 hover:bg-destructive/10 transition-colors"
             >
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium text-white truncate">
@@ -90,8 +90,8 @@ export function FastestRisingCostsCard() {
                 </div>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0 ml-3">
-                <TrendingUp className="h-4 w-4 text-red-400" />
-                <span className="text-sm font-bold text-red-400">
+                <TrendingUp className="h-4 w-4 text-destructive" />
+                <span className="text-sm font-bold text-destructive">
                   +{item.increase_percent.toFixed(1)}%
                 </span>
               </div>

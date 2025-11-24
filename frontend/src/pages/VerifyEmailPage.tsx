@@ -31,24 +31,24 @@ export function VerifyEmailPage() {
   return (
     <div className="min-h-screen bg-obsidian flex items-center justify-center px-4 py-12">
       {/* Background gradient effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-accent-500/5 pointer-events-none" />
 
       <div className="relative w-full max-w-lg">
         {/* Logo/Brand */}
         <div className="text-center mb-8">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-white hover:text-emerald-400 transition-colors"
+            className="inline-flex items-center gap-2 text-white hover:text-primary-500 transition-colors"
           >
-            <TrendingUp className="h-8 w-8 text-emerald-500" />
+            <TrendingUp className="h-8 w-8 text-primary-500" />
             <span className="text-2xl font-bold">RestaurantIQ</span>
           </Link>
         </div>
 
         <Card className="bg-card-dark border-white/10 shadow-2xl">
           <CardHeader className="text-center space-y-4 pb-6">
-            <div className="mx-auto w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center">
-              <Mail className="h-8 w-8 text-emerald-400" />
+            <div className="mx-auto w-16 h-16 bg-primary-500/20 rounded-full flex items-center justify-center">
+              <Mail className="h-8 w-8 text-primary-500" />
             </div>
             <CardTitle className="text-3xl font-bold text-white">
               Check Your Email
@@ -59,7 +59,7 @@ export function VerifyEmailPage() {
           </CardHeader>
 
           <CardContent className="space-y-6">
-            <Alert className="bg-emerald-500/10 border-emerald-500/40 text-emerald-100">
+            <Alert className="bg-primary-500/10 border-white/10 text-primary-100">
               <CheckCircle className="h-4 w-4" />
               <AlertDescription>
                 <div className="space-y-2">
@@ -85,7 +85,7 @@ export function VerifyEmailPage() {
             <div className="pt-4 space-y-3">
               <Button
                 asChild
-                className="w-full h-12 text-base font-semibold bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/25"
+                className="w-full h-12 text-base font-semibold bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25"
               >
                 <Link to="/login">
                   Go to Login
@@ -99,7 +99,7 @@ export function VerifyEmailPage() {
                 </p>
                 <Button
                   variant="outline"
-                  className="text-sm border-white/10 text-slate-300 hover:text-white hover:border-emerald-500/50"
+                  className="text-sm border-white/10 text-slate-300 hover:text-white hover:border-primary-500/50"
                   onClick={handleResendEmail}
                   disabled={resendCooldown > 0}
                 >

@@ -38,7 +38,7 @@ export function CreativeLayout({ activeTab, onTabChange, children, tabCounts }: 
             <TabsTrigger
               key={key}
               value={key}
-              className="data-[state=active]:bg-emerald-500 data-[state=active]:text-white"
+              className="data-[state=active]:bg-primary-500 data-[state=active]:text-white"
             >
               <span className="mr-2">{label}</span>
               {typeof tabCounts?.[key as CreativeTab] === 'number' && (

@@ -25,9 +25,9 @@ export function TierSelector({
       description: 'Analyze 2 closest competitors',
       available: true,
       badge: 'Free',
-      badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+      badgeColor: 'bg-primary-500/10 text-primary-500 border-white/10',
       icon: Sparkles,
-      borderColor: 'border-emerald-500/50',
+      borderColor: 'border-primary-500/50',
     },
     {
       id: 'premium' as const,
@@ -38,10 +38,10 @@ export function TierSelector({
       badge: userTier === 'free' ? 'Upgrade Required' : 'Premium',
       badgeColor:
         userTier === 'free'
-          ? 'bg-amber-500/10 text-amber-400 border-amber-500/30'
-          : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+          ? 'bg-primary-500/10 text-primary-500 border-primary-600/30'
+          : 'bg-accent-500/10 text-accent-400 border-accent-500/30',
       icon: userTier === 'free' ? Crown : Zap,
-      borderColor: 'border-cyan-500/50',
+      borderColor: 'border-accent-500/50',
     },
   ];
 
@@ -70,16 +70,16 @@ export function TierSelector({
                       className={cn(
                         'p-1.5 rounded-lg',
                         tier.id === 'free'
-                          ? 'bg-emerald-500/10'
-                          : 'bg-cyan-500/10'
+                          ? 'bg-primary-500/10'
+                          : 'bg-accent-500/10'
                       )}
                     >
                       <Icon
                         className={cn(
                           'h-4 w-4',
                           tier.id === 'free'
-                            ? 'text-emerald-400'
-                            : 'text-cyan-400'
+                            ? 'text-primary-500'
+                            : 'text-accent-400'
                         )}
                       />
                     </div>
@@ -112,8 +112,8 @@ export function TierSelector({
                         'w-5 h-5 rounded-full border-2 transition-colors flex items-center justify-center',
                         value === tier.id
                           ? tier.id === 'free'
-                            ? 'bg-emerald-500 border-emerald-500'
-                            : 'bg-cyan-500 border-cyan-500'
+                            ? 'bg-primary-500 border-primary-500'
+                            : 'bg-accent-500 border-accent-500'
                           : 'border-slate-500'
                       )}
                     >
@@ -125,7 +125,7 @@ export function TierSelector({
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-xs border-amber-500/30 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300"
+                      className="text-xs border-primary-600/30 text-primary-500 hover:bg-primary-500/10 hover:text-primary-300"
                       onClick={(e) => {
                         e.stopPropagation();
                       navigate('/pricing');

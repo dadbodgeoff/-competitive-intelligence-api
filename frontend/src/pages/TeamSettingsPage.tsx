@@ -14,6 +14,8 @@ import { ModuleAccessCard } from '@/components/team/ModuleAccessCard';
 import { TeamMembersCard } from '@/components/team/TeamMembersCard';
 import { InviteMemberCard } from '@/components/team/InviteMemberCard';
 import { ClockPinCard } from '@/components/team/ClockPinCard';
+import { AppShell } from '@/components/layout/AppShell';
+import { PageHeading } from '@/components/layout/PageHeading';
 
 export function TeamSettingsPage() {
   const queryClient = useQueryClient();
@@ -134,17 +136,21 @@ export function TeamSettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="p-6">
-        <p className="text-slate-400">Loading account details…</p>
-      </div>
+      <AppShell>
+        <div className="p-6">
+          <p className="text-slate-400">Loading account details…</p>
+        </div>
+      </AppShell>
     );
   }
 
   if (isError || !data) {
     return (
-      <div className="p-6">
-        <p className="text-red-400">Failed to load account information.</p>
-      </div>
+      <AppShell>
+        <div className="p-6">
+          <p className="text-destructive">Failed to load account information.</p>
+        </div>
+      </AppShell>
     );
   }
 
@@ -163,8 +169,11 @@ export function TeamSettingsPage() {
   const pinStatus = currentMember?.clock_pin;
 
   return (
-    <div className="p-6 space-y-6">
-      <AccountOverviewCard
+    <AppShell>
+      <div className="space-y-6">
+        <PageHeading>Team Settings</PageHeading>
+        
+        <AccountOverviewCard
         accountName={data.account.name}
         plan={data.account.plan}
         memberCount={data.members.length}
@@ -202,7 +211,8 @@ export function TeamSettingsPage() {
           onInvite={(payload) => inviteMutation.mutate(payload)}
         />
       </div>
-    </div>
+      </div>
+    </AppShell>
   );
 }
 

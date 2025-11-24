@@ -98,7 +98,7 @@ export function ShiftEditorDialog({
             <select
               value={formState.assigned_member_id ?? ''}
               onChange={(event) => onChange({ assigned_member_id: event.target.value || undefined })}
-              className="w-full rounded-md border border-white/10 bg-obsidian px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full rounded-md border border-white/10 bg-obsidian px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
               <option value="">Unassigned</option>
               {members

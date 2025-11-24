@@ -57,7 +57,7 @@ export function VendorScorecardCard() {
     <Card className="bg-card-dark border-white/10">
       <CardHeader>
         <CardTitle className="text-white text-lg flex items-center gap-2">
-          <Store className="h-5 w-5 text-cyan-400" />
+          <Store className="h-5 w-5 text-accent-400" />
           Vendor Scorecard
         </CardTitle>
         <div className="text-sm text-slate-400">
@@ -66,7 +66,7 @@ export function VendorScorecardCard() {
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="most-used" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-slate-800/50">
+          <TabsList className="grid w-full grid-cols-3 bg-card-dark/50">
             <TabsTrigger value="most-used">Most Used</TabsTrigger>
             <TabsTrigger value="highest-spend">Highest Spend</TabsTrigger>
             <TabsTrigger value="avg-value">Avg Order</TabsTrigger>
@@ -77,12 +77,12 @@ export function VendorScorecardCard() {
               {data.most_used.slice(0, 3).map((vendor, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-2 rounded bg-slate-800/30"
+                  className="flex items-center justify-between p-2 rounded bg-card-dark/30"
                 >
                   <div className="text-sm text-white truncate flex-1">
                     {vendor.vendor}
                   </div>
-                  <div className="text-sm text-cyan-400 font-semibold ml-2">
+                  <div className="text-sm text-accent-400 font-semibold ml-2">
                     {vendor.order_count} orders
                   </div>
                 </div>
@@ -95,12 +95,12 @@ export function VendorScorecardCard() {
               {data.highest_spend.slice(0, 3).map((vendor, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-2 rounded bg-slate-800/30"
+                  className="flex items-center justify-between p-2 rounded bg-card-dark/30"
                 >
                   <div className="text-sm text-white truncate flex-1">
                     {vendor.vendor}
                   </div>
-                  <div className="text-sm text-emerald-400 font-semibold ml-2">
+                  <div className="text-sm text-primary-500 font-semibold ml-2">
                     ${vendor.total_spend?.toLocaleString()}
                   </div>
                 </div>
@@ -113,12 +113,12 @@ export function VendorScorecardCard() {
               {data.avg_order_value.slice(0, 3).map((vendor, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-2 rounded bg-slate-800/30"
+                  className="flex items-center justify-between p-2 rounded bg-card-dark/30"
                 >
                   <div className="text-sm text-white truncate flex-1">
                     {vendor.vendor}
                   </div>
-                  <div className="text-sm text-purple-400 font-semibold ml-2">
+                  <div className="text-sm text-accent-400 font-semibold ml-2">
                     ${vendor.avg_order_value?.toLocaleString()}
                   </div>
                 </div>

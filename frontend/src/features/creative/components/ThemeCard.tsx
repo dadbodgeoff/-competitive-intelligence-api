@@ -36,20 +36,20 @@ export function ThemeCard({
   };
 
   return (
-    <Card className="bg-card-dark border-white/10 hover:border-emerald-500/30 transition-all">
+    <Card className="bg-card-dark border-white/10 hover:border-white/10 transition-all">
       <CardHeader
         className="cursor-pointer"
         onClick={onToggle}
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3 flex-1">
-            <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-              <Palette className="h-5 w-5 text-emerald-400" />
+            <div className="p-2 rounded-lg bg-primary-500/10 border border-white/10">
+              <Palette className="h-5 w-5 text-primary-500" />
             </div>
             <div className="flex-1">
               <CardTitle className="text-lg text-white flex items-center gap-2">
                 {theme.name}
-                <Badge variant="outline" className="text-xs border-emerald-500/30 text-emerald-400">
+                <Badge variant="outline" className="text-xs border-white/10 text-primary-500">
                   {theme.restaurant_vertical}
                 </Badge>
               </CardTitle>
@@ -92,8 +92,8 @@ export function ThemeCard({
                     className={cn(
                       'p-4 rounded-lg border transition-all cursor-pointer',
                       selectedTemplateId === template.id
-                        ? 'bg-emerald-500/10 border-emerald-500 ring-2 ring-emerald-500/30'
-                        : 'bg-slate-900/50 border-white/10 hover:border-emerald-500/50 hover:bg-slate-900/80'
+                        ? 'bg-primary-500/10 border-primary-500 ring-2 ring-primary-500/30'
+                        : 'bg-obsidian/50 border-white/10 hover:border-primary-500/50 hover:bg-obsidian/80'
                     )}
                     onClick={() => onSelectTemplate(template)}
                   >
@@ -103,7 +103,7 @@ export function ThemeCard({
                           {template.display_name || template.slug}
                         </div>
                         {selectedTemplateId === template.id && (
-                          <Badge className="bg-emerald-500 text-white text-xs">
+                          <Badge className="bg-primary-500 text-white text-xs">
                             Selected
                           </Badge>
                         )}
@@ -133,7 +133,7 @@ export function ThemeCard({
                         <Button
                           variant="outline"
                           size="sm"
-                          className="flex-1 text-xs border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10"
+                          className="flex-1 text-xs border-white/10 text-primary-500 hover:bg-primary-500/10"
                           onClick={(e) => {
                             e.stopPropagation();
                             onPreviewTemplate(template);
@@ -144,7 +144,7 @@ export function ThemeCard({
                         {showUseTemplateButton && (
                           <Button
                             size="sm"
-                            className="flex-1 text-xs bg-emerald-500 hover:bg-emerald-600 text-white"
+                            className="flex-1 text-xs bg-primary-500 hover:bg-primary-500 text-white"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleUseTemplate(template);

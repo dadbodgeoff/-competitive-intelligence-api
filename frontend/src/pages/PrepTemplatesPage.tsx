@@ -75,7 +75,7 @@ export function PrepTemplatesPage() {
                     value={newTemplateName}
                     onChange={(event) => setNewTemplateName(event.target.value)}
                     placeholder="Nightly prep"
-                    className="bg-slate-900 border-white/10 text-white"
+                    className="bg-obsidian border-white/10 text-white"
                   />
                 </div>
                 <div className="space-y-1">
@@ -84,7 +84,7 @@ export function PrepTemplatesPage() {
                     value={newTemplateDescription}
                     onChange={(event) => setNewTemplateDescription(event.target.value)}
                     placeholder="Describe when this prep list should be used"
-                    className="bg-slate-900 border-white/10 text-white"
+                    className="bg-obsidian border-white/10 text-white"
                   />
                 </div>
               </div>
@@ -134,7 +134,7 @@ export function PrepTemplatesPage() {
                         onClick={() => setSelectedTemplateId(template.id)}
                         className={`w-full text-left px-3 py-2 rounded-md border ${
                           selectedTemplate?.id === template.id
-                            ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-200'
+                            ? 'bg-primary-500/10 border-white/10 text-primary-200'
                             : 'bg-slate-950/70 border-white/10 text-slate-200 hover:border-white/30'
                         }`}
                       >
@@ -244,7 +244,7 @@ function TemplateDetail({ template, onRemoved }: { template: PrepTemplate; onRem
               value={newItemName}
               onChange={(event) => setNewItemName(event.target.value)}
               placeholder="Prep item name"
-              className="bg-slate-900 border-white/10 text-white"
+              className="bg-obsidian border-white/10 text-white"
             />
           </div>
           <div className="md:col-span-2 space-y-1">
@@ -254,7 +254,7 @@ function TemplateDetail({ template, onRemoved }: { template: PrepTemplate; onRem
               min={0}
               value={newItemPar}
               onChange={(event) => setNewItemPar(event.target.value)}
-              className="bg-slate-900 border-white/10 text-white"
+              className="bg-obsidian border-white/10 text-white"
             />
           </div>
           <div className="md:col-span-2 space-y-1">
@@ -264,7 +264,7 @@ function TemplateDetail({ template, onRemoved }: { template: PrepTemplate; onRem
               min={0}
               value={newItemOnHand}
               onChange={(event) => setNewItemOnHand(event.target.value)}
-              className="bg-slate-900 border-white/10 text-white"
+              className="bg-obsidian border-white/10 text-white"
             />
           </div>
           <div className="md:col-span-3 flex gap-2">
@@ -280,7 +280,7 @@ function TemplateDetail({ template, onRemoved }: { template: PrepTemplate; onRem
               value={menuImportIds}
               onChange={(event) => setMenuImportIds(event.target.value)}
               placeholder="Comma separated menu item IDs"
-              className="bg-slate-900 border-white/10 text-white"
+              className="bg-obsidian border-white/10 text-white"
             />
           </div>
           <div className="md:col-span-3">

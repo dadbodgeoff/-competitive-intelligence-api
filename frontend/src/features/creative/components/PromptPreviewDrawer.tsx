@@ -91,14 +91,14 @@ export function PromptPreviewDrawer({
         <ScrollArea className="h-[50vh] rounded-md border border-white/10 bg-black/40 p-4">
           {isLoading && <Skeleton className="h-40 w-full bg-white/10" />}
           {!isLoading && error && (
-            <div className="rounded-md border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
+            <div className="rounded-md border border-red-500/40 bg-destructive/10 p-4 text-sm text-red-200">
               {error}
             </div>
           )}
           {!isLoading && !error && preview && (
             <div className="space-y-6">
-              <section className="space-y-2 rounded-md border border-emerald-500/30 bg-emerald-500/5 p-4">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-emerald-200">
+              <section className="space-y-2 rounded-md border border-white/10 bg-primary-500/5 p-4">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-200">
                   What You'll Create
                 </h3>
                 <p className="text-sm text-slate-300">
@@ -108,7 +108,7 @@ export function PromptPreviewDrawer({
 
               {preview.sections.description && (
                 <section className="space-y-2">
-                  <h3 className="text-sm font-semibold uppercase tracking-wide text-emerald-300">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-300">
                     Description
                   </h3>
                   <p className="text-sm leading-relaxed text-slate-200">
@@ -119,12 +119,12 @@ export function PromptPreviewDrawer({
 
               {preview.variation_summary && preview.variation_summary.style_notes && preview.variation_summary.style_notes.length > 0 && (
                 <section className="space-y-2">
-                  <h3 className="text-sm font-semibold uppercase tracking-wide text-emerald-300">
+                  <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-300">
                     Style Elements
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {preview.variation_summary.style_notes.map((note) => (
-                      <Badge key={note} variant="outline" className="border-emerald-400 text-emerald-200">
+                      <Badge key={note} variant="outline" className="border-primary-400 text-primary-200">
                         {note}
                       </Badge>
                     ))}
@@ -133,10 +133,10 @@ export function PromptPreviewDrawer({
               )}
 
               <section className="space-y-2">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-emerald-300">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-300">
                   What You'll Get
                 </h3>
-                <div className="rounded-md bg-slate-900/50 p-4">
+                <div className="rounded-md bg-obsidian/50 p-4">
                   <p className="text-sm leading-relaxed text-slate-200">
                     {sanitizePromptForDisplay(preview.sections.main || preview.sections.subject || Object.values(preview.sections)[0])}
                   </p>
@@ -156,7 +156,7 @@ export function PromptPreviewDrawer({
             </Button>
             <Button
               onClick={handleUseTemplate}
-              className="bg-emerald-500 hover:bg-emerald-600 text-white"
+              className="bg-primary-500 hover:bg-primary-500 text-white"
             >
               <Sparkles className="h-4 w-4 mr-2" />
               Use This Template

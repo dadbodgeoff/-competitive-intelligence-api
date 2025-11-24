@@ -52,10 +52,10 @@ export function MonthlySummaryCard() {
   const TrendIcon = isIncrease ? TrendingUp : TrendingDown;
 
   return (
-    <Card className="bg-card-dark border-white/10 hover:border-emerald-500/30 transition-all">
+    <Card className="bg-card-dark border-white/10 hover:border-white/10 transition-all">
       <CardHeader className="pb-3">
         <CardTitle className="text-white text-lg flex items-center gap-2">
-          <DollarSign className="h-5 w-5 text-emerald-400" />
+          <DollarSign className="h-5 w-5 text-primary-500" />
           This Month
         </CardTitle>
       </CardHeader>
@@ -71,7 +71,7 @@ export function MonthlySummaryCard() {
           </div>
 
           <div className={`flex items-center gap-2 text-sm ${
-            isIncrease ? 'text-red-400' : 'text-emerald-400'
+            isIncrease ? 'text-destructive' : 'text-primary-500'
           }`}>
             <TrendIcon className="h-4 w-4" />
             <span className="font-semibold">

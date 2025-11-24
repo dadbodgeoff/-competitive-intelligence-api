@@ -69,9 +69,9 @@ export function StreamingAnalysisResults({
   const getStatusIcon = () => {
     switch (state.status) {
       case 'streaming':
-        return <Clock className="h-5 w-5 text-blue-500 animate-spin" />;
+        return <Clock className="h-5 w-5 text-accent-500 animate-spin" />;
       case 'complete':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
+        return <CheckCircle className="h-5 w-5 text-success-500" />;
       case 'error':
         return <AlertCircle className="h-5 w-5 text-red-500" />;
       default:
@@ -96,16 +96,16 @@ export function StreamingAnalysisResults({
           <div className="text-center mb-8">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-white hover:text-emerald-400 transition-colors"
+              className="inline-flex items-center gap-2 text-white hover:text-primary-500 transition-colors"
             >
-              <TrendingUp className="h-6 w-6 text-emerald-500" />
+              <TrendingUp className="h-6 w-6 text-primary-500" />
               <span className="text-xl font-bold">RestaurantIQ</span>
             </Link>
           </div>
 
           <Alert
             variant="destructive"
-            className="bg-red-500/10 border-red-500/50 text-red-400"
+            className="bg-destructive/10 border-red-500/50 text-destructive"
           >
             <AlertCircle className="h-5 w-5" />
             <AlertDescription>
@@ -114,7 +114,7 @@ export function StreamingAnalysisResults({
                 <div className="flex gap-3">
                   <Button
                     onClick={() => startAnalysis(request)}
-                    className="bg-red-500 hover:bg-red-600"
+                    className="bg-destructive hover:bg-red-600"
                   >
                     Retry Analysis
                   </Button>
@@ -137,16 +137,16 @@ export function StreamingAnalysisResults({
   return (
     <div className="min-h-screen bg-obsidian">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-accent-500/5 pointer-events-none" />
 
       {/* Header */}
       <div className="relative border-b border-white/10 bg-card-dark/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-6">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-white hover:text-emerald-400 transition-colors"
+            className="inline-flex items-center gap-2 text-white hover:text-primary-500 transition-colors"
           >
-            <TrendingUp className="h-6 w-6 text-emerald-500" />
+            <TrendingUp className="h-6 w-6 text-primary-500" />
             <span className="text-xl font-bold">RestaurantIQ</span>
           </Link>
         </div>
@@ -159,8 +159,8 @@ export function StreamingAnalysisResults({
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-start gap-4">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-lg animate-pulse" />
-                  <div className="relative p-3 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+                  <div className="absolute inset-0 bg-primary-500/20 rounded-full blur-lg animate-pulse" />
+                  <div className="relative p-3 rounded-full bg-primary-500/10 border border-white/10">
                     {getStatusIcon()}
                   </div>
                 </div>
@@ -178,18 +178,18 @@ export function StreamingAnalysisResults({
                 <Badge
                   className={`${
                     state.status === 'streaming'
-                      ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'
+                      ? 'bg-accent-500/10 text-accent-400 border-accent-500/30'
                       : state.status === 'complete'
-                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                      : 'bg-red-500/10 text-red-400 border-red-500/30'
+                      ? 'bg-primary-500/10 text-primary-500 border-white/10'
+                      : 'bg-destructive/10 text-destructive border-red-500/30'
                   } border font-semibold`}
                 >
                   {state.status.charAt(0).toUpperCase() + state.status.slice(1)}
                 </Badge>
                 {isConnected ? (
-                  <Wifi className="h-5 w-5 text-emerald-400" />
+                  <Wifi className="h-5 w-5 text-primary-500" />
                 ) : (
-                  <WifiOff className="h-5 w-5 text-red-400" />
+                  <WifiOff className="h-5 w-5 text-destructive" />
                 )}
               </div>
             </div>
@@ -200,7 +200,7 @@ export function StreamingAnalysisResults({
             <div className="space-y-3">
               <Progress value={state.progress} className="h-3 bg-obsidian/50" />
               <div className="flex justify-between text-sm">
-                <span className="text-emerald-400 font-semibold">
+                <span className="text-primary-500 font-semibold">
                   {state.progress}% complete
                 </span>
                 <span className="text-slate-400 flex items-center gap-1">
@@ -213,7 +213,7 @@ export function StreamingAnalysisResults({
             {/* Current Step */}
             <div className="bg-obsidian/50 border border-white/10 rounded-lg p-5">
               <div className="flex items-start gap-3">
-                <Sparkles className="h-5 w-5 text-cyan-400 mt-0.5 animate-pulse" />
+                <Sparkles className="h-5 w-5 text-accent-400 mt-0.5 animate-pulse" />
                 <div className="flex-1">
                   <h3 className="font-semibold text-white mb-1">Current Step</h3>
                   <p className="text-sm text-slate-400">
@@ -224,14 +224,14 @@ export function StreamingAnalysisResults({
                   {state.totalReviews > 0 && (
                     <div className="mt-3 flex flex-wrap gap-4 text-xs">
                       <span className="text-slate-500">
-                        <span className="text-emerald-400 font-semibold">
+                        <span className="text-primary-500 font-semibold">
                           {state.totalReviews}
                         </span>{' '}
                         reviews collected
                       </span>
                       {state.totalInsights > 0 && (
                         <span className="text-slate-500">
-                          <span className="text-cyan-400 font-semibold">
+                          <span className="text-accent-400 font-semibold">
                             {state.insightsCompleted}/{state.totalInsights}
                           </span>{' '}
                           insights generated
@@ -245,13 +245,13 @@ export function StreamingAnalysisResults({
 
             {/* Save Confirmation Banner */}
             {state.status === 'complete' && state.analysisId && (
-              <Alert className="bg-emerald-500/10 border-emerald-500/30">
-                <CheckCircle className="h-5 w-5 text-emerald-400" />
-                <AlertDescription className="text-emerald-300">
+              <Alert className="bg-primary-500/10 border-white/10">
+                <CheckCircle className="h-5 w-5 text-primary-500" />
+                <AlertDescription className="text-primary-300">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-semibold">Analysis Complete & Saved!</p>
-                      <p className="text-sm text-emerald-400/80 mt-1">
+                      <p className="text-sm text-primary-500/80 mt-1">
                         Your analysis has been automatically saved and is available in your dashboard.
                       </p>
                     </div>
@@ -275,7 +275,7 @@ export function StreamingAnalysisResults({
                     onClick={() =>
                       navigate(`/analysis/${state.analysisId}/results`)
                     }
-                    className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/25"
+                    className="bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25"
                   >
                     <Eye className="h-4 w-4 mr-2" />
                     View Full Results
@@ -288,7 +288,7 @@ export function StreamingAnalysisResults({
                     stopAnalysis();
                     onCancel ? onCancel() : navigate('/dashboard');
                   }}
-                  className="border-white/10 text-slate-300 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30"
+                  className="border-white/10 text-slate-300 hover:bg-destructive/10 hover:text-destructive hover:border-red-500/30"
                 >
                   Cancel Analysis
                 </Button>
@@ -302,7 +302,7 @@ export function StreamingAnalysisResults({
           <Card className="bg-card-dark border-white/10 shadow-2xl">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <Loader2 className="h-5 w-5 text-emerald-400 animate-spin" />
+                <Loader2 className="h-5 w-5 text-primary-500 animate-spin" />
                 <div>
                   <CardTitle className="text-white">Live Results</CardTitle>
                   <p className="text-sm text-slate-400 mt-1">
@@ -316,14 +316,14 @@ export function StreamingAnalysisResults({
                 <TabsList className="grid w-full grid-cols-3 bg-obsidian/50 border border-white/10">
                   <TabsTrigger
                     value="competitors"
-                    className="data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-400"
+                    className="data-[state=active]:bg-primary-500/10 data-[state=active]:text-primary-500"
                   >
                     <Users className="h-4 w-4 mr-2" />
                     Competitors ({state.competitors.length})
                   </TabsTrigger>
                   <TabsTrigger
                     value="insights"
-                    className="data-[state=active]:bg-cyan-500/10 data-[state=active]:text-cyan-400"
+                    className="data-[state=active]:bg-accent-500/10 data-[state=active]:text-accent-400"
                   >
                     <Sparkles className="h-4 w-4 mr-2" />
                     Insights ({state.insights.length})
@@ -342,7 +342,7 @@ export function StreamingAnalysisResults({
                     <CompetitorsTable competitors={state.competitors} />
                   ) : (
                     <div className="text-center py-12">
-                      <Loader2 className="h-10 w-10 mx-auto mb-3 text-emerald-400 animate-spin" />
+                      <Loader2 className="h-10 w-10 mx-auto mb-3 text-primary-500 animate-spin" />
                       <p className="text-slate-400">Discovering competitors...</p>
                     </div>
                   )}
@@ -353,7 +353,7 @@ export function StreamingAnalysisResults({
                     <InsightsGrid insights={state.insights} />
                   ) : (
                     <div className="text-center py-12">
-                      <Loader2 className="h-10 w-10 mx-auto mb-3 text-cyan-400 animate-spin" />
+                      <Loader2 className="h-10 w-10 mx-auto mb-3 text-accent-400 animate-spin" />
                       <p className="text-slate-400">
                         {state.competitors.length > 0
                           ? 'Analyzing competitor reviews...'
@@ -414,7 +414,7 @@ export function StreamingAnalysisResults({
                   Competitors
                 </span>
                 <div className="font-semibold text-white mt-1">
-                  <span className="text-emerald-400">
+                  <span className="text-primary-500">
                     {state.competitors.length}
                   </span>{' '}
                   / {request.tier === 'free' ? 2 : 5}
@@ -424,7 +424,7 @@ export function StreamingAnalysisResults({
                 <span className="text-slate-500 text-xs uppercase tracking-wider">
                   Reviews
                 </span>
-                <div className="font-semibold text-cyan-400 mt-1">
+                <div className="font-semibold text-accent-400 mt-1">
                   {state.totalReviews}
                 </div>
               </div>

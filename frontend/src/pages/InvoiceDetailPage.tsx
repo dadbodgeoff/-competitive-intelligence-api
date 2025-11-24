@@ -137,7 +137,7 @@ export function InvoiceDetailPage() {
     return (
       <AppShell>
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 text-emerald-400 animate-spin" />
+          <Loader2 className="h-8 w-8 text-primary-500 animate-spin" />
         </div>
       </AppShell>
     );
@@ -169,7 +169,7 @@ export function InvoiceDetailPage() {
             <Button
               variant="outline"
               onClick={handleDelete}
-              className="border-red-500/30 text-red-400 hover:bg-red-500/10"
+              className="border-red-500/30 text-destructive hover:bg-destructive/10"
             >
               <Trash2 className="h-4 w-4 mr-2" />
               Delete
@@ -208,7 +208,7 @@ export function InvoiceDetailPage() {
               </div>
               <div>
                 <span className="text-slate-400 text-xs">Total</span>
-                <div className="text-2xl font-bold text-emerald-400 font-mono mt-1">
+                <div className="text-2xl font-bold text-primary-500 font-mono mt-1">
                   ${invoice.total?.toFixed(2) || '0.00'}
                 </div>
               </div>
@@ -231,7 +231,7 @@ export function InvoiceDetailPage() {
                 </div>
                 <div>
                   <span className="text-slate-400">Total</span>
-                  <div className="text-emerald-400 font-mono font-bold text-lg mt-1">
+                  <div className="text-primary-500 font-mono font-bold text-lg mt-1">
                     ${invoice.total?.toFixed(2) || '0.00'}
                   </div>
                 </div>

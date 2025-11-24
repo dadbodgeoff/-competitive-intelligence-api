@@ -68,7 +68,7 @@ export function CreateWeekCard({
             </p>
           )}
           {weekStartMismatch && preferenceLabel && selectedWeekStartDate && (
-            <p className="text-xs text-amber-400">
+            <p className="text-xs text-primary-500">
               Heads up: your saved preference is {preferenceLabel}, but this week starts on{' '}
               {format(selectedWeekStartDate, 'EEEE')}.
             </p>

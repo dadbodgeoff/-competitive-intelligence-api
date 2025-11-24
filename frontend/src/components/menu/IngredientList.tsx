@@ -65,7 +65,7 @@ export function IngredientList({
       <InvoiceCardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Package className="h-5 w-5 text-cyan-400" />
+            <Package className="h-5 w-5 text-accent-400" />
             <h3 className="text-lg font-semibold text-white">
               Ingredients ({ingredients.length})
             </h3>
@@ -73,7 +73,7 @@ export function IngredientList({
           <Button
             onClick={onAddClick}
             disabled={saving}
-            className="btn-primary shadow-emerald"
+            className="btn-primary shadow-primary"
             size="sm"
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -86,7 +86,7 @@ export function IngredientList({
           // Empty state
           <div className="text-center py-12">
             <div className="flex justify-center mb-4">
-              <div className="h-16 w-16 rounded-full bg-slate-800 flex items-center justify-center">
+              <div className="h-16 w-16 rounded-full bg-card-dark flex items-center justify-center">
                 <Package className="h-8 w-8 text-slate-400" />
               </div>
             </div>
@@ -97,7 +97,7 @@ export function IngredientList({
             <p className="text-xs text-slate-500 mb-6">
               💰 Costs are pulled from your latest invoice prices automatically
             </p>
-            <Button onClick={onAddClick} className="btn-primary shadow-emerald">
+            <Button onClick={onAddClick} className="btn-primary shadow-primary">
               <Plus className="h-4 w-4 mr-2" />
               Add First Ingredient
             </Button>
@@ -113,7 +113,7 @@ export function IngredientList({
                   key={ingredient.id}
                   className={cn(
                     'border border-white/10 rounded-lg p-4 transition-colors',
-                    isEditing ? 'bg-cyan-500/5 border-cyan-500/30' : 'bg-obsidian/50'
+                    isEditing ? 'bg-accent-500/5 border-accent-500/30' : 'bg-obsidian/50'
                   )}
                 >
                   {isEditing ? (
@@ -138,7 +138,7 @@ export function IngredientList({
                             <Input
                               value={ingredient.unit_of_measure}
                               disabled
-                              className="input-field w-24 bg-slate-800/50"
+                              className="input-field w-24 bg-card-dark/50"
                             />
                           </div>
                         </div>
@@ -160,7 +160,7 @@ export function IngredientList({
                           size="sm"
                           onClick={() => saveEdit(ingredient.id)}
                           disabled={saving}
-                          className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                          className="bg-primary-500/10 hover:bg-primary-500/20 text-primary-500 border border-white/10"
                         >
                           <Check className="h-4 w-4 mr-1" />
                           Save
@@ -194,7 +194,7 @@ export function IngredientList({
                               ${(ingredient.calculated_unit_cost || 0).toFixed(2)}/{ingredient.base_unit || ingredient.unit_of_measure}
                             </span>
                             <span className="text-slate-500">=</span>
-                            <span className="text-emerald-400 font-semibold font-mono text-base">
+                            <span className="text-primary-500 font-semibold font-mono text-base">
                               ${(ingredient.line_cost || 0).toFixed(2)}
                             </span>
                           </div>
@@ -215,7 +215,7 @@ export function IngredientList({
                             variant="ghost"
                             onClick={() => startEdit(ingredient)}
                             disabled={saving}
-                            className="h-8 w-8 p-0 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10"
+                            className="h-8 w-8 p-0 text-accent-400 hover:text-accent-300 hover:bg-accent-500/10"
                           >
                             <Edit2 className="h-4 w-4" />
                           </Button>
@@ -224,7 +224,7 @@ export function IngredientList({
                             variant="ghost"
                             onClick={() => handleDelete(ingredient.id)}
                             disabled={saving}
-                            className="h-8 w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                            className="h-8 w-8 p-0 text-destructive hover:text-red-300 hover:bg-destructive/10"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>

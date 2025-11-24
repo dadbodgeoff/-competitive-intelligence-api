@@ -25,9 +25,9 @@ export const SaveProgressDisplay: React.FC<Props> = ({ progress }) => {
   };
 
   const getStatusColor = () => {
-    if (progress.itemStatus === 'success') return 'text-green-600';
-    if (progress.itemStatus === 'failed') return 'text-yellow-600';
-    return 'text-blue-600';
+    if (progress.itemStatus === 'success') return 'text-success-600';
+    if (progress.itemStatus === 'failed') return 'text-primary-600';
+    return 'text-accent-600';
   };
 
   return (
@@ -50,7 +50,7 @@ export const SaveProgressDisplay: React.FC<Props> = ({ progress }) => {
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  className="bg-accent-600 h-2 rounded-full transition-all duration-300"
                   style={{
                     width: `${(progress.currentItem / progress.totalItems) * 100}%`,
                   }}

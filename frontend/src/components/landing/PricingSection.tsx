@@ -26,31 +26,31 @@ export const PricingSection: React.FC = () => {
           <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
             Right now – completely free (no card, no catch)
           </h2>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+          <p className="text-xl text-[#A8B1B9] max-w-2xl mx-auto">
             Perfect for single-unit operators or curious teams. Running 5+ locations? Let’s chat so we can size the unlimited tier for you.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-5xl mx-auto">
           {/* Free Forever Plan */}
-          <Card className="gradient-outline surface-glass rounded-3xl border-2 border-emerald-500/30 hover:border-emerald-400/50 transition-all duration-300 group overflow-hidden relative">
-             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-cyan-500" />
+          <Card className="gradient-outline surface-glass rounded-3xl border-2 border-white/10 hover:border-primary-400/50 transition-all duration-300 group overflow-hidden relative">
+             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r bg-primary-500" />
             <CardContent className="p-8 md:p-10">
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-2xl font-bold text-white">Free Forever Plan</h3>
-                  <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-3 py-1">
+                  <Badge className="bg-primary-500/20 text-primary-500 border-white/10 px-3 py-1">
                     $0/mo
                   </Badge>
                 </div>
-                <p className="text-slate-400">Everything you need to start saving money immediately.</p>
+                <p className="text-[#A8B1B9]">Everything you need to start saving money immediately.</p>
               </div>
 
               <ul className="space-y-5 mb-10">
                 {freeTierFeatures.map((feature, idx) => (
                   <li key={idx} className="flex items-start gap-4">
-                    <CheckCircle2 className="w-6 h-6 text-emerald-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-lg text-slate-200 font-medium">{feature}</span>
+                    <CheckCircle2 className="w-6 h-6 text-primary-500 flex-shrink-0 mt-0.5" />
+                    <span className="text-lg text-[#E0E0E0] font-medium">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -58,34 +58,34 @@ export const PricingSection: React.FC = () => {
               <Link to="/register" className="block">
                 <Button 
                   size="lg" 
-                  className="w-full h-14 text-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20 group-hover:shadow-emerald-500/20 transition-all"
+                  className="w-full h-14 text-lg bg-primary-500 hover:bg-primary-500 text-white shadow-lg shadow-primary-900/20 group-hover:shadow-primary-500/20 transition-all"
                 >
                   Start free & find your first savings
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <p className="text-center text-slate-500 text-sm mt-4">
+              <p className="text-center text-[#A8B1B9] text-sm mt-4">
                 One upload per week + auto reminder when your limit resets.
               </p>
             </CardContent>
           </Card>
 
           {/* Waitlist Plan */}
-          <Card className="surface-glass-muted border border-slate-700 hover:border-slate-500 transition-colors relative overflow-hidden flex flex-col rounded-3xl">
+          <Card className="surface-glass-muted border border-[#1E1E1E] hover:border-[#4A6572] transition-colors relative overflow-hidden flex flex-col rounded-3xl">
             <CardContent className="p-8 md:p-10 flex-1 flex flex-col">
               <div className="mb-8">
                  <div className="flex items-center justify-between mb-4">
                   <h3 className="text-2xl font-bold text-white">Unlimited Plan</h3>
-                  <Badge className="bg-slate-700 text-slate-300 border-slate-600 px-3 py-1 flex items-center gap-1">
+                  <Badge className="bg-[#1E1E1E] text-[#A8B1B9] border-[#1E1E1E] px-3 py-1 flex items-center gap-1">
                     <Clock className="w-3 h-3" /> Coming in 7-14 days
                   </Badge>
                 </div>
-                <p className="text-slate-400">Designed for multi-unit groups that need unlimited parsing, exports, and permissions.</p>
+                <p className="text-[#A8B1B9]">Designed for multi-unit groups that need unlimited parsing, exports, and permissions.</p>
               </div>
 
-              <div className="flex-1 flex flex-col justify-center space-y-6 mb-10 border-l-2 border-slate-700 pl-6 py-4">
+              <div className="flex-1 flex flex-col justify-center space-y-6 mb-10 border-l-2 border-[#1E1E1E] pl-6 py-4">
                 {premiumFeatures.map((feature, idx) => (
-                  <p key={idx} className="text-xl text-slate-300 font-medium leading-relaxed">
+                  <p key={idx} className="text-xl text-[#E0E0E0] font-medium leading-relaxed">
                     {feature}
                   </p>
                 ))}
@@ -96,12 +96,12 @@ export const PricingSection: React.FC = () => {
                   <Button 
                     size="lg" 
                     variant="outline"
-                    className="w-full h-14 text-lg border-2 border-slate-600 hover:border-white hover:bg-slate-800 text-slate-300 hover:text-white transition-all"
+                    className="w-full h-14 text-lg border-2 border-[#1E1E1E] hover:border-white hover:bg-[#121212] text-[#A8B1B9] hover:text-white transition-all"
                   >
                     Join the waitlist → lock in founder pricing
                   </Button>
                 </Link>
-                <p className="text-center text-slate-500 text-sm mt-4">
+                <p className="text-center text-[#A8B1B9] text-sm mt-4">
                   We&rsquo;ll reach out for a quick sizing call and lock in your grandfathered rate.
                 </p>
               </div>
@@ -110,17 +110,17 @@ export const PricingSection: React.FC = () => {
         </div>
 
         {/* Final Kicker */}
-        <div className="mt-24 text-center max-w-4xl mx-auto bg-gradient-to-b from-slate-800/50 to-transparent p-8 md:p-12 rounded-3xl border border-slate-700/50">
+        <div className="mt-24 text-center max-w-4xl mx-auto bg-gradient-to-b from-[#1E1E1E]/50 to-transparent p-8 md:p-12 rounded-3xl border border-[#1E1E1E]/50">
           <h2 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight">
             You’ve got nothing to lose and thousands to gain every month.
           </h2>
-          <p className="text-xl md:text-2xl text-slate-300 mb-10 leading-relaxed">
+          <p className="text-xl md:text-2xl text-[#A8B1B9] mb-10 leading-relaxed">
             Drop one invoice. If it doesn’t surface something actionable in 30 seconds, delete your account and tell us what we missed.
           </p>
           <Link to="/register">
             <Button 
               size="lg" 
-              className="cta-button-lg bg-white text-slate-900 hover:bg-slate-100 hover:scale-105 shadow-xl border-0"
+              className="cta-button-lg bg-white text-[#121212] hover:bg-white/90 hover:scale-105 shadow-xl border-0"
             >
               Send me a login—let’s find margin
             </Button>

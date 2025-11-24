@@ -153,7 +153,7 @@ export function DailySalesPanel({ categories, recipes }: DailySalesPanelProps) {
       <InvoiceCardHeader>
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-cyan-400">
+            <div className="flex items-center gap-2 text-accent-400">
               <ChefHat className="h-5 w-5" />
               <span className="text-sm uppercase tracking-wide">Daily Sales Tracking</span>
             </div>
@@ -176,7 +176,7 @@ export function DailySalesPanel({ categories, recipes }: DailySalesPanelProps) {
               label="Gross Profit"
               value={dailyTotals.total_gross_profit}
               prefix="$"
-              valueClass={dailyTotals.total_gross_profit >= 0 ? 'text-emerald-400' : 'text-red-400'}
+              valueClass={dailyTotals.total_gross_profit >= 0 ? 'text-primary-500' : 'text-destructive'}
             />
             <MetricTile
               icon={Calendar}
@@ -217,10 +217,10 @@ export function DailySalesPanel({ categories, recipes }: DailySalesPanelProps) {
                   setSelectedPriceId(undefined)
                 }}
               >
-                <SelectTrigger className="w-full bg-slate-900 border-white/10 text-white mt-1">
+                <SelectTrigger className="w-full bg-obsidian border-white/10 text-white mt-1">
                   <SelectValue placeholder="Select menu item" />
                 </SelectTrigger>
-                <SelectContent className="bg-slate-900 border-white/10">
+                <SelectContent className="bg-obsidian border-white/10">
                   {allItems.map((item) => (
                     <SelectItem key={item.id} value={item.id}>
                       <div className="flex flex-col">
@@ -242,10 +242,10 @@ export function DailySalesPanel({ categories, recipes }: DailySalesPanelProps) {
                   value={selectedPriceId ?? ''}
                   onValueChange={(value) => setSelectedPriceId(value || undefined)}
                 >
-                  <SelectTrigger className="w-full bg-slate-900 border-white/10 text-white mt-1">
+                  <SelectTrigger className="w-full bg-obsidian border-white/10 text-white mt-1">
                     <SelectValue placeholder={priceOptions.length > 1 ? 'Select size' : 'All sizes'} />
                   </SelectTrigger>
-                  <SelectContent className="bg-slate-900 border-white/10">
+                  <SelectContent className="bg-obsidian border-white/10">
                     {priceOptions.map((price) => (
                       <SelectItem key={price.id ?? 'default'} value={price.id ?? ''}>
                         <div className="flex items-center justify-between gap-4">
@@ -274,7 +274,7 @@ export function DailySalesPanel({ categories, recipes }: DailySalesPanelProps) {
             </div>
 
             <Button
-              className="w-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30"
+              className="w-full bg-primary-500/20 hover:bg-primary-500/30 text-primary-300 border border-white/10"
               onClick={handleAddEntry}
               disabled={!selectedItem || saving}
             >
@@ -288,7 +288,7 @@ export function DailySalesPanel({ categories, recipes }: DailySalesPanelProps) {
               <h4 className="text-sm font-semibold text-white uppercase tracking-wide">
                 Trailing 14 Day Overview
               </h4>
-              {summaryLoading && <Loader2 className="h-4 w-4 text-cyan-400 animate-spin" />}
+              {summaryLoading && <Loader2 className="h-4 w-4 text-accent-400 animate-spin" />}
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <SummaryStat
@@ -317,7 +317,7 @@ export function DailySalesPanel({ categories, recipes }: DailySalesPanelProps) {
                 {(salesSummary?.top_items ?? []).slice(0, 3).map((item) => (
                   <div
                     key={item.menu_item_id}
-                    className="flex items-center justify-between rounded border border-white/10 bg-slate-900/60 px-3 py-2 text-sm text-white"
+                    className="flex items-center justify-between rounded border border-white/10 bg-obsidian/60 px-3 py-2 text-sm text-white"
                   >
                     <span className="truncate">
                       {item.menu_item_name ?? 'Menu Item'}{' '}
@@ -325,7 +325,7 @@ export function DailySalesPanel({ categories, recipes }: DailySalesPanelProps) {
                         • ${item.total_cogs.toFixed(2)} spend
                       </span>
                     </span>
-                    <span className="font-mono text-emerald-400">
+                    <span className="font-mono text-primary-500">
                       {item.total_quantity.toFixed(1)} sold
                     </span>
                   </div>
@@ -339,7 +339,7 @@ export function DailySalesPanel({ categories, recipes }: DailySalesPanelProps) {
         </div>
 
         <div className="rounded-lg border border-white/10 overflow-hidden">
-          <div className="flex items-center justify-between border-b border-white/10 bg-slate-900/70 px-4 py-3">
+          <div className="flex items-center justify-between border-b border-white/10 bg-obsidian/70 px-4 py-3">
             <div>
               <h4 className="text-sm font-semibold text-white uppercase tracking-wide">
                 Daily Entries
@@ -359,7 +359,7 @@ export function DailySalesPanel({ categories, recipes }: DailySalesPanelProps) {
               </Button>
               <Button
                 size="sm"
-                className="btn-primary shadow-emerald"
+                className="btn-primary shadow-primary"
                 onClick={saveEntries}
                 disabled={saving || loadingEntries}
               >
@@ -435,7 +435,7 @@ export function DailySalesPanel({ categories, recipes }: DailySalesPanelProps) {
                           ? `$${entry.unit_menu_price_snapshot.toFixed(2)}`
                           : '—'}
                       </TableCell>
-                      <TableCell className="py-3 text-right font-mono text-emerald-400">
+                      <TableCell className="py-3 text-right font-mono text-primary-500">
                         {entry.total_cogs_snapshot !== null && entry.total_cogs_snapshot !== undefined
                           ? `$${entry.total_cogs_snapshot.toFixed(2)}`
                           : '—'}
@@ -444,8 +444,8 @@ export function DailySalesPanel({ categories, recipes }: DailySalesPanelProps) {
                         className={cn(
                           'py-3 text-right font-mono',
                           (entry.gross_profit_snapshot ?? 0) >= 0
-                            ? 'text-emerald-400'
-                            : 'text-red-400',
+                            ? 'text-primary-500'
+                            : 'text-destructive',
                         )}
                       >
                         {entry.gross_profit_snapshot !== null &&
@@ -457,7 +457,7 @@ export function DailySalesPanel({ categories, recipes }: DailySalesPanelProps) {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                          className="text-destructive hover:text-red-300 hover:bg-destructive/10"
                           onClick={() => removeEntry(entry.key)}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -486,7 +486,7 @@ interface MetricTileProps {
 
 function MetricTile({ icon: Icon, label, value, prefix, isDate, valueClass }: MetricTileProps) {
   return (
-    <div className="rounded-lg border border-white/10 bg-slate-900/60 px-3 py-2">
+    <div className="rounded-lg border border-white/10 bg-obsidian/60 px-3 py-2">
       <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-slate-400">
         <Icon className="h-3 w-3" />
         {label}
@@ -508,7 +508,7 @@ interface SummaryStatProps {
 
 function SummaryStat({ label, value, prefix }: SummaryStatProps) {
   return (
-    <div className="rounded-lg border border-white/10 bg-slate-900/50 px-3 py-2">
+    <div className="rounded-lg border border-white/10 bg-obsidian/50 px-3 py-2">
       <p className="text-xs uppercase tracking-wide text-slate-400">{label}</p>
       <p className="text-lg font-semibold text-white">
         {prefix ?? ''}

@@ -58,10 +58,10 @@ export function OnboardingModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] bg-slate-900 border-white/10">
+      <DialogContent className="sm:max-w-[600px] bg-obsidian border-white/10">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
-            {currentStepData.icon || <Sparkles className="h-6 w-6 text-emerald-500" />}
+            {currentStepData.icon || <Sparkles className="h-6 w-6 text-primary-500" />}
             <DialogTitle className="text-2xl text-white">
               {currentStepData.title}
             </DialogTitle>
@@ -87,9 +87,9 @@ export function OnboardingModal({
                 onClick={() => setCurrentStep(index)}
                 className={`h-2 rounded-full transition-all ${
                   index === currentStep
-                    ? 'w-8 bg-emerald-500'
+                    ? 'w-8 bg-primary-500'
                     : index < currentStep
-                    ? 'w-2 bg-emerald-500/50'
+                    ? 'w-2 bg-primary-500/50'
                     : 'w-2 bg-slate-700'
                 }`}
                 aria-label={`Go to step ${index + 1}`}
@@ -128,7 +128,7 @@ export function OnboardingModal({
             )}
             <Button
               onClick={handleNext}
-              className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white"
+              className="flex-1 bg-primary-500 hover:bg-primary-500 text-white"
             >
               {isLastStep ? (
                 <>

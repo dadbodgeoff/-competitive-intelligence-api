@@ -41,14 +41,14 @@ export function InsightCard({
 
   // Type-based styling
   const typeStyles = {
-    opportunity: 'border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-cyan-500/5',
+    opportunity: 'border-white/10 bg-gradient-to-br from-primary-500/5 to-accent-500/5',
     threat: 'border-red-500/30 bg-gradient-to-br from-red-500/5 to-red-600/5',
-    watch: 'border-amber-500/30 bg-gradient-to-br from-amber-500/5 to-amber-600/5',
+    watch: 'border-primary-600/30 bg-gradient-to-br from-primary-600/5 to-primary-600/5',
   };
 
   // Confidence-based border glow
   const confidenceGlow = {
-    high: 'hover:shadow-emerald',
+    high: 'hover:shadow-primary',
     medium: 'hover:shadow-lg',
     low: 'hover:shadow-md',
   };
@@ -62,8 +62,8 @@ export function InsightCard({
 
   // Confidence badges
   const confidenceBadges = {
-    high: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
-    medium: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+    high: 'bg-primary-500/15 text-primary-500 border-white/10',
+    medium: 'bg-primary-500/15 text-primary-500 border-primary-600/30',
     low: 'bg-slate-500/15 text-slate-400 border-slate-500/30',
   };
 
@@ -75,7 +75,7 @@ export function InsightCard({
         typeStyles[type],
         confidenceGlow[confidence],
         'hover:-translate-y-0.5 cursor-pointer',
-        isExpanded && 'ring-2 ring-emerald-500/50',
+        isExpanded && 'ring-2 ring-primary-500/50',
         className
       )}
       onClick={handleToggle}
@@ -113,7 +113,7 @@ export function InsightCard({
             <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">
               Evidence
             </h4>
-            <blockquote className="relative pl-4 border-l-4 border-cyan-500 bg-black/20 p-3 rounded-r italic text-sm text-slate-300">
+            <blockquote className="relative pl-4 border-l-4 border-accent-500 bg-black/20 p-3 rounded-r italic text-sm text-slate-300">
               "{proofQuote}"
             </blockquote>
           </div>
@@ -124,7 +124,7 @@ export function InsightCard({
             )}
             {mentionCount && (
               <span className="flex items-center gap-1">
-                <span className="text-cyan-400 font-semibold">{mentionCount}</span> mentions
+                <span className="text-accent-400 font-semibold">{mentionCount}</span> mentions
               </span>
             )}
           </div>
@@ -137,7 +137,7 @@ export function InsightCard({
           {type}
         </span>
         <button
-          className="text-xs font-medium text-cyan-400 hover:text-cyan-300 transition-colors"
+          className="text-xs font-medium text-accent-400 hover:text-accent-300 transition-colors"
           onClick={(e) => {
             e.stopPropagation();
             handleToggle();
@@ -149,7 +149,7 @@ export function InsightCard({
 
       {/* Glow effect for high confidence */}
       {confidence === 'high' && (
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent pointer-events-none" />
       )}
     </div>
   );

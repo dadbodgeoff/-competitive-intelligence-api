@@ -52,7 +52,7 @@ export function InsightsView({ insights }: InsightsViewProps) {
                     <h4 className="text-lg font-semibold text-white">{insight.title}</h4>
                     <div className="flex items-center gap-2">
                       {insight.priority && insight.priority >= 70 && (
-                        <Badge className="bg-red-500/10 text-red-400 border-red-500/30 border">
+                        <Badge className="bg-destructive/10 text-destructive border-red-500/30 border">
                           High Priority
                         </Badge>
                       )}
@@ -73,7 +73,7 @@ export function InsightsView({ insights }: InsightsViewProps) {
                           <div className="text-xs text-slate-500 mb-1">Your Item</div>
                           <div className="text-white font-medium">{insight.user_item_name}</div>
                           {insight.user_item_price && (
-                            <div className="text-emerald-400 font-semibold">
+                            <div className="text-primary-500 font-semibold">
                               ${insight.user_item_price.toFixed(2)}
                             </div>
                           )}
@@ -86,7 +86,7 @@ export function InsightsView({ insights }: InsightsViewProps) {
                           </div>
                           <div className="text-white font-medium">{insight.competitor_item_name}</div>
                           {insight.competitor_item_price && (
-                            <div className="text-cyan-400 font-semibold">
+                            <div className="text-accent-400 font-semibold">
                               ${insight.competitor_item_price.toFixed(2)}
                             </div>
                           )}
@@ -98,7 +98,7 @@ export function InsightsView({ insights }: InsightsViewProps) {
                   {typeof insight.price_difference === 'number' && (
                     <div className="mt-3 text-sm">
                       <span className="text-slate-400">Price Difference: </span>
-                      <span className={insight.price_difference > 0 ? 'text-red-400' : 'text-green-400'}>
+                      <span className={insight.price_difference > 0 ? 'text-destructive' : 'text-success-400'}>
                         {insight.price_difference > 0 ? '+' : ''}${Math.abs(insight.price_difference).toFixed(2)}
                         {insight.price_difference_percent != null && (
                           <span className="ml-1">
@@ -116,7 +116,7 @@ export function InsightsView({ insights }: InsightsViewProps) {
                       <ul className="space-y-1">
                         {toEvidenceList(insight.evidence).map((entry, idx) => (
                           <li key={idx} className="text-sm text-slate-400 flex items-start gap-2">
-                            <span className="text-emerald-400 mt-1">•</span>
+                            <span className="text-primary-500 mt-1">•</span>
                             <span>{entry}</span>
                           </li>
                         ))}

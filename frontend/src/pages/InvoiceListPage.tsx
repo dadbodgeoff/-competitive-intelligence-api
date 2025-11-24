@@ -110,7 +110,7 @@ export function InvoiceListPage() {
           </div>
           <Button
             onClick={() => navigate('/invoices/upload')}
-            className="btn-primary shadow-emerald"
+            className="btn-primary shadow-primary"
           >
             <Plus className="h-4 w-4 mr-2" />
             Upload Invoice
@@ -170,7 +170,7 @@ export function InvoiceListPage() {
                 <div className="flex items-center gap-2">
                   {hasActiveFilters && (
                     <>
-                      <Badge variant="outline" className="bg-cyan-500/10 text-cyan-400 border-cyan-500/30">
+                      <Badge variant="outline" className="bg-accent-500/10 text-accent-400 border-accent-500/30">
                         <Filter className="h-3 w-3 mr-1" />
                         {filteredInvoices.length} of {invoices.length}
                       </Badge>
@@ -197,7 +197,7 @@ export function InvoiceListPage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => setDisplayLimit(prev => prev + 10)}
-                    className="text-cyan-400 hover:text-cyan-300"
+                    className="text-accent-400 hover:text-accent-300"
                   >
                     Load more
                   </Button>
@@ -210,7 +210,7 @@ export function InvoiceListPage() {
         {/* Loading State */}
         {(isLoading || isFetching) && (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 text-emerald-400 animate-spin" />
+            <Loader2 className="h-8 w-8 text-primary-500 animate-spin" />
           </div>
         )}
 
@@ -263,8 +263,8 @@ export function InvoiceListPage() {
                     {new Date(invoice.invoice_date).toLocaleDateString()}
                   </div>
                   <div className="flex items-center gap-2">
-                    <DollarSign className="h-4 w-4 text-emerald-400" />
-                    <span className="text-lg font-bold text-emerald-400 font-mono">
+                    <DollarSign className="h-4 w-4 text-primary-500" />
+                    <span className="text-lg font-bold text-primary-500 font-mono">
                       ${invoice.total.toFixed(2)}
                     </span>
                   </div>

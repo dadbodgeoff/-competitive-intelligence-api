@@ -90,7 +90,7 @@ export function PrepDayDetail({
             <span>On hand: {formatNumber(totals.onHand)}</span>
             <span>
               Total to prep:{' '}
-              <span className="text-emerald-300 font-semibold">{formatNumber(totals.prep)}</span>
+              <span className="text-primary-300 font-semibold">{formatNumber(totals.prep)}</span>
             </span>
           </div>
         </div>
@@ -103,7 +103,7 @@ export function PrepDayDetail({
               value={newItemName}
               onChange={(event) => setNewItemName(event.target.value)}
               placeholder="E.g., 10oz dough balls"
-              className="bg-slate-900 border-white/10 text-white"
+              className="bg-obsidian border-white/10 text-white"
             />
           </div>
           <div className="md:col-span-2 space-y-1">
@@ -113,7 +113,7 @@ export function PrepDayDetail({
               min={0}
               value={newItemPar}
               onChange={(event) => setNewItemPar(event.target.value)}
-              className="bg-slate-900 border-white/10 text-white"
+              className="bg-obsidian border-white/10 text-white"
             />
           </div>
           <div className="md:col-span-2 space-y-1">
@@ -123,7 +123,7 @@ export function PrepDayDetail({
               min={0}
               value={newItemOnHand}
               onChange={(event) => setNewItemOnHand(event.target.value)}
-              className="bg-slate-900 border-white/10 text-white"
+              className="bg-obsidian border-white/10 text-white"
             />
           </div>
           <div className="md:col-span-2">
@@ -138,7 +138,7 @@ export function PrepDayDetail({
             <Accordion type="multiple" className="space-y-3">
               {day.items.map((item) => (
                 <AccordionItem value={item.id} key={item.id} className="border border-white/10 rounded-lg overflow-hidden">
-                  <AccordionTrigger className="px-4 bg-slate-900/70 text-left">
+                  <AccordionTrigger className="px-4 bg-obsidian/70 text-left">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full gap-3">
                       <div>
                         <p className="text-white font-semibold">{item.name}</p>
@@ -147,18 +147,18 @@ export function PrepDayDetail({
                       <div className="flex items-center gap-4 text-sm text-slate-300">
                         <span>Par: {formatNumber(item.par_amount)}</span>
                         <span>On hand: {formatNumber(item.on_hand_amount)}</span>
-                        <span className="text-emerald-300 font-semibold">
+                        <span className="text-primary-300 font-semibold">
                           To prep: {formatNumber(item.total_to_prep)}
                         </span>
                         {item.assigned_user_id ? (
-                          <Badge className="bg-cyan-500/15 text-cyan-200 border-cyan-400/30">
+                          <Badge className="bg-accent-500/15 text-accent-200 border-accent-400/30">
                             Assigned
                           </Badge>
                         ) : (
                           <Badge variant="outline">Unassigned</Badge>
                         )}
                         {item.completed_at && (
-                          <Badge className="bg-emerald-500/15 text-emerald-200 border-emerald-400/30">Complete</Badge>
+                          <Badge className="bg-primary-500/15 text-primary-200 border-primary-400/30">Complete</Badge>
                         )}
                       </div>
                     </div>
@@ -218,7 +218,7 @@ function ItemDetail({
             min={0}
             value={item.par_amount}
             onChange={(event) => onParChange(item, Number(event.target.value))}
-            className="bg-slate-900 border-white/10 text-white"
+            className="bg-obsidian border-white/10 text-white"
           />
         </div>
         <div className="md:col-span-3 space-y-1">
@@ -228,7 +228,7 @@ function ItemDetail({
             min={0}
             value={item.on_hand_amount}
             onChange={(event) => onOnHandChange(item, Number(event.target.value))}
-            className="bg-slate-900 border-white/10 text-white"
+            className="bg-obsidian border-white/10 text-white"
           />
         </div>
         <div className="md:col-span-3 space-y-1">
@@ -236,13 +236,13 @@ function ItemDetail({
           <Input
             value={formatNumber(calculateTotal(item.par_amount, item.on_hand_amount))}
             readOnly
-            className="bg-slate-900 border-white/10 text-emerald-200 font-semibold"
+            className="bg-obsidian border-white/10 text-primary-200 font-semibold"
           />
         </div>
         <div className="md:col-span-3 space-y-1">
           <Label className="text-slate-300 text-xs uppercase">Assign</Label>
           <Select value={item.assigned_user_id ?? ''} onValueChange={(value) => onAssign(item.id, value)}>
-            <SelectTrigger className="bg-slate-900 border-white/10 text-white">
+            <SelectTrigger className="bg-obsidian border-white/10 text-white">
               <SelectValue placeholder="Assign teammate" />
             </SelectTrigger>
             <SelectContent>
@@ -259,7 +259,7 @@ function ItemDetail({
       <div className="grid md:grid-cols-12 gap-3 items-end">
         <div className="md:col-span-6 space-y-1">
           <Label className="text-slate-300 text-xs uppercase">Notes</Label>
-          <Textarea value={item.notes ?? ''} readOnly className="bg-slate-900 border-white/10 text-white" />
+          <Textarea value={item.notes ?? ''} readOnly className="bg-obsidian border-white/10 text-white" />
         </div>
         <div className="md:col-span-6 flex gap-2 justify-end">
           {item.completed_at ? (
@@ -277,7 +277,7 @@ function ItemDetail({
         </div>
       </div>
       {item.completed_at && (
-        <div className="text-xs text-emerald-300">
+        <div className="text-xs text-primary-300">
           Completed at {format(new Date(item.completed_at), 'PPpp')}
           {item.completion_note && <span className="block text-slate-300 mt-1">{item.completion_note}</span>}
         </div>

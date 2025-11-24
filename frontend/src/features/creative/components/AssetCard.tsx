@@ -9,9 +9,10 @@ import type { CreativeAsset } from '../api/types';
 interface AssetCardProps {
   asset: CreativeAsset;
   filename: string;
+  onClick?: () => void;
 }
 
-export function AssetCard({ asset, filename }: AssetCardProps) {
+export function AssetCard({ asset, filename, onClick }: AssetCardProps) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -44,7 +45,10 @@ export function AssetCard({ asset, filename }: AssetCardProps) {
   };
 
   return (
-    <Card className="bg-card-dark border-white/10 overflow-hidden group hover:border-emerald-500/30 transition-all">
+    <Card 
+      className="bg-card-dark border-white/10 overflow-hidden group hover:border-white/10 transition-all cursor-pointer"
+      onClick={onClick}
+    >
       <div className="relative aspect-square bg-black/40">
         {!imageLoaded && !imageError && (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -53,7 +57,7 @@ export function AssetCard({ asset, filename }: AssetCardProps) {
         )}
         {imageError && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <p className="text-sm text-red-400">Failed to load image</p>
+            <p className="text-sm text-destructive">Failed to load image</p>
           </div>
         )}
         <img
@@ -72,15 +76,21 @@ export function AssetCard({ asset, filename }: AssetCardProps) {
               size="sm"
               variant="outline"
               className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-              onClick={() => window.open(asset.asset_url, '_blank')}
+              onClick={(e) => {
+                e.stopPropagation();
+                onClick?.();
+              }}
             >
               <Eye className="h-4 w-4 mr-1" />
-              View
+              View Full
             </Button>
             <Button
               size="sm"
-              className="bg-emerald-500 hover:bg-emerald-600 text-white"
-              onClick={handleDownload}
+              className="bg-primary-500 hover:bg-primary-500 text-white"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDownload();
+              }}
             >
               <Download className="h-4 w-4 mr-1" />
               Download
@@ -102,7 +112,7 @@ export function AssetCard({ asset, filename }: AssetCardProps) {
           <Button
             size="sm"
             variant="ghost"
-            className="h-6 px-2 text-xs text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10"
+            className="h-6 px-2 text-xs text-primary-500 hover:text-primary-300 hover:bg-primary-500/10"
             onClick={handleDownload}
           >
             <Download className="h-3 w-3 mr-1" />

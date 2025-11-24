@@ -38,7 +38,7 @@ export function CreativeJobDetailPanel({
 
   if (error) {
     return (
-      <Card className="border border-red-500/40 bg-red-500/10 text-white">
+      <Card className="border border-red-500/40 bg-destructive/10 text-white">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-lg">Unable to load job</CardTitle>
           <Button variant="ghost" className="text-white" onClick={onClose}>
@@ -72,13 +72,13 @@ export function CreativeJobDetailPanel({
       <CardContent className="grid gap-6 md:grid-cols-[1fr_320px]">
         <ScrollArea className="max-h-[60vh] space-y-6 pr-4">
           <section className="space-y-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-emerald-200">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-200">
               Prompt Sections
             </h3>
             <div className="space-y-4 rounded-md border border-white/10 bg-black/40 p-4 text-sm text-slate-200">
               {Object.entries(job.prompt_sections).map(([section, body]) => (
                 <div key={section} className="space-y-1">
-                  <p className="font-semibold text-emerald-300">{section}</p>
+                  <p className="font-semibold text-primary-300">{section}</p>
                   <p className="whitespace-pre-wrap leading-relaxed text-slate-200">{body}</p>
                 </div>
               ))}
@@ -86,7 +86,7 @@ export function CreativeJobDetailPanel({
           </section>
 
           <section className="space-y-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-emerald-200">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-200">
               Variation Summary
             </h3>
             <div className="flex flex-wrap gap-2">
@@ -96,7 +96,7 @@ export function CreativeJobDetailPanel({
                 </Badge>
               ))}
               {job.variation_summary?.texture && (
-                <Badge variant="outline" className="border-emerald-400 text-emerald-200">
+                <Badge variant="outline" className="border-primary-400 text-primary-200">
                   {job.variation_summary.texture}
                 </Badge>
               )}
@@ -107,16 +107,16 @@ export function CreativeJobDetailPanel({
           </section>
 
           <section className="space-y-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-emerald-200">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-200">
               Timeline
             </h3>
             <div className="space-y-3">
               {job.events.map((event, index) => (
                 <Fragment key={event.id ?? `${event.event_type}-${index}`}>
                   <div className="flex items-start gap-3">
-                    <div className="mt-1 h-2 w-2 rounded-full bg-emerald-400" />
+                    <div className="mt-1 h-2 w-2 rounded-full bg-primary-400" />
                     <div>
-                      <p className="text-sm font-medium text-emerald-100">
+                      <p className="text-sm font-medium text-primary-100">
                         {event.event_type.replace(/_/g, ' ')}
                       </p>
                       <p className="text-xs text-slate-400">
@@ -137,7 +137,7 @@ export function CreativeJobDetailPanel({
         </ScrollArea>
 
         <aside className="space-y-4 rounded-lg border border-white/10 bg-black/40 p-4">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-emerald-200">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-200">
             Assets
           </h3>
           <div className="space-y-3">

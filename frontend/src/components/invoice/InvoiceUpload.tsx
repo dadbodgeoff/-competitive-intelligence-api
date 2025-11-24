@@ -265,7 +265,7 @@ export function InvoiceUpload({ onSuccess, className }: InvoiceUploadProps) {
               <InvoiceCardHeader>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <CheckCircle className="h-6 w-6 text-emerald-400" aria-hidden="true" />
+                    <CheckCircle className="h-6 w-6 text-primary-500" aria-hidden="true" />
                     <div>
                       <h2 className="text-xl font-semibold text-white">Invoice Ready for Review</h2>
                       <p className="text-sm text-slate-400 mt-1">
@@ -313,7 +313,7 @@ export function InvoiceUpload({ onSuccess, className }: InvoiceUploadProps) {
                   </div>
                   <div>
                     <Label className="text-slate-400 text-xs">Total</Label>
-                    <div className="mt-1 text-2xl font-bold text-emerald-400 font-mono" aria-label={`Total amount: $${state.invoiceData.total.toFixed(2)}`}>
+                    <div className="mt-1 text-2xl font-bold text-primary-500 font-mono" aria-label={`Total amount: $${state.invoiceData.total.toFixed(2)}`}>
                       ${state.invoiceData.total.toFixed(2)}
                     </div>
                   </div>
@@ -336,7 +336,7 @@ export function InvoiceUpload({ onSuccess, className }: InvoiceUploadProps) {
                     </div>
                     <div>
                       <span className="text-slate-400">Total</span>
-                      <div className="text-emerald-400 font-mono font-bold text-lg mt-1">
+                      <div className="text-primary-500 font-mono font-bold text-lg mt-1">
                         ${state.invoiceData.total.toFixed(2)}
                       </div>
                     </div>
@@ -381,7 +381,7 @@ export function InvoiceUpload({ onSuccess, className }: InvoiceUploadProps) {
                     </div>
                     <div>
                       <span className="text-slate-500 text-xs uppercase tracking-wider">Items Verified</span>
-                      <div className="font-semibold text-cyan-400 mt-1">
+                      <div className="font-semibold text-accent-400 mt-1">
                         {state.invoiceData?.line_items?.length || 0}
                       </div>
                     </div>
@@ -405,7 +405,7 @@ export function InvoiceUpload({ onSuccess, className }: InvoiceUploadProps) {
               <Button
                 onClick={handleSave}
                 disabled={state.status === 'saving'}
-                className="btn-primary shadow-emerald"
+                className="btn-primary shadow-primary"
               >
                 {state.status === 'saving' ? (
                   <>
@@ -425,15 +425,15 @@ export function InvoiceUpload({ onSuccess, className }: InvoiceUploadProps) {
 
         {/* Error State */}
         {state.status === 'error' && (
-          <Alert variant="destructive" className="bg-red-500/10 border-red-500/50">
+          <Alert variant="destructive" className="bg-destructive/10 border-red-500/50">
             <AlertCircle className="h-5 w-5" />
             <AlertDescription>
               <div className="space-y-4">
-                <p className="font-semibold text-red-400">Processing failed: {state.error}</p>
+                <p className="font-semibold text-destructive">Processing failed: {state.error}</p>
                 <div className="flex gap-3">
                   <Button
                     onClick={() => window.location.reload()}
-                    className="bg-red-500 hover:bg-red-600 text-white"
+                    className="bg-destructive hover:bg-red-600 text-white"
                   >
                     Try Again
                   </Button>

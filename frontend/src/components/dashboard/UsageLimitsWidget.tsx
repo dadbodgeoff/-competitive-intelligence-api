@@ -46,15 +46,15 @@ export function UsageLimitsWidget() {
 
   if (isUnlimited) {
     return (
-      <div className="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30">
+      <div className="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-primary-500/10 to-accent-500/10 border border-white/10">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-emerald-500/20">
-            <Crown className="h-5 w-5 text-emerald-400" />
+          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary-500/20">
+            <Crown className="h-5 w-5 text-primary-500" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <span className="font-semibold text-white">Premium Account</span>
-              <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+              <CheckCircle2 className="h-4 w-4 text-primary-500" />
             </div>
             <p className="text-sm text-slate-400">Unlimited access to all features</p>
           </div>
@@ -68,7 +68,7 @@ export function UsageLimitsWidget() {
       <Card className="bg-card-dark border-white/10">
         <CardHeader>
           <CardTitle className="text-white flex items-center gap-2">
-            <AlertCircle className="h-5 w-5 text-yellow-400" />
+            <AlertCircle className="h-5 w-5 text-primary-500" />
             Usage Limits
           </CardTitle>
         </CardHeader>
@@ -159,11 +159,11 @@ export function UsageLimitsWidget() {
                 </div>
                 <div className="flex items-center gap-2">
                   {isAtLimit ? (
-                    <Badge variant="outline" className="text-xs text-red-400 border-red-500/30 bg-red-500/10">
+                    <Badge variant="outline" className="text-xs text-destructive border-red-500/30 bg-destructive/10">
                       Limit Reached
                     </Badge>
                   ) : isNearLimit ? (
-                    <Badge variant="outline" className="text-xs text-yellow-400 border-yellow-500/30 bg-yellow-500/10">
+                    <Badge variant="outline" className="text-xs text-primary-500 border-primary-600/30 bg-primary-500/10">
                       {remaining} left
                     </Badge>
                   ) : (
@@ -173,13 +173,13 @@ export function UsageLimitsWidget() {
                   )}
                 </div>
               </div>
-              <div className="w-full bg-slate-800 rounded-full h-1.5">
+              <div className="w-full bg-card-dark rounded-full h-1.5">
                 <div
                   className={`h-1.5 rounded-full transition-all ${
                     isAtLimit
-                      ? 'bg-red-500'
+                      ? 'bg-destructive'
                       : isNearLimit
-                      ? 'bg-yellow-400'
+                      ? 'bg-primary-400'
                       : `bg-${feature.color}-400`
                   }`}
                   style={{ width: `${Math.min(percentage, 100)}%` }}
@@ -195,7 +195,7 @@ export function UsageLimitsWidget() {
             <Link to="/pricing">
               <Button
                 size="sm"
-                className="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:opacity-90 text-white"
+                className="w-full bg-gradient-to-r from-primary-500 to-accent-500 hover:opacity-90 text-white"
               >
                 <Crown className="h-3 w-3 mr-2" />
                 Upgrade for Unlimited Access

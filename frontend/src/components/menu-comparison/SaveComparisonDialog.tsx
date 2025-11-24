@@ -71,7 +71,7 @@ export function SaveComparisonDialog({
           >
             Cancel
           </Button>
-          <Button onClick={onSave} disabled={isSaving} className="bg-emerald-500 hover:bg-emerald-600">
+          <Button onClick={onSave} disabled={isSaving} className="bg-primary-500 hover:bg-primary-500">
             {isSaving ? (
               <span className="flex items-center gap-2">
                 <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

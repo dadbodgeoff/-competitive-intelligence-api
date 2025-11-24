@@ -236,7 +236,7 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
       <div key={field} className="space-y-2">
         <Label className="text-sm text-slate-200">
           {label}
-          {required && <span className="ml-1 text-emerald-300">*</span>}
+          {required && <span className="ml-1 text-primary-300">*</span>}
         </Label>
         {input}
       </div>
@@ -437,7 +437,7 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
         <Button
           type="submit"
           disabled={isSubmitting || usage.isBlocked || usage.loading}
-          className="bg-emerald-500 text-white hover:bg-emerald-600"
+          className="bg-primary-500 text-white hover:bg-primary-500"
         >
           {isSubmitting ? 'Generating...' : 'Generate Assets'}
         </Button>

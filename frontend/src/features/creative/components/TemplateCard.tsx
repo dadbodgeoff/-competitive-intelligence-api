@@ -14,7 +14,7 @@ export function TemplateCard({ template, isSelected, onSelect, onPreview }: Temp
   return (
     <Card
       className={`flex h-full flex-col border transition ${
-        isSelected ? 'border-emerald-400 shadow-lg shadow-emerald-500/20' : 'border-white/10'
+        isSelected ? 'border-primary-400 shadow-lg shadow-primary-500/20' : 'border-white/10'
       }`}
     >
       <CardHeader>
@@ -38,7 +38,7 @@ export function TemplateCard({ template, isSelected, onSelect, onPreview }: Temp
           <ul className="mt-2 space-y-1">
             {(template.input_schema.required ?? []).map((field) => (
               <li key={field} className="flex items-center gap-2 text-xs uppercase tracking-wide">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                <span className="h-1.5 w-1.5 rounded-full bg-primary-400" />
                 {field}
               </li>
             ))}

@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
@@ -19,8 +19,6 @@ import { useToast } from '@/hooks/use-toast';
 import type { SavedComparisonSummary, DeleteConfirmation } from '@/types/menuComparison';
 
 import {
-  TrendingUp,
-  ArrowLeft,
   Plus,
   Search,
   MapPin,
@@ -34,6 +32,7 @@ import {
   Archive,
 } from 'lucide-react';
 import { PageHeading } from '@/components/layout/PageHeading';
+import { AppShell } from '@/components/layout/AppShell';
 
 export function SavedComparisonsPage() {
   const navigate = useNavigate();
@@ -142,44 +141,20 @@ export function SavedComparisonsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-obsidian flex items-center justify-center">
-        <div className="text-center">
-          <div className="h-8 w-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-400">Loading saved comparisons...</p>
+      <AppShell maxWidth="wide">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="h-8 w-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-slate-400">Loading saved comparisons...</p>
+          </div>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-obsidian">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
-
-      {/* Header */}
-      <div className="relative border-b border-white/10 bg-card-dark/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <Link
-              to="/dashboard"
-              className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
-            >
-              <ArrowLeft className="h-5 w-5" />
-              <span>Back to Dashboard</span>
-            </Link>
-            <Link
-              to="/"
-              className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors"
-            >
-              <TrendingUp className="h-6 w-6 text-emerald-500" />
-              <span className="text-xl font-bold">Restaurant CI</span>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Main content */}
-      <div className="relative container mx-auto px-4 py-8 max-w-7xl">
+    <AppShell maxWidth="wide">
+      <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
@@ -191,7 +166,7 @@ export function SavedComparisonsPage() {
           
           <Button
             onClick={() => navigate('/menu-comparison')}
-            className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/25"
+            className="bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25"
           >
             <Plus className="h-4 w-4 mr-2" />
             New Analysis
@@ -213,7 +188,7 @@ export function SavedComparisonsPage() {
 
         {/* Error state */}
         {error && (
-          <Alert variant="destructive" className="bg-red-500/10 border-red-500/50 text-red-400 mb-6">
+          <Alert variant="destructive" className="bg-destructive/10 border-red-500/50 text-destructive mb-6">
             <AlertTriangle className="h-5 w-5" />
             <AlertDescription>
               Failed to load saved comparisons. Please try again.
@@ -232,7 +207,7 @@ export function SavedComparisonsPage() {
               </p>
               <Button
                 onClick={() => navigate('/menu-comparison')}
-                className="bg-emerald-500 hover:bg-emerald-600"
+                className="bg-primary-500 hover:bg-primary-500"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Start First Analysis
@@ -284,7 +259,7 @@ export function SavedComparisonsPage() {
         <DialogContent className="bg-card-dark border-white/10 text-white">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-amber-400" />
+              <AlertTriangle className="h-5 w-5 text-primary-500" />
               {deleteConfirmation?.type === 'saved_comparison' ? 'Archive Comparison' : 'Delete Analysis'}
             </DialogTitle>
             <DialogDescription className="text-slate-400">
@@ -297,8 +272,8 @@ export function SavedComparisonsPage() {
           
           {deleteConfirmation && (
             <div className="space-y-4">
-              <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-                <h4 className="font-semibold text-amber-400 mb-2">
+              <div className="p-4 bg-primary-500/10 border border-primary-600/30 rounded-lg">
+                <h4 className="font-semibold text-primary-500 mb-2">
                   {deleteConfirmation.name}
                 </h4>
                 <div className="text-sm text-slate-400 space-y-1">
@@ -314,9 +289,9 @@ export function SavedComparisonsPage() {
               </div>
               
               {deleteConfirmation.type === 'analysis' && (
-                <Alert className="bg-red-500/10 border-red-500/30">
+                <Alert className="bg-destructive/10 border-red-500/30">
                   <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription className="text-red-400">
+                  <AlertDescription className="text-destructive">
                     <strong>Warning:</strong> This action cannot be undone. All competitor menu data and insights will be permanently deleted.
                   </AlertDescription>
                 </Alert>
@@ -336,8 +311,8 @@ export function SavedComparisonsPage() {
               onClick={confirmDelete}
               disabled={archiveMutation.isPending || deleteMutation.isPending}
               className={deleteConfirmation?.type === 'saved_comparison' 
-                ? "bg-amber-500 hover:bg-amber-600" 
-                : "bg-red-500 hover:bg-red-600"
+                ? "bg-primary-500 hover:bg-primary-500" 
+                : "bg-destructive hover:bg-red-600"
               }
             >
               {(archiveMutation.isPending || deleteMutation.isPending) ? (
@@ -364,7 +339,7 @@ export function SavedComparisonsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </AppShell>
   );
 }
 
@@ -385,13 +360,13 @@ function ComparisonCard({ comparison, onView, onArchive, onDelete }: ComparisonC
   };
 
   return (
-    <Card className="bg-card-dark border-white/10 hover:border-cyan-500/30 transition-all duration-200 group">
+    <Card className="bg-card-dark border-white/10 hover:border-accent-500/30 transition-all duration-200 group">
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between gap-3">
           <CardTitle className="text-lg text-white leading-tight flex-1">
             {comparison.report_name || `${comparison.restaurant_name} Analysis`}
           </CardTitle>
-          <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 border text-xs">
+          <Badge className="bg-primary-500/10 text-primary-500 border-white/10 border text-xs">
             Saved
           </Badge>
         </div>
@@ -416,10 +391,10 @@ function ComparisonCard({ comparison, onView, onArchive, onDelete }: ComparisonC
           </div>
           
           <div className="flex items-center gap-2 text-sm">
-            <BarChart3 className="w-4 h-4 text-cyan-500" />
+            <BarChart3 className="w-4 h-4 text-accent-500" />
             <div>
               <div className="text-slate-400 text-xs">Insights</div>
-              <div className="text-cyan-400 font-semibold">
+              <div className="text-accent-400 font-semibold">
                 {comparison.insights_count}
               </div>
             </div>
@@ -436,7 +411,7 @@ function ComparisonCard({ comparison, onView, onArchive, onDelete }: ComparisonC
         <div className="flex gap-2 pt-2">
           <Button
             onClick={onView}
-            className="flex-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20"
+            className="flex-1 bg-primary-500/10 text-primary-500 border border-white/10 hover:bg-primary-500/20"
           >
             <Eye className="h-4 w-4 mr-2" />
             View
@@ -446,7 +421,7 @@ function ComparisonCard({ comparison, onView, onArchive, onDelete }: ComparisonC
             variant="outline"
             size="sm"
             onClick={onArchive}
-            className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
+            className="border-primary-600/30 text-primary-500 hover:bg-primary-500/10"
           >
             <Archive className="h-4 w-4" />
           </Button>
@@ -455,7 +430,7 @@ function ComparisonCard({ comparison, onView, onArchive, onDelete }: ComparisonC
             variant="outline"
             size="sm"
             onClick={onDelete}
-            className="border-red-500/30 text-red-400 hover:bg-red-500/10"
+            className="border-red-500/30 text-destructive hover:bg-destructive/10"
           >
             <Trash2 className="h-4 w-4" />
           </Button>

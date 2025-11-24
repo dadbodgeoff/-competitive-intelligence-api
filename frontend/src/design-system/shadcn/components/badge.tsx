@@ -12,13 +12,13 @@ const badgeVariants = cva(
         destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
         // Confidence variants
-        "confidence-high": "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-        "confidence-medium": "bg-amber-500/15 text-amber-400 border-amber-500/30",
+        "confidence-high": "bg-primary-500/15 text-primary-500 border-white/10",
+        "confidence-medium": "bg-primary-500/15 text-primary-500 border-primary-600/30",
         "confidence-low": "bg-slate-500/15 text-slate-400 border-slate-500/30",
         // Insight type variants
-        opportunity: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-        threat: "bg-red-500/15 text-red-400 border-red-500/30",
-        watch: "bg-amber-500/15 text-amber-400 border-amber-500/30",
+        opportunity: "bg-primary-500/15 text-primary-500 border-white/10",
+        threat: "bg-destructive/15 text-destructive border-red-500/30",
+        watch: "bg-primary-500/15 text-primary-500 border-primary-600/30",
       },
     },
     defaultVariants: {

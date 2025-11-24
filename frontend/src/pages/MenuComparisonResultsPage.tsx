@@ -96,7 +96,7 @@ export function MenuComparisonResultsPage() {
       <AppShell maxWidth="wide">
         <div className="flex h-[50vh] items-center justify-center">
           <div className="text-center">
-            <div className="h-8 w-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <div className="h-8 w-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
             <p className="text-slate-400">Loading results...</p>
           </div>
         </div>
@@ -107,12 +107,12 @@ export function MenuComparisonResultsPage() {
   if (error || !results) {
     return (
       <AppShell maxWidth="wide">
-        <Alert variant="destructive" className="bg-red-500/10 border-red-500/50 text-red-400">
+        <Alert variant="destructive" className="bg-destructive/10 border-red-500/50 text-destructive">
           <AlertCircle className="h-5 w-5" />
           <AlertDescription>
             <p className="font-semibold mb-2">Failed to load results</p>
             <p className="mb-4">{error instanceof Error ? error.message : 'Unknown error'}</p>
-            <Button onClick={() => navigate('/menu-comparison')} className="bg-red-500 hover:bg-red-600">
+            <Button onClick={() => navigate('/menu-comparison')} className="bg-destructive hover:bg-red-600">
               Start New Analysis
             </Button>
           </AlertDescription>
@@ -161,7 +161,7 @@ export function MenuComparisonResultsPage() {
               <span>{results.location}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 border">
+              <Badge className="bg-primary-500/10 text-primary-500 border-white/10 border">
                 <CheckCircle2 className="h-3 w-3 mr-1" />
                 Analysis Complete
               </Badge>
@@ -178,7 +178,7 @@ export function MenuComparisonResultsPage() {
             </Button>
             <Button
               onClick={() => setShowSaveModal(true)}
-              className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/25"
+              className="bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25"
             >
               <Save className="h-4 w-4 mr-2" />
               Save to Account
@@ -190,11 +190,11 @@ export function MenuComparisonResultsPage() {
           <Card className="bg-card-dark border-white/10">
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-emerald-500/10">
-                  <Users className="h-5 w-5 text-emerald-400" />
+                <div className="p-2 rounded-lg bg-primary-500/10">
+                  <Users className="h-5 w-5 text-primary-500" />
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-emerald-400">
+                  <div className="text-2xl font-bold text-primary-500">
                     {results.competitors.length}
                   </div>
                   <div className="text-sm text-slate-400">Competitors Analyzed</div>
@@ -206,11 +206,11 @@ export function MenuComparisonResultsPage() {
           <Card className="bg-card-dark border-white/10">
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-cyan-500/10">
-                  <MenuIcon className="h-5 w-5 text-cyan-400" />
+                <div className="p-2 rounded-lg bg-accent-500/10">
+                  <MenuIcon className="h-5 w-5 text-accent-400" />
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-cyan-400">{allMenuItems.length}</div>
+                  <div className="text-2xl font-bold text-accent-400">{allMenuItems.length}</div>
                   <div className="text-sm text-slate-400">Menu Items Found</div>
                 </div>
               </div>
@@ -220,11 +220,11 @@ export function MenuComparisonResultsPage() {
           <Card className="bg-card-dark border-white/10">
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-amber-500/10">
-                  <DollarSign className="h-5 w-5 text-amber-400" />
+                <div className="p-2 rounded-lg bg-primary-500/10">
+                  <DollarSign className="h-5 w-5 text-primary-500" />
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-amber-400">
+                  <div className="text-2xl font-bold text-primary-500">
                     {categories.length - 1}
                   </div>
                   <div className="text-sm text-slate-400">Menu Categories</div>
@@ -238,21 +238,21 @@ export function MenuComparisonResultsPage() {
           <TabsList className="grid w-full grid-cols-3 h-12 bg-obsidian/50 border border-white/10">
             <TabsTrigger
               value="insights"
-              className="text-sm data-[state=active]:bg-amber-500/10 data-[state=active]:text-amber-400"
+              className="text-sm data-[state=active]:bg-primary-500/10 data-[state=active]:text-primary-500"
             >
               <AlertCircle className="h-4 w-4 mr-2" />
               Insights ({results.total_insights})
             </TabsTrigger>
             <TabsTrigger
               value="competitors"
-              className="text-sm data-[state=active]:bg-emerald-500/10 data-[state=active]:text-emerald-400"
+              className="text-sm data-[state=active]:bg-primary-500/10 data-[state=active]:text-primary-500"
             >
               <Users className="h-4 w-4 mr-2" />
               Competitors
             </TabsTrigger>
             <TabsTrigger
               value="menus"
-              className="text-sm data-[state=active]:bg-cyan-500/10 data-[state=active]:text-cyan-400"
+              className="text-sm data-[state=active]:bg-accent-500/10 data-[state=active]:text-accent-400"
             >
               <MenuIcon className="h-4 w-4 mr-2" />
               Menu Items ({allMenuItems.length})

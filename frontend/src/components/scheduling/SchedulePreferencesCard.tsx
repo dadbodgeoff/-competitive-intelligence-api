@@ -40,7 +40,7 @@ export function SchedulePreferencesCard({
                 onWeekStartChange(value === '' ? null : Number(value))
               }}
               disabled={loading || saving}
-              className="w-48 rounded-md border border-white/10 bg-obsidian px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+              className="w-48 rounded-md border border-white/10 bg-obsidian px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50"
             >
               <option value="" disabled>
                 {loading ? 'Loading…' : 'Select a weekday'}

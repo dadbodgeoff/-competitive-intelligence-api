@@ -25,7 +25,7 @@ export const ProcessingResultScreen: React.FC<Props> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-xl">
         {/* Header */}
-        <div className={`p-6 ${isSuccess ? 'bg-green-50' : 'bg-yellow-50'}`}>
+        <div className={`p-6 ${isSuccess ? 'bg-success-50' : 'bg-primary-50'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="text-4xl">
@@ -76,7 +76,7 @@ export const ProcessingResultScreen: React.FC<Props> = ({
               <div className="flex space-x-3">
                 <button
                   onClick={() => navigate(`/invoices/${result.invoice_id}`)}
-                  className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                  className="flex-1 bg-accent-600 text-white px-4 py-2 rounded-lg hover:bg-accent-700"
                 >
                   View Invoice
                 </button>
@@ -93,11 +93,11 @@ export const ProcessingResultScreen: React.FC<Props> = ({
           {/* Partial Success with Failed Items */}
           {hasFailures && (
             <div className="space-y-4">
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <h3 className="font-semibold text-yellow-900 mb-2">
+              <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+                <h3 className="font-semibold text-primary-900 mb-2">
                   {result.items_failed} {result.items_failed === 1 ? 'item needs' : 'items need'} your attention
                 </h3>
-                <p className="text-sm text-yellow-800">
+                <p className="text-sm text-primary-800">
                   These items couldn't be processed automatically. Please review and fix the issues below.
                 </p>
               </div>
@@ -131,8 +131,8 @@ export const ProcessingResultScreen: React.FC<Props> = ({
                       </p>
                     </div>
 
-                    <div className="bg-blue-50 border-l-4 border-blue-400 p-3">
-                      <p className="text-sm text-blue-800">
+                    <div className="bg-accent-50 border-l-4 border-accent-400 p-3">
+                      <p className="text-sm text-accent-800">
                         <strong>How to fix:</strong> {item.action_required}
                       </p>
                     </div>
@@ -144,7 +144,7 @@ export const ProcessingResultScreen: React.FC<Props> = ({
               <div className="flex space-x-3 pt-4 border-t">
                 <button
                   onClick={() => navigate(`/invoices/${result.invoice_id}`)}
-                  className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                  className="flex-1 bg-accent-600 text-white px-4 py-2 rounded-lg hover:bg-accent-700"
                 >
                   Fix Items in Invoice
                 </button>

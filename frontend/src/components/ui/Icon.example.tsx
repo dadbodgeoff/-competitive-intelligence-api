@@ -122,7 +122,7 @@ export const IconExamples: React.FC = () => {
  * 
  * OLD WAY:
  * import { Sparkles } from 'lucide-react';
- * <Sparkles className="w-5 h-5 text-emerald-500" />
+ * <Sparkles className="w-5 h-5 text-primary-500" />
  * 
  * NEW WAY:
  * import { Icon } from '@/components/ui/Icon';

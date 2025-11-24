@@ -11,14 +11,14 @@ interface BrandProfileCardProps {
 
 export function BrandProfileCard({ profile, onEdit }: BrandProfileCardProps) {
   return (
-    <Card className="bg-card-dark border-white/10 hover:border-emerald-500/30 transition-all">
+    <Card className="bg-card-dark border-white/10 hover:border-white/10 transition-all">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="text-lg text-white flex items-center gap-2">
             {profile.brand_name}
             {profile.is_default && (
-              <Badge variant="outline" className="text-xs border-emerald-500/30 text-emerald-400">
-                <Star className="h-3 w-3 mr-1 fill-emerald-400" />
+              <Badge variant="outline" className="text-xs border-white/10 text-primary-500">
+                <Star className="h-3 w-3 mr-1 fill-primary-400" />
                 Default
               </Badge>
             )}

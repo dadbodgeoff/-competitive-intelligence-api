@@ -50,7 +50,7 @@ export function FilterPanel({
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-slate-100">Filters</h3>
         {totalSelected > 0 && (
-          <span className="px-2 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-semibold">
+          <span className="px-2 py-1 rounded-full bg-primary-500/15 text-primary-500 text-xs font-semibold">
             {totalSelected} active
           </span>
         )}
@@ -70,7 +70,7 @@ export function FilterPanel({
                   className={cn(
                     'flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors',
                     'hover:bg-white/5',
-                    option.checked && 'bg-emerald-500/10'
+                    option.checked && 'bg-primary-500/10'
                   )}
                 >
                   <input
@@ -79,9 +79,9 @@ export function FilterPanel({
                     onChange={() => onOptionToggle(section.id, option.id)}
                     className={cn(
                       'w-4 h-4 rounded border-2 transition-all',
-                      'focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-slate-900',
+                      'focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-slate-900',
                       option.checked
-                        ? 'bg-emerald-500 border-emerald-500'
+                        ? 'bg-primary-500 border-primary-500'
                         : 'bg-white/5 border-white/20'
                     )}
                   />
@@ -123,9 +123,9 @@ export function FilterPanel({
               onClick={onApply}
               className={cn(
                 'flex-1 px-4 py-2 rounded-md text-sm font-medium transition-all',
-                'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white',
-                'hover:from-emerald-600 hover:to-emerald-700',
-                'shadow-emerald'
+                'bg-gradient-to-r bg-primary-500 text-white',
+                'hover:bg-primary-400',
+                'shadow-primary'
               )}
             >
               Apply Filters

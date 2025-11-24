@@ -62,7 +62,7 @@ export function TopOrderedItemsChart() {
     <Card className="bg-card-dark border-white/10">
       <CardHeader>
         <CardTitle className="text-white text-lg flex items-center gap-2">
-          <Flame className="h-5 w-5 text-orange-400" />
+          <Flame className="h-5 w-5 text-primary-500" />
           Most Ordered Items (30 days)
         </CardTitle>
       </CardHeader>
@@ -72,7 +72,7 @@ export function TopOrderedItemsChart() {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.2} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E1E1E" opacity={0.2} />
                 <XAxis 
                   type="number"
                   stroke="#94a3b8"
@@ -114,7 +114,7 @@ export function TopOrderedItemsChart() {
             {items.slice(0, 3).map((item, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-2 rounded-lg bg-slate-800/30 hover:bg-slate-800/50 transition-colors"
+                className="flex items-center justify-between p-2 rounded-lg bg-card-dark/30 hover:bg-card-dark/50 transition-colors"
               >
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div 
@@ -132,7 +132,7 @@ export function TopOrderedItemsChart() {
                     </div>
                   </div>
                 </div>
-                <div className="text-sm font-semibold text-emerald-400 ml-3">
+                <div className="text-sm font-semibold text-primary-500 ml-3">
                   ${item.total_cost.toLocaleString()}
                 </div>
               </div>

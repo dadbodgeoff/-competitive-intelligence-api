@@ -33,7 +33,7 @@ export function ThemeSelector({
 
   if (error) {
     return (
-      <Alert variant="destructive" className="bg-red-500/10 border-red-500/50">
+      <Alert variant="destructive" className="bg-destructive/10 border-red-500/50">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
           {error instanceof Error ? error.message : 'Failed to load themes'}
@@ -84,15 +84,15 @@ function ThemeCard({ theme, isSelected, onClick }: ThemeCardProps) {
         'cursor-pointer transition-all duration-200 hover:scale-105',
         'bg-card-dark border-white/10',
         isSelected
-          ? 'ring-2 ring-emerald-500 border-emerald-500/50'
-          : 'hover:border-emerald-500/30',
+          ? 'ring-2 ring-primary-500 border-primary-500/50'
+          : 'hover:border-white/10',
       )}
     >
       <CardContent className="p-4 space-y-3">
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-lg font-semibold text-white leading-tight">{theme.name}</h3>
           {isSelected && (
-            <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+            <Badge className="bg-primary-500/20 text-primary-500 border-white/10">
               Selected
             </Badge>
           )}

@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { toast } from '@/hooks/use-toast'
+import { AppShell } from '@/components/layout/AppShell'
 
 export function TimeClockPage() {
   const [pin, setPin] = useState('')
@@ -31,8 +32,9 @@ export function TimeClockPage() {
   })
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
-      <Card className="w-full max-w-md bg-obsidian/80 border-white/10">
+    <AppShell>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Card className="w-full max-w-md bg-obsidian/80 border-white/10">
         <CardHeader className="space-y-2">
           <CardTitle className="text-2xl text-white text-center">Team Time Clock</CardTitle>
           <p className="text-center text-slate-400 text-sm">
@@ -66,7 +68,7 @@ export function TimeClockPage() {
               onChange={(event) => setPin(event.target.value)}
               disabled={mutation.isPending}
             />
-            <Button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500" disabled={mutation.isPending}>
+            <Button type="submit" className="w-full bg-primary-500 hover:bg-primary-500" disabled={mutation.isPending}>
               {mutation.isPending ? 'Checking...' : 'Submit PIN'}
             </Button>
           </form>
@@ -86,7 +88,8 @@ export function TimeClockPage() {
           </p>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </AppShell>
   )
 }
 

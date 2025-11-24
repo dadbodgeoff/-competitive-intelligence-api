@@ -42,7 +42,7 @@ export function ComparisonWidget({
         {restaurants.map((restaurant, index) => (
           <div key={index} className="flex items-center gap-3">
             {/* Avatar */}
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 flex items-center justify-center text-xl font-bold text-emerald-400 border border-emerald-500/30">
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary-500/20 to-accent-500/20 flex items-center justify-center text-xl font-bold text-primary-500 border border-white/10">
               {restaurant.avatar || restaurant.name.charAt(0)}
             </div>
             {/* Name */}
@@ -73,7 +73,7 @@ export function ComparisonWidget({
                   <div
                     className={cn(
                       'flex items-center justify-center gap-1 text-xs font-medium',
-                      metric.trend === 'up' ? 'text-emerald-400' : 'text-red-400'
+                      metric.trend === 'up' ? 'text-primary-500' : 'text-destructive'
                     )}
                   >
                     {metric.trend === 'up' ? (
@@ -98,7 +98,7 @@ export function ComparisonWidget({
                   <div
                     className={cn(
                       'flex items-center justify-center gap-1 text-xs font-medium',
-                      metric2.trend === 'up' ? 'text-emerald-400' : 'text-red-400'
+                      metric2.trend === 'up' ? 'text-primary-500' : 'text-destructive'
                     )}
                   >
                     {metric2.trend === 'up' ? (

@@ -208,11 +208,11 @@ export function MenuParsingProgressPage() {
   const getStepIcon = (status: ParseStep['status']) => {
     switch (status) {
       case 'complete':
-        return <CheckCircle2 className="h-5 w-5 text-emerald-400" />;
+        return <CheckCircle2 className="h-5 w-5 text-primary-500" />;
       case 'active':
-        return <Loader2 className="h-5 w-5 text-cyan-400 animate-spin" />;
+        return <Loader2 className="h-5 w-5 text-accent-400 animate-spin" />;
       case 'error':
-        return <AlertCircle className="h-5 w-5 text-red-400" />;
+        return <AlertCircle className="h-5 w-5 text-destructive" />;
       default:
         return <div className="h-5 w-5 rounded-full border-2 border-slate-500" />;
     }
@@ -222,7 +222,7 @@ export function MenuParsingProgressPage() {
     return (
       <div className="min-h-screen bg-obsidian">
         <div className="container mx-auto px-4 py-12 max-w-2xl">
-          <Alert variant="destructive" className="bg-red-500/10 border-red-500/50 text-red-400">
+          <Alert variant="destructive" className="bg-destructive/10 border-red-500/50 text-destructive">
             <AlertCircle className="h-5 w-5" />
             <AlertDescription>
               <p className="font-semibold mb-2">Analysis Failed</p>
@@ -230,14 +230,14 @@ export function MenuParsingProgressPage() {
               <div className="flex gap-2">
                 <Button
                   onClick={() => navigate(`/menu-comparison/${analysisId}/select`)}
-                  className="bg-red-500 hover:bg-red-600"
+                  className="bg-destructive hover:bg-red-600"
                 >
                   Try Again
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => navigate('/menu-comparison')}
-                  className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                  className="border-red-500/50 text-destructive hover:bg-destructive/10"
                 >
                   Start Over
                 </Button>
@@ -252,7 +252,7 @@ export function MenuParsingProgressPage() {
   return (
     <div className="min-h-screen bg-obsidian">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-accent-500/5 pointer-events-none" />
 
       {/* Header */}
       <div className="relative border-b border-white/10 bg-card-dark/50 backdrop-blur-sm">
@@ -267,10 +267,10 @@ export function MenuParsingProgressPage() {
             </Link>
             <Link
               to="/"
-              className="flex items-center gap-2 text-white hover:text-emerald-400 transition-colors"
+              className="flex items-center gap-2 text-white hover:text-primary-500 transition-colors"
             >
-              <TrendingUp className="h-6 w-6 text-emerald-500" />
-              <span className="text-xl font-bold">Restaurant CI</span>
+              <TrendingUp className="h-6 w-6 text-primary-500" />
+              <span className="text-xl font-bold">RestaurantIQ</span>
             </Link>
           </div>
         </div>
@@ -281,8 +281,8 @@ export function MenuParsingProgressPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="p-3 rounded-xl bg-cyan-500/10">
-              <MenuIcon className="h-8 w-8 text-cyan-400" />
+            <div className="p-3 rounded-xl bg-accent-500/10">
+              <MenuIcon className="h-8 w-8 text-accent-400" />
             </div>
             <div>
               <PageHeading>Parsing Competitor Menus</PageHeading>
@@ -296,11 +296,11 @@ export function MenuParsingProgressPage() {
           <div className="max-w-md mx-auto">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-slate-400">Overall Progress</span>
-              <span className="text-sm text-cyan-400 font-semibold">{overallProgress}%</span>
+              <span className="text-sm text-accent-400 font-semibold">{overallProgress}%</span>
             </div>
             <Progress 
               value={overallProgress} 
-              className="h-3 bg-slate-800 [&>div]:bg-gradient-to-r [&>div]:from-cyan-500 [&>div]:to-emerald-500"
+              className="h-3 bg-card-dark [&>div]:bg-gradient-to-r [&>div]:from-accent-500 [&>div]:to-primary-500"
             />
           </div>
         </div>
@@ -332,22 +332,22 @@ export function MenuParsingProgressPage() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className={`font-medium ${
-                        step.status === 'complete' ? 'text-emerald-400' :
-                        step.status === 'active' ? 'text-cyan-400' :
-                        step.status === 'error' ? 'text-red-400' :
+                        step.status === 'complete' ? 'text-primary-500' :
+                        step.status === 'active' ? 'text-accent-400' :
+                        step.status === 'error' ? 'text-destructive' :
                         'text-slate-400'
                       }`}>
                         {step.label}
                       </span>
                       
                       {step.status === 'complete' && (
-                        <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 border text-xs">
+                        <Badge className="bg-primary-500/10 text-primary-500 border-white/10 border text-xs">
                           Complete
                         </Badge>
                       )}
                       
                       {step.status === 'active' && (
-                        <Badge className="bg-cyan-500/10 text-cyan-400 border-cyan-500/30 border text-xs">
+                        <Badge className="bg-accent-500/10 text-accent-400 border-accent-500/30 border text-xs">
                           Processing
                         </Badge>
                       )}
@@ -374,25 +374,25 @@ export function MenuParsingProgressPage() {
           <Card className="bg-slate-500/5 border-slate-500/20">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-emerald-400" />
+                <FileText className="h-5 w-5 text-primary-500" />
                 <CardTitle className="text-lg text-white">What We're Doing</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-slate-400">
               <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 flex-shrink-0" />
+                <div className="w-1.5 h-1.5 rounded-full bg-primary-400 mt-2 flex-shrink-0" />
                 <span>Accessing competitor websites and menu pages</span>
               </div>
               <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-2 flex-shrink-0" />
+                <div className="w-1.5 h-1.5 rounded-full bg-accent-400 mt-2 flex-shrink-0" />
                 <span>Extracting menu items, descriptions, and pricing</span>
               </div>
               <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-2 flex-shrink-0" />
+                <div className="w-1.5 h-1.5 rounded-full bg-primary-400 mt-2 flex-shrink-0" />
                 <span>Organizing data by categories and sizes</span>
               </div>
               <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 flex-shrink-0" />
+                <div className="w-1.5 h-1.5 rounded-full bg-primary-400 mt-2 flex-shrink-0" />
                 <span>Preparing comparison analysis</span>
               </div>
             </CardContent>
@@ -401,25 +401,25 @@ export function MenuParsingProgressPage() {
           <Card className="bg-slate-500/5 border-slate-500/20">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-cyan-400" />
+                <Zap className="h-5 w-5 text-accent-400" />
                 <CardTitle className="text-lg text-white">Next Steps</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-slate-400">
               <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 flex-shrink-0" />
+                <div className="w-1.5 h-1.5 rounded-full bg-primary-400 mt-2 flex-shrink-0" />
                 <span>Review competitor menu items and pricing</span>
               </div>
               <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-2 flex-shrink-0" />
+                <div className="w-1.5 h-1.5 rounded-full bg-accent-400 mt-2 flex-shrink-0" />
                 <span>Compare against your menu structure</span>
               </div>
               <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-2 flex-shrink-0" />
+                <div className="w-1.5 h-1.5 rounded-full bg-primary-400 mt-2 flex-shrink-0" />
                 <span>Identify pricing gaps and opportunities</span>
               </div>
               <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 flex-shrink-0" />
+                <div className="w-1.5 h-1.5 rounded-full bg-primary-400 mt-2 flex-shrink-0" />
                 <span>Save comparison report to your account</span>
               </div>
             </CardContent>

@@ -20,9 +20,9 @@ function EvidenceCard({ insight }: EvidenceCardProps) {
       case 'threat':
         return 'bg-red-100 text-red-800';
       case 'opportunity':
-        return 'bg-green-100 text-green-800';
+        return 'bg-success-100 text-success-800';
       case 'watch':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-primary-100 text-primary-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -31,9 +31,9 @@ function EvidenceCard({ insight }: EvidenceCardProps) {
   const getConfidenceColor = (confidence: string) => {
     switch (confidence) {
       case 'high':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-accent-100 text-accent-800';
       case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-primary-100 text-primary-800';
       case 'low':
         return 'bg-gray-100 text-gray-800';
       default:
@@ -177,15 +177,15 @@ export function ReviewEvidenceSection({ insights }: ReviewEvidenceSectionProps) 
               <div className="text-sm text-muted-foreground">Threats</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-green-600">{evidenceCounts.opportunity}</div>
+              <div className="text-2xl font-bold text-success-600">{evidenceCounts.opportunity}</div>
               <div className="text-sm text-muted-foreground">Opportunities</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-yellow-600">{evidenceCounts.watch}</div>
+              <div className="text-2xl font-bold text-primary-600">{evidenceCounts.watch}</div>
               <div className="text-sm text-muted-foreground">Watch Items</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-blue-600">
+              <div className="text-2xl font-bold text-accent-600">
                 {insights.filter(i => i.confidence === 'high').length}
               </div>
               <div className="text-sm text-muted-foreground">High Confidence</div>

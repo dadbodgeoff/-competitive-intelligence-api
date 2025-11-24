@@ -136,7 +136,7 @@ export function MenuReviewTable({
         return (
           <div key={categoryIndex} className="space-y-3">
             {/* Category Header */}
-            <div className="flex items-center justify-between bg-slate-800/50 border border-white/10 rounded-lg p-4">
+            <div className="flex items-center justify-between bg-card-dark/50 border border-white/10 rounded-lg p-4">
               <div className="flex items-center gap-3 flex-1">
                 <Button
                   variant="ghost"
@@ -163,7 +163,7 @@ export function MenuReviewTable({
                     <Button
                       size="sm"
                       onClick={saveEditingCategory}
-                      className="h-8 w-8 p-0 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                      className="h-8 w-8 p-0 bg-primary-500/10 hover:bg-primary-500/20 text-primary-500 border border-white/10"
                     >
                       <Check className="h-4 w-4" />
                     </Button>
@@ -179,7 +179,7 @@ export function MenuReviewTable({
                 ) : (
                   <>
                     <h3 className="text-lg font-semibold text-white">{category.name}</h3>
-                    <Badge className="bg-cyan-500/10 text-cyan-400 border-cyan-500/30">
+                    <Badge className="bg-accent-500/10 text-accent-400 border-accent-500/30">
                       {category.items.length} items
                     </Badge>
                   </>
@@ -192,7 +192,7 @@ export function MenuReviewTable({
                     size="sm"
                     variant="ghost"
                     onClick={() => startEditingCategory(categoryIndex)}
-                    className="h-8 text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10"
+                    className="h-8 text-accent-400 hover:text-accent-300 hover:bg-accent-500/10"
                   >
                     <Edit2 className="h-4 w-4 mr-1" />
                     Edit
@@ -201,7 +201,7 @@ export function MenuReviewTable({
                     size="sm"
                     variant="ghost"
                     onClick={() => onDeleteCategory(categoryIndex)}
-                    className="h-8 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                    className="h-8 text-destructive hover:text-red-300 hover:bg-destructive/10"
                   >
                     <Trash2 className="h-4 w-4 mr-1" />
                     Delete
@@ -233,7 +233,7 @@ export function MenuReviewTable({
                             key={itemIndex}
                             className={cn(
                               'border-white/10 transition-colors',
-                              isEditing ? 'bg-cyan-500/5' : 'hover:bg-white/5'
+                              isEditing ? 'bg-accent-500/5' : 'hover:bg-white/5'
                             )}
                             onKeyDown={(e) => handleKeyDown(e, categoryIndex, itemIndex)}
                           >
@@ -263,7 +263,7 @@ export function MenuReviewTable({
                               )}
                             </TableCell>
                             
-                            <TableCell className="text-right text-emerald-400 font-mono font-semibold">
+                            <TableCell className="text-right text-primary-500 font-mono font-semibold">
                               {isEditing ? (
                                 <div className="space-y-1 text-xs">
                                   {(editValues.prices || item.prices || []).map((priceItem, priceIdx) => (
@@ -319,7 +319,7 @@ export function MenuReviewTable({
                                 <Badge className={cn(
                                   'border font-medium',
                                   item.available !== false
-                                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                                    ? 'bg-primary-500/10 text-primary-500 border-white/10'
                                     : 'bg-slate-500/10 text-slate-400 border-slate-500/30'
                                 )}>
                                   {item.available !== false ? 'Yes' : 'No'}
@@ -336,8 +336,8 @@ export function MenuReviewTable({
                                       onClick={saveEditingItem}
                                       className={cn(
                                         'h-8 w-8 p-0',
-                                        'bg-emerald-500/10 hover:bg-emerald-500/20',
-                                        'text-emerald-400 border border-emerald-500/30'
+                                        'bg-primary-500/10 hover:bg-primary-500/20',
+                                        'text-primary-500 border border-white/10'
                                       )}
                                       aria-label="Save changes"
                                     >
@@ -364,7 +364,7 @@ export function MenuReviewTable({
                                       onClick={() => startEditingItem(categoryIndex, itemIndex)}
                                       className={cn(
                                         'h-8 w-8 p-0',
-                                        'text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10'
+                                        'text-accent-400 hover:text-accent-300 hover:bg-accent-500/10'
                                       )}
                                       aria-label={`Edit item ${itemIndex + 1}`}
                                     >
@@ -376,7 +376,7 @@ export function MenuReviewTable({
                                       onClick={() => onDeleteItem(categoryIndex, itemIndex)}
                                       className={cn(
                                         'h-8 w-8 p-0',
-                                        'text-red-400 hover:text-red-300 hover:bg-red-500/10'
+                                        'text-destructive hover:text-red-300 hover:bg-destructive/10'
                                       )}
                                       aria-label={`Delete item ${itemIndex + 1}`}
                                     >
@@ -411,8 +411,8 @@ export function MenuReviewTable({
                       variant="outline"
                       size="sm"
                       className={cn(
-                        'w-full border-white/10 text-emerald-400',
-                        'hover:bg-emerald-500/10 hover:border-emerald-500/30'
+                        'w-full border-white/10 text-primary-500',
+                        'hover:bg-primary-500/10 hover:border-white/10'
                       )}
                       aria-label={`Add item to ${category.name}`}
                     >
@@ -432,8 +432,8 @@ export function MenuReviewTable({
           onClick={onAddCategory}
           variant="outline"
           className={cn(
-            'w-full border-white/10 text-cyan-400',
-            'hover:bg-cyan-500/10 hover:border-cyan-500/30'
+            'w-full border-white/10 text-accent-400',
+            'hover:bg-accent-500/10 hover:border-accent-500/30'
           )}
           aria-label="Add new category"
         >

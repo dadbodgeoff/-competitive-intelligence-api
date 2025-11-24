@@ -158,9 +158,9 @@ export function COGSTable({ categories, recipes, loadingRecipes }: COGSTableProp
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return <ArrowUpDown className="h-4 w-4 text-slate-500" />;
     return sortDirection === 'asc' ? (
-      <ArrowUp className="h-4 w-4 text-cyan-400" />
+      <ArrowUp className="h-4 w-4 text-accent-400" />
     ) : (
-      <ArrowDown className="h-4 w-4 text-cyan-400" />
+      <ArrowDown className="h-4 w-4 text-accent-400" />
     );
   };
 
@@ -178,21 +178,21 @@ export function COGSTable({ categories, recipes, loadingRecipes }: COGSTableProp
 
     if (foodCost < 30) {
       return (
-        <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30">
+        <Badge className="bg-primary-500/10 text-primary-500 border-white/10">
           <CheckCircle className="h-3 w-3 mr-1" />
           Healthy
         </Badge>
       );
     } else if (foodCost < 35) {
       return (
-        <Badge className="bg-orange-500/10 text-orange-400 border-orange-500/30">
+        <Badge className="bg-primary-500/10 text-primary-500 border-primary-600/30">
           <AlertTriangle className="h-3 w-3 mr-1" />
           Warning
         </Badge>
       );
     } else {
       return (
-        <Badge className="bg-red-500/10 text-red-400 border-red-500/30">
+        <Badge className="bg-destructive/10 text-destructive border-red-500/30">
           <AlertCircle className="h-3 w-3 mr-1" />
           High Cost
         </Badge>
@@ -215,7 +215,7 @@ export function COGSTable({ categories, recipes, loadingRecipes }: COGSTableProp
             </div>
             {loadingRecipes && (
               <div className="flex items-center gap-2 text-sm text-slate-400">
-                <div className="h-4 w-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+                <div className="h-4 w-4 border-2 border-accent-400 border-t-transparent rounded-full animate-spin" />
                 <span>Loading recipes...</span>
               </div>
             )}
@@ -243,7 +243,7 @@ export function COGSTable({ categories, recipes, loadingRecipes }: COGSTableProp
                 onClick={() => setFilterStatus('all')}
                 className={
                   filterStatus === 'all'
-                    ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30'
+                    ? 'bg-accent-500/20 text-accent-400 border-accent-500/30'
                     : 'border-white/10 text-slate-400'
                 }
               >
@@ -255,7 +255,7 @@ export function COGSTable({ categories, recipes, loadingRecipes }: COGSTableProp
                 onClick={() => setFilterStatus('with-recipe')}
                 className={
                   filterStatus === 'with-recipe'
-                    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                    ? 'bg-primary-500/20 text-primary-500 border-white/10'
                     : 'border-white/10 text-slate-400'
                 }
               >
@@ -267,7 +267,7 @@ export function COGSTable({ categories, recipes, loadingRecipes }: COGSTableProp
                 onClick={() => setFilterStatus('no-recipe')}
                 className={
                   filterStatus === 'no-recipe'
-                    ? 'bg-orange-500/20 text-orange-400 border-orange-500/30'
+                    ? 'bg-primary-500/20 text-primary-500 border-primary-600/30'
                     : 'border-white/10 text-slate-400'
                 }
               >
@@ -327,7 +327,7 @@ export function COGSTable({ categories, recipes, loadingRecipes }: COGSTableProp
                       </p>
                     </div>
                   </div>
-                  <Badge className="bg-cyan-500/10 text-cyan-400 border-cyan-500/30">
+                  <Badge className="bg-accent-500/10 text-accent-400 border-accent-500/30">
                     {category.items.length}
                   </Badge>
                 </button>
@@ -405,7 +405,7 @@ export function COGSTable({ categories, recipes, loadingRecipes }: COGSTableProp
                                 <span className="font-medium text-white">{item.name}</span>
                               </td>
                               <td className="py-3 px-4 text-right">
-                                <span className="font-mono text-emerald-400">
+                                <span className="font-mono text-primary-500">
                                   ${price.toFixed(2)}
                                 </span>
                               </td>
@@ -422,7 +422,7 @@ export function COGSTable({ categories, recipes, loadingRecipes }: COGSTableProp
                                 {loadingRecipes && !recipe ? (
                                   <div className="h-5 w-16 bg-slate-700/50 animate-pulse rounded ml-auto" />
                                 ) : (
-                                  <span className="font-mono text-cyan-400">
+                                  <span className="font-mono text-accent-400">
                                     {recipe ? `$${recipe.gross_profit.toFixed(2)}` : '-'}
                                   </span>
                                 )}
@@ -448,7 +448,7 @@ export function COGSTable({ categories, recipes, loadingRecipes }: COGSTableProp
                                   size="sm"
                                   variant="ghost"
                                   onClick={() => navigate(`/menu/items/${item.id}/recipe`)}
-                                  className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10"
+                                  className="text-accent-400 hover:text-accent-300 hover:bg-accent-500/10"
                                 >
                                   <ExternalLink className="h-4 w-4 mr-1" />
                                   {recipe ? 'Edit' : 'Build'}

@@ -58,10 +58,10 @@ export function MonthlySummaryChart() {
   ];
 
   return (
-    <Card className="bg-card-dark border-white/10 hover:border-emerald-500/30 transition-all">
+    <Card className="bg-card-dark border-white/10 hover:border-white/10 transition-all">
       <CardHeader className="pb-3">
         <CardTitle className="text-white text-lg flex items-center gap-2">
-          <DollarSign className="h-5 w-5 text-emerald-400" />
+          <DollarSign className="h-5 w-5 text-primary-500" />
           Monthly Spending Trend
         </CardTitle>
       </CardHeader>
@@ -79,7 +79,7 @@ export function MonthlySummaryChart() {
             </div>
             <div className="text-right">
               <div className={`flex items-center justify-end gap-2 text-sm ${
-                isIncrease ? 'text-red-400' : 'text-emerald-400'
+                isIncrease ? 'text-destructive' : 'text-primary-500'
               }`}>
                 <TrendIcon className="h-4 w-4" />
                 <span className="font-semibold text-lg">
@@ -102,7 +102,7 @@ export function MonthlySummaryChart() {
                     <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.2} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1E1E1E" opacity={0.2} />
                 <XAxis 
                   dataKey="name" 
                   stroke="#94a3b8"

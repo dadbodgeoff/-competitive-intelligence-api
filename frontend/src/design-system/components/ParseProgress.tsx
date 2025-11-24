@@ -33,9 +33,9 @@ export function ParseProgress({
     switch (status) {
       case 'parsing':
       case 'validating':
-        return <Clock className="h-5 w-5 text-cyan-500 animate-spin" />;
+        return <Clock className="h-5 w-5 text-accent-500 animate-spin" />;
       case 'ready':
-        return <CheckCircle className="h-5 w-5 text-emerald-500" />;
+        return <CheckCircle className="h-5 w-5 text-primary-500" />;
       case 'error':
         return <AlertCircle className="h-5 w-5 text-red-500" />;
     }
@@ -43,10 +43,10 @@ export function ParseProgress({
 
   const getStatusBadge = () => {
     const badges = {
-      parsing: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
-      validating: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
-      ready: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-      error: 'bg-red-500/10 text-red-400 border-red-500/30',
+      parsing: 'bg-accent-500/10 text-accent-400 border-accent-500/30',
+      validating: 'bg-accent-500/10 text-accent-400 border-accent-500/30',
+      ready: 'bg-primary-500/10 text-primary-500 border-white/10',
+      error: 'bg-destructive/10 text-destructive border-red-500/30',
     };
 
     const labels = {
@@ -75,8 +75,8 @@ export function ParseProgress({
       <div className="flex items-center justify-between">
         <div className="flex items-start gap-4">
           <div className="relative">
-            <div className="absolute inset-0 bg-cyan-500/20 rounded-full blur-lg animate-pulse" />
-            <div className="relative p-3 rounded-full bg-cyan-500/10 border border-cyan-500/30">
+            <div className="absolute inset-0 bg-accent-500/20 rounded-full blur-lg animate-pulse" />
+            <div className="relative p-3 rounded-full bg-accent-500/10 border border-accent-500/30">
               {getStatusIcon()}
             </div>
           </div>
@@ -88,9 +88,9 @@ export function ParseProgress({
         <div className="flex items-center gap-3">
           {getStatusBadge()}
           {isConnected ? (
-            <Wifi className="h-5 w-5 text-emerald-400" aria-label="Connected" />
+            <Wifi className="h-5 w-5 text-primary-500" aria-label="Connected" />
           ) : (
-            <WifiOff className="h-5 w-5 text-red-400" aria-label="Disconnected" />
+            <WifiOff className="h-5 w-5 text-destructive" aria-label="Disconnected" />
           )}
         </div>
       </div>
@@ -99,7 +99,7 @@ export function ParseProgress({
       <div className="space-y-3">
         <div className="relative h-3 w-full overflow-hidden rounded-full bg-obsidian/50">
           <div
-            className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-all duration-300"
+            className="h-full bg-gradient-to-r from-primary-500 to-accent-500 transition-all duration-300"
             style={{ width: `${progress}%` }}
             role="progressbar"
             aria-valuenow={progress}
@@ -108,7 +108,7 @@ export function ParseProgress({
           />
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-cyan-400 font-semibold">
+          <span className="text-accent-400 font-semibold">
             {progress}% complete
           </span>
           <span className="text-slate-400 flex items-center gap-1">
@@ -121,7 +121,7 @@ export function ParseProgress({
       {/* Current Step */}
       <div className="bg-obsidian/50 border border-white/10 rounded-lg p-5">
         <div className="flex items-start gap-3">
-          <Sparkles className="h-5 w-5 text-cyan-400 mt-0.5 animate-pulse" />
+          <Sparkles className="h-5 w-5 text-accent-400 mt-0.5 animate-pulse" />
           <div className="flex-1">
             <h4 className="font-semibold text-white mb-1">Current Step</h4>
             <p className="text-sm text-slate-400">{currentStep}</p>
@@ -141,7 +141,7 @@ export function ParseProgress({
           className={cn(
             'w-full px-4 py-2 rounded-md text-sm font-medium',
             'border border-white/10 text-slate-300',
-            'hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30',
+            'hover:bg-destructive/10 hover:text-destructive hover:border-red-500/30',
             'transition-all duration-200'
           )}
         >

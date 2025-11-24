@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { GenerationWizard } from '@/features/creative/components/GenerationWizard';
 import { GenerationProgress } from '@/features/creative/components/GenerationProgress';
 import { AssetGallery } from '@/features/creative/components/AssetGallery';
+import { SuccessAnimation } from '@/features/creative/components/SuccessAnimation';
 import { useNanoThemes } from '@/features/creative/hooks/useNanoThemes';
 import { useNanoTemplates } from '@/features/creative/hooks/useNanoTemplates';
 import { useGenerateImage } from '@/features/creative/hooks/useGenerateImage';
@@ -23,6 +24,7 @@ export function CreativeCustomizePage() {
   
   const [currentJobId, setCurrentJobId] = useState<string | undefined>();
   const [completedJob, setCompletedJob] = useState<CreativeJobDetail | undefined>();
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const themesQuery = useNanoThemes();
   const templatesQuery = useNanoTemplates(themeId || undefined);
@@ -66,6 +68,10 @@ export function CreativeCustomizePage() {
   const handleGenerationComplete = useCallback((job: CreativeJobDetail) => {
     setCompletedJob(job);
     setCurrentJobId(undefined);
+    setShowSuccess(true);
+    
+    // Hide success animation after 3 seconds
+    setTimeout(() => setShowSuccess(false), 3000);
     
     toast({
       title: 'Generation Complete!',
@@ -94,7 +100,7 @@ export function CreativeCustomizePage() {
       <AppShell maxWidth="wide">
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center space-y-4">
-            <Sparkles className="h-12 w-12 text-emerald-500 mx-auto animate-pulse" />
+            <Sparkles className="h-12 w-12 text-primary-500 mx-auto animate-pulse" />
             <p className="text-slate-400">Loading template...</p>
           </div>
         </div>
@@ -104,6 +110,12 @@ export function CreativeCustomizePage() {
 
   return (
     <AppShell maxWidth="wide">
+      <SuccessAnimation
+        show={showSuccess}
+        message="Your assets are ready!"
+        assetCount={completedJob?.assets.length || 0}
+      />
+      
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -121,7 +133,7 @@ export function CreativeCustomizePage() {
           {hasCompletedJob && (
             <Button
               onClick={handleStartNew}
-              className="bg-emerald-500 hover:bg-emerald-600"
+              className="bg-primary-500 hover:bg-primary-500"
             >
               Generate Another
             </Button>
@@ -139,9 +151,9 @@ export function CreativeCustomizePage() {
 
         {/* Completed Assets - Show when done */}
         {hasCompletedJob && completedJob && (
-          <div className="rounded-lg border-2 border-emerald-500/50 bg-emerald-500/5 p-6">
+          <div className="rounded-lg border-2 border-primary-500/50 bg-primary-500/5 p-6">
             <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="h-5 w-5 text-emerald-500" />
+              <Sparkles className="h-5 w-5 text-primary-500" />
               <h2 className="text-xl font-bold text-white">Your Assets Are Ready!</h2>
             </div>
             <p className="text-slate-400 mb-6">
@@ -165,7 +177,7 @@ export function CreativeCustomizePage() {
                 <CardContent className="p-6 space-y-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
-                      <Palette className="h-5 w-5 text-emerald-500" />
+                      <Palette className="h-5 w-5 text-primary-500" />
                       <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
                         Theme
                       </h3>
@@ -182,7 +194,7 @@ export function CreativeCustomizePage() {
 
                   <div className="border-t border-white/10 pt-4">
                     <div className="flex items-center gap-2 mb-2">
-                      <Sparkles className="h-5 w-5 text-emerald-500" />
+                      <Sparkles className="h-5 w-5 text-primary-500" />
                       <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
                         Template
                       </h3>
@@ -209,7 +221,7 @@ export function CreativeCustomizePage() {
                       <ul className="space-y-2">
                         {template.input_schema?.required?.map((field) => (
                           <li key={field} className="flex items-center gap-2 text-sm text-slate-400">
-                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                            <span className="h-1.5 w-1.5 rounded-full bg-primary-500" />
                             {field.replace(/[_-]/g, ' ')}
                           </li>
                         ))}
@@ -239,7 +251,7 @@ export function CreativeCustomizePage() {
                         {(template as any).tags.map((tag: string) => (
                           <span
                             key={tag}
-                            className="px-2 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
+                            className="px-2 py-1 text-xs rounded-full bg-primary-500/10 text-primary-300 border border-white/10"
                           >
                             {tag}
                           </span>

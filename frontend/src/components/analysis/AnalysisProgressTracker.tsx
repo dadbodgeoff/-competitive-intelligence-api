@@ -41,22 +41,22 @@ export function AnalysisProgressTracker({ analysisId }: AnalysisProgressTrackerP
     switch (statusValue) {
       case 'pending':
         return {
-          color: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+          color: 'bg-primary-500/10 text-primary-500 border-primary-600/30',
           icon: Clock,
         };
       case 'running':
         return {
-          color: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+          color: 'bg-accent-500/10 text-accent-400 border-accent-500/30',
           icon: Loader2,
         };
       case 'completed':
         return {
-          color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+          color: 'bg-primary-500/10 text-primary-500 border-white/10',
           icon: CheckCircle2,
         };
       case 'failed':
         return {
-          color: 'bg-red-500/10 text-red-400 border-red-500/30',
+          color: 'bg-destructive/10 text-destructive border-red-500/30',
           icon: XCircle,
         };
       default:
@@ -80,7 +80,7 @@ export function AnalysisProgressTracker({ analysisId }: AnalysisProgressTrackerP
     return (
       <div className="min-h-screen bg-obsidian flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-12 w-12 text-emerald-500 animate-spin mx-auto mb-4" />
+          <Loader2 className="h-12 w-12 text-primary-500 animate-spin mx-auto mb-4" />
           <p className="text-slate-400">Loading analysis...</p>
         </div>
       </div>
@@ -96,16 +96,16 @@ export function AnalysisProgressTracker({ analysisId }: AnalysisProgressTrackerP
           <div className="text-center mb-8">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-white hover:text-emerald-400 transition-colors"
+              className="inline-flex items-center gap-2 text-white hover:text-primary-500 transition-colors"
             >
-              <TrendingUp className="h-6 w-6 text-emerald-500" />
+              <TrendingUp className="h-6 w-6 text-primary-500" />
               <span className="text-xl font-bold">RestaurantIQ</span>
             </Link>
           </div>
 
           <Alert
             variant="destructive"
-            className="bg-red-500/10 border-red-500/50 text-red-400"
+            className="bg-destructive/10 border-red-500/50 text-destructive"
           >
             <AlertCircle className="h-5 w-5" />
             <AlertDescription className="text-base">
@@ -116,7 +116,7 @@ export function AnalysisProgressTracker({ analysisId }: AnalysisProgressTrackerP
               <div className="flex gap-3">
                 <Button
                   onClick={() => window.location.reload()}
-                  className="bg-red-500 hover:bg-red-600"
+                  className="bg-destructive hover:bg-red-600"
                 >
                   Retry
                 </Button>
@@ -141,16 +141,16 @@ export function AnalysisProgressTracker({ analysisId }: AnalysisProgressTrackerP
   return (
     <div className="min-h-screen bg-obsidian">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-cyan-500/5 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-accent-500/5 pointer-events-none" />
 
       {/* Header */}
       <div className="relative border-b border-white/10 bg-card-dark/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-6">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-white hover:text-emerald-400 transition-colors"
+            className="inline-flex items-center gap-2 text-white hover:text-primary-500 transition-colors"
           >
-            <TrendingUp className="h-6 w-6 text-emerald-500" />
+            <TrendingUp className="h-6 w-6 text-primary-500" />
             <span className="text-xl font-bold">RestaurantIQ</span>
           </Link>
         </div>
@@ -163,9 +163,9 @@ export function AnalysisProgressTracker({ analysisId }: AnalysisProgressTrackerP
             {/* Animated icon */}
             <div className="flex justify-center">
               <div className="relative">
-                <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl animate-pulse" />
-                <div className="relative p-4 rounded-full bg-emerald-500/10 border border-emerald-500/30">
-                  <Search className="h-8 w-8 text-emerald-400 animate-pulse" />
+                <div className="absolute inset-0 bg-primary-500/20 rounded-full blur-xl animate-pulse" />
+                <div className="relative p-4 rounded-full bg-primary-500/10 border border-white/10">
+                  <Search className="h-8 w-8 text-primary-500 animate-pulse" />
                 </div>
               </div>
             </div>
@@ -199,7 +199,7 @@ export function AnalysisProgressTracker({ analysisId }: AnalysisProgressTrackerP
                 className="h-3 bg-obsidian/50"
               />
               <div className="flex justify-between text-sm">
-                <span className="text-emerald-400 font-semibold">
+                <span className="text-primary-500 font-semibold">
                   {status.progress_percentage || 0}% complete
                 </span>
                 <span className="text-slate-400 flex items-center gap-1">
@@ -214,7 +214,7 @@ export function AnalysisProgressTracker({ analysisId }: AnalysisProgressTrackerP
             {/* Current Step Details */}
             <div className="bg-obsidian/50 border border-white/10 rounded-lg p-5">
               <div className="flex items-start gap-3">
-                <Sparkles className="h-5 w-5 text-cyan-400 mt-0.5" />
+                <Sparkles className="h-5 w-5 text-accent-400 mt-0.5" />
                 <div>
                   <h3 className="font-semibold text-white mb-1">
                     Current Step
@@ -246,7 +246,7 @@ export function AnalysisProgressTracker({ analysisId }: AnalysisProgressTrackerP
             <div className="pt-4">
               <Button
                 variant="outline"
-                className="w-full h-12 border-white/10 text-slate-300 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/30 transition-colors"
+                className="w-full h-12 border-white/10 text-slate-300 hover:bg-destructive/10 hover:text-destructive hover:border-red-500/30 transition-colors"
                 onClick={() => {
                   stopPolling();
                   navigate('/dashboard');

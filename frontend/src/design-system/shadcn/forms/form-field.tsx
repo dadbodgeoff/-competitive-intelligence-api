@@ -27,7 +27,7 @@ export function FormField({
       {label && (
         <label htmlFor={name} className="text-sm font-medium text-slate-200">
           {label}
-          {required && <span className="text-red-400 ml-1">*</span>}
+          {required && <span className="text-destructive ml-1">*</span>}
         </label>
       )}
       
@@ -42,7 +42,7 @@ export function FormField({
       )}
       
       {error && (
-        <p className="text-xs text-red-400">{error.message as string}</p>
+        <p className="text-xs text-destructive">{error.message as string}</p>
       )}
     </div>
   )

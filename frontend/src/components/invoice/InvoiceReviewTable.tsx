@@ -95,11 +95,11 @@ export function InvoiceReviewTable({
   const getCategoryColor = (category?: string) => {
     switch (category) {
       case 'DRY':
-        return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+        return 'bg-primary-500/10 text-primary-500 border-primary-600/30';
       case 'REFRIGERATED':
-        return 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30';
+        return 'bg-accent-500/10 text-accent-400 border-accent-500/30';
       case 'FROZEN':
-        return 'bg-blue-500/10 text-blue-400 border-blue-500/30';
+        return 'bg-accent-500/10 text-accent-400 border-accent-500/30';
       default:
         return 'bg-slate-500/10 text-slate-400 border-slate-500/30';
     }
@@ -131,7 +131,7 @@ export function InvoiceReviewTable({
                     key={index}
                     className={cn(
                       'border-white/10 transition-colors',
-                      isEditing ? 'bg-cyan-500/5' : 'hover:bg-white/5'
+                      isEditing ? 'bg-accent-500/5' : 'hover:bg-white/5'
                     )}
                     onKeyDown={(e) => handleKeyDown(e, index)}
                   >
@@ -229,7 +229,7 @@ export function InvoiceReviewTable({
                       )}
                     </TableCell>
                     
-                    <TableCell className="text-right text-emerald-400 font-mono font-semibold">
+                    <TableCell className="text-right text-primary-500 font-mono font-semibold">
                       ${item.extended_price.toFixed(2)}
                     </TableCell>
                     
@@ -242,7 +242,7 @@ export function InvoiceReviewTable({
                           <SelectTrigger className="h-8 w-32 input-field" aria-label="Category">
                             <SelectValue placeholder="Select" />
                           </SelectTrigger>
-                          <SelectContent className="bg-slate-900 border-white/20">
+                          <SelectContent className="bg-obsidian border-white/20">
                             <SelectItem value="DRY">DRY</SelectItem>
                             <SelectItem value="REFRIGERATED">REFRIGERATED</SelectItem>
                             <SelectItem value="FROZEN">FROZEN</SelectItem>
@@ -264,8 +264,8 @@ export function InvoiceReviewTable({
                               onClick={saveEditing}
                               className={cn(
                                 'h-8 w-8 p-0',
-                                'bg-emerald-500/10 hover:bg-emerald-500/20',
-                                'text-emerald-400 border border-emerald-500/30'
+                                'bg-primary-500/10 hover:bg-primary-500/20',
+                                'text-primary-500 border border-white/10'
                               )}
                               aria-label="Save changes"
                             >
@@ -292,7 +292,7 @@ export function InvoiceReviewTable({
                               onClick={() => startEditing(index)}
                               className={cn(
                                 'h-8 w-8 p-0',
-                                'text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10'
+                                'text-accent-400 hover:text-accent-300 hover:bg-accent-500/10'
                               )}
                               aria-label={`Edit item ${index + 1}`}
                             >
@@ -304,7 +304,7 @@ export function InvoiceReviewTable({
                               onClick={() => onDeleteItem(index)}
                               className={cn(
                                 'h-8 w-8 p-0',
-                                'text-red-400 hover:text-red-300 hover:bg-red-500/10'
+                                'text-destructive hover:text-red-300 hover:bg-destructive/10'
                               )}
                               aria-label={`Delete item ${index + 1}`}
                             >
@@ -327,8 +327,8 @@ export function InvoiceReviewTable({
           onClick={onAddItem}
           variant="outline"
           className={cn(
-            'w-full border-white/10 text-emerald-400',
-            'hover:bg-emerald-500/10 hover:border-emerald-500/30'
+            'w-full border-white/10 text-primary-500',
+            'hover:bg-primary-500/10 hover:border-white/10'
           )}
           aria-label="Add new line item"
         >

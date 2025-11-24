@@ -22,7 +22,7 @@ export { designSystem } from './tokens';
 
 // Convenience re-exports for most commonly used items
 
-// Tokens
+// Tokens - only export what actually exists
 export {
   // Colors
   brandColors,
@@ -30,23 +30,11 @@ export {
   insightColors,
   confidenceColors,
   
-  // Typography
-  fontFamilies,
-  fontSizes,
-  fontWeights,
-  
-  // Spacing
-  spacing,
-  gaps,
-  borderRadius,
-  
   // Shadows & Gradients
   shadows,
   gradients,
   
   // Animations
-  durations,
-  easings,
   animations,
   
   // Layout

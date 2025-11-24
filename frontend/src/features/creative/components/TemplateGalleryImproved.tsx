@@ -228,7 +228,7 @@ export function TemplateGallery({
         <div className="flex gap-2">
           <button
             onClick={expandAll}
-            className="text-xs text-emerald-400 hover:text-emerald-300 underline"
+            className="text-xs text-primary-500 hover:text-primary-300 underline"
           >
             Expand All
           </button>

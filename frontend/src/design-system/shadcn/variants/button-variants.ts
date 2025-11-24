@@ -5,10 +5,10 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-emerald hover:from-emerald-600 hover:to-emerald-700 hover:-translate-y-0.5",
+        default: "bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-primary hover:from-primary-600 hover:to-primary-700 hover:-translate-y-0.5",
         destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline: "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-white/5 text-cyan-400 border border-cyan-400/30 backdrop-blur-sm hover:bg-cyan-400/10 hover:border-cyan-400/50",
+        secondary: "bg-white/5 text-accent-400 border border-accent-400/30 backdrop-blur-sm hover:bg-accent-400/10 hover:border-accent-400/50",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
       },

@@ -142,7 +142,7 @@ export function MenuDashboard() {
     return (
       <AppShell>
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 text-emerald-400 animate-spin" />
+          <Loader2 className="h-8 w-8 text-primary-500 animate-spin" />
         </div>
       </AppShell>
     );
@@ -172,7 +172,7 @@ export function MenuDashboard() {
             )}
             <Button
               onClick={() => navigate('/menu/upload')}
-              className="btn-primary shadow-emerald"
+              className="btn-primary shadow-primary"
             >
               <Upload className="h-4 w-4 mr-2" />
               Upload Menu
@@ -186,7 +186,7 @@ export function MenuDashboard() {
             <InvoiceCardContent className="py-16">
               <div className="text-center space-y-4">
                 <div className="flex justify-center">
-                  <div className="h-16 w-16 rounded-full bg-slate-800 flex items-center justify-center">
+                  <div className="h-16 w-16 rounded-full bg-card-dark flex items-center justify-center">
                     <UtensilsCrossed className="h-8 w-8 text-slate-400" />
                   </div>
                 </div>
@@ -197,7 +197,7 @@ export function MenuDashboard() {
                   </p>
                   <Button
                     onClick={() => navigate('/menu/upload')}
-                    className="btn-primary shadow-emerald"
+                    className="btn-primary shadow-primary"
                   >
                     <Upload className="h-4 w-4 mr-2" />
                     Upload Menu
@@ -221,7 +221,7 @@ export function MenuDashboard() {
                       <p className="text-slate-400">{menu.menu_type}</p>
                     )}
                   </div>
-                  <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30">
+                  <Badge className="bg-primary-500/10 text-primary-500 border-white/10">
                     Active
                   </Badge>
                 </div>
@@ -253,7 +253,7 @@ export function MenuDashboard() {
                     <div className="flex items-center gap-2 text-slate-400 text-sm mb-2">
                       <span>Avg Price</span>
                     </div>
-                    <div className="text-2xl font-bold text-emerald-400 font-mono">
+                    <div className="text-2xl font-bold text-primary-500 font-mono">
                       ${avgPrice.toFixed(2)}
                     </div>
                   </div>
@@ -275,7 +275,7 @@ export function MenuDashboard() {
                     variant="outline"
                     onClick={handleDelete}
                     disabled={deleting}
-                    className="border-red-500/30 text-red-400 hover:bg-red-500/10"
+                    className="border-red-500/30 text-destructive hover:bg-destructive/10"
                   >
                     {deleting ? (
                       <>
@@ -312,8 +312,8 @@ export function MenuDashboard() {
                   <div className="space-y-4">
                     {[...Array(3)].map((_, i) => (
                       <div key={i} className="animate-pulse">
-                        <div className="h-12 bg-slate-800/50 rounded mb-2" />
-                        <div className="h-32 bg-slate-800/30 rounded" />
+                        <div className="h-12 bg-card-dark/50 rounded mb-2" />
+                        <div className="h-32 bg-card-dark/30 rounded" />
                       </div>
                     ))}
                   </div>
@@ -347,7 +347,7 @@ export function MenuDashboard() {
             <InvoiceCard>
               <InvoiceCardContent className="py-4">
                 <div className="flex items-start gap-3 text-sm">
-                  <AlertCircle className="h-5 w-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="h-5 w-5 text-accent-400 flex-shrink-0 mt-0.5" />
                   <div className="text-slate-400">
                     <p className="font-semibold text-white mb-1">Menu Management</p>
                     <p>

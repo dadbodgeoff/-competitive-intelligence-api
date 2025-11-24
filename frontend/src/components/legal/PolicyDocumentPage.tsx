@@ -22,7 +22,7 @@ export function PolicyDocumentPage({ policy }: PolicyDocumentPageProps) {
         <div className="flex flex-col gap-6">
           <Link
             to="/"
-            className="inline-flex w-max items-center gap-2 text-sm font-medium text-emerald-300 transition hover:text-emerald-100"
+            className="inline-flex w-max items-center gap-2 text-sm font-medium text-primary-300 transition hover:text-primary-100"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to RestaurantIQ
@@ -34,7 +34,7 @@ export function PolicyDocumentPage({ policy }: PolicyDocumentPageProps) {
             </h1>
             <p className="max-w-3xl text-base text-slate-300">{metadata.description}</p>
             <div className="flex flex-wrap items-center gap-3 text-sm text-slate-400">
-              <Badge variant="outline" className="border-emerald-500/30 text-emerald-300">
+              <Badge variant="outline" className="border-white/10 text-primary-300">
                 Version {metadata.version}
               </Badge>
               {pageCount > 0 && (
@@ -73,7 +73,7 @@ export function PolicyDocumentPage({ policy }: PolicyDocumentPageProps) {
             >
               {renderState === 'loading' && (
                 <div className="flex flex-col items-center gap-3 py-20 text-slate-300">
-                  <Loader2 className="h-8 w-8 animate-spin text-emerald-400" />
+                  <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
                   <p className="text-sm font-medium">
                     Preparing {metadata.title.toLowerCase()}…
                   </p>
@@ -82,13 +82,13 @@ export function PolicyDocumentPage({ policy }: PolicyDocumentPageProps) {
             </div>
 
             {renderError && (
-              <div className="mt-4 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-100">
+              <div className="mt-4 rounded-lg border border-primary-600/40 bg-primary-500/10 p-4 text-sm text-primary-100">
                 {renderError}{' '}
                 <a
                   href={metadata.file}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:text-amber-50"
+                  className="underline hover:text-primary-50"
                 >
                   Download the PDF instead.
                 </a>

@@ -102,12 +102,12 @@ function MenuItemCard({ item }: { item: MenuItem }) {
                 {item.size_variants.map((variant, index) => (
                   <div key={index} className="text-sm">
                     <span className="text-slate-400">{variant.size || 'Regular'}: </span>
-                    <span className="text-emerald-400 font-semibold">${variant.price.toFixed(2)}</span>
+                    <span className="text-primary-500 font-semibold">${variant.price.toFixed(2)}</span>
                   </div>
                 ))}
               </div>
             ) : item.base_price ? (
-              <div className="text-lg font-semibold text-emerald-400">${item.base_price.toFixed(2)}</div>
+              <div className="text-lg font-semibold text-primary-500">${item.base_price.toFixed(2)}</div>
             ) : (
               <div className="text-slate-500 text-sm">Price not available</div>
             )}

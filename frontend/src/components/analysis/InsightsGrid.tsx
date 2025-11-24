@@ -46,30 +46,30 @@ function InsightCard({ insight, isExpanded, onToggle }: InsightCardProps) {
     switch (type) {
       case 'threat':
         return {
-          bg: 'bg-red-500/5',
+          bg: 'bg-destructive/5',
           border: 'border-red-500/30',
-          text: 'text-red-400',
-          badge: 'bg-red-500/10 text-red-400 border-red-500/30',
+          text: 'text-destructive',
+          badge: 'bg-destructive/10 text-destructive border-red-500/30',
           icon: AlertTriangle,
           hover: 'hover:border-red-500/50',
         };
       case 'opportunity':
         return {
-          bg: 'bg-emerald-500/5',
-          border: 'border-emerald-500/30',
-          text: 'text-emerald-400',
-          badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+          bg: 'bg-primary-500/5',
+          border: 'border-white/10',
+          text: 'text-primary-500',
+          badge: 'bg-primary-500/10 text-primary-500 border-white/10',
           icon: Lightbulb,
-          hover: 'hover:border-emerald-500/50',
+          hover: 'hover:border-primary-500/50',
         };
       case 'watch':
         return {
-          bg: 'bg-amber-500/5',
-          border: 'border-amber-500/30',
-          text: 'text-amber-400',
-          badge: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+          bg: 'bg-primary-500/5',
+          border: 'border-primary-600/30',
+          text: 'text-primary-500',
+          badge: 'bg-primary-500/10 text-primary-500 border-primary-600/30',
           icon: Eye,
-          hover: 'hover:border-amber-500/50',
+          hover: 'hover:border-primary-600/50',
         };
       default:
         return {
@@ -86,9 +86,9 @@ function InsightCard({ insight, isExpanded, onToggle }: InsightCardProps) {
   const getConfidenceConfig = (confidence: string) => {
     switch (confidence) {
       case 'high':
-        return 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30';
+        return 'bg-accent-500/10 text-accent-400 border-accent-500/30';
       case 'medium':
-        return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+        return 'bg-primary-500/10 text-primary-500 border-primary-600/30';
       case 'low':
         return 'bg-slate-500/10 text-slate-400 border-slate-500/30';
       default:
@@ -260,7 +260,7 @@ export function InsightsGrid({ insights }: InsightsGridProps) {
               placeholder="Search insights, descriptions, or competitors..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="h-11 pl-10 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-emerald-500 focus:ring-emerald-500/20"
+              className="h-11 pl-10 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500 focus:border-primary-500 focus:ring-primary-500/20"
             />
           </div>
 
@@ -296,7 +296,7 @@ export function InsightsGrid({ insights }: InsightsGridProps) {
               className={cn(
                 'text-xs',
                 filter === type
-                  ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                  ? 'bg-primary-500 hover:bg-primary-500 text-white'
                   : 'border-white/10 text-slate-300 hover:bg-white/5'
               )}
             >
@@ -349,32 +349,32 @@ export function InsightsGrid({ insights }: InsightsGridProps) {
       <Card className="bg-card-dark border-white/10">
         <CardHeader>
           <div className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-emerald-400" />
+            <TrendingUp className="h-5 w-5 text-primary-500" />
             <CardTitle className="text-base text-white">Insights Summary</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
-              <div className="text-3xl font-bold text-red-400">
+              <div className="text-3xl font-bold text-destructive">
                 {insightCounts.threat}
               </div>
               <div className="text-sm text-slate-500 mt-1">Threats</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-emerald-400">
+              <div className="text-3xl font-bold text-primary-500">
                 {insightCounts.opportunity}
               </div>
               <div className="text-sm text-slate-500 mt-1">Opportunities</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-amber-400">
+              <div className="text-3xl font-bold text-primary-500">
                 {insightCounts.watch}
               </div>
               <div className="text-sm text-slate-500 mt-1">Watch Items</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-cyan-400">
+              <div className="text-3xl font-bold text-accent-400">
                 {insights.filter((i) => i.confidence === 'high').length}
               </div>
               <div className="text-sm text-slate-500 mt-1">High Confidence</div>

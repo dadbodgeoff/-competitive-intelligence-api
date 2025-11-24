@@ -27,7 +27,7 @@ export function PriceAlertsPage() {
           <div className="flex items-center justify-between">
             <div>
               <PageHeading className="flex items-center gap-2">
-                <AlertTriangle className="h-8 w-8 text-red-400" />
+                <AlertTriangle className="h-8 w-8 text-destructive" />
                 Price Alerts
               </PageHeading>
               <p className="text-gray-400 mt-2">
@@ -64,7 +64,7 @@ export function PriceAlertsPage() {
 
                         <div className="mt-4 space-y-2">
                           <div className="flex items-center gap-4">
-                            <span className="text-red-400 font-bold text-2xl">
+                            <span className="text-destructive font-bold text-2xl">
                               +{alert.change_percent.toFixed(1)}%
                             </span>
                             <span className="text-gray-400">
@@ -79,7 +79,7 @@ export function PriceAlertsPage() {
                             </div>
                             <div>
                               <p className="text-sm text-gray-500">Actual</p>
-                              <p className="text-lg text-red-400">${alert.actual_price.toFixed(2)}</p>
+                              <p className="text-lg text-destructive">${alert.actual_price.toFixed(2)}</p>
                             </div>
                           </div>
 

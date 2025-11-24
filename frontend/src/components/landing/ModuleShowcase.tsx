@@ -238,17 +238,17 @@ export const ModuleShowcase: React.FC = () => {
   const currentModule = modules.find(m => m.id === activeModule) || modules[0];
 
   return (
-    <section className="py-16 md:py-24 px-4 bg-slate-900">
+    <section className="py-16 md:py-24 px-4 bg-[#121212]">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <p className="text-xl text-slate-300">
+          <p className="text-xl text-[#A8B1B9]">
             Eight powerful modules working together to drive profitability.
           </p>
         </div>
 
         {/* Tab Navigation */}
-        <div className="border-b border-slate-700 mb-10">
+        <div className="border-b border-[#1E1E1E] mb-10">
           <div className="flex justify-center -mb-px">
             {modules.map((module) => (
               <button
@@ -256,8 +256,8 @@ export const ModuleShowcase: React.FC = () => {
                 onClick={() => setActiveModule(module.id)}
                 className={`px-4 lg:px-6 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                   activeModule === module.id
-                    ? 'border-emerald-400 text-emerald-400'
-                    : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-600'
+                    ? 'border-primary-400 text-primary-500'
+                    : 'border-transparent text-[#A8B1B9] hover:text-[#E0E0E0] hover:border-[#1E1E1E]'
                 }`}
               >
                 {module.name}
@@ -270,14 +270,14 @@ export const ModuleShowcase: React.FC = () => {
         <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
           {currentModule.features.map((feature, index) => (
             <div key={index} className="flex gap-4 min-h-[120px]">
-              <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+              <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-primary-500/10 flex items-center justify-center text-primary-500">
                 {feature.icon}
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-white mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-base text-slate-300 leading-relaxed">
+                <p className="text-base text-[#A8B1B9] leading-relaxed">
                   {feature.description}
                 </p>
               </div>
@@ -288,7 +288,7 @@ export const ModuleShowcase: React.FC = () => {
         {/* Example Images for Creative Marketing */}
         {activeModule === 'creative' && (
           <div className="mt-10 grid grid-cols-2 gap-6 max-w-3xl mx-auto">
-            <div className="rounded-lg overflow-hidden border border-slate-700 hover:border-emerald-500/50 transition-colors">
+            <div className="rounded-lg overflow-hidden border border-[#1E1E1E] hover:border-primary-500/50 transition-colors">
               <img
                 src={`${import.meta.env.BASE_URL}examples/creative-example-1.jpg`}
                 alt="AI-generated restaurant marketing creative example 1"
@@ -299,7 +299,7 @@ export const ModuleShowcase: React.FC = () => {
                 }}
               />
             </div>
-            <div className="rounded-lg overflow-hidden border border-slate-700 hover:border-emerald-500/50 transition-colors">
+            <div className="rounded-lg overflow-hidden border border-[#1E1E1E] hover:border-primary-500/50 transition-colors">
               <img
                 src={`${import.meta.env.BASE_URL}examples/creative-example-2.jpg`}
                 alt="AI-generated restaurant marketing creative example 2"

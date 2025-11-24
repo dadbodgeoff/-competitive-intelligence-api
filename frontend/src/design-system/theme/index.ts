@@ -21,36 +21,55 @@ export const themeFiles = {
  */
 export const themeMetadata = {
   name: 'RestaurantIQ Dark',
-  version: '1.0.0',
-  primaryColor: '#10b981',
-  backgroundColor: '#0B1215',
+  version: '2.0.0',
+  primaryColor: '#B08968',
+  backgroundColor: '#121212',
   mode: 'dark',
   description: 'Dark mode design system for Restaurant Competitive Intelligence Platform',
 } as const;
 
 /**
  * Color palette (matches CSS variables)
+ * Updated to match Restaurant SaaS Platform Branding Package
  */
 export const colors = {
   brand: {
-    obsidian: '#0B1215',
-    emerald: {
-      400: '#34d399',
-      500: '#10b981',
-      600: '#059669',
+    // Base backgrounds
+    obsidian: '#121212',        // Background Base
+    surface: '#1E1E1E',         // Cards/Surfaces
+    
+    // Primary brand colors
+    primary: {
+      400: '#C9A882',           // Lighter variant
+      500: '#B08968',           // Primary CTA
+      600: '#9A5C4A',           // Warning State (darker)
     },
-    cyan: {
-      400: '#22d3ee',
-      500: '#06b6d4',
-      600: '#0891b2',
+    
+    // Accent colors
+    accent: {
+      400: '#5A7F8E',           // Lighter variant
+      500: '#4A6572',           // Links/Interactions
+      600: '#3A5462',           // Darker variant
+    },
+    
+    // Success/Info colors
+    success: {
+      400: '#2F7A6A',           // Lighter variant
+      500: '#264653',           // Success State
+      600: '#1D3540',           // Darker variant
     },
   },
   semantic: {
-    success: '#10b981',
-    error: '#ef4444',
-    warning: '#f59e0b',
-    info: '#06b6d4',
-    neutral: '#94a3b8',
+    success: '#264653',         // Success State
+    error: '#B75553',           // Error State
+    warning: '#9A5C4A',         // Warning State
+    info: '#4A6572',            // Links/Interactions
+    neutral: '#A8B1B9',         // Secondary Text
+  },
+  text: {
+    primary: '#E0E0E0',         // Primary Text
+    secondary: '#A8B1B9',       // Secondary Text
+    tertiary: '#6B7280',        // Muted text
   },
 } as const;
 
@@ -128,8 +147,8 @@ export const shadows = {
   lg: '0 10px 15px -3px rgba(0, 0, 0, 0.5)',
   xl: '0 20px 25px -5px rgba(0, 0, 0, 0.6)',
   '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
-  emerald: '0 8px 16px rgba(16, 185, 129, 0.25)',
-  cyan: '0 8px 16px rgba(6, 182, 212, 0.25)',
+  primary: '0 8px 16px rgba(176, 137, 104, 0.25)',
+  accent: '0 8px 16px rgba(74, 101, 114, 0.25)',
 } as const;
 
 /**

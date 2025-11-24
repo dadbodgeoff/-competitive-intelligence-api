@@ -11,77 +11,82 @@ const config: Config = {
     extend: {
       colors: {
         obsidian: {
-          DEFAULT: '#0B1215',
-          50: '#3A4D55',
-          100: '#344449',
-          200: '#2D3B3E',
-          300: '#273234',
-          400: '#20292B',
-          500: '#192023',
-          600: '#13181A',
-          700: '#0B1215',
-          800: '#080D0F',
-          900: '#040607',
-          light: 'var(--bg-slate-850)',
-          border: 'var(--border-default)',
+          DEFAULT: '#121212',
+          50: '#3A3A3A',
+          100: '#333333',
+          200: '#2C2C2C',
+          300: '#252525',
+          400: '#1E1E1E',
+          500: '#1A1A1A',
+          600: '#161616',
+          700: '#121212',
+          800: '#0E0E0E',
+          900: '#0A0A0A',
+          light: '#1E1E1E',
+          border: 'rgba(255, 255, 255, 0.1)',
         },
-        emerald: {
-          400: '#34d399',
-          500: '#10b981',
-          600: '#059669',
+        primary: {
+          400: '#C9A882',
+          500: '#B08968',
+          600: '#9A5C4A',
         },
-        cyan: {
-          400: '#22d3ee',
-          500: '#06b6d4',
-          600: '#0891b2',
+        accent: {
+          400: '#5A7F8E',
+          500: '#4A6572',
+          600: '#3A5462',
+        },
+        success: {
+          400: '#2F7A6A',
+          500: '#264653',
+          600: '#1D3540',
         },
         slate: {
-          850: '#1a2332',
-          900: '#0f172a',
-          800: '#1e293b',
-          700: '#334155',
-          600: '#475569',
-          500: '#64748b',
-          400: '#94a3b8',
-          300: '#cbd5e1',
-          200: '#e2e8f0',
-          100: '#f1f5f9',
-          50: '#f8fafc',
+          850: '#1E1E1E',
+          900: '#121212',
+          800: '#1A1A1A',
+          700: '#2C2C2C',
+          600: '#3A3A3A',
+          500: '#6B7280',
+          400: '#A8B1B9',
+          300: '#C0C7CE',
+          200: '#D8DDE2',
+          100: '#E8EBED',
+          50: '#F5F6F7',
         },
-        border: 'var(--border-default)',
-        input: 'var(--input-border)',
-        ring: 'var(--border-focus)',
-        background: 'var(--bg-obsidian)',
-        foreground: 'var(--text-primary)',
+        border: 'rgba(255, 255, 255, 0.1)',
+        input: 'rgba(255, 255, 255, 0.1)',
+        ring: '#B08968',
+        background: '#121212',
+        foreground: '#E0E0E0',
         primary: {
-          DEFAULT: 'var(--color-emerald-500)',
+          DEFAULT: '#B08968',
           foreground: '#ffffff',
         },
         secondary: {
-          DEFAULT: 'var(--bg-slate-850)',
-          foreground: 'var(--text-primary)',
+          DEFAULT: '#1E1E1E',
+          foreground: '#E0E0E0',
         },
         destructive: {
-          DEFAULT: 'var(--error-icon)',
-          foreground: 'var(--error-text)',
+          DEFAULT: '#B75553',
+          foreground: '#E0E0E0',
         },
         muted: {
-          DEFAULT: 'var(--bg-slate-800)',
-          foreground: 'var(--text-tertiary)',
+          DEFAULT: '#1A1A1A',
+          foreground: '#A8B1B9',
         },
         accent: {
-          DEFAULT: 'var(--color-cyan-500)',
-          foreground: 'var(--text-primary)',
+          DEFAULT: '#4A6572',
+          foreground: '#E0E0E0',
         },
         popover: {
-          DEFAULT: 'var(--bg-slate-850)',
-          foreground: 'var(--text-primary)',
+          DEFAULT: '#1E1E1E',
+          foreground: '#E0E0E0',
         },
         card: {
-          DEFAULT: 'var(--bg-slate-850)',
-          dark: 'var(--bg-obsidian)',
-          light: 'var(--bg-slate-800)',
-          foreground: 'var(--text-primary)',
+          DEFAULT: '#1E1E1E',
+          dark: '#121212',
+          light: '#1A1A1A',
+          foreground: '#E0E0E0',
         },
       },
       fontFamily: {
@@ -89,31 +94,38 @@ const config: Config = {
         mono: ['JetBrains Mono', 'Fira Code', ...defaultTheme.fontFamily.mono],
       },
       fontSize: {
-        xs: ['0.75rem', { lineHeight: '1rem' }],
-        sm: ['0.875rem', { lineHeight: '1.25rem' }],
-        base: ['1rem', { lineHeight: '1.5rem' }],
-        lg: ['1.125rem', { lineHeight: '1.75rem' }],
-        xl: ['1.25rem', { lineHeight: '1.75rem' }],
-        '2xl': ['1.5rem', { lineHeight: '2rem' }],
-        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
-        '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
-        '5xl': ['3rem', { lineHeight: '1' }],
+        xs: ['0.75rem', { lineHeight: '1rem', letterSpacing: '0' }],        /* 12px */
+        sm: ['0.875rem', { lineHeight: '1.25rem', letterSpacing: '0' }],    /* 14px */
+        base: ['1rem', { lineHeight: '1.5rem', letterSpacing: '0' }],       /* 16px */
+        lg: ['1.125rem', { lineHeight: '1.75rem', letterSpacing: '0' }],    /* 18px */
+        xl: ['1.25rem', { lineHeight: '1.75rem', letterSpacing: '0' }],     /* 20px */
+        '2xl': ['1.5rem', { lineHeight: '2rem', letterSpacing: '-0.01em' }],    /* 24px */
+        '3xl': ['1.875rem', { lineHeight: '2.25rem', letterSpacing: '-0.01em' }], /* 30px */
+        '4xl': ['2.25rem', { lineHeight: '2.5rem', letterSpacing: '-0.02em' }],   /* 36px */
+        '5xl': ['3rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],         /* 48px */
+        '6xl': ['3.75rem', { lineHeight: '1', letterSpacing: '-0.02em' }],        /* 60px */
+        '7xl': ['4.5rem', { lineHeight: '1', letterSpacing: '-0.02em' }],         /* 72px */
       },
       spacing: {
         '0': '0',
-        '1': '0.25rem',
-        '2': '0.5rem',
-        '3': '0.75rem',
-        '4': '1rem',
-        '5': '1.25rem',
-        '6': '1.5rem',
-        '8': '2rem',
-        '10': '2.5rem',
-        '12': '3rem',
-        '16': '4rem',
-        '20': '5rem',
-        '24': '6rem',
-        '32': '8rem',
+        '0.5': '0.125rem',  /* 2px */
+        '1': '0.25rem',     /* 4px */
+        '2': '0.5rem',      /* 8px - base unit */
+        '3': '0.75rem',     /* 12px */
+        '4': '1rem',        /* 16px = 2 * 8px */
+        '5': '1.25rem',     /* 20px */
+        '6': '1.5rem',      /* 24px = 3 * 8px */
+        '8': '2rem',        /* 32px = 4 * 8px */
+        '10': '2.5rem',     /* 40px = 5 * 8px */
+        '12': '3rem',       /* 48px = 6 * 8px */
+        '16': '4rem',       /* 64px = 8 * 8px */
+        '20': '5rem',       /* 80px = 10 * 8px */
+        '24': '6rem',       /* 96px = 12 * 8px */
+        '32': '8rem',       /* 128px = 16 * 8px */
+        '40': '10rem',      /* 160px = 20 * 8px */
+        '48': '12rem',      /* 192px = 24 * 8px */
+        '56': '14rem',      /* 224px = 28 * 8px */
+        '64': '16rem',      /* 256px = 32 * 8px */
       },
       boxShadow: {
         sm: 'var(--shadow-sm)',

@@ -157,11 +157,19 @@ export function RegisterForm() {
   const onSubmit = async (data: RegisterData) => {
     try {
       clearError();
-      await register({
+      const response = await register({
         ...data,
         invite_token: inviteToken,
       });
-      navigate('/dashboard');
+      
+      // Check if email verification is required
+      if (response && response.user && response.user.email_confirmed === false) {
+        // Redirect to verify email page
+        navigate(`/verify-email?email=${encodeURIComponent(data.email)}`);
+      } else {
+        // Email already confirmed (shouldn't happen with new flow, but handle it)
+        navigate('/dashboard');
+      }
     } catch (error) {
       console.error('Registration error:', error);
     }

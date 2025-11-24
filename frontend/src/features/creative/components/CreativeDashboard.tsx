@@ -4,7 +4,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CreativeLayout, type CreativeTab } from './CreativeLayout';
-import { TemplateGallery } from './TemplateGallery';
+import { ThemeCard } from './ThemeCard';
 import { PromptPreviewDrawer } from './PromptPreviewDrawer';
 import { GenerationWizard } from './GenerationWizard';
 import { CreativeHistoryTable } from './CreativeHistoryTable';
@@ -31,16 +31,44 @@ const CATEGORY_LABELS: Record<CreativeTab, string> = {
   events: 'Events & Promotions',
 };
 
+// Helper function to improve theme descriptions for better customer appeal
+const enhanceThemeDescription = (theme: ThemeSummary): string => {
+  if (!theme.description) return '';
+  
+  // Map of keywords to more customer-friendly alternatives
+  const improvements: Record<string, string> = {
+    'dough artistry': 'artisan dough craftsmanship',
+    'fermentation flex': 'perfectly fermented dough',
+    'flour explosions': 'flour-dusted details',
+    'Latte art POV': 'stunning latte art close-ups',
+    'cocoa dust text': 'cocoa powder designs',
+    'cafe hustle': 'bustling cafe atmosphere',
+    'chalk marker labels': 'hand-written chalk labels',
+    'vibrant liquid': 'golden beer tones',
+    'brick wall chalkboard': 'rustic brick wall backdrop',
+    'multi-course events': 'special tasting menus',
+    'Macro': 'Close-up',
+    'POV': 'perspective',
+  };
+  
+  let enhanced = theme.description;
+  Object.entries(improvements).forEach(([old, replacement]) => {
+    enhanced = enhanced.replace(new RegExp(old, 'gi'), replacement);
+  });
+  
+  return enhanced;
+};
+
 export function CreativeDashboard() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<CreativeTab>('campaigns');
-  const [templateFilter, setTemplateFilter] = useState('');
   const [selectedThemeId, setSelectedThemeId] = useState<string>();
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>();
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewData, setPreviewData] = useState<TemplatePreviewResponse>();
   const [previewError, setPreviewError] = useState<string>();
+  const [previewingTemplate, setPreviewingTemplate] = useState<TemplateSummary | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [activeJobId, setActiveJobId] = useState<string>();
 
@@ -118,34 +146,34 @@ export function CreativeDashboard() {
     [templates, selectedTemplateId],
   );
 
-  const themeTiles = (
-    <div className="flex flex-wrap gap-3">
-      {filteredThemes.map((theme) => (
-        <Button
-          key={theme.id}
-          variant={theme.id === selectedThemeId ? 'default' : 'outline'}
-          onClick={() => {
-            setSelectedThemeId(theme.id);
-            setSelectedTemplateId(undefined);
-            setTemplateFilter('');
-          }}
-        >
-          {theme.name}
-        </Button>
-      ))}
-      {filteredThemes.length === 0 && (
-        <Alert className="bg-white/5 text-slate-200">
-          <AlertTitle>No themes in {CATEGORY_LABELS[activeTab]}</AlertTitle>
-          <AlertDescription>
-            Switch to another tab to browse available creative content.
-          </AlertDescription>
-        </Alert>
-      )}
-    </div>
-  );
+  // Scroll to generation form when template is selected
+  useEffect(() => {
+    if (selectedTemplateId) {
+      setTimeout(() => {
+        document.getElementById('generation-form')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }, 100);
+    }
+  }, [selectedTemplateId]);
+
+  const [expandedThemeId, setExpandedThemeId] = useState<string>();
+
+  const handleThemeClick = useCallback((themeId: string) => {
+    if (expandedThemeId === themeId) {
+      setExpandedThemeId(undefined);
+      setSelectedThemeId(undefined);
+    } else {
+      setExpandedThemeId(themeId);
+      setSelectedThemeId(themeId);
+      setSelectedTemplateId(undefined);
+    }
+  }, [expandedThemeId]);
 
   const handlePreviewTemplate = useCallback(
     async (template: TemplateSummary) => {
+      setPreviewingTemplate(template);
       setPreviewLoading(true);
       setPreviewError(undefined);
       setPreviewOpen(true);
@@ -191,37 +219,92 @@ export function CreativeDashboard() {
   }, []);
 
   const themeSection = themesQuery.isLoading ? (
-    <div className="flex gap-3">
-      {Array.from({ length: 4 }).map((_, index) => (
-        <Skeleton key={index} className="h-9 w-32 bg-white/10" />
+    <div className="space-y-3">
+      {Array.from({ length: 3 }).map((_, index) => (
+        <Skeleton key={index} className="h-24 w-full bg-white/10" />
       ))}
     </div>
-  ) : (
-    themeTiles
-  );
+  ) : filteredThemes.length === 0 ? (
+    <Alert className="bg-white/5 text-slate-200">
+      <AlertTitle>No themes in {CATEGORY_LABELS[activeTab]}</AlertTitle>
+      <AlertDescription>
+        Switch to another tab to browse available creative content.
+      </AlertDescription>
+    </Alert>
+  ) : null;
 
   return (
     <CreativeLayout activeTab={activeTab} onTabChange={setActiveTab} tabCounts={tabCounts}>
       <div className="space-y-10">
+        {/* Quick Action Buttons */}
+        <div className="flex justify-end gap-3">
+          <Button
+            onClick={() => window.location.href = '/creative/brands'}
+            variant="outline"
+            className="border-white/10 text-slate-300 hover:bg-white/5"
+          >
+            Brand Profiles
+          </Button>
+          <Button
+            onClick={() => window.location.href = '/creative/history'}
+            variant="outline"
+            className="border-white/10 text-slate-300 hover:bg-white/5"
+          >
+            View History
+          </Button>
+          <Button
+            onClick={() => window.location.href = '/creative/generate'}
+            className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/25"
+          >
+            <span className="mr-2">✨</span>
+            Generate New Asset
+          </Button>
+        </div>
+
         {themeSection}
 
-        <TemplateGallery
-          templates={templates}
-          isLoading={templatesQuery.isLoading}
-          error={templatesQuery.error instanceof Error ? templatesQuery.error.message : undefined}
-          selectedTemplateId={selectedTemplateId}
-          onSelectTemplate={(template) => setSelectedTemplateId(template.id)}
-          onPreviewTemplate={handlePreviewTemplate}
-          filter={templateFilter}
-          onFilterChange={setTemplateFilter}
-        />
+        {/* Theme Cards with Expandable Templates */}
+        <div className="space-y-4">
+          {filteredThemes.map((theme) => {
+            // Create enhanced theme with better description
+            const enhancedTheme = {
+              ...theme,
+              description: enhanceThemeDescription(theme),
+            };
+            
+            return (
+              <ThemeCard
+                key={theme.id}
+                theme={enhancedTheme}
+                templates={theme.id === selectedThemeId ? templates : []}
+                isExpanded={expandedThemeId === theme.id}
+                isLoadingTemplates={theme.id === selectedThemeId && templatesQuery.isLoading}
+                selectedTemplateId={selectedTemplateId}
+                onToggle={() => handleThemeClick(theme.id)}
+                onSelectTemplate={(template) => {
+                  setSelectedTemplateId(template.id);
+                  setSelectedThemeId(theme.id);
+                }}
+                onPreviewTemplate={handlePreviewTemplate}
+                showUseTemplateButton={true}
+              />
+            );
+          })}
+        </div>
 
-        <GenerationWizard
-          theme={selectedTheme}
-          template={selectedTemplate}
-          isSubmitting={isGenerating}
-          onGenerate={handleGenerate}
-        />
+        {/* Generation Wizard - Only show when template is selected */}
+        {selectedTemplate && (
+          <div id="generation-form" className="scroll-mt-8">
+            <div className="rounded-lg border-2 border-emerald-500/50 bg-emerald-500/5 p-1">
+              <GenerationWizard
+                theme={selectedTheme}
+                template={selectedTemplate}
+                isSubmitting={isGenerating}
+                onGenerate={handleGenerate}
+              />
+            </div>
+          </div>
+        )}
 
         <CreativeHistoryTable
           jobs={jobsQuery.data?.data}
@@ -241,10 +324,16 @@ export function CreativeDashboard() {
       <PromptPreviewDrawer
         open={previewOpen}
         onOpenChange={setPreviewOpen}
-        templateName={selectedTemplate?.display_name ?? selectedTemplate?.slug}
+        templateName={previewingTemplate?.display_name ?? previewingTemplate?.slug}
         preview={previewData}
         isLoading={previewLoading}
         error={previewError}
+        onUseTemplate={() => {
+          // Redirect to generate page with template pre-selected
+          if (previewingTemplate && selectedThemeId) {
+            window.location.href = `/creative/generate?theme=${selectedThemeId}&template=${previewingTemplate.id}`;
+          }
+        }}
       />
     </CreativeLayout>
   );

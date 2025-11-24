@@ -125,6 +125,41 @@ export interface BrandProfileSummary {
   metadata: Record<string, unknown>;
   is_default: boolean;
   updated_at?: string;
+  // Phase 1 fields
+  brand_voice?: string;
+  brand_tone?: string;
+  voice_description?: string;
+  visual_styles?: string[];
+  cuisine_type?: string;
+  cuisine_specialties?: string[];
+  atmosphere_tags?: string[];
+  target_demographic?: string;
+  // Phase 2 fields
+  logo_url?: string;
+  logo_placement?: string;
+  logo_watermark_style?: string;
+  prohibited_elements?: string[];
+  allergen_warnings?: string[];
+  cultural_sensitivities?: string[];
+  primary_social_platforms?: string[];
+  preferred_aspect_ratios?: string[];
+  brand_hashtags?: string[];
+  social_media_handle?: string;
+  // Phase 3 fields
+  active_seasons?: string[];
+  recurring_events?: Array<{name: string; day: string; description?: string}>;
+  holiday_participation?: string[];
+  seasonal_menu_rotation?: boolean;
+  location_type?: string;
+  regional_style?: string;
+  local_landmarks?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  price_range?: string;
+  value_proposition?: string;
+  average_check_size?: number;
+  positioning_statement?: string;
 }
 
 export interface CreativeJobDetail extends CreativeJobSummary {

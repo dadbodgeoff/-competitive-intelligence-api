@@ -8,13 +8,14 @@ export interface ModuleAccess {
 export interface User {
   id: string;
   email: string;
-  first_name: string;
-  last_name: string;
-  subscription_tier: 'free' | 'premium' | 'enterprise';
-  created_at: string;
-  account_id: string;
-  account_role: AccountRole;
-  module_access: ModuleAccess[];
+  first_name?: string;
+  last_name?: string;
+  subscription_tier?: 'free' | 'premium' | 'enterprise';
+  created_at?: string;
+  account_id?: string;
+  account_role?: AccountRole;
+  module_access?: ModuleAccess[];
+  email_confirmed?: boolean;
 }
 
 export interface LoginCredentials {

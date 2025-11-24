@@ -152,12 +152,31 @@ export function CreativeJobDetailPanel({
                   {asset.file_size_bytes ? `${(asset.file_size_bytes / 1024).toFixed(1)} KB` : '—'}
                 </p>
                 <div className="mt-2 flex gap-2">
-                  <Button asChild size="sm">
-                    <a href={asset.asset_url} target="_blank" rel="noreferrer">
+                  <Button
+                    asChild
+                    size="sm"
+                    onClick={(e) => {
+                      // For data URLs, handle download client-side
+                      if (asset.asset_url.startsWith('data:')) {
+                        e.preventDefault();
+                        const link = document.createElement('a');
+                        link.href = asset.asset_url;
+                        link.download = `${job.template_slug}_${asset.variant_label ?? 'image'}.png`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }
+                    }}
+                  >
+                    <a
+                      href={asset.asset_url}
+                      download={`${job.template_slug}_${asset.variant_label ?? 'image'}.png`}
+                      rel="noreferrer"
+                    >
                       Download
                     </a>
                   </Button>
-                  {asset.preview_url && (
+                  {asset.preview_url && asset.preview_url !== asset.asset_url && (
                     <Button asChild variant="outline" size="sm">
                       <a href={asset.preview_url} target="_blank" rel="noreferrer">
                         Preview

@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { GoogleAnalytics } from './components/GoogleAnalytics';
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
+import { VerifyEmailPage } from './pages/VerifyEmailPage';
 import { TermsPage } from './pages/TermsPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { AcceptInvitePage } from './pages/AcceptInvitePage';
@@ -35,6 +37,10 @@ import { SchedulingDashboardPage } from './pages/SchedulingDashboardPage';
 import { PrepDashboardPage } from './pages/PrepDashboardPage';
 import { PrepTemplatesPage } from './pages/PrepTemplatesPage';
 import { CreativeStudioPage } from './pages/CreativeStudioPage';
+import { CreativeGeneratePage } from './pages/CreativeGeneratePage';
+import { CreativeCustomizePage } from './pages/CreativeCustomizePage';
+import { CreativeHistoryPage } from './pages/CreativeHistoryPage';
+import { CreativeBrandProfilesPage } from './pages/CreativeBrandProfilesPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { Toaster } from './components/ui/toaster';
 import './App.css';
@@ -55,12 +61,14 @@ function App() {
   
   return (
     <QueryClientProvider client={queryClient}>
+      <GoogleAnalytics measurementId={import.meta.env.VITE_GA_MEASUREMENT_ID} />
       <BrowserRouter>
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
           <Route path="/legal/terms" element={<TermsPage />} />
           <Route path="/legal/privacy" element={<PrivacyPage />} />
           <Route path="/accept-invite" element={<AcceptInvitePage />} />
@@ -248,6 +256,38 @@ function App() {
             element={
               <ProtectedRoute>
                 <CreativeStudioPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/creative/generate"
+            element={
+              <ProtectedRoute>
+                <CreativeGeneratePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/creative/customize"
+            element={
+              <ProtectedRoute>
+                <CreativeCustomizePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/creative/history"
+            element={
+              <ProtectedRoute>
+                <CreativeHistoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/creative/brands"
+            element={
+              <ProtectedRoute>
+                <CreativeBrandProfilesPage />
               </ProtectedRoute>
             }
           />

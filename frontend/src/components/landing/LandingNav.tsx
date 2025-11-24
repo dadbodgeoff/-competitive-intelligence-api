@@ -57,12 +57,12 @@ export const LandingNav: React.FC = () => {
                 Policies
               </Link>
               <Link to="/login">
-                <Button variant="ghost" className="text-slate-300 hover:text-white h-10 hover:bg-white/5">
+                <Button variant="ghost" className="btn-small text-slate-300 hover:text-white hover:bg-white/5">
                   Sign In
                 </Button>
               </Link>
               <Link to="/register">
-                <Button size="sm" className="bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 h-10 px-6 shadow-lg hover:shadow-emerald-500/40">
+                <Button className="btn-small bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 shadow-lg hover:shadow-emerald-500/40">
                   Get Started
                 </Button>
               </Link>

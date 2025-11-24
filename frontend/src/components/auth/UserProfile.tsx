@@ -34,7 +34,7 @@ export function UserProfile() {
     }
   };
 
-  const tierConfig = getTierConfig(user.subscription_tier);
+  const tierConfig = getTierConfig(user.subscription_tier || 'free');
   const TierIcon = tierConfig.icon;
 
   return (
@@ -73,8 +73,8 @@ export function UserProfile() {
               className={`${tierConfig.color} border font-semibold px-3 py-1`}
             >
               <TierIcon className="h-3 w-3 mr-1.5" />
-              {user.subscription_tier.charAt(0).toUpperCase() +
-                user.subscription_tier.slice(1)}
+              {(user.subscription_tier || 'free').charAt(0).toUpperCase() +
+                (user.subscription_tier || 'free').slice(1)}
             </Badge>
           </div>
         </div>
@@ -84,11 +84,11 @@ export function UserProfile() {
             Member Since
           </label>
           <p className="text-sm text-slate-300 mt-1">
-            {new Date(user.created_at).toLocaleDateString('en-US', {
+            {user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', {
               month: 'long',
               day: 'numeric',
               year: 'numeric',
-            })}
+            }) : 'N/A'}
           </p>
         </div>
 

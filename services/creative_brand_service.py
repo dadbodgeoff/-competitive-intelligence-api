@@ -35,6 +35,64 @@ class CreativeBrandService:
             self._coerce_json(profile)
         return profiles
 
+    def create_profile(self, account_id: str, user_id: str, profile_data: Dict) -> Dict:
+        """Create a new brand profile."""
+        # If this profile is being set as default, unset other defaults
+        if profile_data.get("is_default"):
+            self._unset_other_defaults(account_id)
+        
+        # Add account_id and user_id to the data
+        profile_data["account_id"] = account_id
+        profile_data["user_id"] = user_id
+        
+        result = (
+            self.client.table("creative_brand_profiles")
+            .insert(profile_data)
+            .execute()
+        )
+        
+        if not result.data:
+            raise ValueError("Failed to create brand profile")
+        
+        profile = result.data[0]
+        self._coerce_json(profile)
+        return profile
+
+    def update_profile(self, account_id: str, profile_id: str, profile_data: Dict) -> Dict:
+        """Update an existing brand profile."""
+        # If this profile is being set as default, unset other defaults
+        if profile_data.get("is_default"):
+            self._unset_other_defaults(account_id, exclude_id=profile_id)
+        
+        result = (
+            self.client.table("creative_brand_profiles")
+            .update(profile_data)
+            .eq("account_id", account_id)
+            .eq("id", profile_id)
+            .execute()
+        )
+        
+        if not result.data:
+            raise ValueError("Failed to update brand profile or profile not found")
+        
+        profile = result.data[0]
+        self._coerce_json(profile)
+        return profile
+
+    def _unset_other_defaults(self, account_id: str, exclude_id: Optional[str] = None) -> None:
+        """Unset is_default for all other profiles in the account."""
+        query = (
+            self.client.table("creative_brand_profiles")
+            .update({"is_default": False})
+            .eq("account_id", account_id)
+            .eq("is_default", True)
+        )
+        
+        if exclude_id:
+            query = query.neq("id", exclude_id)
+        
+        query.execute()
+
     def get_brand_profile(
         self,
         *,

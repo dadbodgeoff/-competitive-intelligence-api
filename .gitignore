@@ -1,8 +1,14 @@
 # Environment Variables (CRITICAL - Never commit these!)
 .env
 .env.local
+.env.dev
 .env.production
 .env.staging
+.env.test
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+frontend/.env.development
 
 # API Keys and Secrets
 *.key

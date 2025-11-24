@@ -10,6 +10,7 @@ export interface StreamSseOptions {
   body?: BodyInit | null
   credentials?: RequestCredentials
   signal?: AbortSignal
+  timeout?: number
   onEvent: (event: SseEvent) => void
   onError?: (error: Error) => void
   onOpen?: () => void
@@ -28,6 +29,7 @@ export function streamSse({
   body = null,
   credentials = 'include',
   signal,
+  timeout = 120000,
   onEvent,
   onError,
   onOpen,
@@ -39,11 +41,33 @@ export function streamSse({
   let isClosed = false
   let hasSettled = false
   let closeNotified = false
+  let timeoutId: NodeJS.Timeout | null = null
 
   const safeClose = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+      timeoutId = null
+    }
     if (!closeNotified) {
       closeNotified = true
       onClose?.()
+    }
+  }
+
+  const resetTimeout = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId)
+    }
+    if (timeout > 0) {
+      timeoutId = setTimeout(() => {
+        const error = new Error(`Stream timeout after ${timeout / 1000}s`)
+        onError?.(error)
+        safeClose()
+        finishedReject(error)
+        if (!signal) {
+          controller?.abort()
+        }
+      }, timeout)
     }
   }
 
@@ -92,6 +116,7 @@ export function streamSse({
       }
 
       onOpen?.()
+      resetTimeout()
 
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
@@ -123,6 +148,7 @@ export function streamSse({
               }
 
               onEvent({ event: eventType, data: parsed })
+              resetTimeout()
             } else if (line === '') {
               eventType = 'message'
             }

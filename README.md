@@ -140,12 +140,11 @@ GOOGLE_PLACES_API_KEY=your-places-key
 SERPAPI_KEY=your-serpapi-key
 OUTSCRAPER_API_KEY=your-outscraper-key
 
-# Nano Banana Creative Generation
-NANO_BANANA_BASE_URL=https://api.nanobanana.ai
-# Optional dedicated key; falls back to GEMINI_API_KEY/GOOGLE_GEMINI_API_KEY if omitted
-NANO_BANANA_API_KEY=your-nano-banana-api-key
-# Optional: only required if using webhooks
-NANO_BANANA_WEBHOOK_SECRET=your-webhook-signing-secret
+# Vertex AI Creative Image Generation (Google Imagen 3.0)
+# Get your API key from: https://console.cloud.google.com/apis/credentials
+VERTEX_AI_API_KEY=your-vertex-ai-api-key
+VERTEX_AI_PROJECT_ID=your-gcp-project-id
+VERTEX_AI_LOCATION=us-central1
 # Supabase bucket used to cache generated assets locally
 CREATIVE_ASSETS_BUCKET=creative-assets
 

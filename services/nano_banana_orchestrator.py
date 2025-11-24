@@ -79,11 +79,19 @@ class NanoBananaImageOrchestrator:
         sections = self.template_service.get_template_sections(template_id)
 
         user_inputs = request.get("user_inputs") or {}
-        brand_profile = self.brand_service.get_brand_profile(
-            account_id=account_id,
-            user_id=user_id,
-            brand_profile_id=request.get("brand_profile_id"),
-        )
+        
+        # Check if this is the demo user
+        is_demo_user = user_id == "00000000-0000-0000-0000-000000000002"
+        
+        # For demo users, use a minimal brand profile
+        if is_demo_user:
+            brand_profile = {"brand_name": "Demo Restaurant"}
+        else:
+            brand_profile = self.brand_service.get_brand_profile(
+                account_id=account_id,
+                user_id=user_id,
+                brand_profile_id=request.get("brand_profile_id"),
+            )
 
         brand_overrides = request.get("brand_overrides") or {}
         if brand_overrides:
@@ -94,15 +102,22 @@ class NanoBananaImageOrchestrator:
                 palette.update(brand_overrides["palette"])
                 brand_profile["palette"] = palette
 
-        variables = self.template_service.validate_inputs(template, user_inputs)
+        variables = self.template_service.validate_inputs(template, user_inputs, theme=theme)
         variables, replacements = self.compliance_service.sanitize_variables(variables)
         variables.setdefault("brand_name", brand_profile.get("brand_name", ""))
         variables.setdefault("restaurant_name", brand_profile.get("brand_name", ""))
 
-        recent_variations = self.storage.get_recent_variations(
-            account_id=account_id,
-            theme_id=theme_id,
-        )
+        # Check if this is the demo user
+        is_demo_user = user_id == "00000000-0000-0000-0000-000000000002"
+        
+        # For demo users, skip recent variations (no history)
+        if is_demo_user:
+            recent_variations = []
+        else:
+            recent_variations = self.storage.get_recent_variations(
+                account_id=account_id,
+                theme_id=theme_id,
+            )
         variation_summary = self.variation_engine.generate_variation(
             theme=theme,
             template=template,
@@ -119,6 +134,7 @@ class NanoBananaImageOrchestrator:
             style_suffix=variation_summary.get("style_suffix"),
             style_notes=variation_summary.get("style_notes"),
             compliance_directive=compliance_directive,
+            brand_profile=brand_profile,
         )
 
         prompt_token_estimate = self._estimate_prompt_tokens(rendered_sections)
@@ -168,19 +184,50 @@ class NanoBananaImageOrchestrator:
         if not nano_job_id:
             raise RuntimeError("Nano Banana did not return a job identifier")
 
-        self.storage.update_job_status(
-            job_record["id"],
-            status="dispatching",
-            progress=20,
-            nano_job_id=nano_job_id,
-        )
+        # Check if Vertex AI returned predictions synchronously (completed immediately)
+        predictions = response.get("predictions", [])
+        is_completed = response.get("status") == "completed" and predictions
+        
+        if is_completed:
+            logger.info(f"✅ Vertex AI completed synchronously with {len(predictions)} predictions")
+            
+            # Update job to completed status
+            self.storage.update_job_status(
+                job_record["id"],
+                status="completed",
+                progress=100,
+                nano_job_id=nano_job_id,
+            )
+            
+            # Process and store assets immediately
+            assets = self._process_vertex_predictions(
+                job=job_record,
+                job_id=job_record["id"],
+                predictions=predictions
+            )
+            stored_assets = self.storage.store_assets(job_record["id"], assets)
+            
+            self.storage.record_event(
+                job_id=job_record["id"],
+                event_type="assets_ready",
+                payload={"count": len(stored_assets)},
+                progress=100,
+            )
+        else:
+            # Async job flow (original behavior)
+            self.storage.update_job_status(
+                job_record["id"],
+                status="dispatching",
+                progress=20,
+                nano_job_id=nano_job_id,
+            )
 
-        self.storage.record_event(
-            job_id=job_record["id"],
-            event_type="nano_job_dispatched",
-            payload={"nano_job_id": nano_job_id},
-            progress=20,
-        )
+            self.storage.record_event(
+                job_id=job_record["id"],
+                event_type="nano_job_dispatched",
+                payload={"nano_job_id": nano_job_id},
+                progress=20,
+            )
 
         self.usage_service.increment_usage(
             user_id=user_id,
@@ -198,8 +245,12 @@ class NanoBananaImageOrchestrator:
         )
 
         job_record["nano_job_id"] = nano_job_id
-        job_record["status"] = "dispatching"
-        job_record["progress"] = 20
+        if is_completed:
+            job_record["status"] = "completed"
+            job_record["progress"] = 100
+        else:
+            job_record["status"] = "dispatching"
+            job_record["progress"] = 20
         job_record["variation_summary"] = variation_summary
         return job_record
 
@@ -326,8 +377,35 @@ class NanoBananaImageOrchestrator:
             user_id=user_id,
             brand_profile_id=None,
         )
-        variables = self.template_service.validate_inputs(template, user_inputs or {})
-        variables.setdefault("brand_name", brand_profile.get("brand_name", ""))
+        
+        # For preview, use example values from schema if user_inputs not provided
+        schema = template.get("input_schema") or {}
+        if isinstance(schema, str):
+            import json
+            schema = json.loads(schema)
+        
+        examples = schema.get("examples", {})
+        defaults = schema.get("defaults", {})
+        required = schema.get("required", [])
+        optional = schema.get("optional", [])
+        
+        # Build preview inputs with examples/defaults
+        preview_inputs = {}
+        for field in required + optional:
+            if user_inputs and field in user_inputs:
+                preview_inputs[field] = user_inputs[field]
+            elif field in examples:
+                preview_inputs[field] = examples[field]
+            elif field in defaults:
+                # Use first default if it's a list
+                default_val = defaults[field]
+                preview_inputs[field] = default_val[0] if isinstance(default_val, list) else default_val
+            elif field in required:
+                # Fallback for required fields without examples
+                preview_inputs[field] = f"[{field}]"
+        
+        variables = preview_inputs
+        variables.setdefault("brand_name", brand_profile.get("brand_name", "Your Restaurant"))
         variation_summary = self.variation_engine.generate_variation(
             theme=theme,
             template=template,
@@ -340,6 +418,7 @@ class NanoBananaImageOrchestrator:
             variables=variables,
             style_suffix=variation_summary.get("style_suffix"),
             style_notes=variation_summary.get("style_notes"),
+            brand_profile=brand_profile,
         )
         return {"sections": rendered, "variation_summary": variation_summary}
 
@@ -440,6 +519,58 @@ class NanoBananaImageOrchestrator:
         """Rough heuristic to help the UI surface prompt size."""
         total_chars = sum(len(text) for text in sections.values())
         return max(1, total_chars // 4)  # ~4 chars per token heuristic
+
+    def _process_vertex_predictions(
+        self,
+        *,
+        job: Dict[str, Any],
+        job_id: str,
+        predictions: List[Dict[str, Any]],
+    ) -> List[Dict[str, Any]]:
+        """Process Vertex AI Imagen predictions into asset format."""
+        account_id = job.get("account_id") or job.get("accountId")
+        assets: List[Dict[str, Any]] = []
+        
+        for idx, prediction in enumerate(predictions):
+            # Vertex AI Imagen returns base64 encoded images in bytesBase64Encoded
+            image_data = prediction.get("bytesBase64Encoded")
+            if not image_data:
+                logger.warning(f"Prediction {idx} missing image data")
+                continue
+            
+            variant_label = f"variant_{idx + 1}"
+            
+            # Upload base64 image to Supabase Storage for proper CDN-backed access
+            cached = self.asset_storage.cache_base64_asset(
+                account_id=account_id,
+                job_id=job_id,
+                base64_data=image_data,
+                variant_label=variant_label,
+                content_type="image/png",
+            )
+            
+            # Use the public CDN URL instead of data URL
+            asset_url = cached.get("asset_url")
+            if not asset_url:
+                logger.warning(f"Failed to upload variant {idx}, falling back to data URL")
+                asset_url = f"data:image/png;base64,{image_data}"
+            
+            assets.append({
+                "asset_url": asset_url,
+                "preview_url": asset_url,  # Same URL for preview
+                "variant_label": variant_label,
+                "width": 1024,  # Vertex AI Imagen default
+                "height": 1024,
+                "file_size_bytes": cached.get("file_size_bytes", len(image_data) if image_data else 0),
+                "prompt_variation": {},
+                "metadata": prediction,
+                "source_asset_url": None,
+                "source_preview_url": None,
+                "storage_path": cached.get("storage_path"),
+            })
+        
+        logger.info(f"✅ Processed and uploaded {len(assets)} assets from Vertex AI predictions")
+        return assets
 
     def _normalize_assets(
         self,

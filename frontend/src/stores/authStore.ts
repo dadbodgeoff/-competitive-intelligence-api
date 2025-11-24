@@ -4,7 +4,7 @@ import { login, register, logout, getProfile } from '@/services/api/reviewAnalys
 
 interface AuthActions {
   login: (credentials: LoginCredentials) => Promise<void>;
-  register: (userData: RegisterData) => Promise<void>;
+  register: (userData: RegisterData) => Promise<{ user: any; message: string }>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
   clearError: () => void;
@@ -51,7 +51,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     }
   },
 
-  register: async (userData: RegisterData) => {
+  register: async (userData: RegisterData): Promise<{ user: any; message: string }> => {
     try {
       set({ isLoading: true, error: null });
       
@@ -61,6 +61,20 @@ export const useAuthStore = create<AuthStore>((set) => ({
         throw new Error('Registration succeeded but no user was returned.');
       }
 
+      // Check if email verification is required
+      if (user.email_confirmed === false) {
+        // Don't set authenticated state - user needs to verify email first
+        set({
+          user: null,
+          isAuthenticated: false,
+          subscriptionTier: 'free',
+          moduleAccess: [],
+          isLoading: false,
+        });
+        return response; // Return response so component can check email_confirmed
+      }
+
+      // Email already confirmed - set authenticated state
       set({
         user: user,
         isAuthenticated: true,
@@ -68,6 +82,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
         moduleAccess: user.module_access ?? [],
         isLoading: false,
       });
+      return response;
     } catch (error) {
       set({
         isLoading: false,

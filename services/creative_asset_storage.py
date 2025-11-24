@@ -6,6 +6,7 @@ the CDN response is persisted locally for future access.
 """
 from __future__ import annotations
 
+import base64
 import logging
 import mimetypes
 import os
@@ -107,5 +108,70 @@ class CreativeAssetStorage:
             "storage_path": result["storage_path"],
             "content_type": result["content_type"],
         }
+
+    def cache_base64_asset(
+        self,
+        *,
+        account_id: str,
+        job_id: str,
+        base64_data: str,
+        variant_label: Optional[str] = None,
+        content_type: str = "image/png",
+    ) -> Dict[str, Optional[str]]:
+        """
+        Upload a base64-encoded image to Supabase storage.
+
+        Used for Vertex AI Imagen predictions that return base64 data.
+        Returns dict with keys: asset_url, storage_path, content_type, file_size_bytes.
+        """
+        if not base64_data:
+            return {
+                "asset_url": None,
+                "storage_path": None,
+                "content_type": None,
+                "file_size_bytes": 0,
+            }
+
+        try:
+            logger.info("📤 Uploading base64 image for job %s", job_id)
+            
+            # Decode base64 to bytes
+            image_bytes = base64.b64decode(base64_data)
+            file_size = len(image_bytes)
+            
+            # Generate storage path
+            extension = mimetypes.guess_extension(content_type) or ".png"
+            safe_variant = (variant_label or "asset").lower().replace(" ", "_")
+            file_name = f"{safe_variant}_{uuid.uuid4().hex[:8]}{extension}"
+            storage_path = f"{account_id}/{job_id}/{file_name}"
+
+            # Upload to Supabase Storage
+            self.client.storage.from_(self.bucket).upload(
+                storage_path,
+                image_bytes,
+                {
+                    "content-type": content_type,
+                    "upsert": "true",
+                },
+            )
+            
+            # Get public URL
+            public_url = self.client.storage.from_(self.bucket).get_public_url(storage_path)
+            logger.info("📦 Uploaded base64 asset to %s (%d bytes)", public_url, file_size)
+            
+            return {
+                "asset_url": public_url,
+                "storage_path": storage_path,
+                "content_type": content_type,
+                "file_size_bytes": file_size,
+            }
+        except Exception as exc:  # noqa: BLE001
+            logger.error("⚠️ Failed to upload base64 asset: %s", exc, exc_info=True)
+            return {
+                "asset_url": None,
+                "storage_path": None,
+                "content_type": content_type,
+                "file_size_bytes": 0,
+            }
 
 

@@ -50,7 +50,7 @@ async def register_user(
                     "first_name": user_data.first_name,
                     "last_name": user_data.last_name
                 },
-                "email_redirect_to": "https://restaurantiq.us/dashboard"
+                "email_redirect_to": "https://restaurantiq.us/login"
             }
         })
         logger.info(f"🔵 Supabase sign_up completed. User: {auth_response.user is not None}")
@@ -60,6 +60,20 @@ async def register_user(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Registration failed"
             )
+        
+        # Check if email confirmation is required
+        # If user.email_confirmed_at is None, email verification is required
+        if auth_response.user.email_confirmed_at is None:
+            logger.info(f"✅ User registered, email verification required: {user_data.email}")
+            # Don't create session or set cookies - user must verify email first
+            return {
+                "user": {
+                    "id": auth_response.user.id,
+                    "email": auth_response.user.email,
+                    "email_confirmed": False
+                },
+                "message": "Registration successful. Please check your email to verify your account."
+            }
 
         user = auth_response.user
         user_id = user.id
@@ -152,6 +166,7 @@ async def register_user(
             module_access = account_service.get_account_module_access(account_id)
             seed_demo_dataset = True
 
+        # Email is confirmed - proceed with account setup and auto-login
         # Create JWT token for immediate login
         jwt_token = create_jwt_token(user_id, account_id, account_role)
 
@@ -184,7 +199,7 @@ async def register_user(
             except Exception as exc:  # pylint: disable=broad-except
                 logger.warning("Demo seed scheduling failed for %s: %s", user_id, exc)
 
-        # Return user data only
+        # Return user data with session
         return {
             "user": {
                 "id": user.id,
@@ -195,7 +210,8 @@ async def register_user(
                 "created_at": user.created_at.isoformat() if hasattr(user, 'created_at') and user.created_at else None,
                 "account_id": account_id,
                 "account_role": account_role,
-                "module_access": module_access
+                "module_access": module_access,
+                "email_confirmed": True
             },
             "message": "Registration successful"
         }

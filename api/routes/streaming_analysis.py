@@ -86,7 +86,11 @@ async def run_streaming_analysis(
             service_client = get_supabase_service_client()
             service_client.table("analyses").insert(analysis_data).execute()
             
-            # Stream the analysis process
+            # Stream the analysis process with heartbeat
+            import time
+            last_heartbeat = time.time()
+            HEARTBEAT_INTERVAL = 15
+            
             async for event_data in orchestrator.stream_analysis(
                 analysis_id=analysis_id,
                 request=request,
@@ -103,6 +107,11 @@ async def run_streaming_analysis(
                     }).eq("id", analysis_id).execute()
                 
                 yield f"event: {event_type}\ndata: {json.dumps(data)}\n\n"
+                
+                # Heartbeat
+                if time.time() - last_heartbeat > HEARTBEAT_INTERVAL:
+                    yield f": heartbeat\n\n"
+                    last_heartbeat = time.time()
             
             # Final completion
             service_client.table("analyses").update({
@@ -117,6 +126,10 @@ async def run_streaming_analysis(
                 'timestamp': datetime.utcnow().isoformat()
             }
             yield f"event: analysis_complete\ndata: {json.dumps(completion_data)}\n\n"
+            
+            # Explicit stream end
+            yield f"event: stream_end\ndata: {json.dumps({{'message': 'Stream closed'}})}\n\n"
+            await asyncio.sleep(0.05)
             
         except Exception as e:
             logger.error(f"Streaming analysis failed: {str(e)}")

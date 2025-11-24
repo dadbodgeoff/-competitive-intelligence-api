@@ -172,7 +172,11 @@ async def analyze_competitors_stream(
                 yield f"event: error\ndata: {json.dumps({'error': 'Must select exactly 2 competitors'})}\n\n"
                 return
             
-            # Stream analysis progress
+            # Stream analysis progress with heartbeat
+            import time
+            last_heartbeat = time.time()
+            HEARTBEAT_INTERVAL = 15
+            
             async for event_data in orchestrator.analyze_selected_competitors(
                 analysis_id=data.analysis_id,
                 user_id=current_user,
@@ -182,6 +186,14 @@ async def analyze_competitors_stream(
                 data_payload = event_data.get('data', {})
                 
                 yield f"event: {event_type}\ndata: {json.dumps(data_payload)}\n\n"
+                
+                # Heartbeat
+                if time.time() - last_heartbeat > HEARTBEAT_INTERVAL:
+                    yield f": heartbeat\n\n"
+                    last_heartbeat = time.time()
+            
+            # Explicit stream end
+            yield f"event: stream_end\ndata: {json.dumps({{'message': 'Stream closed'}})}\n\n"
             
         except Exception as e:
             logger.error(f"❌ Streaming analysis failed: {e}")

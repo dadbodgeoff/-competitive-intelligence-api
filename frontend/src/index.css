@@ -2,52 +2,95 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Global Typography & Spacing Enhancements */
+/* ===== ENTERPRISE DESIGN SYSTEM ===== */
+
 @layer base {
+  /* Typography Hierarchy - Enterprise Scale */
   h1 {
-    @apply font-black tracking-tight leading-none;
-    font-size: clamp(2.8rem, 8vw, 5rem);
+    @apply font-bold tracking-tight leading-tight;
+    font-size: clamp(2.5rem, 5vw + 1rem, 4rem); /* 40-64px */
+    line-height: 1.1;
   }
 
   h2 {
-    @apply font-extrabold tracking-tight;
-    font-size: clamp(2.2rem, 6vw, 3rem);
-    margin-top: 3rem;
-    margin-bottom: 1.5rem;
+    @apply font-bold tracking-tight;
+    font-size: clamp(2rem, 4vw + 0.5rem, 3rem); /* 32-48px */
+    line-height: 1.2;
   }
 
-  p,
-  li {
+  h3 {
+    @apply font-semibold tracking-tight;
+    font-size: clamp(1.5rem, 3vw, 2rem); /* 24-32px */
+    line-height: 1.3;
+  }
+
+  p {
     @apply leading-relaxed;
-    line-height: 1.8;
-    margin-bottom: 1.5rem;
+    font-size: clamp(1rem, 1.5vw, 1.125rem); /* 16-18px */
+    line-height: 1.6;
   }
 
+  /* Consistent Section Spacing */
   section {
-    padding: 4.5rem 0;
+    @apply py-16 md:py-24;
   }
 }
 
-/* Custom Components */
 @layer components {
-  .cta-button-lg {
-    @apply text-2xl px-8 py-6 shadow-lg hover:shadow-emerald-500/30 transition-all duration-300 transform hover:-translate-y-1 !important;
-    min-height: 3.5rem;
+  /* ===== BUTTON SYSTEM - Consistent Sizing ===== */
+  
+  /* Primary CTA - Large (Hero, Final CTA) */
+  .btn-cta-primary {
+    @apply h-14 px-8 text-lg font-semibold;
+    @apply bg-gradient-to-r from-emerald-500 to-teal-400;
+    @apply hover:from-emerald-400 hover:to-teal-300;
+    @apply shadow-lg hover:shadow-emerald-500/40;
+    @apply transition-all duration-200;
+    @apply border border-white/10;
   }
 
-  .hover-lift {
-    @apply transition-transform duration-300 ease-out hover:-translate-y-1 hover:shadow-emerald-500/20;
+  /* Secondary CTA - Large */
+  .btn-cta-secondary {
+    @apply h-14 px-8 text-lg font-semibold;
+    @apply border-2 border-slate-600 text-slate-200;
+    @apply hover:bg-slate-800 hover:text-white hover:border-slate-500;
+    @apply transition-all duration-200;
   }
 
+  /* Standard Button - Medium (Nav, Cards) */
+  .btn-standard {
+    @apply h-11 px-6 text-base font-medium;
+    @apply transition-all duration-200;
+  }
+
+  /* Small Button - Compact areas */
+  .btn-small {
+    @apply h-9 px-4 text-sm font-medium;
+    @apply transition-all duration-200;
+  }
+
+  /* ===== SURFACE COMPONENTS ===== */
+  
   .surface-glass {
     @apply bg-white/5 border border-white/10 backdrop-blur-lg;
-    box-shadow: 0px 30px 60px -40px rgba(15, 118, 110, 0.65);
+    @apply rounded-2xl;
+    box-shadow: 0 20px 40px -20px rgba(15, 118, 110, 0.4);
   }
 
   .surface-glass-muted {
     @apply bg-slate-900/60 border border-slate-700/60 backdrop-blur-md;
+    @apply rounded-xl;
   }
 
+  .surface-card {
+    @apply bg-slate-800/50 border border-slate-700/50;
+    @apply rounded-xl p-6;
+    @apply hover:border-emerald-500/30 hover:bg-slate-800/70;
+    @apply transition-all duration-300;
+  }
+
+  /* ===== GRADIENT EFFECTS ===== */
+  
   .gradient-outline {
     position: relative;
     isolation: isolate;
@@ -59,22 +102,78 @@
     inset: -1px;
     z-index: -1;
     border-radius: inherit;
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.6), rgba(45, 212, 191, 0.35));
-    opacity: 0.85;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.5), rgba(45, 212, 191, 0.3));
+    opacity: 0.8;
+  }
+
+  /* ===== UTILITY CLASSES ===== */
+  
+  .hover-lift {
+    @apply transition-transform duration-200 ease-out;
+    @apply hover:-translate-y-1 hover:shadow-lg;
   }
 
   .section-divider {
-    height: 1px;
-    margin: 5rem auto;
-    width: min(90%, 960px);
-    background: linear-gradient(90deg, rgba(16, 185, 129, 0) 0%, rgba(16, 185, 129, 0.4) 50%, rgba(16, 185, 129, 0) 100%);
-  }
-
-  .timeline-dot {
-    @apply h-3 w-3 rounded-full bg-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.8)];
+    @apply h-px my-20 mx-auto;
+    @apply w-full max-w-4xl;
+    background: linear-gradient(90deg, 
+      rgba(16, 185, 129, 0) 0%, 
+      rgba(16, 185, 129, 0.4) 50%, 
+      rgba(16, 185, 129, 0) 100%
+    );
   }
 
   .badge-soft {
-    @apply inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-sm font-medium text-emerald-200;
+    @apply inline-flex items-center gap-2;
+    @apply rounded-full px-3 py-1;
+    @apply border border-emerald-500/30 bg-emerald-500/10;
+    @apply text-sm font-medium text-emerald-200;
+  }
+
+  /* ===== SPACING UTILITIES ===== */
+  
+  .container-section {
+    @apply max-w-7xl mx-auto px-4 md:px-6 lg:px-8;
+  }
+
+  .content-narrow {
+    @apply max-w-4xl mx-auto;
+  }
+
+  .content-wide {
+    @apply max-w-6xl mx-auto;
+  }
+}
+
+@layer utilities {
+  /* Custom Scrollbar Styles */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(51 65 85) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgb(51 65 85);
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(71 85 105);
+  }
+
+  .scrollbar-thumb-slate-700 {
+    scrollbar-color: rgb(51 65 85) transparent;
+  }
+
+  .scrollbar-track-transparent {
+    scrollbar-color: rgb(51 65 85) transparent;
   }
 }

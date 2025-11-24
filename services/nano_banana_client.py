@@ -79,15 +79,31 @@ class NanoBananaClient:
         # Convert our internal payload format to Vertex AI format
         vertex_payload = self._convert_to_vertex_format(payload)
 
-        # Extract project ID from service account (vertex-express@gothic-album-474117-a7.iam.gserviceaccount.com)
-        project_id = "gothic-album-474117-a7"
+        # Extract project ID from environment or use default
+        project_id = os.getenv("VERTEX_AI_PROJECT_ID", "gothic-album-474117-a7")
+        location = os.getenv("VERTEX_AI_LOCATION", "us-central1")
 
-        return await self._vertex_request(
+        response = await self._vertex_request(
             "POST",
-            f"/v1/projects/{project_id}/locations/us-central1/publishers/google/models/imagen-3.0-generate-001:predict",
+            f"/v1/projects/{project_id}/locations/{location}/publishers/google/models/imagen-3.0-generate-001:predict",
             json_body=vertex_payload,
             expected_status=200,
         )
+        
+        # Vertex AI Imagen returns predictions synchronously, not a job ID
+        # We need to create a synthetic job ID and return the predictions
+        import uuid
+        job_id = str(uuid.uuid4())
+        
+        logger.info(f"✅ Vertex AI Imagen returned {len(response.get('predictions', []))} predictions")
+        
+        return {
+            "id": job_id,
+            "job_id": job_id,
+            "status": "completed",
+            "predictions": response.get("predictions", []),
+            "metadata": response.get("metadata", {})
+        }
 
     def _convert_to_vertex_format(self, payload: Dict[str, Any]) -> Dict[str, Any]:
         """Convert internal payload format to Vertex AI Imagen API format."""

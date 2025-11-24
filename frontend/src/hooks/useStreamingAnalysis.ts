@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { ReviewAnalysisRequest } from '@/types/analysis';
 import { streamSse, type SseConnection } from '@/lib/sse';
+import { useAutoRefreshOnComplete } from './useAutoRefreshOnComplete';
 
 interface StreamingState {
   status: 'idle' | 'streaming' | 'complete' | 'error';
@@ -146,15 +147,18 @@ export function useStreamingAnalysis(): StreamingAnalysisHook {
             break;
 
           case 'analysis_complete':
-            console.log('🎯 Analysis complete event received, preserving analysisId:', state.analysisId);
+            console.log('🎯 Analysis complete event received');
             setState(prev => ({
               ...prev,
               status: 'complete',
               currentStep: 'Analysis complete!',
               progress: 100,
-              // Explicitly preserve analysisId
               analysisId: prev.analysisId || data.analysis_id,
             }));
+            break;
+
+          case 'stream_end':
+            console.log('✅ Stream ended by server');
             stopAnalysis();
             break;
 
@@ -208,6 +212,23 @@ export function useStreamingAnalysis(): StreamingAnalysisHook {
       }));
     }
   }, [stopAnalysis]);
+
+  // Auto-refresh fallback
+  useAutoRefreshOnComplete({
+    enabled: true,
+    status: state.status,
+    analysisId: state.analysisId,
+    timeout: 60000,
+    onComplete: () => {
+      setState(prev => ({
+        ...prev,
+        status: 'complete',
+        currentStep: 'Analysis complete!',
+        progress: 100,
+      }));
+      stopAnalysis();
+    },
+  });
 
   // Cleanup on unmount
   useEffect(() => {

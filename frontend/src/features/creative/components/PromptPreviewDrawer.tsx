@@ -81,50 +81,50 @@ export function PromptPreviewDrawer({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85vh] max-w-2xl overflow-hidden bg-slate-950/95 text-white">
+      <DialogContent className="max-h-[85vh] max-w-2xl overflow-hidden text-white" style={{ backgroundColor: '#1E1E1E' }}>
         <DialogHeader>
-          <DialogTitle>{templateName ?? 'Template Details'}</DialogTitle>
-          <DialogDescription className="text-slate-300">
+          <DialogTitle style={{ color: '#E0E0E0' }}>{templateName ?? 'Template Details'}</DialogTitle>
+          <DialogDescription style={{ color: '#A8B1B9' }}>
             Preview what this template will create and see what information you'll need to provide.
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="h-[50vh] rounded-md border border-white/10 bg-black/40 p-4">
+        <ScrollArea className="max-h-[55vh] rounded-md border p-3" style={{ borderColor: 'rgba(255, 255, 255, 0.1)', backgroundColor: 'rgba(18, 18, 18, 0.4)' }}>
           {isLoading && <Skeleton className="h-40 w-full bg-white/10" />}
           {!isLoading && error && (
-            <div className="rounded-md border border-red-500/40 bg-destructive/10 p-4 text-sm text-red-200">
+            <div className="rounded-md border border-red-500/40 bg-destructive/10 p-3 text-sm text-red-200">
               {error}
             </div>
           )}
           {!isLoading && !error && preview && (
-            <div className="space-y-6">
-              <section className="space-y-2 rounded-md border border-white/10 bg-primary-500/5 p-4">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-200">
+            <div className="space-y-3">
+              <section className="space-y-1.5 rounded-md border p-3" style={{ borderColor: 'rgba(255, 255, 255, 0.1)', backgroundColor: 'rgba(176, 137, 104, 0.05)' }}>
+                <h3 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#B08968' }}>
                   What You'll Create
                 </h3>
-                <p className="text-sm text-slate-300">
+                <p className="text-xs leading-snug" style={{ color: '#A8B1B9' }}>
                   This template generates professional marketing images with your custom content.
                 </p>
               </section>
 
               {preview.sections.description && (
-                <section className="space-y-2">
-                  <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-300">
+                <section className="space-y-1.5">
+                  <h3 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#B08968' }}>
                     Description
                   </h3>
-                  <p className="text-sm leading-relaxed text-slate-200">
+                  <p className="text-xs leading-snug" style={{ color: '#E0E0E0' }}>
                     {preview.sections.description}
                   </p>
                 </section>
               )}
 
               {preview.variation_summary && preview.variation_summary.style_notes && preview.variation_summary.style_notes.length > 0 && (
-                <section className="space-y-2">
-                  <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-300">
+                <section className="space-y-1.5">
+                  <h3 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#B08968' }}>
                     Style Elements
                   </h3>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5">
                     {preview.variation_summary.style_notes.map((note) => (
-                      <Badge key={note} variant="outline" className="border-primary-400 text-primary-200">
+                      <Badge key={note} variant="outline" className="text-xs py-0.5 px-2" style={{ borderColor: '#B08968', color: '#B08968' }}>
                         {note}
                       </Badge>
                     ))}
@@ -132,12 +132,12 @@ export function PromptPreviewDrawer({
                 </section>
               )}
 
-              <section className="space-y-2">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-primary-300">
+              <section className="space-y-1.5">
+                <h3 className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#B08968' }}>
                   What You'll Get
                 </h3>
-                <div className="rounded-md bg-obsidian/50 p-4">
-                  <p className="text-sm leading-relaxed text-slate-200">
+                <div className="rounded-md p-3" style={{ backgroundColor: 'rgba(18, 18, 18, 0.5)' }}>
+                  <p className="text-xs leading-snug" style={{ color: '#E0E0E0' }}>
                     {sanitizePromptForDisplay(preview.sections.main || preview.sections.subject || Object.values(preview.sections)[0])}
                   </p>
                 </div>
@@ -150,13 +150,14 @@ export function PromptPreviewDrawer({
             <Button
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="border-white/10 text-slate-300 hover:bg-white/5"
+              style={{ borderColor: 'rgba(255, 255, 255, 0.1)', color: '#A8B1B9' }}
             >
               Close
             </Button>
             <Button
               onClick={handleUseTemplate}
-              className="bg-primary-500 hover:bg-primary-500 text-white"
+              className="text-white"
+              style={{ backgroundColor: '#B08968' }}
             >
               <Sparkles className="h-4 w-4 mr-2" />
               Use This Template

@@ -231,6 +231,13 @@ export async function updateBrandProfile(
   return assertData(result, 'Failed to update brand profile');
 }
 
+export async function deleteBrandProfile(profileId: string): Promise<void> {
+  const result = await safeRequest<{ message: string }>(() =>
+    apiClient.delete(`/api/v1/nano-banana/brands/${profileId}`),
+  );
+  assertData(result, 'Failed to delete brand profile');
+}
+
 export type {
   ThemeSummary,
   TemplateSummary,

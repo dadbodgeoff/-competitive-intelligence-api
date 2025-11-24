@@ -53,10 +53,23 @@ export function LoginForm() {
   const onSubmit = async (data: LoginCredentials) => {
     try {
       clearError();
-      await login({
+      const response = await login({
         ...data,
         invite_token: inviteToken,
       });
+      
+      // Check if email verification is required
+      // Following pattern from authStore.ts register method
+      if (response && response.user) {
+        // Check for unverified email (matching backend field names)
+        if (!response.user.email_confirmed_at && !response.user.confirmed_at) {
+          // Email not verified - redirect to verification page with clear message
+          navigate(`/verify-email?email=${encodeURIComponent(data.email)}&from=login`);
+          return; // Stop here - don't navigate to dashboard
+        }
+      }
+      
+      // Email is verified - proceed to dashboard
       navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);

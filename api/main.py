@@ -126,14 +126,48 @@ async def log_requests(request: Request, call_next):
         logger.error(f"❌ Request failed after {process_time:.2f}ms - Error: {str(e)}")
         raise
 
-# CORS middleware - support production domains
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:5173").split(",")
+# ============================================================================
+# SECURITY: CORS Configuration
+# ============================================================================
+# IMPORTANT: Update ALLOWED_ORIGINS in .env.production with your actual domain
+# Format: https://yourdomain.com,https://www.yourdomain.com
+# Never use "*" in production as it allows any origin to access your API
+
+environment = os.getenv("ENVIRONMENT", "development").lower()
+allowed_origins_str = os.getenv("ALLOWED_ORIGINS", "")
+
+if environment == "production":
+    # PRODUCTION: Strict origin validation
+    if not allowed_origins_str or "yourdomain.com" in allowed_origins_str:
+        logger.error(
+            "⚠️  SECURITY WARNING: ALLOWED_ORIGINS not configured for production! "
+            "Update .env.production with your actual domain(s)."
+        )
+        # Fail-safe: Don't allow any origins if not configured
+        allowed_origins = []
+    else:
+        allowed_origins = [origin.strip() for origin in allowed_origins_str.split(",")]
+        logger.info(f"🔒 CORS configured for production domains: {allowed_origins}")
+else:
+    # DEVELOPMENT: Allow localhost for testing
+    if allowed_origins_str:
+        allowed_origins = [origin.strip() for origin in allowed_origins_str.split(",")]
+    else:
+        allowed_origins = [
+            "http://localhost:3000",
+            "http://localhost:5173",
+            "http://127.0.0.1:3000",
+            "http://127.0.0.1:5173",
+        ]
+    logger.info(f"🔓 CORS configured for development: {allowed_origins}")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],  # Explicit methods
+    allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],  # Explicit headers
+    max_age=600,  # Cache preflight requests for 10 minutes
 )
 
 # Security headers middleware (CSP, X-Frame-Options, etc.)

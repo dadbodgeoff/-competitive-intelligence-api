@@ -265,7 +265,7 @@ class UsageLimitService:
                 'creative': {
                     'image_generations': {
                         'used': limits.get('image_generation_28day_count', 0),
-                        'limit': 1,
+                        'limit': 3,  # Free tier: 3 generations per 28 days
                         'reset_date': limits.get('image_generation_28day_reset')
                     }
                 }
@@ -513,14 +513,14 @@ class UsageLimitService:
                     'Monthly premium creative generation available' if allowed else 'Monthly premium creative limit (50) exhausted'
                 )
             used = record.get('image_generation_28day_count', 0)
-            limit_value = 1
+            limit_value = 3  # Free tier: 3 generations per 28 days
             allowed = used < limit_value
             return _detail(
                 allowed,
                 used,
                 limit_value,
                 'image_generation_28day_reset',
-                'Creative generation available (1 per 28 days)' if allowed else '28-day creative limit (1) exhausted'
+                'Creative generation available (3 per 28 days)' if allowed else '28-day creative limit (3) exhausted'
             )
 
         return _detail(False, 0, 0, 'weekly_reset_date', 'Unknown operation type')

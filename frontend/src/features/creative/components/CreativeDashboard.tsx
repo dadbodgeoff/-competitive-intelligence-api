@@ -329,9 +329,9 @@ export function CreativeDashboard() {
         isLoading={previewLoading}
         error={previewError}
         onUseTemplate={() => {
-          // Redirect to generate page with template pre-selected
+          // Redirect to customize page with template pre-selected
           if (previewingTemplate && selectedThemeId) {
-            window.location.href = `/creative/generate?theme=${selectedThemeId}&template=${previewingTemplate.id}`;
+            window.location.href = `/creative/customize?theme=${selectedThemeId}&template=${previewingTemplate.id}`;
           }
         }}
       />

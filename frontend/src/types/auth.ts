@@ -16,6 +16,8 @@ export interface User {
   account_role?: AccountRole;
   module_access?: ModuleAccess[];
   email_confirmed?: boolean;
+  email_confirmed_at?: string;
+  confirmed_at?: string;
 }
 
 export interface LoginCredentials {
@@ -31,6 +33,7 @@ export interface RegisterData {
   password: string;
   confirm_password: string;
   invite_token?: string;
+  demo_session_id?: string;
   terms_accepted: boolean;
   terms_version: string;
   terms_accepted_at: string;

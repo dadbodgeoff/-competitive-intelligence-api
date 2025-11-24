@@ -114,11 +114,17 @@ class CreativeTemplateService:
 
         cleaned: Dict[str, str] = {}
 
-        # Process required fields
+        # Process required fields with enhancement
         for field in required:
             if field not in user_inputs or not user_inputs[field]:
                 raise ValueError(f"Missing required field '{field}' for template {template['id']}")
-            cleaned[field] = self._coerce_value(field, user_inputs[field], field_types.get(field))
+            raw_value = user_inputs[field]
+            coerced_value = self._coerce_value(field, raw_value, field_types.get(field))
+            # Enhance minimal input
+            enhanced_value = self._enhance_user_input(field, coerced_value, template, theme)
+            cleaned[field] = enhanced_value
+            if enhanced_value != coerced_value:
+                logger.info(f"✨ Enhanced '{field}': '{coerced_value}' → '{enhanced_value}'")
 
         # Infer context from user inputs for smart default selection
         context_hints = self._infer_context_hints(user_inputs, template)
@@ -126,8 +132,13 @@ class CreativeTemplateService:
         # Process optional fields with smart defaults
         for field in optional:
             if field in user_inputs and user_inputs[field]:
-                # User provided value
-                cleaned[field] = self._coerce_value(field, user_inputs[field], field_types.get(field))
+                # User provided value - enhance it
+                raw_value = user_inputs[field]
+                coerced_value = self._coerce_value(field, raw_value, field_types.get(field))
+                enhanced_value = self._enhance_user_input(field, coerced_value, template, theme)
+                cleaned[field] = enhanced_value
+                if enhanced_value != coerced_value:
+                    logger.info(f"✨ Enhanced '{field}': '{coerced_value}' → '{enhanced_value}'")
             elif field in defaults:
                 # Apply smart default for blank optional field
                 default_value = self._select_smart_default(
@@ -145,7 +156,9 @@ class CreativeTemplateService:
             if field in cleaned:
                 continue
             if value:  # Only add if not empty
-                cleaned[field] = self._coerce_value(field, value, field_types.get(field))
+                coerced_value = self._coerce_value(field, value, field_types.get(field))
+                enhanced_value = self._enhance_user_input(field, coerced_value, template, theme)
+                cleaned[field] = enhanced_value
 
         return cleaned
 
@@ -154,12 +167,14 @@ class CreativeTemplateService:
         *,
         sections: List[Dict],
         variables: Dict[str, str],
+        template: Optional[Dict] = None,
+        theme: Optional[Dict] = None,
         style_suffix: Optional[str] = None,
         style_notes: Optional[List[str]] = None,
         compliance_directive: Optional[str] = None,
         brand_profile: Optional[Dict] = None,
     ) -> Dict[str, str]:
-        """Render prompt sections with provided variables."""
+        """Render prompt sections with provided variables and quality enforcement."""
         rendered: Dict[str, str] = {}
 
         for section in sections:
@@ -168,6 +183,12 @@ class CreativeTemplateService:
             rendered_body = _safe_format(normalized, variables)
 
             extras = []
+            
+            # Add quality baseline to ensure professional output
+            if template and theme:
+                quality_baseline = self._build_quality_baseline(template, theme, variables)
+                if quality_baseline:
+                    extras.append(quality_baseline)
             
             # Add brand profile context (Phase 1)
             if brand_profile:
@@ -187,6 +208,62 @@ class CreativeTemplateService:
             rendered[section.get("prompt_section", "base")] = rendered_body
 
         return rendered
+    
+    def _build_quality_baseline(
+        self,
+        template: Dict,
+        theme: Dict,
+        user_inputs: Dict[str, str]
+    ) -> str:
+        """
+        Build quality baseline that ensures professional output even with minimal user input.
+        Adds photography/lighting/composition details that maintain high standards.
+        """
+        baseline_parts = []
+        
+        # Check if user provided detailed style notes
+        has_detailed_style = any(
+            len(str(user_inputs.get(field, ""))) > 30 
+            for field in ["scene_description", "lighting_mood", "style_notes"]
+        )
+        
+        # If user already provided details, don't override
+        if has_detailed_style:
+            return ""
+        
+        # 1. Lighting Quality (if not specified by user)
+        if not any(key in user_inputs for key in ["lighting", "lighting_mood", "scene_time"]):
+            lighting_options = [
+                "natural window light with soft shadows",
+                "golden hour warmth",
+                "professional studio lighting with controlled highlights",
+                "dramatic side lighting with depth",
+                "soft diffused overhead lighting"
+            ]
+            baseline_parts.append(random.choice(lighting_options))
+        
+        # 2. Composition Quality (always add for professional framing)
+        composition_options = [
+            "professional composition with hero shot framing",
+            "magazine-quality layout with balanced elements",
+            "commercial photography standards with sharp focus",
+            "editorial-style composition with visual hierarchy"
+        ]
+        baseline_parts.append(random.choice(composition_options))
+        
+        # 3. Detail Level (always enforce high quality)
+        detail_options = [
+            "rich texture detail and crisp clarity",
+            "high-resolution detail with sharp focus on key elements",
+            "photorealistic texture with professional finish",
+            "crisp product clarity with fine detail"
+        ]
+        baseline_parts.append(random.choice(detail_options))
+        
+        if baseline_parts:
+            return "Quality standards: " + ", ".join(baseline_parts) + "."
+        
+        return ""
     
     def _build_brand_context(self, brand_profile: Dict) -> str:
         """Build brand context string from Phase 1 & 2 profile fields."""
@@ -348,6 +425,84 @@ class CreativeTemplateService:
         
         return hints
 
+    def _enhance_user_input(
+        self,
+        field: str,
+        value: str,
+        template: Dict,
+        theme: Optional[Dict]
+    ) -> str:
+        """
+        Enhance user input to maintain quality standards.
+        Adds descriptive details to minimal input while preserving user intent.
+        """
+        if not value or len(value.strip()) == 0:
+            return value
+        
+        value = value.strip()
+        
+        # Don't enhance if already detailed (>50 chars or has multiple descriptive words)
+        if len(value) > 50 or len(value.split()) > 8:
+            return value
+        
+        # Enhancement rules by field type
+        enhancement_rules = {
+            # Food/dish names - add quality descriptors
+            "dish_name": {
+                "descriptors": ["artisan", "handcrafted", "signature", "house-made", "fresh", "premium"],
+                "pattern": "{descriptor} {value}"
+            },
+            "item1_name": {
+                "descriptors": ["artisan", "handcrafted", "signature", "house-made", "fresh"],
+                "pattern": "{descriptor} {value}"
+            },
+            "item2_name": {
+                "descriptors": ["artisan", "handcrafted", "signature", "house-made", "fresh"],
+                "pattern": "{descriptor} {value}"
+            },
+            "item3_name": {
+                "descriptors": ["artisan", "handcrafted", "signature", "house-made", "fresh"],
+                "pattern": "{descriptor} {value}"
+            },
+            # Dough/bread types - add texture details
+            "dough_type": {
+                "descriptors": ["perfectly fermented", "artisan", "hand-stretched", "slow-risen"],
+                "pattern": "{descriptor} {value} dough" if "dough" not in value.lower() else "{descriptor} {value}"
+            },
+            # Headlines - keep as-is (user's marketing message)
+            "headline": {
+                "skip": True
+            },
+            # Dates - keep as-is
+            "date": {
+                "skip": True
+            },
+            # CTA lines - keep as-is
+            "cta_line": {
+                "skip": True
+            }
+        }
+        
+        rule = enhancement_rules.get(field, {})
+        
+        # Skip enhancement for certain fields
+        if rule.get("skip"):
+            return value
+        
+        # Check if value already has quality descriptors
+        descriptors = rule.get("descriptors", [])
+        if any(desc in value.lower() for desc in descriptors):
+            return value
+        
+        # Add descriptor if rule exists
+        if descriptors and "pattern" in rule:
+            descriptor = random.choice(descriptors)
+            pattern = rule["pattern"]
+            enhanced = pattern.format(descriptor=descriptor, value=value)
+            return enhanced
+        
+        return value
+    
     def _select_smart_default(
         self,
         field: str,

@@ -11,6 +11,9 @@ class UserRegister(BaseModel):
     invite_token: Optional[str] = Field(
         None, description="Optional invitation token when joining an existing account"
     )
+    demo_session_id: Optional[str] = Field(
+        None, description="Optional demo session ID to claim after registration"
+    )
     terms_accepted: bool = Field(..., description="User agreed to the Terms of Service")
     terms_version: str = Field(..., description="Version of the Terms of Service accepted")
     terms_accepted_at: datetime = Field(..., description="Timestamp when terms were accepted")

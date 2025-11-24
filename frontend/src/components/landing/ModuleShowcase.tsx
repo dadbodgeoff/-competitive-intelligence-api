@@ -241,8 +241,8 @@ export const ModuleShowcase: React.FC = () => {
     <section className="py-16 md:py-24 px-4 bg-[#121212]">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <p className="text-xl text-[#A8B1B9]">
+        <div className="text-center mb-6">
+          <p className="text-2xl font-bold text-[#E0E0E0]">
             Eight powerful modules working together to drive profitability.
           </p>
         </div>

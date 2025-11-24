@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { UsageLimitWarning } from '@/components/common/UsageLimitWarning';
 import { useUsageLimit } from '@/hooks/useUsageLimits';
 import { cn } from '@/lib/utils';
+import { Zap } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -84,6 +85,7 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
     formState,
     control,
     watch,
+    setValue,
   } = useForm<FormValues>({
     resolver: zodResolver(
       z.object({
@@ -314,7 +316,7 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
             </div>
           </section>
 
-          <section className="space-y-2">
+          <section className="space-y-3">
             <Label className="text-sm text-slate-200">Style Preferences (optional)</Label>
             <Textarea
               rows={4}
@@ -322,10 +324,61 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
               className="resize-none bg-white/5 text-white"
               {...register('styleNotes')}
             />
-            <p className="text-xs text-slate-400">
-              These notes are appended to the variation engine as hints. Keep it concise for best
-              results.
-            </p>
+            
+            {/* Best Practices & Examples */}
+            <div className="rounded-lg border border-primary-500/20 bg-primary-500/5 p-4 space-y-3">
+              <div className="flex items-start gap-2">
+                <div className="rounded-full bg-primary-500/20 p-1 mt-0.5">
+                  <Zap className="h-4 w-4 text-primary-400" />
+                </div>
+                <div className="flex-1 space-y-2">
+                  <h4 className="text-sm font-semibold text-primary-300">Pro Tips for Best Results</h4>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Our AI works best with specific, descriptive language. The more detail you provide, the more stunning your results!
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-slate-300">✨ Inspiring Examples (click to use):</p>
+                <div className="grid gap-1.5 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    className="rounded bg-black/30 px-3 py-2 text-xs text-left text-slate-200 border border-white/5 hover:border-primary-500/30 hover:bg-black/50 transition-all"
+                    onClick={() => setValue('styleNotes', "Golden hour warmth with flour dust particles catching natural window light")}
+                  >
+                    <span className="text-primary-400 font-medium">Lighting:</span> "Golden hour warmth with flour dust particles catching natural window light"
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded bg-black/30 px-3 py-2 text-xs text-left text-slate-200 border border-white/5 hover:border-primary-500/30 hover:bg-black/50 transition-all"
+                    onClick={() => setValue('styleNotes', "Bustling Friday night energy with neon signs reflecting off polished bar")}
+                  >
+                    <span className="text-primary-400 font-medium">Atmosphere:</span> "Bustling Friday night energy with neon signs reflecting off polished bar"
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded bg-black/30 px-3 py-2 text-xs text-left text-slate-200 border border-white/5 hover:border-primary-500/30 hover:bg-black/50 transition-all"
+                    onClick={() => setValue('styleNotes', "Rustic wooden surface with artisan bread texture, hand-dusted with flour")}
+                  >
+                    <span className="text-primary-400 font-medium">Details:</span> "Rustic wooden surface with artisan bread texture, hand-dusted with flour"
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded bg-black/30 px-3 py-2 text-xs text-left text-slate-200 border border-white/5 hover:border-primary-500/30 hover:bg-black/50 transition-all"
+                    onClick={() => setValue('styleNotes', "Cozy and inviting with soft shadows and warm amber tones")}
+                  >
+                    <span className="text-primary-400 font-medium">Mood:</span> "Cozy and inviting with soft shadows and warm amber tones"
+                  </button>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-white/10">
+                <p className="text-xs text-slate-400">
+                  <span className="text-slate-300 font-medium">💡 Quick tip:</span> Mention specific textures, lighting conditions, and atmosphere for magazine-quality results
+                </p>
+              </div>
+            </div>
           </section>
 
           <section className="space-y-4 rounded-md border border-white/10 bg-black/30 p-4">

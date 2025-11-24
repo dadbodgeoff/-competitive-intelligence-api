@@ -152,6 +152,29 @@ async def update_brand_profile(
         raise HTTPException(status_code=500, detail="Failed to update brand profile") from exc
 
 
+@router.delete("/brands/{profile_id}")
+@rate_limit("analysis")
+async def delete_brand_profile(
+    profile_id: str,
+    request: Request,
+    current_user: str = Depends(get_current_user),
+) -> Dict[str, str]:
+    """Delete a brand profile."""
+    account_id = account_service.get_primary_account_id(current_user)
+    
+    try:
+        brand_service.delete_profile(
+            account_id=account_id,
+            profile_id=profile_id
+        )
+        return {"message": "Brand profile deleted successfully"}
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except Exception as exc:
+        logger.error(f"Failed to delete brand profile: {exc}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to delete brand profile") from exc
+
+
 
 @router.post("/generate", response_model=StartGenerationResponse)
 @rate_limit("analysis")
@@ -302,6 +325,45 @@ async def preview_template(
         sections=preview.get("sections", {}),
         variation_summary=VariationSummary(**variation) if variation else None,
     )
+
+
+@router.get("/usage-quota")
+@rate_limit("analysis")
+async def get_usage_quota(
+    request: Request,
+    current_user: str = Depends(get_current_user),
+) -> Dict[str, Any]:
+    """Get user's creative generation usage quota."""
+    from services.usage_limit_service import get_usage_limit_service
+    usage_service = get_usage_limit_service()
+    
+    try:
+        summary = usage_service.get_usage_summary(current_user)
+        
+        # Extract creative generation quota
+        if summary.get('unlimited'):
+            return {
+                'unlimited': True,
+                'subscription_tier': summary.get('subscription_tier'),
+                'message': summary.get('message', 'Unlimited access')
+            }
+        
+        creative_data = summary.get('creative', {}).get('image_generations', {})
+        
+        return {
+            'unlimited': False,
+            'subscription_tier': summary.get('subscription_tier', 'free'),
+            'used': creative_data.get('used', 0),
+            'limit': creative_data.get('limit', 3),
+            'remaining': max(0, creative_data.get('limit', 3) - creative_data.get('used', 0)),
+            'reset_date': creative_data.get('reset_date'),
+        }
+    except Exception as exc:
+        logger.error(f"Failed to get usage quota: {exc}")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to retrieve usage quota"
+        ) from exc
 
 
 @router.post("/webhook")

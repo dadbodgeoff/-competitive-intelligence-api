@@ -169,9 +169,9 @@ export function CreativeCustomizePage() {
 
         {/* Template Info & Generation Form */}
         {!isGenerating && !hasCompletedJob && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Left Column - Template Info */}
-            <div className="lg:col-span-1 space-y-4">
+            <div className="lg:col-span-5 space-y-4">
               {/* Theme Info */}
               <Card className="bg-white/5 border-white/10 sticky top-4">
                 <CardContent className="p-6 space-y-4">
@@ -264,7 +264,7 @@ export function CreativeCustomizePage() {
             </div>
 
             {/* Right Column - Generation Form */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-7">
               <div className="space-y-4">
                 <div>
                   <h1 className="text-3xl font-bold text-white mb-2">

@@ -22,49 +22,49 @@
     --popover: 222 47% 11%;            /* Popover #1e293b */
     --popover-foreground: 210 40% 98%;
     
-    /* Primary - Emerald */
-    --primary: 160 84% 39%;            /* Emerald #10b981 */
+    /* Primary - BRAND: #B08968 */
+    --primary: 28 30% 55%;             /* Brand Primary #B08968 */
     --primary-foreground: 0 0% 100%;   /* White */
     
-    /* Secondary - Cyan */
-    --secondary: 187 85% 43%;          /* Cyan #06b6d4 */
+    /* Secondary - BRAND: #4A6572 */
+    --secondary: 200 21% 37%;          /* Brand Links #4A6572 */
     --secondary-foreground: 0 0% 100%; /* White */
     
     /* Muted */
     --muted: 217 33% 17%;              /* Slate-850 #1a2332 */
     --muted-foreground: 215 16% 47%;   /* Slate-400 #94a3b8 */
     
-    /* Accent */
-    --accent: 217 33% 17%;             /* Slate-850 */
-    --accent-foreground: 160 84% 39%;  /* Emerald */
+    /* Accent - BRAND */
+    --accent: 200 21% 37%;             /* Brand Links #4A6572 */
+    --accent-foreground: 0 0% 88%;     /* Brand Text #E0E0E0 */
     
     /* Destructive */
     --destructive: 0 84% 60%;          /* Red #ef4444 */
     --destructive-foreground: 210 40% 98%;
     
-    /* Success */
-    --success: 160 84% 39%;            /* Emerald #10b981 */
+    /* Success - BRAND: #264653 */
+    --success: 192 35% 24%;            /* Brand Success #264653 */
     --success-foreground: 0 0% 100%;
     
-    /* Warning */
-    --warning: 38 92% 50%;             /* Amber #f59e0b */
-    --warning-foreground: 26 90% 37%;  /* Dark amber */
+    /* Warning - BRAND: #9A5C4A */
+    --warning: 18 35% 45%;             /* Brand Warning #9A5C4A */
+    --warning-foreground: 0 0% 100%;
     
-    /* Info */
-    --info: 187 85% 43%;               /* Cyan #06b6d4 */
+    /* Info - BRAND: #4A6572 */
+    --info: 200 21% 37%;               /* Brand Links #4A6572 */
     --info-foreground: 0 0% 100%;
     
     /* Borders */
-    --border: 217 33% 17%;             /* Subtle borders */
-    --input: 217 33% 17%;              /* Input backgrounds */
-    --ring: 160 84% 39%;               /* Focus ring - Emerald */
+    --border: 0 0% 12%;                /* Subtle borders #1E1E1E */
+    --input: 0 0% 12%;                 /* Input backgrounds #1E1E1E */
+    --ring: 28 30% 55%;                /* Focus ring - Brand Primary #B08968 */
     
-    /* Chart Colors */
-    --chart-1: 160 84% 39%;            /* Emerald */
-    --chart-2: 187 85% 43%;            /* Cyan */
-    --chart-3: 258 90% 66%;            /* Violet */
-    --chart-4: 38 92% 50%;             /* Amber */
-    --chart-5: 0 84% 60%;              /* Red */
+    /* Chart Colors - BRAND */
+    --chart-1: 28 30% 55%;             /* Brand Primary #B08968 */
+    --chart-2: 200 21% 37%;            /* Brand Links #4A6572 */
+    --chart-3: 192 35% 24%;            /* Brand Success #264653 */
+    --chart-4: 18 35% 45%;             /* Brand Warning #9A5C4A */
+    --chart-5: 0 35% 53%;              /* Brand Error #B75553 */
     
     /* Border Radius */
     --radius: 0.5rem;                  /* 8px default */

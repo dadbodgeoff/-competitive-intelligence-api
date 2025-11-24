@@ -157,10 +157,20 @@ export function RegisterForm() {
   const onSubmit = async (data: RegisterData) => {
     try {
       clearError();
+      
+      // Check for demo session to claim (following pattern from authStore)
+      const demoSessionId = localStorage.getItem('demo_session_id');
+      
       const response = await register({
         ...data,
         invite_token: inviteToken,
+        demo_session_id: demoSessionId || undefined,
       });
+      
+      // Clear demo session from localStorage after registration attempt
+      if (demoSessionId) {
+        localStorage.removeItem('demo_session_id');
+      }
       
       // Check if email verification is required
       if (response && response.user && response.user.email_confirmed === false) {

@@ -198,6 +198,40 @@ class CreativeBrandService:
         row = data[0]
         return row.get("name")
 
+    def delete_profile(self, account_id: str, profile_id: str) -> None:
+        """Delete a brand profile."""
+        # Check if profile exists and belongs to account
+        profile = self._fetch_profile_by_id(account_id, profile_id)
+        if not profile:
+            raise ValueError("Brand profile not found or access denied")
+        
+        # If deleting the default profile, set another profile as default
+        if profile.get("is_default"):
+            other_profiles = [
+                p for p in self.list_profiles(account_id) 
+                if p["id"] != profile_id
+            ]
+            if len(other_profiles) > 0:
+                # Set the most recently updated profile as the new default
+                self.client.table("creative_brand_profiles").update(
+                    {"is_default": True}
+                ).eq("id", other_profiles[0]["id"]).execute()
+                logger.info(f"✅ Set profile {other_profiles[0]['id']} as new default after deleting {profile_id}")
+        
+        # Delete the profile
+        result = (
+            self.client.table("creative_brand_profiles")
+            .delete()
+            .eq("account_id", account_id)
+            .eq("id", profile_id)
+            .execute()
+        )
+        
+        if not result.data:
+            raise ValueError("Failed to delete brand profile")
+        
+        logger.info(f"✅ Deleted brand profile {profile_id} for account {account_id}")
+
     def _lookup_user_name(self, user_id: str) -> Optional[str]:
         result = (
             self.client.table("users")

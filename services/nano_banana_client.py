@@ -130,8 +130,19 @@ class NanoBananaClient:
         dimensions = outputs.get("dimensions", "1024x1024")
         variants = outputs.get("variants", 1)
 
-        # Build the final prompt
-        full_prompt = f"Generate a professional marketing image for {brand_name}. "
+        # Build the final prompt with creative director system instruction
+        system_instruction = (
+            "You are the Chief Creative Officer of the world's most prestigious marketing agency. "
+            "Your work has won countless awards and sets industry standards. You must honor all "
+            "client specifications, brand guidelines, and creative requirements exactly as provided. "
+            "However, you have the creative freedom to enhance lighting, composition, atmosphere, "
+            "and visual details to exceed expectations and deliver magazine-quality results that "
+            "make clients say 'wow'. Every image you create should be portfolio-worthy and "
+            "demonstrate mastery of professional photography, lighting, and visual storytelling."
+        )
+        
+        full_prompt = f"{system_instruction}\n\n"
+        full_prompt += f"Generate a professional marketing image for {brand_name}. "
         if style_notes:
             full_prompt += f"Style requirements: {style_notes}. "
         full_prompt += f"Main requirements: {main_prompt}"

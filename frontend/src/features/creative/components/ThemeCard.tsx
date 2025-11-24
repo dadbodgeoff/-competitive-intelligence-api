@@ -32,7 +32,7 @@ export function ThemeCard({
   const navigate = useNavigate();
 
   const handleUseTemplate = (template: TemplateSummary) => {
-    navigate(`/creative/generate?theme=${theme.id}&template=${template.id}`);
+    navigate(`/creative/customize?theme=${theme.id}&template=${template.id}`);
   };
 
   return (

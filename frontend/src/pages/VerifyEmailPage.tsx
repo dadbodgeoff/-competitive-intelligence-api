@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Mail, CheckCircle, TrendingUp, ArrowRight } from 'lucide-react';
+import { Mail, CheckCircle, TrendingUp, ArrowRight, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -14,6 +14,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 export function VerifyEmailPage() {
   const [searchParams] = useSearchParams();
   const email = searchParams.get('email') || '';
+  const fromLogin = searchParams.get('from') === 'login';
   const [resendCooldown, setResendCooldown] = useState(0);
 
   useEffect(() => {
@@ -59,19 +60,39 @@ export function VerifyEmailPage() {
           </CardHeader>
 
           <CardContent className="space-y-6">
-            <Alert className="bg-primary-500/10 border-white/10 text-primary-100">
-              <CheckCircle className="h-4 w-4" />
-              <AlertDescription>
-                <div className="space-y-2">
-                  <p className="font-semibold">Account created successfully!</p>
-                  {email && (
+            {fromLogin ? (
+              <Alert className="bg-amber-500/10 border-amber-500/30 text-amber-100">
+                <AlertCircle className="h-4 w-4 text-amber-500" />
+                <AlertDescription>
+                  <div className="space-y-2">
+                    <p className="font-semibold">Email Verification Required</p>
                     <p className="text-sm">
-                      We sent a verification email to <span className="font-medium">{email}</span>
+                      Your account exists but your email address hasn't been verified yet. 
+                      Please check your inbox and click the verification link to access your account.
                     </p>
-                  )}
-                </div>
-              </AlertDescription>
-            </Alert>
+                    {email && (
+                      <p className="text-sm mt-2">
+                        Verification email sent to: <span className="font-medium">{email}</span>
+                      </p>
+                    )}
+                  </div>
+                </AlertDescription>
+              </Alert>
+            ) : (
+              <Alert className="bg-primary-500/10 border-white/10 text-primary-100">
+                <CheckCircle className="h-4 w-4" />
+                <AlertDescription>
+                  <div className="space-y-2">
+                    <p className="font-semibold">Account created successfully!</p>
+                    {email && (
+                      <p className="text-sm">
+                        We sent a verification email to <span className="font-medium">{email}</span>
+                      </p>
+                    )}
+                  </div>
+                </AlertDescription>
+              </Alert>
+            )}
 
             <div className="space-y-4 text-slate-300">
               <h3 className="font-semibold text-white">Next steps:</h3>

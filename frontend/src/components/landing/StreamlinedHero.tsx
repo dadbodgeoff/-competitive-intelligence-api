@@ -28,15 +28,15 @@ export const StreamlinedHero: React.FC = () => {
           </p>
 
           {/* CTA - BRAND: Primary CTA color */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
-            <Link to="#demos">
-              <Button className="h-14 px-8 text-lg font-semibold text-white shadow-xl transition-all hover:scale-105" style={{ backgroundColor: '#B08968' }}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+            <Link to="#demos" className="w-full sm:w-auto">
+              <Button className="w-full sm:w-auto h-14 px-8 text-lg font-semibold text-white shadow-xl transition-all hover:scale-105" style={{ backgroundColor: '#B08968' }}>
                 See the System in Action
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
-            <Link to="/register">
-              <Button className="h-14 px-8 text-lg font-semibold border-2 bg-transparent transition-all" style={{ borderColor: 'rgba(255, 255, 255, 0.2)', color: '#E0E0E0' }}>
+            <Link to="/register" className="w-full sm:w-auto">
+              <Button className="w-full sm:w-auto h-14 px-8 text-lg font-semibold border-2 bg-transparent transition-all hover:bg-white/5" style={{ borderColor: 'rgba(255, 255, 255, 0.2)', color: '#E0E0E0' }}>
                 Start Free Trial
               </Button>
             </Link>

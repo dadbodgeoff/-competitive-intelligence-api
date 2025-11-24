@@ -11,6 +11,7 @@ import { ThemeCard } from '@/features/creative/components/ThemeCard';
 import { GenerationProgress } from '@/features/creative/components/GenerationProgress';
 import { AssetGallery } from '@/features/creative/components/AssetGallery';
 import { PromptPreviewDrawer } from '@/features/creative/components/PromptPreviewDrawer';
+import { UsageQuotaBadge } from '@/features/creative/components/UsageQuotaBadge';
 import { useNanoThemes } from '@/features/creative/hooks/useNanoThemes';
 import { useNanoTemplates } from '@/features/creative/hooks/useNanoTemplates';
 // import { useGenerateImage } from '@/features/creative/hooks/useGenerateImage';
@@ -302,14 +303,17 @@ export function CreativeGeneratePage() {
               </p>
             </div>
           </div>
-          {hasCompletedJob && (
-            <Button
-              onClick={handleStartNew}
-              className="bg-primary-500 hover:bg-primary-500"
-            >
-              Generate Another
-            </Button>
-          )}
+          <div className="flex items-center gap-3">
+            <UsageQuotaBadge />
+            {hasCompletedJob && (
+              <Button
+                onClick={handleStartNew}
+                className="bg-primary-500 hover:bg-primary-500"
+              >
+                Generate Another
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Generation Progress - Show when generating */}
@@ -448,8 +452,18 @@ export function CreativeGeneratePage() {
         error={previewError}
         onUseTemplate={() => {
           // Navigate to customize page with the previewed template
+          console.log('Use Template clicked', { previewingTemplate, selectedThemeId });
           if (previewingTemplate && selectedThemeId) {
-            navigate(`/creative/customize?theme=${selectedThemeId}&template=${previewingTemplate.id}`);
+            const url = `/creative/customize?theme=${selectedThemeId}&template=${previewingTemplate.id}`;
+            console.log('Navigating to:', url);
+            navigate(url);
+          } else {
+            console.error('Missing required data:', { 
+              hasTemplate: !!previewingTemplate, 
+              hasTheme: !!selectedThemeId,
+              template: previewingTemplate,
+              theme: selectedThemeId
+            });
           }
         }}
       />

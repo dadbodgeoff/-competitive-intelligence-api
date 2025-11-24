@@ -199,6 +199,24 @@ async def register_user(
             except Exception as exc:  # pylint: disable=broad-except
                 logger.warning("Demo seed scheduling failed for %s: %s", user_id, exc)
 
+        # Claim demo session if provided (following pattern from invite flow)
+        if user_data.demo_session_id:
+            try:
+                from services.guest_session_store import get_guest_session
+                session_data = get_guest_session(user_data.demo_session_id)
+                
+                if session_data and session_data.get('job_id'):
+                    # Transfer demo job to new user account
+                    service_client.table('creative_generation_jobs').update({
+                        'user_id': user_id,
+                        'account_id': account_id,
+                    }).eq('id', session_data['job_id']).execute()
+                    
+                    logger.info(f"✅ Claimed demo session {user_data.demo_session_id} for user {user_id}")
+            except Exception as exc:
+                # Don't fail registration if demo claiming fails
+                logger.warning(f"⚠️ Failed to claim demo session for {user_id}: {exc}")
+
         # Return user data with session
         return {
             "user": {

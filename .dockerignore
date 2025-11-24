@@ -1,114 +1,81 @@
 # Git
-.git
+.git/
+.github/
 .gitignore
 .gitattributes
-
-# Environment files
-.env
-.env.*
-!.env.production.example
 
 # Documentation
 *.md
 !README.md
-diagrams/
-docs/
 
-# Tests
-tests/
-test-*/
-**/*.test.*
-**/*.spec.*
-**/__tests__/
-coverage/
-.nyc_output/
-pytest.ini
-conftest.py
+# Test files
+test_*.py
+**/tests/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
 
 # Development files
-verify_*.py
-verify_*.sql
-check_*.py
-analyze_*.py
-debug_*.py
-seed_*.py
-audit_*.py
-trace_*.py
-test_*.py
-cleanup_*.py
-comprehensive_*.py
-get_test_*.py
-production_menu_extractor.py
-list_migrations.py
-export_schema_python.py
-consolidate_all_sql.py
-audit_runner.py
-pre_production_audit.py
-
-# Monitoring and logs
-monitoring_logs/
-logs/
+.env.dev
+.env.dev.example
+.env.example
+docker-compose.dev.yml
+Dockerfile.dev
 *.log
-backend_logs.txt
-
-# SQL verification files
-AUDIT_*.sql
-*_VERIFICATION.sql
-*_COMPLETE_SETUP.sql
-setup_invoice_tables.sql
-database/production_schema_complete.sql
-database/rls_policies_only.sql
-database/STREAMING_SUPABASE_UPDATE.sql
-
-# Sample files
-*.pdf
-*_verification_*.json
-*_session_report_*.json
+*.bat
+*.sh
+!deploy-to-digital-ocean.sh
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
-# OS
-.DS_Store
-Thumbs.db
+# Frontend development files (only need dist/)
+frontend/node_modules/
+frontend/.env.example
+frontend/.env.dev
+frontend/public/
+frontend/tests/
+frontend/playwright-report/
+frontend/test-results/
+# frontend/*.config.ts  # KEEP vite.config.ts
+# frontend/*.config.js  # KEEP config files
+# frontend/tsconfig*.json  # KEEP tsconfig files
+frontend/.prettierrc
+frontend/eslint.config.js
+# frontend/package-lock.json  # KEEP THIS - needed for npm ci
+frontend/vercel.json
+frontend/*.html
+!frontend/index.html
 
-# Dependencies (will be installed in container)
-node_modules/
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-venv/
-env/
-ENV/
-.venv/
+# Database files
+database/migrations/*.md
+supabase/
 
-# Build outputs
-frontend/dist/
-frontend/build/
-frontend/.next/
-dist/
-build/
+# Scripts
+scripts/
+backfill_ordering.py
+remove_additional_files.py
 
-# Python
-*.egg-info/
-.eggs/
-*.egg
+# Nginx (deployed separately)
+nginx.conf
 
-# Temporary
-tmp/
-temp/
-*.tmp
-*.bak
-*.backup
-*.old
+# Clamav (has its own Dockerfile)
+clamav/
 
-# Redis
-dump.rdb
+# Models (if any large files)
+models/
 
-# Setup scripts
-setup_production.bat
+# Prompts (if not needed in container)
+# prompts/
+
+# Package manager files
+package.json
+package-lock.json

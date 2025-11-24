@@ -48,22 +48,21 @@ interface NavItem {
 }
 
 const mainNavItems: NavItem[] = [
+  // 🎨 HIGHEST VALUE - Revenue Generation
+  {
+    title: 'Creative Studio',
+    href: '/creative',
+    icon: Palette,
+    module: 'dashboard',
+    badge: 'NEW',
+  },
+  
+  // 📊 Core Operations - High Value
   {
     title: 'Dashboard',
     href: '/dashboard',
     icon: Home,
     module: 'dashboard',
-  },
-  {
-    title: 'Review Analysis',
-    href: '/analysis/new',
-    icon: Search,
-  },
-  {
-    title: 'Invoices',
-    href: '/invoices',
-    icon: FileText,
-    module: 'invoices',
   },
   {
     title: 'Menu Management',
@@ -72,23 +71,46 @@ const mainNavItems: NavItem[] = [
     module: 'menu_management',
   },
   {
+    title: 'Invoices',
+    href: '/invoices',
+    icon: FileText,
+    module: 'invoices',
+  },
+  
+  // 💰 Financial Intelligence
+  {
     title: 'COGS Tracker',
     href: '/cogs',
     icon: DollarSign,
     module: 'dashboard',
   },
   {
+    title: 'Price Analytics',
+    href: '/analytics',
+    icon: BarChart3,
+    module: 'pricing_analytics',
+  },
+  
+  // 🔍 Competitive Intelligence
+  {
+    title: 'Review Analysis',
+    href: '/analysis/new',
+    icon: Search,
+  },
+  {
+    title: 'Menu Comparison',
+    href: '/menu-comparison',
+    icon: Menu,
+    module: 'menu_comparison',
+  },
+  
+  // 📦 Operations Management
+  {
     title: 'Predictive Ordering',
     href: '/ordering',
     icon: Truck,
     badge: 'NEW',
     module: 'ordering_predictions',
-  },
-  {
-    title: 'Scheduling',
-    href: '/scheduling',
-    icon: Calendar,
-    module: 'scheduling',
   },
   {
     title: 'Daily Prep',
@@ -103,23 +125,10 @@ const mainNavItems: NavItem[] = [
     module: 'prep',
   },
   {
-    title: 'Menu Comparison',
-    href: '/menu-comparison',
-    icon: Menu,
-    module: 'menu_comparison',
-  },
-  {
-    title: 'Creative Studio',
-    href: '/creative',
-    icon: Palette,
-    module: 'dashboard',
-    badge: 'NEW',
-  },
-  {
-    title: 'Price Analytics',
-    href: '/analytics',
-    icon: BarChart3,
-    module: 'pricing_analytics',
+    title: 'Scheduling',
+    href: '/scheduling',
+    icon: Calendar,
+    module: 'scheduling',
   },
 ];
 
@@ -176,7 +185,7 @@ export function AppSidebar() {
           <span className="text-xl font-bold" style={{ color: '#E0E0E0' }}>RestaurantIQ</span>
         </Link>
         {isPremium && (
-          <Badge className="mt-2 text-white border-0" style={{ background: 'linear-gradient(to right, #B08968, #4A6572)' }}>
+          <Badge className="mt-2 text-white border-0 bg-primary-500">
             <Crown className="h-3 w-3 mr-1" />
             Premium
           </Badge>

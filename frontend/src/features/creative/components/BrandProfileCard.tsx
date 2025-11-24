@@ -1,15 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Edit, Star } from 'lucide-react';
+import { Edit, Star, Trash2 } from 'lucide-react';
 import type { BrandProfileSummary } from '../api/types';
 
 interface BrandProfileCardProps {
   profile: BrandProfileSummary;
   onEdit: (profile: BrandProfileSummary) => void;
+  onDelete: (profile: BrandProfileSummary) => void;
 }
 
-export function BrandProfileCard({ profile, onEdit }: BrandProfileCardProps) {
+export function BrandProfileCard({ profile, onEdit, onDelete }: BrandProfileCardProps) {
   return (
     <Card className="bg-card-dark border-white/10 hover:border-white/10 transition-all">
       <CardHeader className="pb-3">
@@ -23,14 +24,24 @@ export function BrandProfileCard({ profile, onEdit }: BrandProfileCardProps) {
               </Badge>
             )}
           </CardTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onEdit(profile)}
-            className="text-slate-400 hover:text-white"
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
+          <div className="flex gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onEdit(profile)}
+              className="text-slate-400 hover:text-white"
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onDelete(profile)}
+              className="text-slate-400 hover:text-red-400"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">

@@ -36,6 +36,7 @@ export const CreativeLiveDemo: React.FC = () => {
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [progress, setProgress] = useState(0);
   const [loadingTemplates, setLoadingTemplates] = useState(true);
+  const [sessionId, setSessionId] = useState<string>('');
 
   // Load templates on mount
   useEffect(() => {
@@ -126,6 +127,11 @@ export const CreativeLiveDemo: React.FC = () => {
       if (!response.success) {
         throw new Error(response.message || 'Failed to start generation');
       }
+
+      // Store session_id for later account claiming
+      setSessionId(response.session_id);
+      // Also store in localStorage for persistence across page navigation
+      localStorage.setItem('demo_session_id', response.session_id);
 
       // Start streaming progress
       const eventSource = await streamDemoJob(response.session_id);

@@ -21,8 +21,8 @@ router = APIRouter(prefix="/api/v1/nano-banana/demo", tags=["nano-banana-demo"])
 
 # In-memory IP rate limiter for demo
 demo_rate_limiter = {}
-DEMO_RATE_LIMIT_WINDOW = 3600  # 1 hour
-DEMO_MAX_REQUESTS_PER_IP = 3  # 3 generations per hour per IP
+DEMO_RATE_LIMIT_WINDOW = 2419200  # 28 days (28 * 24 * 60 * 60)
+DEMO_MAX_REQUESTS_PER_IP = 1  # 1 generation per 28 days per IP
 
 
 def check_demo_rate_limit(ip_address: str) -> Optional[int]:

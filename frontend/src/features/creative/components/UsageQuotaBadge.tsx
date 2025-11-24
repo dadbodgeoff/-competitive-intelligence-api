@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Sparkles, Clock, Infinity } from 'lucide-react';
-import { apiClient } from '@/utils/apiClient';
+import axios from 'axios';
 
 interface UsageQuota {
   unlimited: boolean;
@@ -22,7 +22,9 @@ export const UsageQuotaBadge: React.FC = () => {
 
   const fetchQuota = async () => {
     try {
-      const response = await apiClient.get('/api/v1/nano-banana/usage-quota');
+      const response = await axios.get('/api/v1/nano-banana/usage-quota', {
+        withCredentials: true,
+      });
       setQuota(response.data);
     } catch (error) {
       console.error('Failed to fetch usage quota:', error);
@@ -47,7 +49,6 @@ export const UsageQuotaBadge: React.FC = () => {
   }
 
   const remaining = quota.remaining ?? 0;
-  const used = quota.used ?? 0;
   const limit = quota.limit ?? 3;
   const resetDate = quota.reset_date ? new Date(quota.reset_date) : null;
 

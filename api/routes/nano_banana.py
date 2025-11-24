@@ -103,6 +103,55 @@ async def list_brand_profiles(
     return [BrandProfileSummary(**profile) for profile in profiles]
 
 
+@router.post("/brands", response_model=BrandProfileSummary)
+@rate_limit("analysis")
+async def create_brand_profile(
+    request: Request,
+    current_user: str = Depends(get_current_user),
+) -> BrandProfileSummary:
+    """Create a new brand profile."""
+    account_id = account_service.get_primary_account_id(current_user)
+    raw_body = await request.json()
+    
+    try:
+        profile = brand_service.create_profile(
+            account_id=account_id,
+            user_id=current_user,
+            profile_data=raw_body
+        )
+        return BrandProfileSummary(**profile)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except Exception as exc:
+        logger.error(f"Failed to create brand profile: {exc}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to create brand profile") from exc
+
+
+@router.put("/brands/{profile_id}", response_model=BrandProfileSummary)
+@rate_limit("analysis")
+async def update_brand_profile(
+    profile_id: str,
+    request: Request,
+    current_user: str = Depends(get_current_user),
+) -> BrandProfileSummary:
+    """Update an existing brand profile."""
+    account_id = account_service.get_primary_account_id(current_user)
+    raw_body = await request.json()
+    
+    try:
+        profile = brand_service.update_profile(
+            account_id=account_id,
+            profile_id=profile_id,
+            profile_data=raw_body
+        )
+        return BrandProfileSummary(**profile)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except Exception as exc:
+        logger.error(f"Failed to update brand profile: {exc}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to update brand profile") from exc
+
+
 
 @router.post("/generate", response_model=StartGenerationResponse)
 @rate_limit("analysis")

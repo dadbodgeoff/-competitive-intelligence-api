@@ -433,60 +433,72 @@ class CreativeTemplateService:
         theme: Optional[Dict]
     ) -> str:
         """
-        Enhance user input to maintain quality standards.
-        Adds descriptive details to minimal input while preserving user intent.
+        Enhance ONLY scene/atmosphere elements, NEVER user business content.
+        
+        CRITICAL: User-provided menu items, specials, pricing, and business text
+        must NEVER be modified. The creative director can enhance the scene,
+        lighting, and atmosphere, but must preserve exact user wording for:
+        - Menu item names and descriptions
+        - Special offers and promotions
+        - Pricing information
+        - Headlines and marketing copy
+        - Dates and times
+        - Call-to-action text
         """
         if not value or len(value.strip()) == 0:
             return value
         
         value = value.strip()
         
+        # NEVER enhance user business content - these are sacred
+        business_content_fields = [
+            # Marketing copy (user's exact words)
+            "headline", "subheadline", "tagline", "cta_line", "cta_text",
+            # Menu items (user's exact descriptions)
+            "dish_name", "item_name", "item1_name", "item2_name", "item3_name",
+            "item1_description", "item2_description", "item3_description",
+            # Specials and promotions (user's exact offers)
+            "special_name", "special_description", "promo_text", "offer_text",
+            # Pricing (exact amounts)
+            "price", "item1_price", "item2_price", "item3_price", "special_price",
+            # Dates and times (exact values)
+            "date", "time", "event_date", "valid_until",
+            # Brand identity (exact names)
+            "brand_name", "restaurant_name", "location_name",
+        ]
+        
+        # Check if this field contains user business content
+        if field in business_content_fields:
+            return value
+        
+        # Also check for any field containing these keywords (catch-all)
+        business_keywords = ["name", "price", "headline", "cta", "date", "time", "special", "promo", "offer"]
+        if any(keyword in field.lower() for keyword in business_keywords):
+            return value
+        
         # Don't enhance if already detailed (>50 chars or has multiple descriptive words)
         if len(value) > 50 or len(value.split()) > 8:
             return value
         
-        # Enhancement rules by field type
+        # ONLY enhance scene/atmosphere elements (very limited scope)
+        # These are technical/atmospheric details, not user business content
         enhancement_rules = {
-            # Food/dish names - add quality descriptors
-            "dish_name": {
-                "descriptors": ["artisan", "handcrafted", "signature", "house-made", "fresh", "premium"],
+            # Scene atmosphere (only if user provides minimal technical detail)
+            "scene_atmosphere": {
+                "descriptors": ["warm", "inviting", "vibrant", "cozy"],
                 "pattern": "{descriptor} {value}"
             },
-            "item1_name": {
-                "descriptors": ["artisan", "handcrafted", "signature", "house-made", "fresh"],
+            # Background setting (only if user provides minimal detail)
+            "background_setting": {
+                "descriptors": ["rustic", "modern", "elegant", "casual"],
                 "pattern": "{descriptor} {value}"
             },
-            "item2_name": {
-                "descriptors": ["artisan", "handcrafted", "signature", "house-made", "fresh"],
-                "pattern": "{descriptor} {value}"
-            },
-            "item3_name": {
-                "descriptors": ["artisan", "handcrafted", "signature", "house-made", "fresh"],
-                "pattern": "{descriptor} {value}"
-            },
-            # Dough/bread types - add texture details
-            "dough_type": {
-                "descriptors": ["perfectly fermented", "artisan", "hand-stretched", "slow-risen"],
-                "pattern": "{descriptor} {value} dough" if "dough" not in value.lower() else "{descriptor} {value}"
-            },
-            # Headlines - keep as-is (user's marketing message)
-            "headline": {
-                "skip": True
-            },
-            # Dates - keep as-is
-            "date": {
-                "skip": True
-            },
-            # CTA lines - keep as-is
-            "cta_line": {
-                "skip": True
-            }
         }
         
         rule = enhancement_rules.get(field, {})
         
-        # Skip enhancement for certain fields
-        if rule.get("skip"):
+        # If no rule exists, don't enhance (default to preserving user input)
+        if not rule:
             return value
         
         # Check if value already has quality descriptors

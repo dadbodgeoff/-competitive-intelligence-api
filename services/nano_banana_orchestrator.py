@@ -19,6 +19,8 @@ from services.creative_compliance_service import CreativeComplianceService
 from services.creative_theme_service import CreativeThemeService
 from services.creative_template_service import CreativeTemplateService
 from services.creative_variation_engine import CreativeVariationEngine
+from services.creative_quality_validator import CreativeQualityValidator
+from services.feature_flag_service import get_feature_flag_service
 from services.nano_banana_client import NanoBananaClient, sanitize_payload_for_logging
 from services.usage_limit_service import get_usage_limit_service
 
@@ -52,6 +54,9 @@ class NanoBananaImageOrchestrator:
         self.asset_storage = CreativeAssetStorage()
         self.client = NanoBananaClient()
         self.usage_service = get_usage_limit_service()
+        # Phase 1: Quality validation
+        self.quality_validator = CreativeQualityValidator()
+        self.feature_flags = get_feature_flag_service()
 
     # ------------------------------------------------------------------ #
     # Job creation
@@ -203,7 +208,10 @@ class NanoBananaImageOrchestrator:
             assets = self._process_vertex_predictions(
                 job=job_record,
                 job_id=job_record["id"],
-                predictions=predictions
+                predictions=predictions,
+                template=template,
+                user_inputs=user_inputs,
+                rendered_sections=rendered_sections,
             )
             stored_assets = self.storage.store_assets(job_record["id"], assets)
             
@@ -526,6 +534,9 @@ class NanoBananaImageOrchestrator:
         job: Dict[str, Any],
         job_id: str,
         predictions: List[Dict[str, Any]],
+        template: Optional[Dict[str, Any]] = None,
+        user_inputs: Optional[Dict[str, str]] = None,
+        rendered_sections: Optional[Dict[str, str]] = None,
     ) -> List[Dict[str, Any]]:
         """Process Vertex AI Imagen predictions into asset format."""
         account_id = job.get("account_id") or job.get("accountId")
@@ -570,7 +581,123 @@ class NanoBananaImageOrchestrator:
             })
         
         logger.info(f"✅ Processed and uploaded {len(assets)} assets from Vertex AI predictions")
+        
+        # Phase 1: Quality validation (if enabled)
+        if self.feature_flags.is_enabled("quality_validator_enabled"):
+            assets = self._validate_asset_quality(
+                assets=assets,
+                job=job,
+                job_id=job_id,
+                template=template or {},
+                user_inputs=user_inputs or {},
+                rendered_sections=rendered_sections or {},
+            )
+        
         return assets
+
+    def _validate_asset_quality(
+        self,
+        *,
+        assets: List[Dict[str, Any]],
+        job: Dict[str, Any],
+        job_id: str,
+        template: Dict[str, Any],
+        user_inputs: Dict[str, str],
+        rendered_sections: Dict[str, str],
+    ) -> List[Dict[str, Any]]:
+        """
+        Validate quality of generated assets (Phase 1).
+        
+        Returns assets with quality scores and issues added.
+        Handles feature flag configuration for different modes.
+        """
+        try:
+            # Get validation config
+            config = self.feature_flags.get_config("quality_validator_enabled")
+            mode = config.get("mode", "log_only")
+            min_threshold = config.get("min_score_threshold", 60.0)
+            block_low_quality = config.get("block_low_quality", False)
+            
+            # Get prompt for validation
+            prompt = rendered_sections.get("base", "")
+            
+            validated_assets = []
+            
+            for asset in assets:
+                asset_id = asset.get("id", "pending")  # May not have ID yet if not stored
+                
+                # Run validation
+                validation_result = self.quality_validator.validate_asset(
+                    asset_url=asset["asset_url"],
+                    job_id=job_id,
+                    asset_id=asset_id,
+                    prompt=prompt,
+                    user_inputs=user_inputs,
+                    template=template,
+                )
+                
+                # Add validation results to asset
+                asset["quality_score"] = validation_result["quality_score"]
+                asset["quality_issues"] = validation_result["issues"]
+                asset["is_acceptable"] = validation_result["is_acceptable"]
+                asset["validation_metadata"] = validation_result["metadata"]
+                
+                # Handle based on mode
+                if mode == "log_only":
+                    # Just log, don't block
+                    if not validation_result["is_acceptable"]:
+                        logger.warning(
+                            f"⚠️  Asset quality below threshold: "
+                            f"score={validation_result['quality_score']:.1f}, "
+                            f"issues={validation_result['issues']}"
+                        )
+                    else:
+                        logger.info(
+                            f"✅ Asset quality acceptable: "
+                            f"score={validation_result['quality_score']:.1f}"
+                        )
+                    validated_assets.append(asset)
+                
+                elif mode == "warn":
+                    # Add warning flag but don't block
+                    if not validation_result["is_acceptable"]:
+                        asset["quality_warning"] = True
+                        logger.warning(
+                            f"⚠️  Asset flagged with quality warning: "
+                            f"score={validation_result['quality_score']:.1f}"
+                        )
+                    validated_assets.append(asset)
+                
+                elif mode == "block":
+                    # Only include assets that pass validation
+                    if validation_result["is_acceptable"]:
+                        validated_assets.append(asset)
+                        logger.info(
+                            f"✅ Asset passed quality check: "
+                            f"score={validation_result['quality_score']:.1f}"
+                        )
+                    else:
+                        logger.error(
+                            f"❌ Blocking low-quality asset: "
+                            f"score={validation_result['quality_score']:.1f}, "
+                            f"issues={validation_result['issues']}"
+                        )
+                        # Could trigger auto-regeneration here in future
+                else:
+                    # Unknown mode, default to log_only behavior
+                    validated_assets.append(asset)
+            
+            logger.info(
+                f"🔍 Quality validation complete: {len(validated_assets)}/{len(assets)} assets passed"
+            )
+            
+            return validated_assets
+            
+        except Exception as e:
+            logger.error(f"Quality validation failed: {e}", exc_info=True)
+            # On error, return original assets (graceful degradation)
+            logger.warning("⚠️  Returning unvalidated assets due to validation error")
+            return assets
 
     def _normalize_assets(
         self,

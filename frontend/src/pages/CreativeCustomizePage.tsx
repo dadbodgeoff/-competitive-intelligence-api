@@ -49,6 +49,9 @@ export function CreativeCustomizePage() {
 
   const handleGenerate = useCallback(async (payload: StartGenerationRequest) => {
     try {
+      // Set a temporary "starting" state immediately for instant feedback
+      setCurrentJobId('starting');
+      
       const result = await generateMutation.mutateAsync(payload);
       setCurrentJobId(result.job_id);
       
@@ -57,6 +60,7 @@ export function CreativeCustomizePage() {
         description: 'Your creative assets are being generated...',
       });
     } catch (error) {
+      setCurrentJobId(undefined); // Clear the starting state on error
       toast({
         variant: 'destructive',
         title: 'Generation Failed',
@@ -142,11 +146,37 @@ export function CreativeCustomizePage() {
 
         {/* Generation Progress - Show when generating */}
         {isGenerating && currentJobId && (
-          <GenerationProgress
-            jobId={currentJobId}
-            onComplete={handleGenerationComplete}
-            onError={handleGenerationError}
-          />
+          currentJobId === 'starting' ? (
+            <Card className="bg-white/5 border-primary-500/50">
+              <CardContent className="p-8">
+                <div className="flex flex-col items-center justify-center space-y-4">
+                  <div className="relative">
+                    <Sparkles className="h-12 w-12 text-primary-500 animate-pulse" />
+                    <div className="absolute inset-0 animate-ping">
+                      <Sparkles className="h-12 w-12 text-primary-500 opacity-20" />
+                    </div>
+                  </div>
+                  <div className="text-center space-y-2">
+                    <h3 className="text-xl font-bold text-white">Starting Generation...</h3>
+                    <p className="text-slate-400">
+                      Preparing your creative assets with AI magic ✨
+                    </p>
+                  </div>
+                  <div className="flex gap-1">
+                    <div className="h-2 w-2 rounded-full bg-primary-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <div className="h-2 w-2 rounded-full bg-primary-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="h-2 w-2 rounded-full bg-primary-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <GenerationProgress
+              jobId={currentJobId}
+              onComplete={handleGenerationComplete}
+              onError={handleGenerationError}
+            />
+          )
         )}
 
         {/* Completed Assets - Show when done */}

@@ -36,14 +36,14 @@ class NanoBananaClient:
         timeout: float = DEFAULT_TIMEOUT,
         max_retries: int = DEFAULT_MAX_RETRIES,
     ) -> None:
-        # Use Vertex AI API for image generation
+        # Use Google AI Studio API for Gemini 3 Pro Image Preview
         self.base_url = (
             base_url
-            or os.getenv("NANO_BANANA_BASE_URL", "https://us-central1-aiplatform.googleapis.com")
+            or os.getenv("NANO_BANANA_BASE_URL", "https://generativelanguage.googleapis.com")
         ).rstrip("/")
 
-        # Use Vertex AI API key (prioritize Vertex AI over Google AI Studio)
-        self.api_key = api_key or os.getenv("VERTEX_AI_API_KEY") or os.getenv("GOOGLE_GEMINI_API_KEY")
+        # Use Google Gemini API key (prioritize GOOGLE_GEMINI_API_KEY)
+        self.api_key = api_key or os.getenv("GOOGLE_GEMINI_API_KEY") or os.getenv("VERTEX_AI_API_KEY")
         if not self.api_key:
             # Fallback to other possible key names
             self.api_key = os.getenv("GEMINI_API_KEY") or os.getenv("NANO_BANANA_API_KEY")
@@ -59,11 +59,11 @@ class NanoBananaClient:
             raise ValueError("NANO_BANANA_BASE_URL environment variable is required")
         if not self.api_key:
             raise ValueError(
-                "VERTEX_AI_API_KEY (or GOOGLE_GEMINI_API_KEY / GEMINI_API_KEY / NANO_BANANA_API_KEY) is required"
+                "GOOGLE_GEMINI_API_KEY (or VERTEX_AI_API_KEY / GEMINI_API_KEY / NANO_BANANA_API_KEY) is required"
             )
 
         logger.info(
-            "✅ NanoBananaClient initialized (base_url=%s, timeout=%ss, model=imagen-3.0-generate-001)",
+            "✅ NanoBananaClient initialized (base_url=%s, timeout=%ss, model=gemini-3-pro-image-preview)",
             self.base_url,
             self.timeout,
         )
@@ -73,40 +73,42 @@ class NanoBananaClient:
     # ------------------------------------------------------------------ #
 
     async def create_job(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Create a new creative generation job using Vertex AI Imagen."""
-        logger.info("🎨 Dispatching Vertex AI Imagen job")
+        """Create a new creative generation job using Gemini 3 Pro Image Preview."""
+        logger.info("🎨 Dispatching Gemini 3 Pro Image Preview job")
 
-        # Convert our internal payload format to Vertex AI format
-        vertex_payload = self._convert_to_vertex_format(payload)
+        # Convert our internal payload format to Gemini API format
+        gemini_payload = self._convert_to_gemini_format(payload)
 
-        # Extract project ID from environment or use default
-        project_id = os.getenv("VERTEX_AI_PROJECT_ID", "gothic-album-474117-a7")
-        location = os.getenv("VERTEX_AI_LOCATION", "us-central1")
-
-        response = await self._vertex_request(
+        # Use the Google AI Studio API endpoint for Gemini 3 Pro Image Preview
+        response = await self._gemini_request(
             "POST",
-            f"/v1/projects/{project_id}/locations/{location}/publishers/google/models/imagen-3.0-generate-001:predict",
-            json_body=vertex_payload,
+            "/v1beta/models/gemini-3-pro-image-preview:generateContent",
+            json_body=gemini_payload,
             expected_status=200,
         )
         
-        # Vertex AI Imagen returns predictions synchronously, not a job ID
-        # We need to create a synthetic job ID and return the predictions
-        import uuid
+        # Gemini returns content synchronously, not a job ID
+        # We need to create a synthetic job ID and extract the images
         job_id = str(uuid.uuid4())
         
-        logger.info(f"✅ Vertex AI Imagen returned {len(response.get('predictions', []))} predictions")
+        # Extract images from Gemini response
+        predictions = self._extract_images_from_gemini_response(response)
+        
+        logger.info(f"✅ Gemini 3 Pro Image Preview returned {len(predictions)} images")
         
         return {
             "id": job_id,
             "job_id": job_id,
             "status": "completed",
-            "predictions": response.get("predictions", []),
-            "metadata": response.get("metadata", {})
+            "predictions": predictions,
+            "metadata": {
+                "model": "gemini-3-pro-image-preview",
+                "modelVersion": response.get("modelVersion", "3.0")
+            }
         }
 
-    def _convert_to_vertex_format(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Convert internal payload format to Vertex AI Imagen API format."""
+    def _convert_to_gemini_format(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        """Convert internal payload format to Gemini API format."""
 
         # Extract the main prompt from rendered sections
         prompt_sections = payload.get("prompt", {})
@@ -135,9 +137,12 @@ class NanoBananaClient:
             "You are the Chief Creative Officer of the world's most prestigious marketing agency. "
             "Your work has won countless awards and sets industry standards. You must honor all "
             "client specifications, brand guidelines, and creative requirements exactly as provided. "
-            "However, you have the creative freedom to enhance lighting, composition, atmosphere, "
-            "and visual details to exceed expectations and deliver magazine-quality results that "
-            "make clients say 'wow'. Every image you create should be portfolio-worthy and "
+            "\n\nCRITICAL: You must NEVER modify, rephrase, or enhance any user-provided business content "
+            "including menu item names, special offers, pricing, headlines, dates, or promotional text. "
+            "These are the client's exact words and must appear verbatim in the image."
+            "\n\nHowever, you have the creative freedom to enhance lighting, composition, atmosphere, "
+            "scene setting, and visual details to exceed expectations and deliver magazine-quality "
+            "results that make clients say 'wow'. Every image you create should be portfolio-worthy and "
             "demonstrate mastery of professional photography, lighting, and visual storytelling."
         )
         
@@ -146,29 +151,50 @@ class NanoBananaClient:
         if style_notes:
             full_prompt += f"Style requirements: {style_notes}. "
         full_prompt += f"Main requirements: {main_prompt}"
+        
+        # Add negative prompt guidance
+        full_prompt += "\n\nAvoid: blurry, low quality, distorted, ugly, amateur photography."
 
-        # Parse dimensions to determine aspect ratio
+        # Parse dimensions for aspect ratio
         width, height = map(int, dimensions.split('x'))
         aspect_ratio = f"{width}:{height}" if width != height else "1:1"
 
-        # Vertex AI Imagen API format
-        vertex_payload = {
-            "instances": [
-                {
-                    "prompt": full_prompt
-                }
-            ],
-            "parameters": {
-                "sampleCount": variants,
-                "aspectRatio": aspect_ratio,
-                "negativePrompt": "blurry, low quality, distorted, ugly",
-                "personGeneration": "allow_adult"
-            }
+        # Gemini API format (generateContent)
+        # Note: Gemini 3 Pro Image Preview uses a simpler format
+        gemini_payload = {
+            "contents": [{
+                "parts": [{
+                    "text": full_prompt
+                }]
+            }]
         }
 
-        return vertex_payload
+        return gemini_payload
+    
+    def _extract_images_from_gemini_response(self, response: Dict[str, Any]) -> list:
+        """Extract base64 images from Gemini API response."""
+        predictions = []
+        
+        candidates = response.get("candidates", [])
+        for candidate in candidates:
+            content = candidate.get("content", {})
+            parts = content.get("parts", [])
+            
+            for part in parts:
+                # Gemini returns images as inline_data with mime_type and data
+                if "inlineData" in part:
+                    inline_data = part["inlineData"]
+                    mime_type = inline_data.get("mimeType", "image/png")
+                    image_data = inline_data.get("data", "")
+                    
+                    predictions.append({
+                        "bytesBase64Encoded": image_data,
+                        "mimeType": mime_type
+                    })
+        
+        return predictions
 
-    async def _vertex_request(
+    async def _gemini_request(
         self,
         method: str,
         path: str,
@@ -176,9 +202,9 @@ class NanoBananaClient:
         json_body: Optional[Dict[str, Any]] = None,
         expected_status: Optional[int] = None,
     ) -> Dict[str, Any]:
-        """Execute an HTTP request to Vertex AI with API key authentication."""
+        """Execute an HTTP request to Google AI Studio with API key authentication."""
         url = f"{self.base_url}{path}"
-        # For Vertex AI, API key goes as query parameter
+        # For Google AI Studio, API key goes as query parameter
         if "?" in url:
             url += f"&key={self.api_key}"
         else:
@@ -216,7 +242,7 @@ class NanoBananaClient:
                 status = exc.response.status_code
                 body = exc.response.text
                 logger.error(
-                    "Vertex AI HTTP error (%s %s, status=%s): %s",
+                    "Gemini API HTTP error (%s %s, status=%s): %s",
                     method,
                     path,
                     status,
@@ -227,7 +253,7 @@ class NanoBananaClient:
             except httpx.RequestError as exc:
                 last_error = exc
                 logger.warning(
-                    "Vertex AI request error (%s %s, attempt %s/%s): %s",
+                    "Gemini API request error (%s %s, attempt %s/%s): %s",
                     method,
                     path,
                     attempt,
@@ -237,7 +263,7 @@ class NanoBananaClient:
             except Exception as exc:  # noqa: BLE001
                 last_error = exc
                 logger.error(
-                    "Unexpected Vertex AI client error (%s %s): %s",
+                    "Unexpected Gemini API client error (%s %s): %s",
                     method,
                     path,
                     exc,
@@ -246,7 +272,7 @@ class NanoBananaClient:
 
         if last_error:
             raise last_error
-        raise RuntimeError("Vertex AI request failed without raising an error")
+        raise RuntimeError("Gemini API request failed without raising an error")
 
     async def get_job(self, job_id: str) -> Dict[str, Any]:
         """Retrieve job status metadata."""

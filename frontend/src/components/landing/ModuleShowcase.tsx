@@ -255,13 +255,46 @@ export const ModuleShowcase: React.FC = () => {
   const currentModule = modules.find((m) => m.id === activeModule) || modules[0];
 
   return (
-    <section className="py-12 md:py-16 px-4 bg-[#121212]">
+    <section className="py-10 md:py-14 px-4 bg-[#121212]">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-10 md:mb-12">
-          <p className="text-xl md:text-3xl font-bold text-white tracking-tight">
-            Eight powerful modules working together to drive profitability.
+        {/* Callout + Creative Marketing Images */}
+        <div className="text-center mb-6">
+          <p className="text-slate-300 text-base md:text-lg">
+            See how our <span className="text-primary-400 font-semibold">Creative Marketing</span> module saves you time and money
           </p>
+        </div>
+
+        {/* Creative Marketing Images - Staggered layout with label on center */}
+        <div className="mb-8 md:mb-10 grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto items-center">
+          <div className="rounded-xl overflow-hidden border border-white/10 hover:border-primary-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary-500/10 aspect-video bg-[#1E1E1E] sm:translate-y-3">
+            <img
+              src="/examples/creative-example-1.jpg"
+              alt="AI-generated Taco Tuesday marketing creative"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="rounded-xl overflow-hidden border-2 border-primary-500/30 hover:border-primary-500/60 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-primary-500/20 aspect-video bg-[#1E1E1E] sm:-translate-y-1 relative">
+            {/* Creative Marketing label centered on middle image */}
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-sm border border-primary-500/40">
+                <Icon icon={Sparkles} size="xs" variant="primary" />
+                <span className="text-xs font-semibold text-primary-300">Creative Marketing</span>
+              </div>
+            </div>
+            <img
+              src="/examples/creative-example-2.jpg"
+              alt="AI-generated live music event marketing creative"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-xl" />
+          </div>
+          <div className="rounded-xl overflow-hidden border border-white/10 hover:border-primary-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary-500/10 aspect-video bg-[#1E1E1E] sm:translate-y-3">
+            <img
+              src="/examples/creative-example-3.jpg"
+              alt="AI-generated sashimi special marketing creative"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
 
         {/* Mobile Dropdown */}
@@ -300,17 +333,17 @@ export const ModuleShowcase: React.FC = () => {
           )}
         </div>
 
-        {/* Desktop Tab Navigation */}
-        <div className="hidden md:block border-b border-white/10 mb-14">
-          <div className="flex justify-center -mb-px">
+        {/* Desktop Tab Navigation - Bolder styling */}
+        <div className="hidden md:block mb-10">
+          <div className="flex justify-center gap-1 p-1.5 bg-white/5 rounded-xl max-w-fit mx-auto">
             {modules.map((module) => (
               <button
                 key={module.id}
                 onClick={() => setActiveModule(module.id)}
-                className={`px-5 lg:px-7 py-4 text-sm font-medium border-b-2 transition-all duration-200 whitespace-nowrap ${
+                className={`px-4 lg:px-5 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 whitespace-nowrap ${
                   activeModule === module.id
-                    ? 'border-primary-400 text-primary-400'
-                    : 'border-transparent text-[#A8B1B9] hover:text-white hover:border-white/20'
+                    ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
                 {module.name}
@@ -320,7 +353,7 @@ export const ModuleShowcase: React.FC = () => {
         </div>
 
         {/* Content */}
-        <div className="grid md:grid-cols-2 gap-x-12 gap-y-10 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 max-w-5xl mx-auto">
           {currentModule.features.map((feature, index) => (
             <div key={index} className="flex gap-5 group">
               <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-primary-500/10 flex items-center justify-center transition-all duration-300 group-hover:bg-primary-500/20 group-hover:scale-105">
@@ -338,35 +371,7 @@ export const ModuleShowcase: React.FC = () => {
           ))}
         </div>
 
-        {/* Example Images for Creative Marketing */}
-        {activeModule === 'creative' && (
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <div className="rounded-xl overflow-hidden border border-white/10 hover:border-primary-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary-500/10 aspect-square bg-[#1E1E1E]">
-              <img
-                src="/examples/creative-example-1.jpg"
-                alt="AI-generated restaurant marketing creative example 1"
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
-            </div>
-            <div className="rounded-xl overflow-hidden border border-white/10 hover:border-primary-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary-500/10 aspect-square bg-[#1E1E1E]">
-              <img
-                src="/examples/creative-example-2.jpg"
-                alt="AI-generated restaurant marketing creative example 2"
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
-            </div>
-            <div className="rounded-xl overflow-hidden border border-white/10 hover:border-primary-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary-500/10 aspect-square bg-[#1E1E1E]">
-              <img
-                src="/examples/creative-example-3.jpg"
-                alt="AI-generated sashimi special marketing creative"
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
-            </div>
-          </div>
-        )}
+
       </div>
     </section>
   );

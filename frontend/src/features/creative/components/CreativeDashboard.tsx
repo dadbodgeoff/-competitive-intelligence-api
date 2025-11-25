@@ -305,7 +305,7 @@ export function CreativeDashboard() {
     <CreativeLayout activeTab={activeTab} onTabChange={setActiveTab} tabCounts={tabCounts} filterSlot={verticalFilterSlot}>
       <div className="space-y-10">
         {/* Quick Action Buttons */}
-        <div className="flex flex-wrap justify-end gap-3">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-end gap-3">
           <Button
             onClick={() => window.location.href = '/creative/brands'}
             variant="outline"

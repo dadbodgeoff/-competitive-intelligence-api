@@ -123,47 +123,48 @@ export function InvoiceListPage() {
           <CardContent className="pt-6">
             <div className="flex flex-col gap-4">
               {/* Search and Filters Row */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="space-y-4">
                 {/* Search */}
-                <div className="md:col-span-2">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                    <Input
-                      placeholder="Search by vendor or invoice number..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 bg-obsidian border-white/10 text-white placeholder:text-slate-500"
-                    />
-                  </div>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Input
+                    placeholder="Search by vendor or invoice number..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10 bg-obsidian border-white/10 text-white placeholder:text-slate-500"
+                  />
                 </div>
 
-                {/* Vendor Filter */}
-                <Select value={selectedVendor} onValueChange={setSelectedVendor}>
-                  <SelectTrigger className="bg-obsidian border-white/10 text-white">
-                    <SelectValue placeholder="All Vendors" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Vendors</SelectItem>
-                    {uniqueVendors.map((vendor) => (
-                      <SelectItem key={vendor} value={vendor}>
-                        {vendor}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {/* Filters Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Vendor Filter */}
+                  <Select value={selectedVendor} onValueChange={setSelectedVendor}>
+                    <SelectTrigger className="bg-obsidian border-white/10 text-white">
+                      <SelectValue placeholder="All Vendors" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Vendors</SelectItem>
+                      {uniqueVendors.map((vendor) => (
+                        <SelectItem key={vendor} value={vendor}>
+                          {vendor}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
 
-                {/* Status Filter */}
-                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                  <SelectTrigger className="bg-obsidian border-white/10 text-white">
-                    <SelectValue placeholder="All Statuses" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Statuses</SelectItem>
-                    <SelectItem value="parsed">Parsed</SelectItem>
-                    <SelectItem value="reviewed">Reviewed</SelectItem>
-                    <SelectItem value="approved">Approved</SelectItem>
-                  </SelectContent>
-                </Select>
+                  {/* Status Filter */}
+                  <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                    <SelectTrigger className="bg-obsidian border-white/10 text-white">
+                      <SelectValue placeholder="All Statuses" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Statuses</SelectItem>
+                      <SelectItem value="parsed">Parsed</SelectItem>
+                      <SelectItem value="reviewed">Reviewed</SelectItem>
+                      <SelectItem value="approved">Approved</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               {/* Active Filters & Stats */}

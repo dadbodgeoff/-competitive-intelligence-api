@@ -180,8 +180,8 @@ export function DataTable<T>({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between px-2">
-          <p className="text-sm text-slate-400">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-2">
+          <p className="text-sm text-slate-400 text-center sm:text-left">
             Showing {currentPage * pageSize + 1} to {Math.min((currentPage + 1) * pageSize, data.length)} of {data.length} items
           </p>
           

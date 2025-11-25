@@ -569,7 +569,7 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
               {/* Shape */}
               <div className="space-y-2 flex-1">
                 <Label className="text-xs text-slate-400 uppercase tracking-wide">Shape</Label>
-                <div className="flex gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <ShapeOption
                     label="Square"
                     icon={Square}

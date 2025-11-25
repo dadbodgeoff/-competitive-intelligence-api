@@ -18,13 +18,13 @@ export function AppShell({
   children, 
   maxWidth = 'default',
 }: AppShellProps) {
-  // BRAND STANDARD: 32px horizontal padding, max-width 1200px center-aligned
+  // BRAND STANDARD: 32px horizontal padding on desktop, 16px on mobile
   const containerClass = 
     maxWidth === 'full' 
-      ? 'w-full px-8' 
+      ? 'w-full px-4 md:px-8' 
       : maxWidth === 'wide'
-      ? 'container mx-auto px-8 max-w-[1600px]'
-      : 'container mx-auto px-8 max-w-[1200px]';
+      ? 'container mx-auto px-4 md:px-8 max-w-[1600px]'
+      : 'container mx-auto px-4 md:px-8 max-w-[1200px]';
   
   return (
     <SidebarProvider>
@@ -32,8 +32,8 @@ export function AppShell({
         {/* Sidebar - BRAND STANDARD: 240-280px width */}
         <AppSidebar />
         
-        {/* Main Content Area - BRAND STANDARD: 32px gap from sidebar */}
-        <div className="flex-1 flex flex-col min-w-0 ml-8">
+        {/* Main Content Area - BRAND STANDARD: 32px gap from sidebar on desktop, none on mobile */}
+        <div className="flex-1 flex flex-col min-w-0 ml-0 md:ml-8">
           {/* Header with Breadcrumbs - BRAND STANDARD: 64px height */}
           <div className="sticky top-0 z-10 border-b border-white/10 backdrop-blur-sm" style={{ height: '64px', backgroundColor: '#1E1E1E' }}>
             <div className={containerClass}>

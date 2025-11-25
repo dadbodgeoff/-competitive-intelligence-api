@@ -751,3 +751,47 @@ html {
     color: black;
   }
 }
+
+/* ===== MOBILE RESPONSIVE OVERRIDES ===== */
+@media (max-width: 640px) {
+  /* Remove minimum card sizes on mobile */
+  .card-enterprise,
+  .stat-box {
+    min-width: auto;
+    min-height: auto;
+  }
+  
+  /* Reduce section padding on mobile */
+  section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  /* Smaller headings on mobile */
+  h1 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+  
+  /* Full-width buttons on mobile */
+  .btn-cta-primary,
+  .btn-cta-secondary {
+    width: 100%;
+  }
+  
+  /* Reduce modal padding on mobile */
+  .modal-content {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+  
+  .modal-body {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

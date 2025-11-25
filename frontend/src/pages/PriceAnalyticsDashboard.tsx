@@ -326,7 +326,7 @@ export function PriceAnalyticsDashboard() {
           <Card className="bg-card-dark border-white/10">
             <CardContent className="pt-6">
               <div className="flex flex-col gap-4">
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col gap-4">
                   <div className="flex-1 relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <Input
@@ -336,28 +336,30 @@ export function PriceAnalyticsDashboard() {
                       className="pl-10 bg-obsidian/70 border-white/10 text-white placeholder:text-slate-500"
                     />
                   </div>
-                  <Select value={trendFilter} onValueChange={(v: any) => setTrendFilter(v)}>
-                    <SelectTrigger className="w-48 bg-obsidian/70 border-white/10 text-white">
-                      <SelectValue placeholder="Filter by trend" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Items</SelectItem>
-                      <SelectItem value="increasing">Price Increasing</SelectItem>
-                      <SelectItem value="decreasing">Price Decreasing</SelectItem>
-                      <SelectItem value="stable">Price Stable</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select value={daysBack.toString()} onValueChange={(v) => setDaysBack(parseInt(v))}>
-                    <SelectTrigger className="w-32 bg-obsidian/70 border-white/10 text-white">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="30">30 days</SelectItem>
-                      <SelectItem value="60">60 days</SelectItem>
-                      <SelectItem value="90">90 days</SelectItem>
-                      <SelectItem value="180">180 days</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Select value={trendFilter} onValueChange={(v: any) => setTrendFilter(v)}>
+                      <SelectTrigger className="w-full sm:w-48 bg-obsidian/70 border-white/10 text-white">
+                        <SelectValue placeholder="Filter by trend" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Items</SelectItem>
+                        <SelectItem value="increasing">Price Increasing</SelectItem>
+                        <SelectItem value="decreasing">Price Decreasing</SelectItem>
+                        <SelectItem value="stable">Price Stable</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={daysBack.toString()} onValueChange={(v) => setDaysBack(parseInt(v))}>
+                      <SelectTrigger className="w-full sm:w-32 bg-obsidian/70 border-white/10 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="30">30 days</SelectItem>
+                        <SelectItem value="60">60 days</SelectItem>
+                        <SelectItem value="90">90 days</SelectItem>
+                        <SelectItem value="180">180 days</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 
                 <FilterChips

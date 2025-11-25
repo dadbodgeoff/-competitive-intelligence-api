@@ -338,33 +338,43 @@ from pathlib import Path
 frontend_dist = Path(__file__).parent.parent / "frontend" / "dist"
 if frontend_dist.exists() and os.getenv("ENVIRONMENT") == "production":
     logger.info(f"📦 Serving frontend from {frontend_dist}")
+    logger.info(f"📦 Frontend dist exists: {frontend_dist.exists()}")
+    logger.info(f"📦 Frontend dist contents: {list(frontend_dist.iterdir()) if frontend_dist.exists() else 'N/A'}")
     
     # Serve static assets (JS, CSS, images)
-    app.mount("/assets", StaticFiles(directory=str(frontend_dist / "assets")), name="assets")
+    assets_dir = frontend_dist / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+        logger.info(f"✅ Mounted /assets from {assets_dir}")
     
     # Serve legal documents (PDFs for Terms/Privacy)
     legal_dir = frontend_dist / "legal"
     if legal_dir.exists():
         app.mount("/legal", StaticFiles(directory=str(legal_dir)), name="legal")
-        logger.info(f"📄 Serving legal documents from {legal_dir}")
+        logger.info(f"📄 Mounted /legal from {legal_dir}")
     
-    # Serve example images
+    # Serve example images - IMPORTANT: Mount before catch-all route
     examples_dir = frontend_dist / "examples"
     if examples_dir.exists():
         app.mount("/examples", StaticFiles(directory=str(examples_dir)), name="examples")
-        logger.info(f"🖼️ Serving example images from {examples_dir}")
+        logger.info(f"🖼️ Mounted /examples from {examples_dir}")
+        logger.info(f"🖼️ Examples contents: {list(examples_dir.iterdir())}")
+    else:
+        logger.warning(f"⚠️ Examples directory not found at {examples_dir}")
     
     # Serve placeholder images
     placeholders_dir = frontend_dist / "placeholders"
     if placeholders_dir.exists():
         app.mount("/placeholders", StaticFiles(directory=str(placeholders_dir)), name="placeholders")
+        logger.info(f"🖼️ Mounted /placeholders from {placeholders_dir}")
     
-    # Serve index.html for all other routes (SPA routing)
+    # IMPORTANT: Catch-all route MUST be registered LAST
+    # This serves index.html for all other routes (SPA routing)
     @app.get("/{full_path:path}")
     async def serve_frontend(full_path: str):
         """Serve React SPA for all non-API routes"""
-        # Don't intercept API routes or health checks
-        if full_path.startswith("api/") or full_path == "health":
+        # Don't intercept API routes, health checks, or static file paths
+        if full_path.startswith(("api/", "assets/", "examples/", "placeholders/", "legal/")) or full_path == "health":
             raise HTTPException(status_code=404)
         
         index_file = frontend_dist / "index.html"

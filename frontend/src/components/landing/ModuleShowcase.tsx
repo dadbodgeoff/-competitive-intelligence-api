@@ -264,35 +264,41 @@ export const ModuleShowcase: React.FC = () => {
           </p>
         </div>
 
-        {/* Creative Marketing Images - Staggered layout with label on center */}
+        {/* Creative Marketing Images - Staggered layout with label above center card */}
         <div className="mb-8 md:mb-10 grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto items-center">
           <div className="rounded-xl overflow-hidden border border-white/10 hover:border-primary-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary-500/10 aspect-video bg-[#1E1E1E] sm:translate-y-3">
             <img
               src="/examples/creative-example-1.jpg"
               alt="AI-generated Taco Tuesday marketing creative"
               className="w-full h-full object-cover"
+              loading="lazy"
             />
           </div>
-          <div className="rounded-xl overflow-hidden border-2 border-primary-500/30 hover:border-primary-500/60 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-primary-500/20 aspect-video bg-[#1E1E1E] sm:-translate-y-1 relative">
-            {/* Creative Marketing label centered on middle image */}
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/70 backdrop-blur-sm border border-primary-500/40">
+          {/* Center card with label positioned ABOVE the card */}
+          <div className="flex flex-col items-center sm:-translate-y-1">
+            {/* Creative Marketing label - positioned above the card */}
+            <div className="mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/30">
                 <Icon icon={Sparkles} size="xs" variant="primary" />
                 <span className="text-xs font-semibold text-primary-300">Creative Marketing</span>
               </div>
             </div>
-            <img
-              src="/examples/creative-example-2.jpg"
-              alt="AI-generated live music event marketing creative"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-xl" />
+            <div className="w-full rounded-xl overflow-hidden border-2 border-primary-500/30 hover:border-primary-500/60 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-primary-500/20 aspect-video bg-[#1E1E1E] relative">
+              <img
+                src="/examples/creative-example-2.jpg"
+                alt="AI-generated live music event marketing creative"
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-xl" />
+            </div>
           </div>
           <div className="rounded-xl overflow-hidden border border-white/10 hover:border-primary-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary-500/10 aspect-video bg-[#1E1E1E] sm:translate-y-3">
             <img
               src="/examples/creative-example-3.jpg"
               alt="AI-generated sashimi special marketing creative"
               className="w-full h-full object-cover"
+              loading="lazy"
             />
           </div>
         </div>

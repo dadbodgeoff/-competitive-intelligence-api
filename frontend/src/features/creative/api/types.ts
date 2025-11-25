@@ -26,6 +26,9 @@ export interface TemplateSummary {
   id: string;
   slug: string;
   display_name?: string | null;
+  description?: string | null;
+  use_case?: string | null;
+  best_for?: string[] | null;
   variation_tags: string[];
   input_schema: TemplateInputSchema;
   prompt_version?: string | null;

@@ -19,7 +19,7 @@ export function PriceAlertsPage() {
   return (
     <AppShell maxWidth="wide">
       {isLoading ? (
-        <div className="flex h-[40vh] items-center justify-center text-gray-400">
+        <div className="flex h-[40vh] items-center justify-center text-slate-400">
           Loading alerts...
         </div>
       ) : (
@@ -30,7 +30,7 @@ export function PriceAlertsPage() {
                 <AlertTriangle className="h-8 w-8 text-destructive" />
                 Price Alerts
               </PageHeading>
-              <p className="text-gray-400 mt-2">
+              <p className="text-slate-400 mt-2">
                 {alerts?.total_count || 0} items with unusual price increases
               </p>
             </div>
@@ -60,31 +60,31 @@ export function PriceAlertsPage() {
                         <h3 className="text-xl font-semibold text-white">
                           {alert.item_description}
                         </h3>
-                        <p className="text-gray-400 mt-1">{alert.vendor_name}</p>
+                        <p className="text-slate-400 mt-1">{alert.vendor_name}</p>
 
                         <div className="mt-4 space-y-2">
                           <div className="flex items-center gap-4">
                             <span className="text-destructive font-bold text-2xl">
                               +{alert.change_percent.toFixed(1)}%
                             </span>
-                            <span className="text-gray-400">
+                            <span className="text-slate-400">
                               vs {alert.trigger.replace('_', '-')} average
                             </span>
                           </div>
 
                           <div className="grid grid-cols-2 gap-4 mt-4">
                             <div>
-                              <p className="text-sm text-gray-500">Expected</p>
+                              <p className="text-sm text-slate-500">Expected</p>
                               <p className="text-lg text-white">${alert.expected_price.toFixed(2)}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Actual</p>
+                              <p className="text-sm text-slate-500">Actual</p>
                               <p className="text-lg text-destructive">${alert.actual_price.toFixed(2)}</p>
                             </div>
                           </div>
 
                           {alert.triggers && alert.triggers.length > 1 && (
-                            <div className="mt-2 text-sm text-gray-400">
+                            <div className="mt-2 text-sm text-slate-400">
                               Also exceeds 28-day threshold: +{alert.change_percent_28d?.toFixed(1)}%
                             </div>
                           )}
@@ -103,14 +103,14 @@ export function PriceAlertsPage() {
                   </Card>
                 ))
               ) : (
-                <div className="text-center py-12 text-gray-400">
+                <div className="text-center py-12 text-slate-400">
                   No active price alerts. Great job keeping costs under control!
                 </div>
               )}
             </TabsContent>
 
             <TabsContent value="all" className="space-y-4 mt-6">
-              <div className="text-center py-12 text-gray-400">
+              <div className="text-center py-12 text-slate-400">
                 All alerts view - coming soon
               </div>
             </TabsContent>

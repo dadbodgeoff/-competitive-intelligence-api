@@ -16,21 +16,40 @@ COPY frontend/ ./
 # Build frontend with explicit production mode
 RUN NODE_ENV=production npm run build
 
-# Python backend stage
-FROM python:3.11-slim
+# Python build stage (for packages that need compilation)
+# Use bookworm (stable) instead of trixie (testing) for faster mirrors
+FROM python:3.11-slim-bookworm AS python-builder
+
+WORKDIR /build
+
+# Use faster mirrors and install build dependencies
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    sed -i 's|http://deb.debian.org|http://cloudfront.debian.net|g' /etc/apt/sources.list.d/debian.sources && \
+    apt-get update && apt-get install -y \
+    gcc \
+    g++
+
+# Install Python packages with wheels and pip cache
+COPY requirements.txt .
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --prefix=/install -r requirements.txt
+
+# Python runtime stage
+# Use bookworm (stable) instead of trixie (testing) for faster mirrors
+FROM python:3.11-slim-bookworm
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+# Use faster mirrors and install runtime dependencies
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    sed -i 's|http://deb.debian.org|http://cloudfront.debian.net|g' /etc/apt/sources.list.d/debian.sources && \
+    apt-get update && apt-get install -y \
+    curl
 
-# Copy requirements and install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy installed packages from builder
+COPY --from=python-builder /install /usr/local
 
 # Copy backend code
 COPY api/ ./api/

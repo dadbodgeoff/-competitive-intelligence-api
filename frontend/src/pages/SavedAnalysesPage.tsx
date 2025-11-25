@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Clock, MapPin, Users, Sparkles, Calendar } from 'lucide-react';
+import { Clock, MapPin, Sparkles } from 'lucide-react';
 import { apiClient } from '@/services/api/client';
 import { AppShell } from '@/components/layout/AppShell';
-import { PageHeading } from '@/components/layout/PageHeading';
+import { ContentCard, ListContainer, EmptyState, CategoryBadge, SectionHeader } from '@/components/ui';
 
 interface SavedAnalysis {
   id: string;
@@ -18,6 +17,7 @@ interface SavedAnalysis {
 }
 
 export function SavedAnalysesPage() {
+  const navigate = useNavigate();
   const [analyses, setAnalyses] = useState<SavedAnalysis[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,121 +41,84 @@ export function SavedAnalysesPage() {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
     });
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusVariant = (status: string) => {
     switch (status) {
-      case 'completed':
-        return 'text-primary-500 bg-primary-500/10';
-      case 'processing':
-        return 'text-accent-400 bg-accent-500/10';
-      case 'failed':
-        return 'text-destructive bg-destructive/10';
-      default:
-        return 'text-slate-400 bg-slate-500/10';
+      case 'completed': return 'success' as const;
+      case 'processing': return 'accent' as const;
+      case 'failed': return 'danger' as const;
+      default: return 'default' as const;
+    }
+  };
+
+  const handleAnalysisClick = (analysis: SavedAnalysis) => {
+    if (analysis.status === 'completed') {
+      navigate(`/analysis/${analysis.id}/results`);
+    } else if (analysis.status === 'processing') {
+      navigate(`/analysis/${analysis.id}/progress`);
     }
   };
 
   return (
     <AppShell>
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <PageHeading className="mb-3">Saved Analyses</PageHeading>
-            <p className="text-lg text-slate-400">Review your past competitive analyses</p>
-          </div>
-          <Link to="/analysis/new">
-            <Button className="bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25">
-              <Sparkles className="h-4 w-4 mr-2" />
-              New Analysis
-            </Button>
-          </Link>
-        </div>
+      <div className="space-y-6">
+        <SectionHeader
+          title="Saved Analyses"
+          subtitle="Review your past competitive analyses"
+          size="lg"
+          actions={
+            <Link to="/analysis/new">
+              <Button className="bg-primary-500 hover:bg-primary-600 text-white">
+                <Sparkles className="h-4 w-4 mr-2" />
+                New Analysis
+              </Button>
+            </Link>
+          }
+        />
 
         {loading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
-            <p className="text-slate-400 mt-4">Loading analyses...</p>
+          <div className="flex items-center justify-center py-12 gap-3 text-slate-400">
+            <div className="w-5 h-5 border-2 border-slate-600 border-t-primary-500 rounded-full animate-spin" />
+            <span>Loading analyses...</span>
           </div>
         ) : analyses.length === 0 ? (
-          <Card className="bg-card-dark border-white/10">
-            <CardContent className="py-12 text-center">
-              <div className="flex flex-col items-center gap-4">
-                <div className="p-4 rounded-full bg-slate-500/10">
-                  <Clock className="h-12 w-12 text-slate-400" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-white mb-2">No analyses yet</h3>
-                  <p className="text-slate-400 mb-6">Start your first competitive analysis to see it here</p>
-                  <Link to="/analysis/new">
-                    <Button className="bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white">
-                      <Sparkles className="h-4 w-4 mr-2" />
-                      Start Analysis
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <EmptyState
+            icon={<Clock className="h-6 w-6" />}
+            title="No analyses yet"
+            description="Start your first competitive analysis to see it here"
+            action={
+              <Link to="/analysis/new">
+                <Button className="bg-primary-500 hover:bg-primary-600 text-white">
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Start Analysis
+                </Button>
+              </Link>
+            }
+          />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ListContainer gap="sm" animated>
             {analyses.map((analysis) => (
-              <Card
+              <ContentCard
                 key={analysis.id}
-                className="bg-card-dark border-white/10 hover:border-primary-500/50 transition-all duration-200 group"
-              >
-                <CardHeader>
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1">
-                      <CardTitle className="text-white flex items-center gap-2 mb-2">
-                        <MapPin className="h-4 w-4 text-primary-500" />
-                        {analysis.location}
-                      </CardTitle>
-                      <CardDescription className="text-slate-400 capitalize">
-                        {analysis.category}
-                      </CardDescription>
-                    </div>
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(
-                        analysis.status
-                      )}`}
-                    >
-                      {analysis.status}
-                    </span>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm text-slate-400">
-                      <Users className="h-4 w-4" />
-                      <span>{analysis.competitor_count} competitors analyzed</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-400">
-                      <Calendar className="h-4 w-4" />
-                      <span>{formatDate(analysis.created_at)}</span>
-                    </div>
-                    {analysis.status === 'completed' && (
-                      <Link to={`/analysis/${analysis.id}/results`}>
-                        <Button className="w-full mt-4 bg-gradient-to-r from-primary-500/10 to-primary-600/10 hover:from-primary-500/20 hover:to-primary-600/20 text-primary-500 border border-white/10">
-                          View Results
-                        </Button>
-                      </Link>
-                    )}
-                    {analysis.status === 'processing' && (
-                      <Link to={`/analysis/${analysis.id}/progress`}>
-                        <Button className="w-full mt-4 bg-gradient-to-r from-accent-500/10 to-accent-600/10 hover:from-accent-500/20 hover:to-accent-600/20 text-accent-400 border border-accent-500/30">
-                          View Progress
-                        </Button>
-                      </Link>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+                title={analysis.location}
+                description={`${analysis.competitor_count} competitors • ${formatDate(analysis.created_at)}`}
+                icon={<MapPin className="h-5 w-5" />}
+                badge={
+                  <CategoryBadge variant={getStatusVariant(analysis.status)} size="sm">
+                    {analysis.status}
+                  </CategoryBadge>
+                }
+                onClick={() => handleAnalysisClick(analysis)}
+                trailing={
+                  <span className="text-xs text-slate-500 capitalize">{analysis.category}</span>
+                }
+              />
             ))}
-          </div>
+          </ListContainer>
         )}
+      </div>
     </AppShell>
   );
 }

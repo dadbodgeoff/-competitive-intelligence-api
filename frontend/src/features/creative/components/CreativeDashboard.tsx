@@ -3,8 +3,11 @@ import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Filter } from 'lucide-react';
 import { CreativeLayout, type CreativeTab } from './CreativeLayout';
-import { ThemeCard } from './ThemeCard';
+import { ThemeCardImproved } from './ThemeCardImproved';
+import { ListContainer } from '@/components/ui';
 import { PromptPreviewDrawer } from './PromptPreviewDrawer';
 import { GenerationWizard } from './GenerationWizard';
 import { CreativeHistoryTable } from './CreativeHistoryTable';
@@ -62,6 +65,7 @@ const enhanceThemeDescription = (theme: ThemeSummary): string => {
 export function CreativeDashboard() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<CreativeTab>('campaigns');
+  const [restaurantVerticalFilter, setRestaurantVerticalFilter] = useState<string>('all');
   const [selectedThemeId, setSelectedThemeId] = useState<string>();
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>();
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -93,7 +97,31 @@ export function CreativeDashboard() {
     return base;
   }, [themesQuery.data]);
 
-  const filteredThemes = themesByCategory[activeTab] ?? [];
+  // Get unique restaurant verticals for campaigns category
+  const restaurantVerticals = useMemo(() => {
+    const verticalCounts = new Map<string, number>();
+    themesByCategory.campaigns.forEach((theme) => {
+      if (theme.restaurant_vertical) {
+        const count = verticalCounts.get(theme.restaurant_vertical) || 0;
+        verticalCounts.set(theme.restaurant_vertical, count + 1);
+      }
+    });
+    return Array.from(verticalCounts.keys()).sort((a, b) => {
+      const countDiff = (verticalCounts.get(b) || 0) - (verticalCounts.get(a) || 0);
+      return countDiff !== 0 ? countDiff : a.localeCompare(b);
+    });
+  }, [themesByCategory.campaigns]);
+
+  // Filter themes by category and restaurant vertical (for campaigns only)
+  const filteredThemes = useMemo(() => {
+    const categoryThemes = themesByCategory[activeTab] ?? [];
+    if (activeTab === 'campaigns' && restaurantVerticalFilter !== 'all') {
+      return categoryThemes.filter(
+        (theme) => theme.restaurant_vertical === restaurantVerticalFilter
+      );
+    }
+    return categoryThemes;
+  }, [themesByCategory, activeTab, restaurantVerticalFilter]);
 
   const tabCounts = useMemo(
     () =>
@@ -112,6 +140,11 @@ export function CreativeDashboard() {
       description: streamState.error,
     });
   }, [streamState.error, toast]);
+
+  // Reset vertical filter when changing tabs
+  useEffect(() => {
+    setRestaurantVerticalFilter('all');
+  }, [activeTab]);
 
   useEffect(() => {
     if (themesQuery.isLoading) return;
@@ -233,11 +266,46 @@ export function CreativeDashboard() {
     </Alert>
   ) : null;
 
+  // Restaurant vertical filter component
+  const verticalFilterSlot = activeTab === 'campaigns' && restaurantVerticals.length > 0 ? (
+    <div className="flex items-center gap-3 mb-4">
+      <Filter className="h-4 w-4 text-slate-400" />
+      <span className="text-sm text-slate-400">Filter by restaurant type:</span>
+      <Select
+        value={restaurantVerticalFilter}
+        onValueChange={setRestaurantVerticalFilter}
+      >
+        <SelectTrigger className="w-[200px] bg-obsidian/50 border-white/10 text-white">
+          <SelectValue placeholder="All Types" />
+        </SelectTrigger>
+        <SelectContent className="bg-obsidian border-white/10">
+          <SelectItem value="all" className="text-white hover:bg-white/10">
+            All Types ({themesByCategory.campaigns.length})
+          </SelectItem>
+          {restaurantVerticals.map((vertical) => {
+            const count = themesByCategory.campaigns.filter(
+              (t) => t.restaurant_vertical === vertical
+            ).length;
+            return (
+              <SelectItem
+                key={vertical}
+                value={vertical}
+                className="text-white hover:bg-white/10"
+              >
+                {vertical} ({count})
+              </SelectItem>
+            );
+          })}
+        </SelectContent>
+      </Select>
+    </div>
+  ) : null;
+
   return (
-    <CreativeLayout activeTab={activeTab} onTabChange={setActiveTab} tabCounts={tabCounts}>
+    <CreativeLayout activeTab={activeTab} onTabChange={setActiveTab} tabCounts={tabCounts} filterSlot={verticalFilterSlot}>
       <div className="space-y-10">
         {/* Quick Action Buttons */}
-        <div className="flex justify-end gap-3">
+        <div className="flex flex-wrap justify-end gap-3">
           <Button
             onClick={() => window.location.href = '/creative/brands'}
             variant="outline"
@@ -253,18 +321,26 @@ export function CreativeDashboard() {
             View History
           </Button>
           <Button
+            onClick={() => window.location.href = '/creative/custom'}
+            variant="outline"
+            className="border-primary-500/50 text-primary-300 hover:bg-primary-500/10"
+          >
+            <span className="mr-2">🎨</span>
+            Custom Prompt
+          </Button>
+          <Button
             onClick={() => window.location.href = '/creative/generate'}
             className="bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25"
           >
             <span className="mr-2">✨</span>
-            Generate New Asset
+            Use Templates
           </Button>
         </div>
 
         {themeSection}
 
         {/* Theme Cards with Expandable Templates */}
-        <div className="space-y-4">
+        <ListContainer gap="sm" animated>
           {filteredThemes.map((theme) => {
             // Create enhanced theme with better description
             const enhancedTheme = {
@@ -273,7 +349,7 @@ export function CreativeDashboard() {
             };
             
             return (
-              <ThemeCard
+              <ThemeCardImproved
                 key={theme.id}
                 theme={enhancedTheme}
                 templates={theme.id === selectedThemeId ? templates : []}
@@ -290,7 +366,7 @@ export function CreativeDashboard() {
               />
             );
           })}
-        </div>
+        </ListContainer>
 
         {/* Generation Wizard - Only show when template is selected */}
         {selectedTemplate && (

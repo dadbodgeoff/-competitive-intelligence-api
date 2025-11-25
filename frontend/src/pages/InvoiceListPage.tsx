@@ -23,6 +23,7 @@ import { useToast } from '@/hooks/use-toast';
 import { parseDataLoadError } from '@/utils/errorMessages';
 import { Plus, Search, FileText, Calendar, DollarSign, Loader2, Filter, X } from 'lucide-react';
 import { useInvoices } from '@/hooks/useInvoices';
+import { EmptyState } from '@/components/ui';
 
 export function InvoiceListPage() {
   const navigate = useNavigate();
@@ -216,22 +217,20 @@ export function InvoiceListPage() {
 
         {/* Empty State */}
         {!isLoading && invoices.length === 0 && (
-          <InvoiceCard variant="elevated">
-            <InvoiceCardContent className="py-12 text-center">
-              <FileText className="h-12 w-12 text-slate-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">No invoices yet</h3>
-              <p className="text-slate-400 mb-6">
-                Upload your first invoice to get started
-              </p>
+          <EmptyState
+            icon={<FileText className="h-6 w-6" />}
+            title="No invoices yet"
+            description="Upload your first invoice to get started tracking prices"
+            action={
               <Button
                 onClick={() => navigate('/invoices/upload')}
-                className="btn-primary"
+                className="bg-primary-500 hover:bg-primary-600"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Upload Invoice
               </Button>
-            </InvoiceCardContent>
-          </InvoiceCard>
+            }
+          />
         )}
 
         {/* Invoice Grid */}

@@ -2,6 +2,7 @@
 Price Analytics API Routes V2 - Source of Truth Pattern
 Thin controllers - business logic in service layer
 """
+import logging
 from fastapi import APIRouter, Depends, HTTPException, Query
 from api.middleware.auth import get_current_user
 from database.supabase_client import get_supabase_service_client
@@ -14,6 +15,8 @@ from services.background_tasks import (
     price_savings_key,
     warm_price_analytics_cache,
 )
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/analytics", tags=["price_analytics"])
 
@@ -216,7 +219,8 @@ async def get_item_purchase_history(
     Returns all purchases of this item with dates, vendors, prices
     """
     try:
-        service = PriceAnalyticsService()
+        supabase = get_supabase_service_client()
+        service = PriceAnalyticsService(supabase)
         history = service.get_item_purchase_history(current_user, item_description)
         
         return {
@@ -227,4 +231,6 @@ async def get_item_purchase_history(
         }
     except Exception as e:
         logger.error(f"Error fetching item history: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise ErrorSanitizer.create_http_exception(
+            e, status_code=500, user_message="Failed to fetch item purchase history"
+        )

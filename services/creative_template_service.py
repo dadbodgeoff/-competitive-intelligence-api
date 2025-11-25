@@ -33,7 +33,7 @@ class CreativeTemplateService:
         result = (
             self.client.table("creative_prompt_templates")
             .select(
-                "id, slug, name, display_name, variation_tags, input_schema, prompt_section, prompt_version, is_active, thumbnail_url, preview_image_url, example_output_url, usage_count, last_used_at"
+                "id, slug, name, display_name, description, use_case, best_for, variation_tags, input_schema, prompt_section, prompt_version, is_active, thumbnail_url, preview_image_url, example_output_url, usage_count, last_used_at"
             )
             .eq("theme_id", theme_id)
             .eq("is_active", True)

@@ -135,7 +135,7 @@ export const TemplatePreviewModal: React.FC<TemplatePreviewModalProps> = ({
             <Button
               onClick={onClose}
               variant="outline"
-              className="border-[#1E1E1E] text-[#A8B1B9] hover:text-white hover:bg-[#121212] h-10 px-5 text-sm"
+              className="border-white/10 text-[#A8B1B9] hover:text-white hover:bg-[#121212] h-10 px-5 text-sm"
             >
               Cancel
             </Button>

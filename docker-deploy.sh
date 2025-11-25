@@ -15,9 +15,10 @@ fi
 # Load production environment
 export $(cat .env.production | grep -v '^#' | xargs)
 
-# Build production image
+# Build production image with BuildKit for faster builds
+# Note: Remove --no-cache for faster builds. Only use it when you need a completely fresh build.
 echo "📦 Building production image..."
-docker-compose -f docker-compose.yml build --no-cache
+DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yml build
 
 # Stop existing containers
 echo "🛑 Stopping existing containers..."

@@ -58,7 +58,7 @@ export const savingsOpportunitySchema = z.object({
 export const savingsOpportunitiesResponseSchema = z.object({
   opportunities: z.array(savingsOpportunitySchema),
   total_opportunities: z.number(),
-  estimated_total_monthly_savings: z.number(),
+  estimated_total_monthly_savings: z.number().optional(),
 });
 
 export const priceAnomalySchema = z.object({
@@ -146,20 +146,31 @@ export const itemPurchaseHistoryResponseSchema = z.object({
 });
 
 export const vendorPerformanceSchema = z.object({
-  vendor_id: z.string(),
+  vendor_id: z.string().optional(),
   vendor_name: z.string(),
   total_items: z.number(),
-  competitive_items: z.number(),
-  expensive_items: z.number(),
-  average_price_rank: z.number(),
-  competitive_score: z.number(),
-  total_spend: z.number(),
-  potential_savings: z.number(),
+  total_purchases: z.number().optional(),
+  competitive_items: z.number().optional(),
+  expensive_items: z.number().optional(),
+  average_price_rank: z.number().optional(),
+  competitive_score: z.number().optional(),
+  avg_price: z.number().optional(),
+  price_volatility: z.number().optional(),
+  total_spend: z.number().optional(),
+  potential_savings: z.number().optional(),
+  analysis_period_days: z.number().optional(),
 });
 
 export const vendorPerformanceResponseSchema = z.object({
   success: z.boolean().optional(),
-  performance: vendorPerformanceSchema,
+  performance: vendorPerformanceSchema.optional(),
+  vendor_name: z.string().optional(),
+  total_items: z.number().optional(),
+  total_purchases: z.number().optional(),
+  avg_price: z.number().optional(),
+  price_volatility: z.number().optional(),
+  analysis_period_days: z.number().optional(),
+  error: z.string().optional(),
 });
 
 export const dashboardSummaryResponseSchema = z.object({

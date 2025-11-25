@@ -1,130 +1,203 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { CheckCircle2, Clock, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { CheckCircle2, ArrowRight, Sparkles, Zap, Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/design-system/shadcn/components/card';
 import { Button } from '@/design-system/shadcn/components/button';
 import { Badge } from '@/design-system/shadcn/components/badge';
+import { useCheckout } from '@/hooks/useBilling';
+import { useAuthStore } from '@/stores/authStore';
+import { featureFlags } from '@/config/featureFlags';
 
 const freeTierFeatures = [
-  '1 invoice upload per week + 2 bonus credits every 28 days',
-  'Full access to Invoice Guard, Recipe Brain, and Competitor Radar in sandbox mode',
-  'Save parsed invoices, recipes, and price alerts forever once you register',
-  'Export-ready data and PDF summaries for each invoice you keep',
-  'Email support directly with the founder-operator who built it',
+  '1 invoice upload per week + 2 bonus every 28 days',
+  '5 AI image generations per month',
+  'Recipe costing that updates automatically',
+  'Basic competitor analysis',
+  'Unlimited brand profiles',
+  'Email support',
 ];
 
 const premiumFeatures = [
-  'Unlimited uploads, competitor runs, and historical storage',
-  'Team permissions, audit logs, and dedicated onboarding for multi-unit groups',
+  'Unlimited invoice uploads',
+  '50 AI image generations per month',
+  'Unlimited competitor analyses',
+  'Unlimited menu comparisons',
+  'Priority support',
+  'Data export (CSV, PDF)',
+];
+
+const enterpriseFeatures = [
+  'Everything in Premium',
+  'Unlimited AI generations',
+  'Team permissions & audit logs',
+  'Multi-location support',
+  'Dedicated onboarding',
+  'API access & custom integrations',
 ];
 
 export const PricingSection: React.FC = () => {
+  const navigate = useNavigate();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const checkout = useCheckout();
+
+  const handleUpgrade = () => {
+    if (!isAuthenticated) {
+      // Redirect to register with upgrade intent
+      navigate('/register?plan=premium_monthly');
+      return;
+    }
+    // If billing is disabled, just go to register
+    if (!featureFlags.BILLING_ENABLED) {
+      navigate('/register?plan=premium_monthly');
+      return;
+    }
+    // Start checkout
+    checkout.mutate('premium_monthly');
+  };
+
   return (
-    <section id="pricing" className="py-16 md:py-24 relative">
+    <section id="pricing" className="py-20 md:py-32 relative bg-[#121212]">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
-            Right now – completely free (no card, no catch)
+        <div className="text-center mb-14">
+          <Badge className="bg-primary-500/20 text-primary-400 border-primary-500/30 mb-4">
+            <Sparkles className="w-3 h-3 mr-1" />
+            Now with AI Creative Studio
+          </Badge>
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">
+            Simple pricing. Serious results.
           </h2>
           <p className="text-xl text-[#A8B1B9] max-w-2xl mx-auto">
-            Perfect for single-unit operators or curious teams. Running 5+ locations? Let’s chat so we can size the unlimited tier for you.
+            Start free, upgrade when you need more. No hidden fees, cancel anytime.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-5xl mx-auto">
-          {/* Free Forever Plan */}
-          <Card className="gradient-outline surface-glass rounded-3xl border-2 border-white/10 hover:border-primary-400/50 transition-all duration-300 group overflow-hidden relative">
-             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r bg-primary-500" />
-            <CardContent className="p-8 md:p-10">
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-2xl font-bold text-white">Free Forever Plan</h3>
-                  <Badge className="bg-primary-500/20 text-primary-500 border-white/10 px-3 py-1">
-                    $0/mo
-                  </Badge>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {/* Free Plan */}
+          <Card className="rounded-2xl border border-white/10 bg-[#1E1E1E]">
+            <CardContent className="p-6 md:p-8">
+              <div className="mb-6">
+                <h3 className="text-xl font-bold text-white mb-1">Free</h3>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-black text-white">$0</span>
+                  <span className="text-[#A8B1B9]">/mo</span>
                 </div>
-                <p className="text-[#A8B1B9]">Everything you need to start saving money immediately.</p>
+                <p className="text-[#A8B1B9] text-sm mt-2">
+                  Perfect for trying out RestaurantIQ
+                </p>
               </div>
 
-              <ul className="space-y-5 mb-10">
+              <ul className="space-y-3 mb-6">
                 {freeTierFeatures.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-4">
-                    <CheckCircle2 className="w-6 h-6 text-primary-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-lg text-[#E0E0E0] font-medium">{feature}</span>
+                  <li key={idx} className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#A8B1B9] flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-[#A8B1B9]">{feature}</span>
                   </li>
                 ))}
               </ul>
 
               <Link to="/register" className="block">
                 <Button 
-                  size="lg" 
-                  className="w-full h-14 text-lg bg-primary-500 hover:bg-primary-500 text-white shadow-lg shadow-primary-900/20 group-hover:shadow-primary-500/20 transition-all"
+                  variant="outline"
+                  className="w-full h-12 border-white/10 hover:border-[#4A6572] text-white bg-transparent"
                 >
-                  Start free & find your first savings
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  Get Started Free
                 </Button>
               </Link>
-              <p className="text-center text-[#A8B1B9] text-sm mt-4">
-                One upload per week + auto reminder when your limit resets.
+            </CardContent>
+          </Card>
+
+          {/* Premium Plan - Featured */}
+          <Card className="rounded-2xl border-2 border-primary-500/50 bg-[#1E1E1E] relative overflow-hidden lg:scale-105">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-400 to-primary-600" />
+            <div className="absolute top-4 right-4">
+              <Badge className="bg-primary-500 text-white border-0 text-xs">
+                Most Popular
+              </Badge>
+            </div>
+            <CardContent className="p-6 md:p-8">
+              <div className="mb-6">
+                <h3 className="text-xl font-bold text-white mb-1">Premium</h3>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-black text-white">$99</span>
+                  <span className="text-[#A8B1B9]">/mo</span>
+                </div>
+                <p className="text-[#A8B1B9] text-sm mt-2">
+                  For serious operators who want unlimited access
+                </p>
+              </div>
+
+              <ul className="space-y-3 mb-6">
+                {premiumFeatures.map((feature, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-primary-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-[#E0E0E0]">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Button 
+                size="lg" 
+                className="w-full h-12 bg-primary-500 hover:bg-primary-400 text-white font-semibold"
+                onClick={handleUpgrade}
+                disabled={checkout.isPending}
+              >
+                {checkout.isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Loading...
+                  </>
+                ) : (
+                  <>
+                    Upgrade to Premium
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </>
+                )}
+              </Button>
+              <p className="text-center text-[#A8B1B9] text-xs mt-3">
+                Cancel anytime • 30-day money-back guarantee
               </p>
             </CardContent>
           </Card>
 
-          {/* Waitlist Plan */}
-          <Card className="surface-glass-muted border border-[#1E1E1E] hover:border-[#4A6572] transition-colors relative overflow-hidden flex flex-col rounded-3xl">
-            <CardContent className="p-8 md:p-10 flex-1 flex flex-col">
-              <div className="mb-8">
-                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-2xl font-bold text-white">Unlimited Plan</h3>
-                  <Badge className="bg-[#1E1E1E] text-[#A8B1B9] border-[#1E1E1E] px-3 py-1 flex items-center gap-1">
-                    <Clock className="w-3 h-3" /> Coming in 7-14 days
-                  </Badge>
+          {/* Enterprise Plan */}
+          <Card className="rounded-2xl border border-white/10 bg-[#1E1E1E]">
+            <CardContent className="p-6 md:p-8">
+              <div className="mb-6">
+                <h3 className="text-xl font-bold text-white mb-1">Enterprise</h3>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-black text-white">$299</span>
+                  <span className="text-[#A8B1B9]">/mo</span>
                 </div>
-                <p className="text-[#A8B1B9]">Designed for multi-unit groups that need unlimited parsing, exports, and permissions.</p>
-              </div>
-
-              <div className="flex-1 flex flex-col justify-center space-y-6 mb-10 border-l-2 border-[#1E1E1E] pl-6 py-4">
-                {premiumFeatures.map((feature, idx) => (
-                  <p key={idx} className="text-xl text-[#E0E0E0] font-medium leading-relaxed">
-                    {feature}
-                  </p>
-                ))}
-              </div>
-
-              <div className="mt-auto">
-                <Link to="/waitlist" className="block">
-                  <Button 
-                    size="lg" 
-                    variant="outline"
-                    className="w-full h-14 text-lg border-2 border-[#1E1E1E] hover:border-white hover:bg-[#121212] text-[#A8B1B9] hover:text-white transition-all"
-                  >
-                    Join the waitlist → lock in founder pricing
-                  </Button>
-                </Link>
-                <p className="text-center text-[#A8B1B9] text-sm mt-4">
-                  We&rsquo;ll reach out for a quick sizing call and lock in your grandfathered rate.
+                <p className="text-[#A8B1B9] text-sm mt-2">
+                  For multi-unit operators and groups
                 </p>
               </div>
+
+              <ul className="space-y-3 mb-6">
+                {enterpriseFeatures.map((feature, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <Zap className="w-4 h-4 text-[#A8B1B9] flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-[#A8B1B9]">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Button 
+                variant="outline"
+                className="w-full h-12 border-white/10 hover:border-[#4A6572] text-white bg-transparent"
+                onClick={() => window.location.href = 'mailto:enterprise@restaurantiq.us?subject=Enterprise%20Inquiry'}
+              >
+                Contact Sales
+              </Button>
             </CardContent>
           </Card>
         </div>
 
-        {/* Final Kicker */}
-        <div className="mt-24 text-center max-w-4xl mx-auto bg-gradient-to-b from-[#1E1E1E]/50 to-transparent p-8 md:p-12 rounded-3xl border border-[#1E1E1E]/50">
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-6 leading-tight">
-            You’ve got nothing to lose and thousands to gain every month.
-          </h2>
-          <p className="text-xl md:text-2xl text-[#A8B1B9] mb-10 leading-relaxed">
-            Drop one invoice. If it doesn’t surface something actionable in 30 seconds, delete your account and tell us what we missed.
+        {/* Trust */}
+        <div className="mt-14 text-center">
+          <p className="text-[#A8B1B9] text-sm">
+            Built by a restaurant owner who closed at 2am for a decade. No salespeople. Your data stays yours.
           </p>
-          <Link to="/register">
-            <Button 
-              size="lg" 
-              className="cta-button-lg bg-white text-[#121212] hover:bg-white/90 hover:scale-105 shadow-xl border-0"
-            >
-              Send me a login—let’s find margin
-            </Button>
-          </Link>
         </div>
       </div>
     </section>

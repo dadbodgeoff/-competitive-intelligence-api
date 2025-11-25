@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { FileText, Loader2, ScrollText } from 'lucide-react';
+import { FileText, Calendar } from 'lucide-react';
 
 import {
   Dialog,
@@ -11,19 +11,28 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/design-system/shadcn/components/badge';
-import { cn } from '@/lib/utils';
 import {
   type PolicyAcceptance,
   type PolicyKey,
   POLICY_METADATA,
 } from '@/config/legal';
-import { usePolicyDocumentRenderer } from '@/hooks/usePolicyDocumentRenderer';
 
 interface PolicyAgreementDialogProps {
   policy: PolicyKey;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAccept: (acceptance: PolicyAcceptance) => void;
+}
+
+// Simple markdown-like renderer for bold text
+function renderContent(content: string) {
+  const parts = content.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i} className="text-white font-semibold">{part.slice(2, -2)}</strong>;
+    }
+    return <span key={i}>{part}</span>;
+  });
 }
 
 export function PolicyAgreementDialog({
@@ -33,28 +42,17 @@ export function PolicyAgreementDialog({
   onAccept,
 }: PolicyAgreementDialogProps) {
   const metadata = useMemo(() => POLICY_METADATA[policy], [policy]);
+  const { content } = metadata;
 
-  const [renderError, setRenderError] = useState<string | null>(null);
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
-
   const scrollRef = useRef<HTMLDivElement | null>(null);
-
-  const {
-    canvasContainerRef,
-    pageCount,
-    renderError: hookRenderError,
-    renderState,
-  } = usePolicyDocumentRenderer(metadata.file, open);
 
   useEffect(() => {
     if (!open) {
-      setRenderError(null);
       setHasScrolledToBottom(false);
       return;
     }
-
-    setRenderError(hookRenderError);
-  }, [hookRenderError, open]);
+  }, [open]);
 
   useEffect(() => {
     const element = scrollRef.current;
@@ -67,17 +65,12 @@ export function PolicyAgreementDialog({
     };
 
     element.addEventListener('scroll', handleScroll);
-
-    // run once to cover shorter docs
-    handleScroll();
+    handleScroll(); // Check initial state
 
     return () => {
       element.removeEventListener('scroll', handleScroll);
     };
-  }, [open, renderState]);
-
-  const isAgreeEnabled =
-    hasScrolledToBottom && (renderState === 'ready' || renderState === 'error');
+  }, [open]);
 
   const handleAccept = () => {
     const acceptance: PolicyAcceptance = {
@@ -85,7 +78,7 @@ export function PolicyAgreementDialog({
       acceptedAt: new Date().toISOString(),
       version: metadata.version,
       shortCode: metadata.shortCode,
-      pageCount,
+      pageCount: content.sections.length,
     };
     onAccept(acceptance);
     onOpenChange(false);
@@ -94,7 +87,7 @@ export function PolicyAgreementDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-5xl border border-slate-800 bg-slate-950/95 text-slate-100 sm:max-w-6xl"
+        className="max-w-4xl border border-slate-800 bg-slate-950/95 text-slate-100"
         aria-describedby={undefined}
       >
         <DialogHeader>
@@ -109,71 +102,54 @@ export function PolicyAgreementDialog({
             <Badge variant="outline" className="border-white/10 text-primary-300">
               Version {metadata.version}
             </Badge>
-            {pageCount > 0 && (
-              <span className="flex items-center gap-2">
-                <ScrollText className="h-4 w-4 text-slate-500" />
-                {pageCount} page{pageCount === 1 ? '' : 's'}
-              </span>
-            )}
+            <span className="flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-slate-500" />
+              Effective: {content.effectiveDate}
+            </span>
           </div>
         </DialogHeader>
 
         <div
           ref={scrollRef}
-          className="max-h-[70vh] overflow-y-auto rounded-xl border border-slate-800 bg-slate-950/60 p-6"
+          className="max-h-[60vh] overflow-y-auto rounded-xl border border-slate-800 bg-slate-950/60 p-6 space-y-6"
         >
-          <div
-            ref={canvasContainerRef}
-            className={cn(
-              'flex flex-col items-center',
-              renderState === 'loading' && 'opacity-60',
-            )}
-          >
-            {renderState === 'loading' && (
-              <div className="flex flex-col items-center gap-2 py-20 text-slate-300">
-                <Loader2 className="h-8 w-8 animate-spin text-primary-500" />
-                <p className="text-sm font-medium">Preparing the document…</p>
+          {content.sections.map((section, index) => (
+            <section key={index} className="space-y-3">
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <span className="flex items-center justify-center w-6 h-6 rounded bg-primary-500/20 text-primary-300 text-xs font-bold">
+                  {index + 1}
+                </span>
+                {section.title}
+              </h3>
+              <div className="text-sm text-slate-300 leading-relaxed whitespace-pre-line pl-8">
+                {renderContent(section.content)}
               </div>
-            )}
-          </div>
-
-          {renderError && (
-            <div className="mt-4 rounded-lg border border-primary-600/40 bg-primary-500/10 p-4 text-sm text-primary-200">
-              {renderError}{' '}
-              <a
-                href={metadata.file}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="ml-1 underline hover:text-primary-100"
-              >
-                Download the PDF
-              </a>
-              .
-            </div>
-          )}
+            </section>
+          ))}
         </div>
 
         <DialogFooter className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="text-xs text-slate-500">
-            You must scroll to the end of the document before continuing. Your
-            acknowledgement will be recorded with a timestamp.
+            {hasScrolledToBottom 
+              ? 'You have reviewed the document. Click to accept.'
+              : 'Please scroll to the end of the document to continue.'}
           </div>
           <div className="flex items-center gap-2">
             <Button
               type="button"
               variant="outline"
               className="border-slate-700 text-slate-300 hover:text-white"
-              onClick={() => window.open(metadata.file, '_blank', 'noopener')}
+              onClick={() => onOpenChange(false)}
             >
-              Download PDF
+              Cancel
             </Button>
             <Button
               type="button"
               className="bg-primary-500 text-slate-950 hover:bg-primary-400"
-              disabled={!isAgreeEnabled}
+              disabled={!hasScrolledToBottom}
               onClick={handleAccept}
             >
-              {isAgreeEnabled ? 'Agree and Continue' : 'Scroll to the end to agree'}
+              {hasScrolledToBottom ? 'Agree and Continue' : 'Scroll to the end to agree'}
             </Button>
           </div>
         </DialogFooter>
@@ -181,5 +157,3 @@ export function PolicyAgreementDialog({
     </Dialog>
   );
 }
-
-

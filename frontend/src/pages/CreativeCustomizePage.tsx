@@ -53,12 +53,31 @@ export function CreativeCustomizePage() {
       setCurrentJobId('starting');
       
       const result = await generateMutation.mutateAsync(payload);
-      setCurrentJobId(result.job_id);
       
-      toast({
-        title: 'Generation Started',
-        description: 'Your creative assets are being generated...',
-      });
+      // Check if job completed synchronously (Vertex AI immediate response)
+      if (result.status === 'completed') {
+        // Job is already done! Fetch full job details and show results immediately
+        const { getJob } = await import('@/features/creative/api/nanoBananaClient');
+        const fullJob = await getJob(result.job_id);
+        
+        // Show completed job immediately
+        setCompletedJob(fullJob);
+        setCurrentJobId(undefined);
+        setShowSuccess(true);
+        setTimeout(() => setShowSuccess(false), 3000);
+        
+        toast({
+          title: 'Generation Complete!',
+          description: `${fullJob.assets.length} asset(s) ready to download`,
+        });
+      } else {
+        // Job is still processing, start streaming
+        setCurrentJobId(result.job_id);
+        toast({
+          title: 'Generation Started',
+          description: 'Your creative assets are being generated...',
+        });
+      }
     } catch (error) {
       setCurrentJobId(undefined); // Clear the starting state on error
       toast({
@@ -295,23 +314,12 @@ export function CreativeCustomizePage() {
 
             {/* Right Column - Generation Form */}
             <div className="lg:col-span-7">
-              <div className="space-y-4">
-                <div>
-                  <h1 className="text-3xl font-bold text-white mb-2">
-                    Customize Your Asset
-                  </h1>
-                  <p className="text-slate-400">
-                    Fill in the details below to generate your custom creative asset
-                  </p>
-                </div>
-
-                <GenerationWizard
-                  theme={theme}
-                  template={template}
-                  isSubmitting={generateMutation.isPending}
-                  onGenerate={handleGenerate}
-                />
-              </div>
+              <GenerationWizard
+                theme={theme}
+                template={template}
+                isSubmitting={generateMutation.isPending}
+                onGenerate={handleGenerate}
+              />
             </div>
           </div>
         )}

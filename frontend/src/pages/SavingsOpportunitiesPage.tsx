@@ -19,7 +19,7 @@ export function SavingsOpportunitiesPage() {
   return (
     <AppShell maxWidth="wide">
       {isLoading ? (
-        <div className="flex h-[40vh] items-center justify-center text-gray-400">
+        <div className="flex h-[40vh] items-center justify-center text-slate-400">
           Loading opportunities...
         </div>
       ) : (
@@ -30,7 +30,7 @@ export function SavingsOpportunitiesPage() {
                 <TrendingDown className="h-8 w-8 text-success-400" />
                 Savings Opportunities
               </PageHeading>
-              <p className="text-gray-400 mt-2">
+              <p className="text-slate-400 mt-2">
                 {alerts?.total_count || 0} items with price decreases
               </p>
             </div>
@@ -60,29 +60,29 @@ export function SavingsOpportunitiesPage() {
                         <h3 className="text-xl font-semibold text-white">
                           {alert.item_description}
                         </h3>
-                        <p className="text-gray-400 mt-1">{alert.vendor_name}</p>
+                        <p className="text-slate-400 mt-1">{alert.vendor_name}</p>
 
                         <div className="mt-4 space-y-2">
                           <div className="flex items-center gap-4">
                             <span className="text-success-400 font-bold text-2xl">
                               -{alert.savings_percent.toFixed(1)}%
                             </span>
-                            <span className="text-gray-400">
+                            <span className="text-slate-400">
                               vs {alert.trigger.replace('_', '-')} average
                             </span>
                           </div>
 
                           <div className="grid grid-cols-3 gap-4 mt-4">
                             <div>
-                              <p className="text-sm text-gray-500">Expected</p>
+                              <p className="text-sm text-slate-500">Expected</p>
                               <p className="text-lg text-white">${alert.expected_price.toFixed(2)}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Actual</p>
+                              <p className="text-sm text-slate-500">Actual</p>
                               <p className="text-lg text-success-400">${alert.actual_price.toFixed(2)}</p>
                             </div>
                             <div>
-                              <p className="text-sm text-gray-500">Savings</p>
+                              <p className="text-sm text-slate-500">Savings</p>
                               <p className="text-lg text-success-400">${alert.savings_amount.toFixed(2)}</p>
                             </div>
                           </div>
@@ -101,14 +101,14 @@ export function SavingsOpportunitiesPage() {
                   </Card>
                 ))
               ) : (
-                <div className="text-center py-12 text-gray-400">
+                <div className="text-center py-12 text-slate-400">
                   No savings opportunities found. Keep monitoring for price drops!
                 </div>
               )}
             </TabsContent>
 
             <TabsContent value="all" className="space-y-4 mt-6">
-              <div className="text-center py-12 text-gray-400">
+              <div className="text-center py-12 text-slate-400">
                 All opportunities view - coming soon
               </div>
             </TabsContent>

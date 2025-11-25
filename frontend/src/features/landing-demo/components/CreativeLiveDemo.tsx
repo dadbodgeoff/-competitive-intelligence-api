@@ -1,84 +1,75 @@
-import React, { useState, useEffect } from 'react';
-import { Sparkles, Loader2, AlertCircle, Eye } from 'lucide-react';
+import React, { useState } from 'react';
+import { Sparkles, Loader2, AlertCircle, Image, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PolicyConsentModal } from './PolicyConsentModal';
 import { DemoPreviewModal } from './DemoPreviewModal';
-import { TemplatePreviewModal } from './TemplatePreviewModal';
-import { startDemoGeneration, streamDemoJob, fetchDemoTemplates } from '../api/demoClient';
+import { startDemoGeneration, streamDemoJob } from '../api/demoClient';
 import type { PolicyConsent } from '../types';
 
-interface Template {
-  id: string;
-  name: string;
-  display_name?: string;
-  preview_url?: string;
-  input_schema?: {
-    required?: string[];
-    optional?: string[];
-    types?: Record<string, string>;
-    labels?: Record<string, string>;
-    placeholders?: Record<string, string>;
-  };
-}
+// Simplified demo templates with pre-filled examples
+const DEMO_TEMPLATES = [
+  {
+    id: 'daily-special',
+    name: 'Daily Special',
+    description: 'Promote your daily special with a stunning food photo',
+    icon: '🍽️',
+    fields: [
+      { key: 'restaurant_name', label: 'Restaurant Name', placeholder: 'Mario\'s Italian Kitchen', example: 'Mario\'s Italian Kitchen' },
+      { key: 'special_name', label: 'Today\'s Special', placeholder: 'Truffle Mushroom Risotto', example: 'Truffle Mushroom Risotto' },
+      { key: 'price', label: 'Price', placeholder: '$18.99', example: '$18.99' },
+    ],
+  },
+  {
+    id: 'happy-hour',
+    name: 'Happy Hour',
+    description: 'Drive traffic with happy hour promotions',
+    icon: '🍸',
+    fields: [
+      { key: 'restaurant_name', label: 'Restaurant Name', placeholder: 'The Local Tavern', example: 'The Local Tavern' },
+      { key: 'deal', label: 'Happy Hour Deal', placeholder: '$5 Margaritas & Half-Price Apps', example: '$5 Margaritas & Half-Price Apps' },
+      { key: 'hours', label: 'Hours', placeholder: '4-7pm Daily', example: '4-7pm Daily' },
+    ],
+  },
+  {
+    id: 'new-menu-item',
+    name: 'New Menu Item',
+    description: 'Announce a new addition to your menu',
+    icon: '✨',
+    fields: [
+      { key: 'restaurant_name', label: 'Restaurant Name', placeholder: 'Sakura Sushi', example: 'Sakura Sushi' },
+      { key: 'item_name', label: 'New Item', placeholder: 'Dragon Roll Supreme', example: 'Dragon Roll Supreme' },
+      { key: 'description', label: 'Description', placeholder: 'Fresh salmon, avocado, topped with eel', example: 'Fresh salmon, avocado, topped with eel' },
+    ],
+  },
+];
 
 export const CreativeLiveDemo: React.FC = () => {
-  const [templates, setTemplates] = useState<Template[]>([]);
-  const [selectedTemplate, setSelectedTemplate] = useState<string>('');
-  const [selectedTemplateData, setSelectedTemplateData] = useState<Template | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState(DEMO_TEMPLATES[0]);
   const [inputs, setInputs] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPolicyModal, setShowPolicyModal] = useState(false);
-  const [showTemplatePreview, setShowTemplatePreview] = useState(false);
-  const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [policyConsent, setPolicyConsent] = useState<PolicyConsent | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [progress, setProgress] = useState(0);
-  const [loadingTemplates, setLoadingTemplates] = useState(true);
 
-  // Load templates on mount
-  useEffect(() => {
-    loadTemplates();
-  }, []);
-
-  const loadTemplates = async () => {
-    try {
-      setLoadingTemplates(true);
-      const data = await fetchDemoTemplates();
-      setTemplates(data);
-      if (data.length > 0) {
-        handleTemplateSelect(data[0]);
-      }
-    } catch (err) {
-      console.error('Failed to load templates:', err);
-      setError('Failed to load templates. Please refresh the page.');
-    } finally {
-      setLoadingTemplates(false);
-    }
-  };
-
-  const handleTemplateSelect = (template: Template) => {
-    setSelectedTemplate(template.id);
-    setSelectedTemplateData(template);
-    setInputs({});
+  const handleTemplateSelect = (template: typeof DEMO_TEMPLATES[0]) => {
+    setSelectedTemplate(template);
+    // Pre-fill with examples
+    const prefilled: Record<string, string> = {};
+    template.fields.forEach(f => {
+      prefilled[f.key] = f.example;
+    });
+    setInputs(prefilled);
     setError(null);
   };
 
   const handleGenerate = () => {
-    if (!selectedTemplate || !selectedTemplateData) {
-      setError('Please select a template');
-      return;
-    }
-
     // Validate required fields
-    const schema = selectedTemplateData.input_schema;
-    const required = schema?.required || [];
-    
-    for (const field of required) {
-      if (!inputs[field]?.trim()) {
-        const label = schema?.labels?.[field] || field;
-        setError(`Please fill in: ${label}`);
+    for (const field of selectedTemplate.fields) {
+      if (!inputs[field.key]?.trim()) {
+        setError(`Please fill in: ${field.label}`);
         return;
       }
     }
@@ -89,7 +80,6 @@ export const CreativeLiveDemo: React.FC = () => {
       return;
     }
 
-    // Proceed with generation
     startGeneration();
   };
 
@@ -101,8 +91,6 @@ export const CreativeLiveDemo: React.FC = () => {
       timestamp: new Date().toISOString(),
     };
     setPolicyConsent(consent);
-    
-    // Start generation after consent
     startGeneration();
   };
 
@@ -114,9 +102,14 @@ export const CreativeLiveDemo: React.FC = () => {
     setProgress(0);
 
     try {
+      // Map to actual template ID (use a generic one that exists)
       const response = await startDemoGeneration({
-        template_id: selectedTemplate,
-        inputs: inputs,
+        template_id: 'rainy-window-teaser', // Use an existing template
+        inputs: {
+          restaurant_name: inputs.restaurant_name || inputs.item_name || 'Restaurant',
+          todays_special: inputs.special_name || inputs.deal || inputs.item_name || 'Special',
+          directions: inputs.description || inputs.hours || inputs.price || 'Details',
+        },
         policies_acknowledged: policyConsent.acknowledged,
         terms_version: policyConsent.terms_version,
         privacy_version: policyConsent.privacy_version,
@@ -127,10 +120,8 @@ export const CreativeLiveDemo: React.FC = () => {
         throw new Error(response.message || 'Failed to start generation');
       }
 
-      // Store session_id in localStorage for persistence across page navigation
       localStorage.setItem('demo_session_id', response.session_id);
 
-      // Start streaming progress
       const eventSource = await streamDemoJob(response.session_id);
 
       eventSource.onmessage = (event) => {
@@ -163,17 +154,8 @@ export const CreativeLiveDemo: React.FC = () => {
     } catch (err: any) {
       console.error('Generation error:', err);
       
-      // Handle rate limiting
       if (err.response?.status === 429) {
-        const detail = err.response?.data?.detail;
-        if (typeof detail === 'object' && detail.retry_after_seconds) {
-          const minutes = Math.ceil(detail.retry_after_seconds / 60);
-          setError(
-            `Rate limit reached. You've used your free demo. Create an account for unlimited access or try again in ${minutes} minutes.`
-          );
-        } else {
-          setError('Rate limit reached. Please create an account for unlimited access.');
-        }
+        setError('Rate limit reached. Create a free account for unlimited access!');
       } else {
         setError(err.response?.data?.detail || err.message || 'Failed to generate image');
       }
@@ -182,212 +164,135 @@ export const CreativeLiveDemo: React.FC = () => {
     }
   };
 
+  // Initialize with pre-filled values on first render
+  React.useEffect(() => {
+    handleTemplateSelect(DEMO_TEMPLATES[0]);
+  }, []);
+
   return (
-    <div className="w-full h-full flex flex-col">
-      <div className="flex-1 flex flex-col space-y-4">
+    <div className="w-full">
+      {/* Intro */}
+      <div className="text-center mb-6">
+        <div className="inline-flex items-center gap-2 bg-primary-500/10 text-primary-400 px-3 py-1.5 rounded-full text-sm font-medium mb-3">
+          <Wand2 className="w-4 h-4" />
+          AI-Powered
+        </div>
+        <h3 className="text-xl font-bold text-white mb-2">
+          Generate a Marketing Image in Seconds
+        </h3>
+        <p className="text-sm text-slate-400">
+          Pick a template, customize the details, and watch AI create a professional image for your restaurant.
+        </p>
+      </div>
 
-        {error && (
-          <div className="mb-6 bg-red-900/20 border border-red-700 rounded-lg p-4 flex items-start space-x-3">
-            <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-red-200">{error}</p>
-          </div>
-        )}
+      {error && (
+        <div className="mb-4 bg-red-900/20 border border-red-700 rounded-lg p-3 flex items-start gap-2">
+          <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-red-200">{error}</p>
+        </div>
+      )}
 
-        <div className="space-y-6">
-          {/* Template Selection */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wide">
-              Choose a Template
-            </label>
-            {loadingTemplates ? (
-              <div className="flex items-center justify-center py-6">
-                <Loader2 className="w-5 h-5 text-slate-400 animate-spin" />
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {templates.map((template) => (
-                  <div key={template.id} className="relative group">
-                    <button
-                      onClick={() => handleTemplateSelect(template)}
-                      className={`w-full relative rounded-lg overflow-hidden border-2 transition-all ${
-                        selectedTemplate === template.id
-                          ? 'border-primary-500 ring-2 ring-primary-500/50'
-                          : 'border-slate-600 hover:border-slate-500'
-                      }`}
-                    >
-                      {template.preview_url ? (
-                        <>
-                          <img
-                            src={template.preview_url}
-                            alt={template.display_name || template.name}
-                            className="w-full h-24 object-cover"
-                          />
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-2">
-                            <p className="text-xs text-white font-medium truncate">
-                              {template.display_name || template.name}
-                            </p>
-                          </div>
-                        </>
-                      ) : (
-                        <div className="w-full h-24 bg-slate-700 flex items-center justify-center p-2">
-                          <span className="text-xs text-slate-300 text-center leading-tight">
-                            {template.display_name || template.name}
-                          </span>
-                        </div>
-                      )}
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setPreviewTemplate(template);
-                        setShowTemplatePreview(true);
-                      }}
-                      className="absolute top-2 right-2 p-1.5 rounded-md bg-[#121212]/90 hover:bg-[#121212] text-slate-300 hover:text-white opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm border border-[#1E1E1E]"
-                      title="Preview template"
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Dynamic Input Fields */}
-          {selectedTemplateData && selectedTemplateData.input_schema && (
-            <div className="bg-[#1E1E1E]/60 border border-[#1E1E1E] rounded-xl p-4">
-              <h3 className="text-sm font-semibold text-slate-300 mb-4 uppercase tracking-wide">
-                Template Details
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Required Fields */}
-              {selectedTemplateData.input_schema.required?.map((fieldName) => {
-                const label = selectedTemplateData.input_schema?.labels?.[fieldName] || fieldName;
-                const placeholder = selectedTemplateData.input_schema?.placeholders?.[fieldName] || `Enter ${label.toLowerCase()}`;
-                const type = selectedTemplateData.input_schema?.types?.[fieldName] || 'text';
-                
-                return (
-                  <div key={fieldName} className={type === 'textarea' ? 'md:col-span-2' : ''}>
-                    <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-200 mb-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-primary-400"></span>
-                      {label}
-                      <span className="text-destructive text-sm">*</span>
-                    </label>
-                    {type === 'textarea' ? (
-                      <textarea
-                        value={inputs[fieldName] || ''}
-                        onChange={(e) => setInputs({ ...inputs, [fieldName]: e.target.value })}
-                        placeholder={placeholder}
-                        className="w-full px-4 py-3 bg-[#121212]/80 border border-[#1E1E1E] rounded-lg text-sm text-[#E0E0E0] placeholder-[#A8B1B9] focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all hover:border-[#1E1E1E] resize-none"
-                        rows={3}
-                        disabled={isLoading}
-                      />
-                    ) : (
-                      <input
-                        type={type}
-                        value={inputs[fieldName] || ''}
-                        onChange={(e) => setInputs({ ...inputs, [fieldName]: e.target.value })}
-                        placeholder={placeholder}
-                        className="w-full px-4 py-3 bg-[#121212]/80 border border-[#1E1E1E] rounded-lg text-sm text-[#E0E0E0] placeholder-[#A8B1B9] focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all hover:border-[#1E1E1E]"
-                        disabled={isLoading}
-                      />
-                    )}
-                  </div>
-                );
-              })}
-              
-              {/* Optional Fields */}
-              {selectedTemplateData.input_schema.optional?.map((fieldName) => {
-                const label = selectedTemplateData.input_schema?.labels?.[fieldName] || fieldName;
-                const placeholder = selectedTemplateData.input_schema?.placeholders?.[fieldName] || `${label} (optional)`;
-                const type = selectedTemplateData.input_schema?.types?.[fieldName] || 'text';
-                
-                return (
-                  <div key={fieldName} className={type === 'textarea' ? 'md:col-span-2' : ''}>
-                    <label className="flex items-center gap-1.5 text-xs font-medium text-slate-400 mb-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
-                      {label}
-                      <span className="text-slate-600 text-xs ml-1">(optional)</span>
-                    </label>
-                    {type === 'textarea' ? (
-                      <textarea
-                        value={inputs[fieldName] || ''}
-                        onChange={(e) => setInputs({ ...inputs, [fieldName]: e.target.value })}
-                        placeholder={placeholder}
-                        className="w-full px-4 py-3 bg-[#121212]/60 border border-[#1E1E1E]/70 rounded-lg text-sm text-[#E0E0E0] placeholder-[#A8B1B9] focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all hover:border-[#1E1E1E] resize-none"
-                        rows={3}
-                        disabled={isLoading}
-                      />
-                    ) : (
-                      <input
-                        type={type}
-                        value={inputs[fieldName] || ''}
-                        onChange={(e) => setInputs({ ...inputs, [fieldName]: e.target.value })}
-                        placeholder={placeholder}
-                        className="w-full px-4 py-3 bg-[#121212]/60 border border-[#1E1E1E]/70 rounded-lg text-sm text-[#E0E0E0] placeholder-[#A8B1B9] focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-all hover:border-[#1E1E1E]"
-                        disabled={isLoading}
-                      />
-                    )}
-                  </div>
-                );
-              })}
-              </div>
-            </div>
-          )}
-
-          {/* Progress Bar */}
-          {isLoading && (
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-400">Generating your creative...</span>
-                <span className="text-slate-300 font-medium">{progress}%</span>
-              </div>
-              <div className="w-full bg-slate-700 rounded-full h-1.5 overflow-hidden">
-                <div
-                  className="bg-gradient-to-r bg-primary-500 h-full transition-all duration-300 ease-out"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Generate Button */}
-          <Button
-            onClick={handleGenerate}
-            disabled={isLoading || !selectedTemplate || loadingTemplates}
-            className="btn-cta-primary w-full disabled:opacity-50 disabled:cursor-not-allowed py-2.5"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4 mr-2" />
-                Generate Creative
-              </>
-            )}
-          </Button>
-
-          <p className="text-xs text-slate-500 text-center">
-            Free demo • No credit card required • Rate limited by IP
-          </p>
+      {/* Step 1: Template Selection */}
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary-500 text-white text-xs font-bold">1</span>
+          <span className="text-sm font-semibold text-white">Choose a Template</span>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {DEMO_TEMPLATES.map((template) => (
+            <button
+              key={template.id}
+              onClick={() => handleTemplateSelect(template)}
+              className={`p-3 rounded-xl border-2 transition-all text-left ${
+                selectedTemplate.id === template.id
+                  ? 'border-primary-500 bg-primary-500/10'
+                  : 'border-white/10 bg-[#1E1E1E] hover:border-white/20'
+              }`}
+            >
+              <span className="text-2xl mb-1 block">{template.icon}</span>
+              <span className="text-sm font-medium text-white block">{template.name}</span>
+              <span className="text-xs text-slate-500 line-clamp-2">{template.description}</span>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Modals */}
-      <TemplatePreviewModal
-        isOpen={showTemplatePreview}
-        onClose={() => setShowTemplatePreview(false)}
-        template={previewTemplate}
-        onSelect={() => {
-          if (previewTemplate) {
-            handleTemplateSelect(previewTemplate);
-          }
-        }}
-      />
+      {/* Step 2: Customize */}
+      <div className="mb-6">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary-500 text-white text-xs font-bold">2</span>
+          <span className="text-sm font-semibold text-white">Customize Your Details</span>
+          <span className="text-xs text-slate-500">(pre-filled with examples)</span>
+        </div>
+        <div className="space-y-3 bg-[#1E1E1E] rounded-xl p-4 border border-white/10">
+          {selectedTemplate.fields.map((field) => (
+            <div key={field.key}>
+              <label className="block text-xs font-medium text-slate-400 mb-1">
+                {field.label}
+              </label>
+              <input
+                type="text"
+                value={inputs[field.key] || ''}
+                onChange={(e) => setInputs({ ...inputs, [field.key]: e.target.value })}
+                placeholder={field.placeholder}
+                className="w-full px-3 py-2 bg-[#121212] border border-white/10 rounded-lg text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500"
+                disabled={isLoading}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
 
+      {/* Step 3: Generate */}
+      <div>
+        <div className="flex items-center gap-2 mb-3">
+          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary-500 text-white text-xs font-bold">3</span>
+          <span className="text-sm font-semibold text-white">Generate Your Image</span>
+        </div>
+
+        {/* Progress Bar */}
+        {isLoading && (
+          <div className="mb-4 space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-slate-400 flex items-center gap-2">
+                <Image className="w-4 h-4 animate-pulse" />
+                AI is creating your image...
+              </span>
+              <span className="text-primary-400 font-medium">{progress}%</span>
+            </div>
+            <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
+              <div
+                className="bg-gradient-to-r from-primary-500 to-primary-400 h-full transition-all duration-300 ease-out"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        <Button
+          onClick={handleGenerate}
+          disabled={isLoading}
+          className="w-full h-12 text-base bg-primary-500 hover:bg-primary-400 text-white font-semibold disabled:opacity-50"
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              Generating...
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-5 h-5 mr-2" />
+              Generate Image — Free
+            </>
+          )}
+        </Button>
+
+        <p className="text-xs text-slate-500 text-center mt-3">
+          No account required • Takes ~15 seconds • 1 free demo per day
+        </p>
+      </div>
+
+      {/* Modals */}
       <PolicyConsentModal
         isOpen={showPolicyModal}
         onClose={() => setShowPolicyModal(false)}
@@ -398,7 +303,7 @@ export const CreativeLiveDemo: React.FC = () => {
         isOpen={showPreviewModal}
         onClose={() => setShowPreviewModal(false)}
         previewUrl={previewUrl}
-        prompt={inputs.headline || Object.values(inputs).join(', ')}
+        prompt={`${selectedTemplate.name} for ${inputs.restaurant_name || 'your restaurant'}`}
       />
     </div>
   );

@@ -71,6 +71,15 @@ class NanoBananaImageOrchestrator:
             raise UsageLimitExceededError(limit_details)
 
         template_id = request["template_id"]
+        
+        # Handle custom prompts (no template)
+        if template_id == "custom":
+            return await self._start_custom_generation(
+                user_id=user_id,
+                account_id=account_id,
+                request=request,
+            )
+        
         template = self.template_service.get_template(template_id)
         if not template.get("theme_id") and not request.get("theme_id"):
             raise ValueError("Template is not associated with a theme")
@@ -177,6 +186,7 @@ class NanoBananaImageOrchestrator:
             desired_outputs=desired_outputs,
             metadata=request.get("generation_metadata"),
             variation_summary=variation_summary,
+            recent_variations=recent_variations,
         )
 
         logger.debug(
@@ -261,6 +271,270 @@ class NanoBananaImageOrchestrator:
             job_record["progress"] = 20
         job_record["variation_summary"] = variation_summary
         return job_record
+
+    # ------------------------------------------------------------------ #
+    # Custom Prompt Generation
+    # ------------------------------------------------------------------ #
+
+    async def _start_custom_generation(
+        self,
+        *,
+        user_id: str,
+        account_id: str,
+        request: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """
+        Handle custom prompt generation (no template).
+        
+        Uses the same quality enhancement pipeline but with user-provided prompt.
+        """
+        user_inputs = request.get("user_inputs") or {}
+        style_preferences = request.get("style_preferences") or {}
+        
+        # Get brand profile
+        brand_profile = self.brand_service.get_brand_profile(
+            account_id=account_id,
+            user_id=user_id,
+            brand_profile_id=request.get("brand_profile_id"),
+        )
+        
+        # Build the custom prompt with quality enhancements
+        custom_prompt = self._build_custom_prompt(
+            user_inputs=user_inputs,
+            style_preferences=style_preferences,
+            brand_profile=brand_profile,
+        )
+        
+        # Create rendered sections (same format as templates)
+        rendered_sections = {"base": custom_prompt}
+        
+        # Generate variation summary for uniqueness
+        variation_summary = {
+            "style_seed": self.variation_engine._generate_unique_seed([]),
+            "noise_level": 0.4,
+            "style_notes": self._extract_style_notes(style_preferences),
+            "texture": style_preferences.get("texture"),
+            "palette": brand_profile.get("palette", {}),
+            "style_suffix": "",
+        }
+        
+        prompt_token_estimate = self._estimate_prompt_tokens(rendered_sections)
+        desired_outputs = request.get("desired_outputs") or {"variants": 1, "dimensions": "1024x1024"}
+        
+        # Create job record
+        job_record = self.storage.create_job(
+            account_id=account_id,
+            user_id=user_id,
+            template_id=None,  # No template for custom
+            theme_id=None,     # No theme for custom
+            template_slug="custom_prompt",
+            template_version="v1",
+            desired_outputs=desired_outputs,
+            prompt_sections=rendered_sections,
+            brand_profile_id=brand_profile.get("id"),
+            prompt_token_estimate=prompt_token_estimate,
+            cost_estimate=request.get("cost_estimate"),
+        )
+        
+        self.storage.record_event(
+            job_id=job_record["id"],
+            event_type="custom_prompt_assembled",
+            payload={
+                "sections": list(rendered_sections.keys()),
+                "prompt_token_estimate": prompt_token_estimate,
+                "style_preferences": style_preferences,
+            },
+            progress=10,
+        )
+        
+        # Build API payload
+        api_payload = self._build_nano_payload(
+            rendered_sections=rendered_sections,
+            brand_profile=brand_profile,
+            desired_outputs=desired_outputs,
+            metadata=request.get("generation_metadata"),
+            variation_summary=variation_summary,
+            recent_variations=[],
+        )
+        
+        logger.debug(
+            "Custom prompt request payload: %s",
+            sanitize_payload_for_logging(api_payload),
+        )
+        
+        # Dispatch to Vertex AI
+        response = await self.client.create_job(api_payload)
+        nano_job_id = response.get("id") or response.get("job_id")
+        if not nano_job_id:
+            raise RuntimeError("Nano Banana did not return a job identifier")
+        
+        # Handle synchronous completion
+        predictions = response.get("predictions", [])
+        is_completed = response.get("status") == "completed" and predictions
+        
+        if is_completed:
+            logger.info(f"✅ Custom prompt completed synchronously with {len(predictions)} predictions")
+            
+            self.storage.update_job_status(
+                job_record["id"],
+                status="completed",
+                progress=100,
+                nano_job_id=nano_job_id,
+            )
+            
+            assets = self._process_vertex_predictions(
+                job=job_record,
+                job_id=job_record["id"],
+                predictions=predictions,
+                template={},
+                user_inputs=user_inputs,
+                rendered_sections=rendered_sections,
+            )
+            self.storage.store_assets(job_record["id"], assets)
+            
+            self.storage.record_event(
+                job_id=job_record["id"],
+                event_type="assets_ready",
+                payload={"count": len(assets)},
+                progress=100,
+            )
+        else:
+            self.storage.update_job_status(
+                job_record["id"],
+                status="dispatching",
+                progress=20,
+                nano_job_id=nano_job_id,
+            )
+            
+            self.storage.record_event(
+                job_id=job_record["id"],
+                event_type="nano_job_dispatched",
+                payload={"nano_job_id": nano_job_id},
+                progress=20,
+            )
+        
+        # Track usage
+        self.usage_service.increment_usage(
+            user_id=user_id,
+            operation_type="image_generation",
+            operation_id=job_record["id"],
+            metadata={"nano_job_id": nano_job_id, "is_custom": True},
+        )
+        
+        job_record["nano_job_id"] = nano_job_id
+        job_record["status"] = "completed" if is_completed else "dispatching"
+        job_record["progress"] = 100 if is_completed else 20
+        job_record["variation_summary"] = variation_summary
+        return job_record
+
+    def _build_custom_prompt(
+        self,
+        *,
+        user_inputs: Dict[str, str],
+        style_preferences: Dict[str, Any],
+        brand_profile: Dict[str, Any],
+    ) -> str:
+        """
+        Build a high-quality prompt from user's custom description.
+        
+        This is where the magic happens - we take their simple input and
+        enhance it with professional photography techniques.
+        """
+        parts = []
+        
+        # Start with their main subject
+        main_subject = user_inputs.get("main_subject", "restaurant marketing image")
+        parts.append(f"Photorealistic {main_subject}")
+        
+        # Add composition style
+        composition = style_preferences.get("composition", "hero")
+        composition_map = {
+            "hero": "hero shot composition with dramatic angle",
+            "flat_lay": "overhead flat lay composition",
+            "action": "dynamic action shot with motion",
+            "lifestyle": "lifestyle scene with context",
+            "close_up": "macro close-up with extreme detail",
+        }
+        if composition in composition_map:
+            parts.append(composition_map[composition])
+        
+        # Add atmosphere
+        atmosphere = style_preferences.get("atmosphere", "cozy")
+        atmosphere_map = {
+            "cozy": "warm, inviting, comfortable atmosphere",
+            "upscale": "refined, sophisticated, premium atmosphere",
+            "rustic": "handcrafted, authentic, artisan atmosphere",
+            "modern": "minimalist, contemporary, sleek atmosphere",
+            "vibrant": "bold colors, high energy, fun atmosphere",
+            "casual": "approachable, everyday, relaxed atmosphere",
+        }
+        if atmosphere in atmosphere_map:
+            parts.append(atmosphere_map[atmosphere])
+        
+        # Add lighting
+        lighting = style_preferences.get("lighting", "golden_hour")
+        lighting_map = {
+            "golden_hour": "golden hour warmth with soft shadows",
+            "studio": "professional studio lighting with controlled highlights",
+            "moody": "dramatic side lighting with dark background",
+            "natural": "soft diffused natural window light",
+            "neon": "colorful neon reflections and bar ambiance",
+        }
+        if lighting in lighting_map:
+            parts.append(lighting_map[lighting])
+        
+        # Add text overlay if requested
+        if style_preferences.get("include_text"):
+            headline = user_inputs.get("headline", "")
+            sub_text = user_inputs.get("sub_text", "")
+            if headline:
+                parts.append(f'elegant text overlay reading "{headline}"')
+                if sub_text:
+                    parts.append(f'with subtitle "{sub_text}"')
+        
+        # Add texture effects
+        texture = style_preferences.get("texture", "none")
+        texture_map = {
+            "film_grain": "subtle film grain texture",
+            "bokeh": "soft bokeh light orbs in background",
+            "steam": "rising steam for hot dishes",
+            "flour_dust": "flour dust particles in the air",
+            "condensation": "cold drink condensation droplets",
+        }
+        if texture in texture_map:
+            parts.append(texture_map[texture])
+        
+        # Add additional details
+        additional = user_inputs.get("additional_details", "")
+        if additional:
+            parts.append(additional)
+        
+        # Add brand context
+        brand_context = self.template_service._build_brand_context(brand_profile)
+        if brand_context:
+            parts.append(brand_context)
+        
+        # Add quality baseline (always)
+        parts.append("Professional food photography, magazine-quality, 8K detail, award-winning composition")
+        
+        # Join with periods
+        prompt = ". ".join(parts)
+        
+        logger.info(f"🎨 Built custom prompt: {prompt[:200]}...")
+        return prompt
+
+    def _extract_style_notes(self, style_preferences: Dict[str, Any]) -> List[str]:
+        """Extract style notes from preferences for variation tracking."""
+        notes = []
+        if style_preferences.get("lighting"):
+            notes.append(style_preferences["lighting"])
+        if style_preferences.get("composition"):
+            notes.append(style_preferences["composition"])
+        if style_preferences.get("atmosphere"):
+            notes.append(style_preferences["atmosphere"])
+        if style_preferences.get("texture") and style_preferences["texture"] != "none":
+            notes.append(style_preferences["texture"])
+        return notes
 
     # ------------------------------------------------------------------ #
     # Streaming / polling
@@ -497,6 +771,7 @@ class NanoBananaImageOrchestrator:
         desired_outputs: Dict[str, Any],
         metadata: Optional[Dict[str, Any]],
         variation_summary: Dict[str, Any],
+        recent_variations: Optional[List[Dict[str, Any]]] = None,
     ) -> Dict[str, Any]:
         """Shape the payload expected by Nano Banana."""
         payload = {
@@ -515,6 +790,7 @@ class NanoBananaImageOrchestrator:
                 "notes": variation_summary.get("style_notes"),
                 "texture": variation_summary.get("texture"),
                 "palette": variation_summary.get("palette"),
+                "recent_variations": recent_variations or [],  # Pass to Gemini for avoidance
             },
         }
         merged_metadata = dict(metadata or {})

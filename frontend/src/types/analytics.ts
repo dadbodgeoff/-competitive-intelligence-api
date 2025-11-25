@@ -47,7 +47,7 @@ export interface SavingsOpportunity {
 export interface SavingsOpportunitiesResponse {
   opportunities: SavingsOpportunity[];
   total_opportunities: number;
-  estimated_total_monthly_savings: number;
+  estimated_total_monthly_savings?: number;
 }
 
 export interface PriceAnomaly {
@@ -66,20 +66,32 @@ export interface PriceAnomaliesResponse {
 }
 
 export interface VendorPerformance {
-  vendor_id: string;
+  vendor_id?: string;
   vendor_name: string;
   total_items: number;
-  competitive_items: number;
-  expensive_items: number;
-  average_price_rank: number;
-  competitive_score: number;
-  total_spend: number;
-  potential_savings: number;
+  total_purchases?: number;
+  competitive_items?: number;
+  expensive_items?: number;
+  average_price_rank?: number;
+  competitive_score?: number;
+  avg_price?: number;
+  price_volatility?: number;
+  total_spend?: number;
+  potential_savings?: number;
+  analysis_period_days?: number;
 }
 
 export interface VendorPerformanceResponse {
   success?: boolean;
-  performance: VendorPerformance;
+  performance?: VendorPerformance;
+  // Flat response fields (backend returns flat structure)
+  vendor_name?: string;
+  total_items?: number;
+  total_purchases?: number;
+  avg_price?: number;
+  price_volatility?: number;
+  analysis_period_days?: number;
+  error?: string;
 }
 
 export interface DashboardSummary {

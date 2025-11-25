@@ -2,11 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AppShell } from '@/components/layout/AppShell';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TabGroup, TabGroupList, TabGroupTrigger, TabGroupContent, ListContainer } from '@/components/ui';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, Sparkles, Filter } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { ThemeCard } from '@/features/creative/components/ThemeCard';
+import { ThemeCardImproved } from '@/features/creative/components/ThemeCardImproved';
 // import { GenerationWizard } from '@/features/creative/components/GenerationWizard';
 import { GenerationProgress } from '@/features/creative/components/GenerationProgress';
 import { AssetGallery } from '@/features/creative/components/AssetGallery';
@@ -345,28 +345,23 @@ export function CreativeGeneratePage() {
 
         {/* Category Tabs and Theme Cards */}
         {!isGenerating && !hasCompletedJob && (
-          <Tabs
+          <TabGroup
             value={activeTab}
             onValueChange={(value) => setActiveTab(value as CreativeTab)}
             className="space-y-6"
           >
-            <TabsList className="flex flex-wrap gap-2 bg-white/5 p-1">
+            <TabGroupList>
               {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-                <TabsTrigger
+                <TabGroupTrigger
                   key={key}
                   value={key}
-                  className="data-[state=active]:bg-primary-500 data-[state=active]:text-white"
+                  count={tabCounts?.[key as CreativeTab]}
                 >
-                  <span className="mr-2">{label}</span>
-                  {typeof tabCounts?.[key as CreativeTab] === 'number' && (
-                    <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-slate-200">
-                      {tabCounts[key as CreativeTab]}
-                    </span>
-                  )}
-                </TabsTrigger>
+                  {label}
+                </TabGroupTrigger>
               ))}
-            </TabsList>
-            <TabsContent value={activeTab} className="space-y-4">
+            </TabGroupList>
+            <TabGroupContent value={activeTab} className="space-y-4">
               {/* Category Description */}
               <div className="text-slate-300 mb-4">
                 {CATEGORY_DESCRIPTIONS[activeTab]}
@@ -407,37 +402,42 @@ export function CreativeGeneratePage() {
                 </div>
               )}
               {themesQuery.isLoading ? (
-                <div className="text-slate-400">Loading themes...</div>
+                <div className="flex items-center gap-2 py-8 justify-center text-slate-500">
+                  <div className="w-4 h-4 border-2 border-slate-600 border-t-primary-500 rounded-full animate-spin" />
+                  <span>Loading themes...</span>
+                </div>
               ) : filteredThemes.length === 0 ? (
-                <div className="text-slate-400 py-8 text-center">
+                <div className="text-slate-400 py-8 text-center rounded-lg border border-dashed border-white/[0.08] bg-white/[0.02]">
                   No themes available in this category. Try another tab.
                 </div>
               ) : (
-                filteredThemes.map((theme) => {
-                  // Create enhanced theme with better description
-                  const enhancedTheme = {
-                    ...theme,
-                    description: enhanceThemeDescription(theme),
-                  };
-                  
-                  return (
-                    <ThemeCard
-                      key={theme.id}
-                      theme={enhancedTheme}
-                      templates={theme.id === selectedThemeId ? templates : []}
-                      isExpanded={expandedThemeId === theme.id}
-                      isLoadingTemplates={theme.id === selectedThemeId && templatesQuery.isLoading}
-                      selectedTemplateId={selectedTemplateId}
-                      onToggle={() => handleThemeClick(theme.id)}
-                      onSelectTemplate={(template) => handleSelectTemplate(template, theme.id)}
-                      onPreviewTemplate={handlePreviewTemplate}
-                      showUseTemplateButton={true}
-                    />
-                  );
-                })
+                <ListContainer gap="sm" animated>
+                  {filteredThemes.map((theme) => {
+                    // Create enhanced theme with better description
+                    const enhancedTheme = {
+                      ...theme,
+                      description: enhanceThemeDescription(theme),
+                    };
+                    
+                    return (
+                      <ThemeCardImproved
+                        key={theme.id}
+                        theme={enhancedTheme}
+                        templates={theme.id === selectedThemeId ? templates : []}
+                        isExpanded={expandedThemeId === theme.id}
+                        isLoadingTemplates={theme.id === selectedThemeId && templatesQuery.isLoading}
+                        selectedTemplateId={selectedTemplateId}
+                        onToggle={() => handleThemeClick(theme.id)}
+                        onSelectTemplate={(template) => handleSelectTemplate(template, theme.id)}
+                        onPreviewTemplate={handlePreviewTemplate}
+                        showUseTemplateButton={true}
+                      />
+                    );
+                  })}
+                </ListContainer>
               )}
-            </TabsContent>
-          </Tabs>
+            </TabGroupContent>
+          </TabGroup>
         )}
 
 

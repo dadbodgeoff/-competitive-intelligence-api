@@ -174,7 +174,7 @@ export const InvoiceDemoCard: React.FC = () => {
 
   return (
     <>
-      <Card className="w-full border border-[#1E1E1E] bg-[#1E1E1E]">
+      <Card className="w-full border border-white/10 bg-[#1E1E1E]">
       <CardHeader className="text-center space-y-1.5 pb-3">
         <Badge className="mx-auto bg-primary-500/20 text-primary-500 border-white/10 px-3 py-1 text-xs">
           Start parsing in under a minute
@@ -199,10 +199,10 @@ export const InvoiceDemoCard: React.FC = () => {
         <div
           className={`rounded-xl border-2 border-dashed transition-all duration-300 p-5 text-center space-y-2 ${
             disabled
-              ? 'border-[#1E1E1E] bg-[#1E1E1E]/60'
+              ? 'border-white/10 bg-[#1E1E1E]/60'
               : isDragging
                 ? 'border-primary-400 bg-primary-500/10'
-                : 'border-[#1E1E1E] hover:border-primary-400 bg-[#1E1E1E]/40'
+                : 'border-white/10 hover:border-primary-400 bg-[#1E1E1E]/40'
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -255,7 +255,7 @@ export const InvoiceDemoCard: React.FC = () => {
           </div>
         </div>
 
-        <div className="rounded-xl border border-[#1E1E1E] bg-[#1E1E1E]/60 p-3 space-y-2 text-left">
+        <div className="rounded-xl border border-white/10 bg-[#1E1E1E]/60 p-3 space-y-2 text-left">
           <div className="flex items-center gap-2 text-sm text-[#A8B1B9]">
             <ShieldCheck className="h-4 w-4 text-primary-500" />
             {allConsentsComplete
@@ -279,7 +279,7 @@ export const InvoiceDemoCard: React.FC = () => {
               return (
                 <div
                   key={policy}
-                  className="flex flex-col gap-2 rounded-xl border border-[#1E1E1E] bg-[#121212]/80 p-3 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-2 rounded-xl border border-white/10 bg-[#121212]/80 p-3 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="flex flex-col gap-1">
                     <span className="flex items-center gap-2 text-sm font-medium text-[#E0E0E0]">
@@ -304,7 +304,7 @@ export const InvoiceDemoCard: React.FC = () => {
                     <Button
                       type="button"
                       variant="outline"
-                      className="border-[#1E1E1E] text-[#E0E0E0] hover:text-white"
+                      className="border-white/10 text-[#E0E0E0] hover:text-white"
                       onClick={() => setGuestDialogPolicy(policy)}
                     >
                       {consent ? 'View' : 'Review'}
@@ -316,7 +316,7 @@ export const InvoiceDemoCard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-[#1E1E1E]/60 border border-[#1E1E1E] rounded-xl p-3 flex flex-col sm:flex-row items-center gap-3">
+        <div className="bg-[#1E1E1E]/60 border border-white/10 rounded-xl p-3 flex flex-col sm:flex-row items-center gap-3">
           <div className="flex items-center gap-3 text-[#A8B1B9] text-sm">
             <PlayCircle className="w-5 h-5 text-primary-500" />
             <span>Want to see how it works before uploading?</span>
@@ -333,7 +333,7 @@ export const InvoiceDemoCard: React.FC = () => {
         </div>
 
         {state.events.length > 0 && (
-          <div className="bg-[#1E1E1E]/80 border border-[#1E1E1E] rounded-xl p-3 space-y-2 max-h-48 overflow-y-auto">
+          <div className="bg-[#1E1E1E]/80 border border-white/10 rounded-xl p-3 space-y-2 max-h-48 overflow-y-auto">
             {state.events.map((event) => (
               <div key={event.id} className={`text-sm ${eventColors[event.type] || 'text-[#A8B1B9]'}`}>
                 <span className="opacity-60 mr-2">
@@ -398,7 +398,7 @@ export const InvoiceDemoCard: React.FC = () => {
                 </p>
                 <ul className="space-y-2 text-[#E0E0E0] text-sm">
                   {state.invoiceData.fuzzy_matches.map((match) => (
-                    <li key={match.invoice_item} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border border-[#1E1E1E] rounded-lg p-3 bg-[#1E1E1E]/60">
+                    <li key={match.invoice_item} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border border-white/10 rounded-lg p-3 bg-[#1E1E1E]/60">
                       <div>
                         <p className="font-semibold text-white">{match.invoice_item}</p>
                         <p className="text-[#A8B1B9] text-xs">
@@ -422,7 +422,7 @@ export const InvoiceDemoCard: React.FC = () => {
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Link>
-              <Button variant="outline" className="flex-1 border-[#1E1E1E] text-white" onClick={handleReset}>
+              <Button variant="outline" className="flex-1 border-white/10 text-white" onClick={handleReset}>
                 Upload another invoice
               </Button>
             </div>

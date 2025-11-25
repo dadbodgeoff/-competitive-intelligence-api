@@ -155,9 +155,8 @@ async def run_streaming_analysis(
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache",
-            "Connection": "keep-alive",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "Cache-Control"
+            "Connection": "keep-alive"
+            # CORS headers handled by global middleware - don't override here
         }
     )
 

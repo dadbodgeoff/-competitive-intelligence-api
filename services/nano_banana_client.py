@@ -126,34 +126,109 @@ class NanoBananaClient:
         # Get style information
         style = payload.get("style", {})
         style_notes = style.get("notes", "")
+        style_seed = style.get("seed", "")
+        noise_level = style.get("noise_level", 0.4)
+        visual_style = style.get("visual_style", "with_food")  # Default to with_food
 
         # Get output specifications
         outputs = payload.get("outputs", {})
         dimensions = outputs.get("dimensions", "1024x1024")
         variants = outputs.get("variants", 1)
+        
+        # Get metadata for variation tracking
+        metadata = payload.get("metadata", {})
+        variation_summary = metadata.get("variation_summary", {})
+        recent_variations = variation_summary.get("recent_variations", [])
 
         # Build the final prompt with creative director system instruction
         system_instruction = (
             "You are the Chief Creative Officer of the world's most prestigious marketing agency. "
             "Your work has won countless awards and sets industry standards. You must honor all "
             "client specifications, brand guidelines, and creative requirements exactly as provided. "
-            "\n\nCRITICAL: You must NEVER modify, rephrase, or enhance any user-provided business content "
-            "including menu item names, special offers, pricing, headlines, dates, or promotional text. "
-            "These are the client's exact words and must appear verbatim in the image."
-            "\n\nHowever, you have the creative freedom to enhance lighting, composition, atmosphere, "
-            "scene setting, and visual details to exceed expectations and deliver magazine-quality "
-            "results that make clients say 'wow'. Every image you create should be portfolio-worthy and "
-            "demonstrate mastery of professional photography, lighting, and visual storytelling."
+            "\n\nCRITICAL RULES YOU MUST FOLLOW:"
+            "\n1. NEVER modify, rephrase, or enhance any user-provided business content including menu item names, "
+            "special offers, pricing, headlines, dates, or promotional text. These are the client's exact words."
+            "\n2. ONLY show the food items, drinks, and products explicitly mentioned in the prompt. "
+            "DO NOT add tacos if they mention chicken. DO NOT add beer if they mention wine. "
+            "DO NOT add random items that weren't requested."
+            "\n3. The promotional text (headline, special offer, CTA) must be the PRIMARY FOCUS and clearly readable. "
+            "Position it front and center where customers will see it first."
+            "\n4. Text must be large, legible, and high-contrast against the background. "
+            "Use professional typography that matches the brand."
+            "\n\nCREATIVE FREEDOM ZONES (vary these for freshness while keeping quality):"
+            "\n• Camera angle micro-adjustments (±5-10 degrees from specified angle)"
+            "\n• Lighting temperature and intensity variations"
+            "\n• Background prop placement and arrangement"
+            "\n• Depth of field and focus point adjustments"
+            "\n• Color saturation and contrast fine-tuning"
+            "\n• Atmospheric effects (steam, dust particles, light rays)"
+            "\n• Surface texture details and material qualities"
+            "\n• Shadow placement and softness"
+            "\n\nThink of yourself as a professional photographer taking multiple shots of the same scene - "
+            "the setup stays the same, but each shot captures a unique moment with subtle variations in "
+            "lighting, angle, and atmosphere. This ensures every image feels fresh and unique while "
+            "maintaining brand consistency and quality standards."
         )
         
         full_prompt = f"{system_instruction}\n\n"
-        full_prompt += f"Generate a professional marketing image for {brand_name}. "
+        
+        # Add variation guidance for uniqueness
+        if style_seed:
+            full_prompt += f"\n🎨 VARIATION GUIDANCE (Generation ID: {style_seed}):\n"
+            full_prompt += f"This is a unique generation. Apply subtle creative variations to make it distinct:\n"
+            
+            # Suggest specific micro-variations based on noise level
+            if noise_level < 0.35:
+                full_prompt += "• Use minimal variation - keep very close to the core prompt\n"
+                full_prompt += "• Adjust only lighting temperature and minor prop placement\n"
+            elif noise_level < 0.50:
+                full_prompt += "• Use moderate variation - explore different camera micro-angles\n"
+                full_prompt += "• Vary atmospheric effects and depth of field\n"
+            else:
+                full_prompt += "• Use creative variation - explore the full range of creative freedom zones\n"
+                full_prompt += "• Experiment with lighting drama, atmospheric effects, and composition details\n"
+            
+            # Add guidance to avoid recent patterns
+            if recent_variations:
+                recent_styles = [v.get("style_notes", []) for v in recent_variations[:3]]
+                recent_flat = [note for sublist in recent_styles for note in sublist]
+                if recent_flat:
+                    full_prompt += f"• Avoid repeating these recent approaches: {', '.join(recent_flat[:5])}\n"
+            
+            full_prompt += "\n"
+        
+        # Handle visual style choice
+        if visual_style == "text_only":
+            full_prompt += f"Generate a promotional graphic for {brand_name} with TEXT AND GRAPHICS ONLY. "
+            full_prompt += "DO NOT include any food photography, product shots, or physical items. "
+            full_prompt += "Create a stylish background with the promotional text as the main visual element. "
+        else:
+            full_prompt += f"Generate a professional marketing image for {brand_name}. "
+        
         if style_notes:
             full_prompt += f"Style requirements: {style_notes}. "
         full_prompt += f"Main requirements: {main_prompt}"
         
+        # Add composition guidance for promotional content
+        full_prompt += "\n\nComposition requirements: "
+        full_prompt += "Promotional text and special offers must be prominently displayed, front-facing, and immediately readable. "
+        full_prompt += "Text should be the focal point with high contrast and professional typography. "
+        
+        if visual_style == "with_food":
+            full_prompt += "Only include food/drink items explicitly mentioned in the requirements - no additional items."
+        
         # Add negative prompt guidance
-        full_prompt += "\n\nAvoid: blurry, low quality, distorted, ugly, amateur photography."
+        full_prompt += "\n\nAvoid: blurry text, illegible writing, "
+        if visual_style == "text_only":
+            full_prompt += "food photography, product shots, physical items, "
+        else:
+            full_prompt += "random items not mentioned, "
+        full_prompt += (
+            "cluttered composition, low quality, distorted, ugly, amateur photography, "
+            "lens flare, light leaks, chromatic aberration, red/orange color bleeding, "
+            "excessive warm color cast, artificial glow effects, Instagram-style filters, "
+            "vignette effects, over-processed look."
+        )
 
         # Parse dimensions for aspect ratio
         width, height = map(int, dimensions.split('x'))

@@ -1,18 +1,49 @@
-import React, { useState } from 'react';
+/**
+ * Price Analytics Dashboard
+ * Modern, professional UI with animations and data visualization
+ */
+
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { PageHeading } from '@/components/layout/PageHeading';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { TrendingUp, TrendingDown, DollarSign, Package, Search, Filter, Lightbulb, Bell } from 'lucide-react';
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
+import { 
+  TrendingUp, 
+  DollarSign, 
+  Package, 
+  Search, 
+  Lightbulb, 
+  Bell,
+  Building2,
+  ArrowRight,
+} from 'lucide-react';
 import { analyticsApi } from '@/services/api/analyticsApi';
-import { formatCurrency, formatPercent } from '@/types/analytics';
+import { formatCurrency } from '@/types/analytics';
 import type { DashboardSummaryResponse, ItemsListResponse } from '@/types/analytics';
+import {
+  StatCard,
+  DataTable,
+  TrendBadge,
+  EmptyState,
+  FilterChips,
+  ExportButton,
+  Sparkline,
+  type Column,
+  type FilterChip,
+} from '@/components/analytics';
 
 export function PriceAnalyticsDashboard() {
   const navigate = useNavigate();
@@ -33,33 +64,27 @@ export function PriceAnalyticsDashboard() {
   });
 
   // Filter items based on search and trend filter
-  const filteredItems = React.useMemo(() => {
+  const filteredItems = useMemo(() => {
     if (!itemsData?.items) return [];
     
     let filtered = itemsData.items;
     
-    // Search filter
     if (searchTerm) {
       filtered = filtered.filter(item => 
         item.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
     
-    // Trend filter
     if (trendFilter !== 'all') {
       filtered = filtered.filter(item => {
         const trend = item.price_change_7day_percent;
         if (trend === null) return false;
         
         switch (trendFilter) {
-          case 'increasing':
-            return trend > 5; // More than 5% increase
-          case 'decreasing':
-            return trend < -5; // More than 5% decrease
-          case 'stable':
-            return Math.abs(trend) <= 5; // Within 5%
-          default:
-            return true;
+          case 'increasing': return trend > 5;
+          case 'decreasing': return trend < -5;
+          case 'stable': return Math.abs(trend) <= 5;
+          default: return true;
         }
       });
     }
@@ -67,25 +92,124 @@ export function PriceAnalyticsDashboard() {
     return filtered;
   }, [itemsData?.items, searchTerm, trendFilter]);
 
-  const getTrendBadge = (trend: number | null) => {
-    if (trend === null) return <Badge variant="secondary">No Data</Badge>;
-    
-    if (trend > 5) {
-      return <Badge className="bg-destructive/20 text-destructive border-red-500/30">
-        <TrendingUp className="h-3 w-3 mr-1" />
-        {formatPercent(trend)}
-      </Badge>;
-    } else if (trend < -5) {
-      return <Badge className="bg-success-500/20 text-success-400 border-success-500/30">
-        <TrendingDown className="h-3 w-3 mr-1" />
-        {formatPercent(Math.abs(trend))}
-      </Badge>;
-    } else {
-      return <Badge className="bg-accent-500/20 text-accent-400 border-accent-500/30">
-        Stable {formatPercent(Math.abs(trend))}
-      </Badge>;
+  // Active filters for chips
+  const activeFilters = useMemo(() => {
+    const filters: FilterChip[] = [];
+    if (searchTerm) {
+      filters.push({ id: 'search', label: 'Search', value: searchTerm, color: 'default' });
     }
+    if (trendFilter !== 'all') {
+      const labels = { increasing: 'Price Increasing', decreasing: 'Price Decreasing', stable: 'Price Stable' };
+      const colors = { increasing: 'destructive', decreasing: 'success', stable: 'accent' } as const;
+      filters.push({ id: 'trend', label: 'Trend', value: labels[trendFilter], color: colors[trendFilter] });
+    }
+    if (daysBack !== 90) {
+      filters.push({ id: 'days', label: 'Period', value: `${daysBack} days`, color: 'primary' });
+    }
+    return filters;
+  }, [searchTerm, trendFilter, daysBack]);
+
+  const handleRemoveFilter = (id: string) => {
+    if (id === 'search') setSearchTerm('');
+    if (id === 'trend') setTrendFilter('all');
+    if (id === 'days') setDaysBack(90);
   };
+
+  // Table columns
+  const columns: Column<typeof filteredItems[0]>[] = [
+    {
+      key: 'description',
+      header: 'Item Name',
+      sortable: true,
+      sortValue: (item) => item.description,
+      render: (item) => (
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-primary-500/10 flex items-center justify-center">
+            <Package className="h-4 w-4 text-primary-400" />
+          </div>
+          <span className="font-medium text-white hover:text-primary-400 transition-colors">
+            {item.description}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: 'last_paid_price',
+      header: 'Last Price',
+      align: 'right',
+      sortable: true,
+      sortValue: (item) => item.last_paid_price,
+      render: (item) => (
+        <span className="text-white font-medium">
+          {item.last_paid_price ? formatCurrency(item.last_paid_price) : '-'}
+        </span>
+      ),
+    },
+    {
+      key: 'sparkline',
+      header: 'Trend',
+      align: 'center',
+      width: '100px',
+      render: (item) => {
+        // Generate mock sparkline data based on averages
+        const data = [
+          item.avg_price_28day || item.avg_price_90day,
+          item.avg_price_7day || item.avg_price_28day || item.avg_price_90day,
+          item.last_paid_price,
+        ].filter(Boolean) as number[];
+        return <Sparkline data={data} width={80} height={24} />;
+      },
+    },
+    {
+      key: 'avg_price_7day',
+      header: '7-Day Avg',
+      align: 'right',
+      sortable: true,
+      sortValue: (item) => item.avg_price_7day,
+      render: (item) => (
+        <span className="text-slate-300">
+          {item.avg_price_7day ? formatCurrency(item.avg_price_7day) : '-'}
+        </span>
+      ),
+    },
+    {
+      key: 'price_change_7day_percent',
+      header: '7-Day Change',
+      align: 'center',
+      sortable: true,
+      sortValue: (item) => item.price_change_7day_percent,
+      render: (item) => <TrendBadge value={item.price_change_7day_percent} size="sm" />,
+    },
+    {
+      key: 'last_paid_vendor',
+      header: 'Vendor',
+      sortable: true,
+      sortValue: (item) => item.last_paid_vendor,
+      render: (item) => (
+        <span className="text-slate-400 text-sm">{item.last_paid_vendor || '-'}</span>
+      ),
+    },
+    {
+      key: 'actions',
+      header: '',
+      align: 'right',
+      width: '50px',
+      render: () => (
+        <ArrowRight className="h-4 w-4 text-slate-500 group-hover:text-primary-400 transition-colors" />
+      ),
+    },
+  ];
+
+  // Export columns
+  const exportColumns = [
+    { key: 'description', header: 'Item Name' },
+    { key: 'last_paid_price', header: 'Last Price' },
+    { key: 'avg_price_7day', header: '7-Day Avg' },
+    { key: 'avg_price_28day', header: '28-Day Avg' },
+    { key: 'price_change_7day_percent', header: '7-Day Change %' },
+    { key: 'last_paid_vendor', header: 'Vendor' },
+    { key: 'last_paid_date', header: 'Last Purchase' },
+  ];
 
   return (
     <AppShell maxWidth="wide">
@@ -97,193 +221,216 @@ export function PriceAnalyticsDashboard() {
           ]}
         />
 
-        <div>
-          <PageHeading>Price Analytics</PageHeading>
-          <p className="text-slate-400 mb-4">Track pricing trends and discover savings opportunities</p>
+        {/* Header with actions */}
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <PageHeading>Price Analytics</PageHeading>
+            <p className="text-slate-400 mt-1">
+              Track pricing trends and discover savings opportunities
+            </p>
+          </motion.div>
 
-          <div className="flex gap-3">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="flex flex-wrap gap-3"
+          >
+            <Button
+              onClick={() => navigate('/analytics/trends')}
+              className="bg-primary-500 hover:bg-primary-600 text-white"
+            >
+              <TrendingUp className="h-4 w-4 mr-2" />
+              Price Trends
+            </Button>
+            <Button
+              onClick={() => navigate('/analytics/vendors')}
+              variant="outline"
+              className="border-white/10 text-white hover:bg-white/5"
+            >
+              <Building2 className="h-4 w-4 mr-2" />
+              Vendors
+            </Button>
             <Button
               onClick={() => navigate('/analytics/opportunities')}
               className="bg-success-600 hover:bg-success-700 text-white"
             >
               <Lightbulb className="h-4 w-4 mr-2" />
-              Savings Opportunities
+              Savings
             </Button>
             <Button
               onClick={() => navigate('/analytics/alerts')}
-              className="bg-primary-500 hover:bg-primary-700 text-white"
+              variant="outline"
+              className="border-white/10 text-white hover:bg-white/5"
             >
               <Bell className="h-4 w-4 mr-2" />
-              Price Alerts
+              Alerts
             </Button>
-          </div>
+          </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-card-dark border-white/10">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-300">
-                Items Tracked
-              </CardTitle>
-              <Package className="h-4 w-4 text-accent-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">
-                {summaryLoading ? '...' : summary?.unique_items_tracked || 0}
-              </div>
-              <p className="text-xs text-slate-400">
-                Unique inventory items
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card-dark border-white/10">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-300">
-                Active Vendors
-              </CardTitle>
-              <TrendingUp className="h-4 w-4 text-success-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">
-                {summaryLoading ? '...' : summary?.active_vendors || 0}
-              </div>
-              <p className="text-xs text-slate-400">
-                Suppliers tracked
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card-dark border-white/10">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-300">
-                Total Purchases
-              </CardTitle>
-              <Package className="h-4 w-4 text-accent-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">
-                {summaryLoading ? '...' : summary?.total_purchases || 0}
-              </div>
-              <p className="text-xs text-slate-400">
-                Last {daysBack} days
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card-dark border-white/10">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-300">
-                Total Spend
-              </CardTitle>
-              <DollarSign className="h-4 w-4 text-success-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">
-                {summaryLoading ? '...' : formatCurrency(summary?.total_spend || 0)}
-              </div>
-              <p className="text-xs text-slate-400">
-                Last {daysBack} days
-              </p>
-            </CardContent>
-          </Card>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard
+            title="Items Tracked"
+            value={summary?.unique_items_tracked || 0}
+            subtitle="Unique inventory items"
+            icon={Package}
+            iconColor="text-accent-400"
+            isLoading={summaryLoading}
+            tooltip="Total number of unique items from your invoices"
+            delay={0}
+          />
+          <StatCard
+            title="Active Vendors"
+            value={summary?.active_vendors || 0}
+            subtitle="Suppliers tracked"
+            icon={Building2}
+            iconColor="text-success-400"
+            isLoading={summaryLoading}
+            tooltip="Number of vendors you've purchased from"
+            delay={1}
+          />
+          <StatCard
+            title="Total Purchases"
+            value={summary?.total_purchases || 0}
+            subtitle={`Last ${daysBack} days`}
+            icon={Package}
+            iconColor="text-primary-400"
+            isLoading={summaryLoading}
+            tooltip="Total line items across all invoices"
+            delay={2}
+          />
+          <StatCard
+            title="Total Spend"
+            value={formatCurrency(summary?.total_spend || 0)}
+            subtitle={`Last ${daysBack} days`}
+            icon={DollarSign}
+            iconColor="text-success-400"
+            isLoading={summaryLoading}
+            tooltip="Total amount spent on inventory"
+            delay={3}
+          />
         </div>
 
-        <Card className="bg-card-dark border-white/10 mb-6">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <Filter className="h-5 w-5" />
-              Filters & Search
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
-                  <Input
-                    placeholder="Search inventory items..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 bg-obsidian/70 border-white/10 text-white"
-                  />
+        {/* Filters Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+        >
+          <Card className="bg-card-dark border-white/10">
+            <CardContent className="pt-6">
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <Input
+                      placeholder="Search inventory items..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 bg-obsidian/70 border-white/10 text-white placeholder:text-slate-500"
+                    />
+                  </div>
+                  <Select value={trendFilter} onValueChange={(v: any) => setTrendFilter(v)}>
+                    <SelectTrigger className="w-48 bg-obsidian/70 border-white/10 text-white">
+                      <SelectValue placeholder="Filter by trend" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Items</SelectItem>
+                      <SelectItem value="increasing">Price Increasing</SelectItem>
+                      <SelectItem value="decreasing">Price Decreasing</SelectItem>
+                      <SelectItem value="stable">Price Stable</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={daysBack.toString()} onValueChange={(v) => setDaysBack(parseInt(v))}>
+                    <SelectTrigger className="w-32 bg-obsidian/70 border-white/10 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="30">30 days</SelectItem>
+                      <SelectItem value="60">60 days</SelectItem>
+                      <SelectItem value="90">90 days</SelectItem>
+                      <SelectItem value="180">180 days</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
+                
+                <FilterChips
+                  filters={activeFilters}
+                  onRemove={handleRemoveFilter}
+                  onClearAll={() => {
+                    setSearchTerm('');
+                    setTrendFilter('all');
+                    setDaysBack(90);
+                  }}
+                />
               </div>
-              <Select value={trendFilter} onValueChange={(value: any) => setTrendFilter(value)}>
-                <SelectTrigger className="w-48 bg-obsidian/70 border-white/10 text-white">
-                  <SelectValue placeholder="Filter by trend" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Items</SelectItem>
-                  <SelectItem value="increasing">Price Increasing</SelectItem>
-                  <SelectItem value="decreasing">Price Decreasing</SelectItem>
-                  <SelectItem value="stable">Price Stable</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={daysBack.toString()} onValueChange={(value) => setDaysBack(parseInt(value))}>
-                <SelectTrigger className="w-32 bg-obsidian/70 border-white/10 text-white">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="30">30 days</SelectItem>
-                  <SelectItem value="60">60 days</SelectItem>
-                  <SelectItem value="90">90 days</SelectItem>
-                  <SelectItem value="180">180 days</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        <Card className="bg-card-dark border-white/10">
-          <CardHeader>
-            <CardTitle className="text-white">
-              Inventory Price Tracking ({filteredItems.length} items)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {itemsLoading ? (
-              <div className="text-center py-8 text-slate-400">Loading inventory data...</div>
-            ) : filteredItems.length === 0 ? (
-              <div className="text-center py-8 text-slate-400">No items found matching your filters</div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-white/10">
-                      <th className="text-left py-3 px-4 text-slate-300 font-medium">Item Name</th>
-                      <th className="text-right py-3 px-4 text-slate-300 font-medium">Last Price</th>
-                      <th className="text-right py-3 px-4 text-slate-300 font-medium">7-Day Avg</th>
-                      <th className="text-right py-3 px-4 text-slate-300 font-medium">28-Day Avg</th>
-                      <th className="text-center py-3 px-4 text-slate-300 font-medium">7-Day Trend</th>
-                      <th className="text-right py-3 px-4 text-slate-300 font-medium">Last Purchase</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredItems.map((item, index) => (
-                      <tr key={index} className="border-b border-white/5/50 hover:bg-white/5">
-                        <td className="py-3 px-4 text-white font-medium">{item.description}</td>
-                        <td className="py-3 px-4 text-right text-white">
-                          {item.last_paid_price ? formatCurrency(item.last_paid_price) : '-'}
-                        </td>
-                        <td className="py-3 px-4 text-right text-slate-300">
-                          {item.avg_price_7day ? formatCurrency(item.avg_price_7day) : '-'}
-                        </td>
-                        <td className="py-3 px-4 text-right text-slate-300">
-                          {item.avg_price_28day ? formatCurrency(item.avg_price_28day) : '-'}
-                        </td>
-                        <td className="py-3 px-4 text-center">{getTrendBadge(item.price_change_7day_percent)}</td>
-                        <td className="py-3 px-4 text-right text-slate-400 text-sm">
-                          {item.last_paid_date ? new Date(item.last_paid_date).toLocaleDateString() : '-'}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        {/* Data Table */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+        >
+          <Card className="bg-card-dark border-white/10">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-white">
+                Inventory Price Tracking
+                <span className="ml-2 text-sm font-normal text-slate-400">
+                  ({filteredItems.length} items)
+                </span>
+              </CardTitle>
+              <ExportButton 
+                data={filteredItems} 
+                filename="price_analytics" 
+                columns={exportColumns}
+              />
+            </CardHeader>
+            <CardContent>
+              {itemsLoading ? (
+                <div className="space-y-3">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <div key={i} className="h-14 bg-white/5 rounded-lg animate-pulse" />
+                  ))}
+                </div>
+              ) : (
+                <DataTable
+                  data={filteredItems}
+                  columns={columns}
+                  pageSize={10}
+                  onRowClick={(item) => navigate(`/analytics/items/${encodeURIComponent(item.description)}`)}
+                  emptyState={
+                    <EmptyState
+                      variant={searchTerm || trendFilter !== 'all' ? 'no-results' : 'no-data'}
+                      action={
+                        searchTerm || trendFilter !== 'all'
+                          ? {
+                              label: 'Clear Filters',
+                              onClick: () => {
+                                setSearchTerm('');
+                                setTrendFilter('all');
+                              },
+                            }
+                          : {
+                              label: 'Upload Invoices',
+                              onClick: () => navigate('/invoices/upload'),
+                            }
+                      }
+                    />
+                  }
+                />
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </AppShell>
   );

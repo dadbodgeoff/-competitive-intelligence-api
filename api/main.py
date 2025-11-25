@@ -18,6 +18,10 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
+# Install PII filter for production logging (redacts emails, IPs, etc.)
+from services.logging_filter import setup_pii_filter
+setup_pii_filter()
+
 # Initialize FastAPI app
 app = FastAPI(
     title="Competitive Intelligence API",
@@ -199,6 +203,11 @@ from api.routes import csp_report
 from api.routes.nano_banana import router as nano_banana_router
 from api.routes.nano_banana_demo import router as nano_banana_demo_router
 
+# Feature flag for billing module
+BILLING_ENABLED = os.getenv("FEATURE_BILLING_ENABLED", "false").lower() == "true"
+if BILLING_ENABLED:
+    from api.routes.billing import router as billing_router
+
 # DISABLED: Inventory processing removed - invoices are source of truth only
 # Initialize background workers (registers event handlers)
 # import workers.invoice_processor_worker
@@ -231,6 +240,9 @@ app.include_router(scheduling_router)
 app.include_router(prep_router)
 app.include_router(nano_banana_router, tags=["Nano Banana"])
 app.include_router(nano_banana_demo_router, tags=["Nano Banana Demo"])
+# Billing routes - only enabled when FEATURE_BILLING_ENABLED=true
+if BILLING_ENABLED:
+    app.include_router(billing_router, prefix="/api/v1", tags=["Billing"])
 app.include_router(csp_report.router, tags=["Security"])
 
 # Health check endpoint (used by Docker healthcheck)
@@ -329,6 +341,23 @@ if frontend_dist.exists() and os.getenv("ENVIRONMENT") == "production":
     
     # Serve static assets (JS, CSS, images)
     app.mount("/assets", StaticFiles(directory=str(frontend_dist / "assets")), name="assets")
+    
+    # Serve legal documents (PDFs for Terms/Privacy)
+    legal_dir = frontend_dist / "legal"
+    if legal_dir.exists():
+        app.mount("/legal", StaticFiles(directory=str(legal_dir)), name="legal")
+        logger.info(f"📄 Serving legal documents from {legal_dir}")
+    
+    # Serve example images
+    examples_dir = frontend_dist / "examples"
+    if examples_dir.exists():
+        app.mount("/examples", StaticFiles(directory=str(examples_dir)), name="examples")
+        logger.info(f"🖼️ Serving example images from {examples_dir}")
+    
+    # Serve placeholder images
+    placeholders_dir = frontend_dist / "placeholders"
+    if placeholders_dir.exists():
+        app.mount("/placeholders", StaticFiles(directory=str(placeholders_dir)), name="placeholders")
     
     # Serve index.html for all other routes (SPA routing)
     @app.get("/{full_path:path}")

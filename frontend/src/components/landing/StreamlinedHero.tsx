@@ -5,7 +5,7 @@ import { Button } from '@/design-system/shadcn/components/button';
 
 export const StreamlinedHero: React.FC = () => {
   return (
-    <section id="main-content" className="relative pt-24 md:pt-32 pb-16 px-4 md:px-6 overflow-hidden">
+    <section id="main-content" className="relative pt-24 md:pt-28 pb-12 md:pb-16 px-4 md:px-6 overflow-hidden">
       {/* Background gradients - BRAND COLORS */}
       <div className="absolute -top-32 -right-20 h-[28rem] w-[28rem] rounded-full blur-[120px] opacity-60 pointer-events-none" style={{ backgroundColor: 'rgba(176, 137, 104, 0.1)' }} />
       <div className="absolute top-1/2 -left-24 h-[24rem] w-[24rem] rounded-full blur-[130px] opacity-50 pointer-events-none" style={{ backgroundColor: 'rgba(176, 137, 104, 0.08)' }} />
@@ -23,8 +23,7 @@ export const StreamlinedHero: React.FC = () => {
 
           {/* Subheadline - BRAND: Secondary text */}
           <p className="text-xl md:text-2xl max-w-4xl mx-auto leading-relaxed" style={{ color: '#A8B1B9' }}>
-            Designed from the ground up with every workflow carefully audited and every cost meticulously tracked—so you can 
-            operate efficiently, move confidently, and protect your margins without the guesswork.
+            Your time is money. We help you protect both.
           </p>
 
           {/* CTA - BRAND: Primary CTA color */}

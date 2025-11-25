@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppShell } from '@/components/layout/AppShell';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ArrowLeft, Plus, Palette, AlertCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui';
 import { useToast } from '@/hooks/use-toast';
 import { BrandProfileCard } from '@/features/creative/components/BrandProfileCard';
 import { BrandProfileForm } from '@/features/creative/components/BrandProfileForm';
@@ -167,22 +167,17 @@ export function CreativeBrandProfilesPage() {
             )}
 
             {profilesQuery.data && profilesQuery.data.length === 0 && (
-              <Card className="bg-slate-500/5 border-slate-500/20">
-                <CardContent className="p-12 text-center">
-                  <Palette className="h-16 w-16 text-slate-500 mx-auto mb-6" />
-                  <h3 className="text-xl font-semibold text-white mb-2">
-                    No Brand Profiles Yet
-                  </h3>
-                  <p className="text-slate-400 mb-6 max-w-md mx-auto">
-                    Create your first brand profile to maintain consistent styling across all
-                    your creative assets.
-                  </p>
-                  <Button onClick={handleCreate} className="bg-primary-500 hover:bg-primary-500">
+              <EmptyState
+                icon={<Palette className="h-6 w-6" />}
+                title="No Brand Profiles Yet"
+                description="Create your first brand profile to maintain consistent styling across all your creative assets."
+                action={
+                  <Button onClick={handleCreate} className="bg-primary-500 hover:bg-primary-600">
                     <Plus className="h-4 w-4 mr-2" />
                     Create First Profile
                   </Button>
-                </CardContent>
-              </Card>
+                }
+              />
             )}
 
             {profilesQuery.data && profilesQuery.data.length > 0 && (

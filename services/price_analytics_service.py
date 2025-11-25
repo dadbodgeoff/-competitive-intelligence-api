@@ -572,7 +572,7 @@ class PriceAnalyticsService:
         """
         try:
             # Query invoice_items for this user and item
-            result = self.client.table("invoice_items").select(
+            result = self.supabase.table("invoice_items").select(
                 "id, description, unit_price, quantity, created_at, invoice_id, "
                 "invoices!inner(vendor_name, invoice_number, invoice_date, user_id)"
             ).eq("invoices.user_id", user_id).ilike(

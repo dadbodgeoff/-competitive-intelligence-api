@@ -1,51 +1,90 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GoogleAnalytics } from './components/GoogleAnalytics';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { featureFlags } from './config/featureFlags';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { Toaster } from './components/ui/toaster';
+import { PageLoader } from './components/common/PageLoader';
+import './App.css';
+
+// ============================================================================
+// LAZY LOADED PAGES - Code splitting for better initial load performance
+// ============================================================================
+
+// Public pages (load immediately for landing experience)
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
-import { VerifyEmailPage } from './pages/VerifyEmailPage';
-import { TermsPage } from './pages/TermsPage';
-import { PrivacyPage } from './pages/PrivacyPage';
-import { AcceptInvitePage } from './pages/AcceptInvitePage';
-import { TimeClockPage } from './pages/TimeClockPage';
-import { DashboardPage } from './pages/DashboardPage';
-import { DashboardPageNew } from './pages/DashboardPageNew';
-import { NewAnalysisPage } from './pages/NewAnalysisPage';
-import { AnalysisProgressPage } from './pages/AnalysisProgressPage';
-import { AnalysisResultsPage } from './pages/AnalysisResultsPage';
-import { SavedAnalysesPage } from './pages/SavedAnalysesPage';
-import { InvoiceListPage } from './pages/InvoiceListPage';
-import { InvoiceUploadPage } from './pages/InvoiceUploadPage';
-import { InvoiceDetailPage } from './pages/InvoiceDetailPage';
-import { MenuUploadPage } from './pages/MenuUploadPage';
-import { MenuDashboard } from './pages/MenuDashboard';
-import { MenuItemRecipePage } from './pages/MenuItemRecipePage';
-import { COGSDashboardPage } from './pages/COGSDashboardPage';
-import { MenuComparisonPage } from './pages/MenuComparisonPage';
-import { CompetitorSelectionPage } from './pages/CompetitorSelectionPage';
-import { MenuParsingProgressPage } from './pages/MenuParsingProgressPage';
-import { MenuComparisonResultsPage } from './pages/MenuComparisonResultsPage';
-import { SavedComparisonsPage } from './pages/SavedComparisonsPage';
-import { PriceAnalyticsDashboard } from './pages/PriceAnalyticsDashboard';
-import { PriceAlertsPage } from './pages/PriceAlertsPage';
-import { SavingsOpportunitiesPage } from './pages/SavingsOpportunitiesPage';
-import { AlertSettingsPage } from './pages/AlertSettingsPage';
-import { OrderingPredictionsPage } from './pages/OrderingPredictionsPage';
-import { TeamSettingsPage } from './pages/TeamSettingsPage';
-import { SchedulingDashboardPage } from './pages/SchedulingDashboardPage';
-import { PrepDashboardPage } from './pages/PrepDashboardPage';
-import { PrepTemplatesPage } from './pages/PrepTemplatesPage';
-import { CreativeStudioPage } from './pages/CreativeStudioPage';
-import { CreativeGeneratePage } from './pages/CreativeGeneratePage';
-import { CreativeCustomizePage } from './pages/CreativeCustomizePage';
-import { CreativeHistoryPage } from './pages/CreativeHistoryPage';
-import { CreativeBrandProfilesPage } from './pages/CreativeBrandProfilesPage';
-import { ProtectedRoute } from './components/auth/ProtectedRoute';
-import { Toaster } from './components/ui/toaster';
-import './App.css';
 
-// Create a client
+// Lazy load everything else
+const VerifyEmailPage = lazy(() => import('./pages/VerifyEmailPage').then(m => ({ default: m.VerifyEmailPage })));
+const TermsPage = lazy(() => import('./pages/TermsPage').then(m => ({ default: m.TermsPage })));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage').then(m => ({ default: m.PrivacyPage })));
+const AcceptInvitePage = lazy(() => import('./pages/AcceptInvitePage').then(m => ({ default: m.AcceptInvitePage })));
+const TimeClockPage = lazy(() => import('./pages/TimeClockPage').then(m => ({ default: m.TimeClockPage })));
+
+// Dashboard
+const DashboardPage = lazy(() => import('./pages/DashboardPage').then(m => ({ default: m.DashboardPage })));
+const DashboardPageNew = lazy(() => import('./pages/DashboardPageNew').then(m => ({ default: m.DashboardPageNew })));
+
+// Analysis
+const NewAnalysisPage = lazy(() => import('./pages/NewAnalysisPage').then(m => ({ default: m.NewAnalysisPage })));
+const AnalysisProgressPage = lazy(() => import('./pages/AnalysisProgressPage').then(m => ({ default: m.AnalysisProgressPage })));
+const AnalysisResultsPage = lazy(() => import('./pages/AnalysisResultsPage').then(m => ({ default: m.AnalysisResultsPage })));
+const SavedAnalysesPage = lazy(() => import('./pages/SavedAnalysesPage').then(m => ({ default: m.SavedAnalysesPage })));
+
+// Invoices
+const InvoiceListPage = lazy(() => import('./pages/InvoiceListPage').then(m => ({ default: m.InvoiceListPage })));
+const InvoiceUploadPage = lazy(() => import('./pages/InvoiceUploadPage').then(m => ({ default: m.InvoiceUploadPage })));
+const InvoiceDetailPage = lazy(() => import('./pages/InvoiceDetailPage').then(m => ({ default: m.InvoiceDetailPage })));
+
+// Menu
+const MenuUploadPage = lazy(() => import('./pages/MenuUploadPage').then(m => ({ default: m.MenuUploadPage })));
+const MenuDashboard = lazy(() => import('./pages/MenuDashboard').then(m => ({ default: m.MenuDashboard })));
+const MenuItemRecipePage = lazy(() => import('./pages/MenuItemRecipePage').then(m => ({ default: m.MenuItemRecipePage })));
+const COGSDashboardPage = lazy(() => import('./pages/COGSDashboardPage').then(m => ({ default: m.COGSDashboardPage })));
+
+// Menu Comparison
+const MenuComparisonPage = lazy(() => import('./pages/MenuComparisonPage').then(m => ({ default: m.MenuComparisonPage })));
+const CompetitorSelectionPage = lazy(() => import('./pages/CompetitorSelectionPage').then(m => ({ default: m.CompetitorSelectionPage })));
+const MenuParsingProgressPage = lazy(() => import('./pages/MenuParsingProgressPage').then(m => ({ default: m.MenuParsingProgressPage })));
+const MenuComparisonResultsPage = lazy(() => import('./pages/MenuComparisonResultsPage').then(m => ({ default: m.MenuComparisonResultsPage })));
+const SavedComparisonsPage = lazy(() => import('./pages/SavedComparisonsPage').then(m => ({ default: m.SavedComparisonsPage })));
+
+// Analytics
+const PriceAnalyticsDashboard = lazy(() => import('./pages/PriceAnalyticsDashboard').then(m => ({ default: m.PriceAnalyticsDashboard })));
+const PriceAlertsPage = lazy(() => import('./pages/PriceAlertsPage').then(m => ({ default: m.PriceAlertsPage })));
+const SavingsOpportunitiesPage = lazy(() => import('./pages/SavingsOpportunitiesPage').then(m => ({ default: m.SavingsOpportunitiesPage })));
+const ItemDetailPage = lazy(() => import('./pages/ItemDetailPage').then(m => ({ default: m.ItemDetailPage })));
+const VendorAnalyticsPage = lazy(() => import('./pages/VendorAnalyticsPage').then(m => ({ default: m.VendorAnalyticsPage })));
+const PriceTrendsPage = lazy(() => import('./pages/PriceTrendsPage').then(m => ({ default: m.PriceTrendsPage })));
+const AlertSettingsPage = lazy(() => import('./pages/AlertSettingsPage').then(m => ({ default: m.AlertSettingsPage })));
+
+// Operations
+const OrderingPredictionsPage = lazy(() => import('./pages/OrderingPredictionsPage').then(m => ({ default: m.OrderingPredictionsPage })));
+const SchedulingDashboardPage = lazy(() => import('./pages/SchedulingDashboardPage').then(m => ({ default: m.SchedulingDashboardPage })));
+const PrepDashboardPage = lazy(() => import('./pages/PrepDashboardPage').then(m => ({ default: m.PrepDashboardPage })));
+const PrepTemplatesPage = lazy(() => import('./pages/PrepTemplatesPage').then(m => ({ default: m.PrepTemplatesPage })));
+
+// Creative Studio
+const CreativeStudioPage = lazy(() => import('./pages/CreativeStudioPage').then(m => ({ default: m.CreativeStudioPage })));
+const CreativeGeneratePage = lazy(() => import('./pages/CreativeGeneratePage').then(m => ({ default: m.CreativeGeneratePage })));
+const CreativeCustomizePage = lazy(() => import('./pages/CreativeCustomizePage').then(m => ({ default: m.CreativeCustomizePage })));
+const CreativeHistoryPage = lazy(() => import('./pages/CreativeHistoryPage').then(m => ({ default: m.CreativeHistoryPage })));
+const CreativeBrandProfilesPage = lazy(() => import('./pages/CreativeBrandProfilesPage').then(m => ({ default: m.CreativeBrandProfilesPage })));
+const CreativeCustomPage = lazy(() => import('./pages/CreativeCustomPage').then(m => ({ default: m.CreativeCustomPage })));
+
+// Settings
+const TeamSettingsPage = lazy(() => import('./pages/TeamSettingsPage').then(m => ({ default: m.TeamSettingsPage })));
+const BillingSettingsPage = lazy(() => import('./pages/BillingSettingsPage').then(m => ({ default: m.BillingSettingsPage })));
+const BillingSuccessPage = lazy(() => import('./pages/BillingSuccessPage').then(m => ({ default: m.BillingSuccessPage })));
+
+// ============================================================================
+// QUERY CLIENT
+// ============================================================================
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -55,301 +94,100 @@ const queryClient = new QueryClient({
   },
 });
 
+// ============================================================================
+// APP COMPONENT
+// ============================================================================
+
 function App() {
-  // Don't check auth on app load - it causes infinite loops with expired cookies
-  // Auth will be checked when user tries to access protected routes
-  
   return (
-    <QueryClientProvider client={queryClient}>
-      <GoogleAnalytics measurementId={import.meta.env.VITE_GA_MEASUREMENT_ID} />
-      <BrowserRouter>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/verify-email" element={<VerifyEmailPage />} />
-          <Route path="/legal/terms" element={<TermsPage />} />
-          <Route path="/legal/privacy" element={<PrivacyPage />} />
-          <Route path="/accept-invite" element={<AcceptInvitePage />} />
-          <Route path="/time" element={<TimeClockPage />} />
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <GoogleAnalytics measurementId={import.meta.env.VITE_GA_MEASUREMENT_ID} />
+        <BrowserRouter>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* Public routes - loaded eagerly for fast landing */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              
+              {/* Public routes - lazy loaded */}
+              <Route path="/verify-email" element={<VerifyEmailPage />} />
+              <Route path="/legal/terms" element={<TermsPage />} />
+              <Route path="/legal/privacy" element={<PrivacyPage />} />
+              <Route path="/accept-invite" element={<AcceptInvitePage />} />
+              <Route path="/time" element={<TimeClockPage />} />
 
-          {/* Protected routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPageNew />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/old"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/analysis/new"
-            element={
-              <ProtectedRoute>
-                <NewAnalysisPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/analysis/:analysisId/progress"
-            element={
-              <ProtectedRoute>
-                <AnalysisProgressPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/analysis/:analysisId/results"
-            element={
-              <ProtectedRoute>
-                <AnalysisResultsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/analysis/saved"
-            element={
-              <ProtectedRoute>
-                <SavedAnalysesPage />
-              </ProtectedRoute>
-            }
-          />
+              {/* Dashboard */}
+              <Route path="/dashboard" element={<ProtectedRoute><DashboardPageNew /></ProtectedRoute>} />
+              <Route path="/dashboard/old" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
 
-          {/* Invoice routes */}
-          <Route
-            path="/invoices"
-            element={
-              <ProtectedRoute>
-                <InvoiceListPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/invoices/upload"
-            element={
-              <ProtectedRoute>
-                <InvoiceUploadPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/invoices/:invoiceId"
-            element={
-              <ProtectedRoute>
-                <InvoiceDetailPage />
-              </ProtectedRoute>
-            }
-          />
+              {/* Analysis */}
+              <Route path="/analysis/new" element={<ProtectedRoute><NewAnalysisPage /></ProtectedRoute>} />
+              <Route path="/analysis/:analysisId/progress" element={<ProtectedRoute><AnalysisProgressPage /></ProtectedRoute>} />
+              <Route path="/analysis/:analysisId/results" element={<ProtectedRoute><AnalysisResultsPage /></ProtectedRoute>} />
+              <Route path="/analysis/saved" element={<ProtectedRoute><SavedAnalysesPage /></ProtectedRoute>} />
 
-          {/* Menu routes */}
-          <Route
-            path="/menu/upload"
-            element={
-              <ProtectedRoute>
-                <MenuUploadPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/menu/dashboard"
-            element={
-              <ProtectedRoute>
-                <MenuDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/menu/items/:menuItemId/recipe"
-            element={
-              <ProtectedRoute>
-                <MenuItemRecipePage />
-              </ProtectedRoute>
-            }
-          />
+              {/* Invoices */}
+              <Route path="/invoices" element={<ProtectedRoute><InvoiceListPage /></ProtectedRoute>} />
+              <Route path="/invoices/upload" element={<ProtectedRoute><InvoiceUploadPage /></ProtectedRoute>} />
+              <Route path="/invoices/:invoiceId" element={<ProtectedRoute><InvoiceDetailPage /></ProtectedRoute>} />
 
-          {/* COGS Tracker */}
-          <Route
-            path="/cogs"
-            element={
-              <ProtectedRoute>
-                <COGSDashboardPage />
-              </ProtectedRoute>
-            }
-          />
+              {/* Menu */}
+              <Route path="/menu/upload" element={<ProtectedRoute><MenuUploadPage /></ProtectedRoute>} />
+              <Route path="/menu/dashboard" element={<ProtectedRoute><MenuDashboard /></ProtectedRoute>} />
+              <Route path="/menu/items/:menuItemId/recipe" element={<ProtectedRoute><MenuItemRecipePage /></ProtectedRoute>} />
+              <Route path="/cogs" element={<ProtectedRoute><COGSDashboardPage /></ProtectedRoute>} />
 
-          {/* Analytics routes */}
-          <Route
-            path="/analytics"
-            element={
-              <ProtectedRoute>
-                <PriceAnalyticsDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/analytics/alerts"
-            element={
-              <ProtectedRoute>
-                <PriceAlertsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/analytics/opportunities"
-            element={
-              <ProtectedRoute>
-                <SavingsOpportunitiesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/ordering"
-            element={
-              <ProtectedRoute>
-                <OrderingPredictionsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/settings/team"
-            element={
-              <ProtectedRoute>
-                <TeamSettingsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/scheduling"
-            element={
-              <ProtectedRoute>
-                <SchedulingDashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/prep"
-            element={
-              <ProtectedRoute>
-                <PrepDashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/prep/templates"
-            element={
-              <ProtectedRoute>
-                <PrepTemplatesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/creative"
-            element={
-              <ProtectedRoute>
-                <CreativeStudioPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/creative/generate"
-            element={
-              <ProtectedRoute>
-                <CreativeGeneratePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/creative/customize"
-            element={
-              <ProtectedRoute>
-                <CreativeCustomizePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/creative/history"
-            element={
-              <ProtectedRoute>
-                <CreativeHistoryPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/creative/brands"
-            element={
-              <ProtectedRoute>
-                <CreativeBrandProfilesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/settings/alerts"
-            element={
-              <ProtectedRoute>
-                <AlertSettingsPage />
-              </ProtectedRoute>
-            }
-          />
+              {/* Analytics */}
+              <Route path="/analytics" element={<ProtectedRoute><PriceAnalyticsDashboard /></ProtectedRoute>} />
+              <Route path="/analytics/alerts" element={<ProtectedRoute><PriceAlertsPage /></ProtectedRoute>} />
+              <Route path="/analytics/opportunities" element={<ProtectedRoute><SavingsOpportunitiesPage /></ProtectedRoute>} />
+              <Route path="/analytics/items/:itemDescription" element={<ProtectedRoute><ItemDetailPage /></ProtectedRoute>} />
+              <Route path="/analytics/vendors" element={<ProtectedRoute><VendorAnalyticsPage /></ProtectedRoute>} />
+              <Route path="/analytics/trends" element={<ProtectedRoute><PriceTrendsPage /></ProtectedRoute>} />
 
-          {/* Inventory routes removed - cleaned up */}
+              {/* Operations */}
+              <Route path="/ordering" element={<ProtectedRoute><OrderingPredictionsPage /></ProtectedRoute>} />
+              <Route path="/scheduling" element={<ProtectedRoute><SchedulingDashboardPage /></ProtectedRoute>} />
+              <Route path="/prep" element={<ProtectedRoute><PrepDashboardPage /></ProtectedRoute>} />
+              <Route path="/prep/templates" element={<ProtectedRoute><PrepTemplatesPage /></ProtectedRoute>} />
 
-          {/* Menu Comparison routes */}
-          <Route
-            path="/menu-comparison"
-            element={
-              <ProtectedRoute>
-                <MenuComparisonPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/menu-comparison/:analysisId/select"
-            element={
-              <ProtectedRoute>
-                <CompetitorSelectionPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/menu-comparison/:analysisId/parse"
-            element={
-              <ProtectedRoute>
-                <MenuParsingProgressPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/menu-comparison/:analysisId/results"
-            element={
-              <ProtectedRoute>
-                <MenuComparisonResultsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/menu-comparison/saved"
-            element={
-              <ProtectedRoute>
-                <SavedComparisonsPage />
-              </ProtectedRoute>
-            }
-          />
+              {/* Creative Studio */}
+              <Route path="/creative" element={<ProtectedRoute><CreativeStudioPage /></ProtectedRoute>} />
+              <Route path="/creative/generate" element={<ProtectedRoute><CreativeGeneratePage /></ProtectedRoute>} />
+              <Route path="/creative/customize" element={<ProtectedRoute><CreativeCustomizePage /></ProtectedRoute>} />
+              <Route path="/creative/history" element={<ProtectedRoute><CreativeHistoryPage /></ProtectedRoute>} />
+              <Route path="/creative/brands" element={<ProtectedRoute><CreativeBrandProfilesPage /></ProtectedRoute>} />
+              <Route path="/creative/custom" element={<ProtectedRoute><CreativeCustomPage /></ProtectedRoute>} />
 
-          {/* Catch all - redirect to home */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-        <Toaster />
-      </BrowserRouter>
-    </QueryClientProvider>
+              {/* Settings */}
+              <Route path="/settings/team" element={<ProtectedRoute><TeamSettingsPage /></ProtectedRoute>} />
+              <Route path="/settings/alerts" element={<ProtectedRoute><AlertSettingsPage /></ProtectedRoute>} />
+
+              {/* Menu Comparison */}
+              <Route path="/menu-comparison" element={<ProtectedRoute><MenuComparisonPage /></ProtectedRoute>} />
+              <Route path="/menu-comparison/:analysisId/select" element={<ProtectedRoute><CompetitorSelectionPage /></ProtectedRoute>} />
+              <Route path="/menu-comparison/:analysisId/parse" element={<ProtectedRoute><MenuParsingProgressPage /></ProtectedRoute>} />
+              <Route path="/menu-comparison/:analysisId/results" element={<ProtectedRoute><MenuComparisonResultsPage /></ProtectedRoute>} />
+              <Route path="/menu-comparison/saved" element={<ProtectedRoute><SavedComparisonsPage /></ProtectedRoute>} />
+
+              {/* Billing - feature flagged */}
+              {featureFlags.BILLING_ENABLED && (
+                <>
+                  <Route path="/settings/billing" element={<ProtectedRoute><BillingSettingsPage /></ProtectedRoute>} />
+                  <Route path="/settings/billing/success" element={<ProtectedRoute><BillingSuccessPage /></ProtectedRoute>} />
+                </>
+              )}
+
+              {/* Catch all */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+          <Toaster />
+        </BrowserRouter>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

@@ -63,8 +63,8 @@ interface BestForMapping {
 
 const BEST_FOR_MAPPINGS: BestForMapping[] = [
   // === HOLIDAY & SEASONAL (Highest Priority) ===
-  { keywords: ['christmas', 'xmas', 'festive', 'holiday season', 'holiday_christmas', 'gingerbread', 'fireplace dining', 'cocoa', 'mulled wine'], bestFor: 'Christmas Promotions', icon: '🎄' },
-  { keywords: ['new year', 'nye', 'countdown', 'midnight', 'champagne toast', 'new_years'], bestFor: 'New Year\'s Celebrations', icon: '🎆' },
+  { keywords: ['christmas', 'xmas', 'festive', 'holiday season', 'holiday_christmas', 'holiday-sq', 'holiday-story', 'holiday-bg', 'holiday-breakfast', 'holiday-diner', 'holiday-pizza', 'gingerbread', 'fireplace dining', 'cocoa', 'mulled wine', 'christmas feast', 'christmas brunch', 'christmas morning'], bestFor: 'Christmas Promotions', icon: '🎄' },
+  { keywords: ['new year', 'nye', 'countdown', 'midnight', 'champagne toast', 'new_years', 'nye-', 'ring in'], bestFor: 'New Year\'s Celebrations', icon: '🎆' },
   { keywords: ['thanksgiving', 'turkey', 'harvest feast', 'gratitude'], bestFor: 'Thanksgiving Specials', icon: '🦃' },
   { keywords: ['valentine', 'romantic', 'date night', 'couples', 'anniversary dinner'], bestFor: 'Valentine\'s Day', icon: '💕' },
   { keywords: ['fall', 'autumn', 'pumpkin', 'harvest', 'fall harvest'], bestFor: 'Fall Seasonal Menus', icon: '🍂' },
@@ -81,11 +81,12 @@ const BEST_FOR_MAPPINGS: BestForMapping[] = [
   { keywords: ['wings', 'bucket', 'pitcher', 'nachos'], bestFor: 'Game Day Specials', icon: '🍗' },
   
   // === TIME-BASED ===
-  { keywords: ['brunch', 'morning', 'breakfast', 'eggs benedict', 'pancake', 'waffle', 'breakfast_brunch'], bestFor: 'Weekend Brunch Promos', icon: '🌅' },
-  { keywords: ['happy hour', 'cocktail', 'drink special', 'happy_hour_drinks'], bestFor: 'Happy Hour Specials', icon: '🍸' },
+  { keywords: ['brunch', 'morning', 'breakfast', 'eggs benedict', 'pancake', 'waffle', 'breakfast_brunch', 'french toast', 'omelet', 'cinnamon roll'], bestFor: 'Weekend Brunch Promos', icon: '🌅' },
+  { keywords: ['happy hour', 'cocktail', 'drink special', 'happy_hour_drinks', 'hh-sq', 'hh-story', 'golden hour', 'after-work'], bestFor: 'Happy Hour Specials', icon: '🍸' },
   { keywords: ['dinner', 'evening', 'night', 'supper'], bestFor: 'Dinner Service', icon: '🌙' },
   { keywords: ['lunch', 'midday', 'noon', 'lunch special'], bestFor: 'Lunch Specials', icon: '☀️' },
-  { keywords: ['late night', 'after hours', 'midnight', 'late-night'], bestFor: 'Late Night Cravings', icon: '🌃' },
+  { keywords: ['late night', 'after hours', 'midnight', 'late-night', 'late night craving'], bestFor: 'Late Night Cravings', icon: '🌃' },
+  { keywords: ['wine wednesday', 'thirsty thursday', 'margarita monday', 'sunday funday', 'daily-sq', 'daily-story', 'daily drink'], bestFor: 'Daily Drink Specials', icon: '🍷' },
   
   // === MENU TYPES ===
   { keywords: ['seasonal', 'limited', 'special', 'lto', 'daily_specials_lto', 'limited time'], bestFor: 'Limited-Time Offers', icon: '⏰' },
@@ -94,7 +95,7 @@ const BEST_FOR_MAPPINGS: BestForMapping[] = [
   { keywords: ['dessert', 'sweet', 'pastry', 'cake', 'cookie', 'chocolate'], bestFor: 'Dessert Features', icon: '🍰' },
   
   // === RESTAURANT TYPES ===
-  { keywords: ['pizza', 'dough', 'oven', 'slice', 'cheese pull', 'pizzeria', 'pizza_restaurant'], bestFor: 'Pizzeria Marketing', icon: '🍕' },
+  { keywords: ['pizza', 'dough', 'oven', 'slice', 'cheese pull', 'pizzeria', 'pizza_restaurant', 'pizza-sq', 'pizza-story', 'pepperoni', 'margherita', 'wood-fired', 'meat lovers'], bestFor: 'Pizzeria Marketing', icon: '🍕' },
   { keywords: ['coffee', 'latte', 'espresso', 'cafe', 'barista', 'cappuccino'], bestFor: 'Coffee Shop Posts', icon: '☕' },
   { keywords: ['beer', 'brewery', 'tap', 'flight', 'craft', 'ipa', 'ale'], bestFor: 'Brewery & Taproom', icon: '🍺' },
   { keywords: ['bbq', 'smokehouse', 'brisket', 'pitmaster', 'smoked', 'ribs', 'bbq_smokehouse'], bestFor: 'BBQ & Smokehouse', icon: '🔥' },
@@ -105,7 +106,7 @@ const BEST_FOR_MAPPINGS: BestForMapping[] = [
   { keywords: ['italian', 'pasta', 'risotto', 'trattoria'], bestFor: 'Italian Dining', icon: '🍝' },
   { keywords: ['seafood', 'fish', 'oyster', 'lobster', 'crab', 'raw bar', 'seafood_fresh_catch'], bestFor: 'Seafood Restaurant', icon: '🦞' },
   { keywords: ['bakery', 'bread', 'pastries', 'croissant', 'bakery_morning_light'], bestFor: 'Bakery & Patisserie', icon: '🥐' },
-  { keywords: ['diner', 'comfort food', 'classic', 'blue plate', 'all-day breakfast'], bestFor: 'Diner & Comfort Food', icon: '🍳' },
+  { keywords: ['diner', 'comfort food', 'classic', 'blue plate', 'all-day breakfast', 'diner platter', 'milkshake', 'burger special'], bestFor: 'Diner & Comfort Food', icon: '🍳' },
   { keywords: ['fine dining', 'fine_dining', 'white tablecloth', 'elegant', 'upscale'], bestFor: 'Fine Dining', icon: '🍷' },
   { keywords: ['fast casual', 'fast_casual', 'counter', 'build your own', 'grab and go'], bestFor: 'Fast Casual', icon: '🍔' },
   { keywords: ['food truck', 'street food', 'mobile', 'festival'], bestFor: 'Food Truck', icon: '🚚' },
@@ -133,11 +134,12 @@ const BEST_FOR_MAPPINGS: BestForMapping[] = [
   { keywords: ['weather', 'rain', 'snow', 'cold day', 'hot day', 'rainy day', 'snow day'], bestFor: 'Weather-Based Promos', icon: '🌤️' },
   
   // === CONTENT TYPES ===
-  { keywords: ['story', 'stories', 'instagram story', 'vertical', 'instagram_stories', '9:16'], bestFor: 'Instagram Stories', icon: '📱' },
-  { keywords: ['square', 'feed', 'instagram post', '1:1', 'instagram_square'], bestFor: 'Instagram Feed Posts', icon: '📸' },
-  { keywords: ['facebook', 'fb post', 'facebook_post'], bestFor: 'Facebook Posts', icon: '👍' },
-  { keywords: ['behind the scenes', 'bts', 'kitchen action', 'behind_the_scenes'], bestFor: 'Behind-the-Scenes', icon: '🎬' },
-  { keywords: ['ugc', 'user generated', 'community', 'repost', 'ugc_operational'], bestFor: 'Community Content', icon: '🤝' },
+  { keywords: ['story', 'stories', 'instagram story', 'vertical', 'instagram_stories', '9:16', '-story-'], bestFor: 'Instagram Stories', icon: '📱' },
+  { keywords: ['square', 'feed', 'instagram post', '1:1', 'instagram_square', '-sq-'], bestFor: 'Instagram Feed Posts', icon: '📸' },
+  { keywords: ['facebook', 'fb post', 'facebook_post', '-fb-'], bestFor: 'Facebook Posts', icon: '👍' },
+  { keywords: ['behind the scenes', 'bts', 'kitchen action', 'behind_the_scenes', 'kitchen prep'], bestFor: 'Behind-the-Scenes', icon: '🎬' },
+  { keywords: ['ugc', 'user generated', 'community', 'repost', 'ugc_operational', 'ugc-sq', 'ugc-story', 'tag us', 'photo contest', 'customer spotlight', 'share your'], bestFor: 'Community Content', icon: '🤝' },
+  { keywords: ['ops-sq', 'ops-story', 'new location', 'new hours', 'reservation', 'announcement', 'operational'], bestFor: 'Operational Updates', icon: '📢' },
   
   // === OPERATIONAL ===
   { keywords: ['hours', 'schedule', 'open', 'closed', 'new hours'], bestFor: 'Hours Updates', icon: '🕐' },

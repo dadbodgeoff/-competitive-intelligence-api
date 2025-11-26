@@ -16,23 +16,10 @@ from services.inventory_transaction_service import InventoryTransactionService
 from services.price_tracking_service import PriceTrackingService
 from services.invoice_storage_service import InvoiceStorageService
 from services.ordering.tasks import run_full_ordering_pipeline
+from services.error_classifier import classify_invoice_error
 
 load_dotenv()
 logger = logging.getLogger(__name__)
-
-
-def _classify_error(error: Exception) -> str:
-    """Classify error type for user-friendly messaging"""
-    error_str = str(error).lower()
-    
-    if 'check_quantity_nonzero' in error_str:
-        return "zero_quantity"
-    elif 'unit conversion' in error_str or 'pack_size' in error_str:
-        return "pack_size_conversion"
-    elif 'constraint' in error_str:
-        return "data_validation"
-    else:
-        return "unknown"
 
 
 class InvoiceProcessor:
@@ -150,16 +137,8 @@ class InvoiceProcessor:
                     logger.warning(f"⚠️  Failed to process item {idx}: {item['description'][:50]}")
                     logger.warning(f"   Error: {str(item_error)}")
                     
-                    # Classify error type
-                    error_str = str(item_error).lower()
-                    if 'check_quantity_nonzero' in error_str:
-                        error_type = "zero_quantity"
-                    elif 'unit conversion' in error_str or 'pack_size' in error_str:
-                        error_type = "pack_size_conversion"
-                    elif 'constraint' in error_str:
-                        error_type = "data_validation"
-                    else:
-                        error_type = "unknown"
+                    # Classify error type using shared utility
+                    error_type = classify_invoice_error(item_error)
                     
                     failed_items.append({
                         "line": idx,

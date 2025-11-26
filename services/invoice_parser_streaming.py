@@ -10,6 +10,7 @@ from typing import AsyncGenerator, Dict, Optional
 from services.invoice_parser_service import InvoiceParserService
 from services.invoice_post_processor import InvoicePostProcessor
 from services.invoice_validator_service import InvoiceValidatorService
+from services.error_classifier import classify_invoice_error, get_user_friendly_message
 
 
 class InvoiceParserStreaming:
@@ -148,27 +149,8 @@ class InvoiceParserStreaming:
     
     def _classify_error(self, error: Exception) -> str:
         """Classify error type for user-friendly messaging"""
-        error_str = str(error).lower()
-        
-        if "rate" in error_str or "429" in error_str:
-            return "rate_limited"
-        elif "timeout" in error_str:
-            return "timeout"
-        elif "invalid" in error_str or "corrupt" in error_str:
-            return "invalid_file"
-        elif "not found" in error_str or "404" in error_str:
-            return "file_not_found"
-        else:
-            return "unknown_error"
+        return classify_invoice_error(error)
     
     def _get_user_friendly_error(self, error_type: str, error: Exception) -> str:
         """Get user-friendly error message"""
-        messages = {
-            "rate_limited": "System is busy right now. Please try again in a moment.",
-            "timeout": "Processing took too long. Please try again or contact support.",
-            "invalid_file": "This file doesn't appear to be a valid invoice. Please check and try again.",
-            "file_not_found": "File not found. Please upload again.",
-            "unknown_error": "Something went wrong. Our team has been notified."
-        }
-        
-        return messages.get(error_type, f"Error: {str(error)}")
+        return get_user_friendly_message(error_type, error)

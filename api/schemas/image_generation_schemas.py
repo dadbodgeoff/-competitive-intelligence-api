@@ -179,5 +179,39 @@ class BrandProfileSummary(BaseModel):
     metadata: Dict[str, Any] = Field(default_factory=dict)
     is_default: bool
     updated_at: Optional[datetime]
+    # Phase 1 fields
+    brand_voice: Optional[str] = None
+    brand_tone: Optional[str] = None
+    voice_description: Optional[str] = None
+    visual_styles: List[str] = Field(default_factory=list)
+    cuisine_type: Optional[str] = None
+    cuisine_specialties: List[str] = Field(default_factory=list)
+    atmosphere_tags: List[str] = Field(default_factory=list)
+    target_demographic: Optional[str] = None
+    # Phase 2 fields
+    logo_url: Optional[str] = None
+    logo_placement: Optional[str] = Field(default="top_left")
+    logo_watermark_style: Optional[str] = Field(default="subtle")
+    prohibited_elements: List[str] = Field(default_factory=list)
+    allergen_warnings: List[str] = Field(default_factory=list)
+    cultural_sensitivities: List[str] = Field(default_factory=list)
+    primary_social_platforms: List[str] = Field(default_factory=list)
+    preferred_aspect_ratios: List[str] = Field(default_factory=list)
+    brand_hashtags: List[str] = Field(default_factory=list)
+    social_media_handle: Optional[str] = None
+    # Phase 3 fields
+    active_seasons: List[str] = Field(default_factory=list)
+    holiday_participation: List[str] = Field(default_factory=list)
+    seasonal_menu_rotation: bool = False
+    location_type: Optional[str] = None
+    regional_style: Optional[str] = None
+    local_landmarks: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    country: Optional[str] = Field(default="USA")
+    price_range: Optional[str] = None
+    value_proposition: Optional[str] = None
+    average_check_size: Optional[float] = None
+    positioning_statement: Optional[str] = None
 
 

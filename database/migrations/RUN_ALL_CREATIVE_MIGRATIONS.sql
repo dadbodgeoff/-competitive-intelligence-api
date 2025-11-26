@@ -205,6 +205,20 @@ BEGIN;
 -- ============================================================================
 \i database/migrations/20251125260000_comprehensive_template_cleanup.sql
 
+-- ============================================================================
+-- MIGRATION 40: Final Template Theme Linkage
+-- Ensures ALL templates from recent migrations are linked to themes
+-- and have input_schema properly extracted from metadata
+-- ============================================================================
+\i database/migrations/20251125270000_final_template_theme_linkage.sql
+
+-- ============================================================================
+-- MIGRATION 41: Consolidate Single-Template Themes
+-- Merges themes with only 1 template into broader parent themes
+-- to reduce clutter and improve UX
+-- ============================================================================
+\i database/migrations/20251125280000_consolidate_single_template_themes.sql
+
 COMMIT;
 
 -- ============================================================================

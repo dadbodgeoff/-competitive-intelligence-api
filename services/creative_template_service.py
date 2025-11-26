@@ -77,7 +77,42 @@ class CreativeTemplateService:
                 template["variation_tags"] = json.loads(template["variation_tags"])
             except json.JSONDecodeError:
                 template["variation_tags"] = []
+        
+        # Validate schema completeness (warn about missing fields)
+        self._validate_template_schema(template)
+        
         return template
+    
+    def _validate_template_schema(self, template: Dict) -> None:
+        """
+        Validate that all variables in prompt_body are defined in input_schema.
+        Logs warnings for any mismatches to help identify templates that need fixing.
+        """
+        prompt_body = template.get("prompt_body", "")
+        if not prompt_body:
+            return
+        
+        # Extract all {{variable}} patterns from prompt
+        prompt_vars = set(_PLACEHOLDER_PATTERN.findall(prompt_body))
+        
+        # Get schema fields
+        schema = template.get("input_schema") or {}
+        required = set(schema.get("required", []))
+        optional = set(schema.get("optional", []))
+        schema_fields = required | optional
+        
+        # Auto-filled variables that don't need to be in schema
+        auto_filled = {"brand_name", "restaurant_name"}
+        
+        # Find variables in prompt that aren't in schema
+        missing_from_schema = prompt_vars - schema_fields - auto_filled
+        
+        if missing_from_schema:
+            logger.warning(
+                f"⚠️ Template '{template.get('slug')}' (ID: {template.get('id')}) has variables "
+                f"in prompt_body that are NOT in input_schema: {sorted(missing_from_schema)}. "
+                f"Users cannot fill these in! Add them to the template's input_schema."
+            )
 
     def get_template_sections(self, template_id: str) -> List[Dict]:
         """Return prompt sections for the template (usually a single base section)."""
@@ -557,12 +592,33 @@ class CreativeTemplateService:
 
 
 def _safe_format(template: str, variables: Dict[str, str]) -> str:
-    """Safely format template strings without raising on missing keys."""
-
+    """
+    Safely format template strings without raising on missing keys.
+    
+    IMPORTANT: Missing variables are replaced with empty string, not {variable}.
+    This prevents Gemini from inventing values for unfilled fields.
+    """
+    missing_vars = []
+    
     class SafeDict(dict):
         def __missing__(self, key: str) -> str:
-            return "{" + key + "}"
+            # Track missing variables for logging
+            missing_vars.append(key)
+            # Return empty string - DO NOT return {key} as Gemini will invent values
+            return ""
 
-    return template.format_map(SafeDict(**variables))
+    result = template.format_map(SafeDict(**variables))
+    
+    # Log warning about missing variables (helps identify schema issues)
+    if missing_vars:
+        # Filter out common auto-filled variables that might legitimately be empty
+        significant_missing = [v for v in missing_vars if v not in ('brand_name', 'restaurant_name')]
+        if significant_missing:
+            logger.warning(
+                f"⚠️ Template has unfilled variables (user wasn't shown input fields): {significant_missing}. "
+                f"These will be omitted from the prompt. Consider adding them to the template's input_schema."
+            )
+    
+    return result
 
 

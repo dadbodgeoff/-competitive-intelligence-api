@@ -180,6 +180,26 @@ class NanoBananaImageOrchestrator:
             progress=10,
         )
 
+        # Determine has_food_imagery:
+        # 1. First check if user explicitly set visual_style in style_preferences
+        # 2. Fall back to template's input_schema.has_food_imagery
+        # 3. Default to True (with food)
+        style_preferences = request.get("style_preferences") or {}
+        user_visual_style = style_preferences.get("visual_style")
+        
+        if user_visual_style == "text_only":
+            # User explicitly requested no food
+            has_food_imagery = False
+        elif user_visual_style == "with_food":
+            # User explicitly requested food imagery
+            has_food_imagery = True
+        else:
+            # No user preference - use template default
+            input_schema = template.get("input_schema") or {}
+            if isinstance(input_schema, str):
+                input_schema = json.loads(input_schema)
+            has_food_imagery = input_schema.get("has_food_imagery", True)
+        
         api_payload = self._build_nano_payload(
             rendered_sections=rendered_sections,
             brand_profile=brand_profile,
@@ -187,6 +207,7 @@ class NanoBananaImageOrchestrator:
             metadata=request.get("generation_metadata"),
             variation_summary=variation_summary,
             recent_variations=recent_variations,
+            has_food_imagery=has_food_imagery,
         )
 
         logger.debug(
@@ -348,6 +369,17 @@ class NanoBananaImageOrchestrator:
         )
         
         # Build API payload
+        # For custom prompts, check style_preferences for visual_style
+        # Frontend sends "with_food" or "text_only", also support legacy "has_food_imagery"
+        user_visual_style = style_preferences.get("visual_style")
+        if user_visual_style == "text_only":
+            has_food_imagery = False
+        elif user_visual_style == "with_food":
+            has_food_imagery = True
+        else:
+            # Legacy support: check has_food_imagery directly
+            has_food_imagery = style_preferences.get("has_food_imagery", True)
+        
         api_payload = self._build_nano_payload(
             rendered_sections=rendered_sections,
             brand_profile=brand_profile,
@@ -355,6 +387,7 @@ class NanoBananaImageOrchestrator:
             metadata=request.get("generation_metadata"),
             variation_summary=variation_summary,
             recent_variations=[],
+            has_food_imagery=has_food_imagery,
         )
         
         logger.debug(
@@ -772,8 +805,13 @@ class NanoBananaImageOrchestrator:
         metadata: Optional[Dict[str, Any]],
         variation_summary: Dict[str, Any],
         recent_variations: Optional[List[Dict[str, Any]]] = None,
+        has_food_imagery: bool = True,
     ) -> Dict[str, Any]:
         """Shape the payload expected by Nano Banana."""
+        # Determine visual_style based on has_food_imagery flag
+        visual_style = "with_food" if has_food_imagery else "text_only"
+        logger.info(f"🎨 Building payload with visual_style={visual_style} (has_food_imagery={has_food_imagery})")
+        
         payload = {
             "prompt": rendered_sections,
             "brand": {
@@ -791,6 +829,7 @@ class NanoBananaImageOrchestrator:
                 "texture": variation_summary.get("texture"),
                 "palette": variation_summary.get("palette"),
                 "recent_variations": recent_variations or [],  # Pass to Gemini for avoidance
+                "visual_style": visual_style,  # "text_only" or "with_food"
             },
         }
         merged_metadata = dict(metadata or {})

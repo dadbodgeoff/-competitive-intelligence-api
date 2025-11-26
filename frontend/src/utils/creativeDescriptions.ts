@@ -31,6 +31,24 @@ const DESCRIPTION_IMPROVEMENTS: Record<string, string> = {
   'mise en place': 'beautifully arranged ingredients',
   'plating': 'elegant presentation',
   'garnish': 'finishing touches',
+  // Holiday & Seasonal
+  'festive glow': 'warm holiday atmosphere',
+  'twinkling lights': 'sparkling holiday lights',
+  'cozy warmth': 'inviting comfort',
+  'holiday magic': 'festive celebration',
+  // Food Photography Terms
+  'cheese pull': 'stretchy cheese moment',
+  'steam rising': 'fresh-from-the-kitchen steam',
+  'sizzle': 'hot-off-the-grill',
+  'drizzle': 'elegant sauce pour',
+  'golden crust': 'perfectly crispy exterior',
+  'char marks': 'beautiful grill lines',
+  // Atmosphere Terms
+  'ambient lighting': 'warm, inviting glow',
+  'natural light': 'bright, fresh lighting',
+  'moody atmosphere': 'intimate ambiance',
+  'rustic setting': 'charming, authentic backdrop',
+  'modern aesthetic': 'clean, contemporary style',
 };
 
 // ============================================================================
@@ -44,59 +62,92 @@ interface BestForMapping {
 }
 
 const BEST_FOR_MAPPINGS: BestForMapping[] = [
-  // Seasonal & Time-based
-  { keywords: ['brunch', 'morning', 'breakfast'], bestFor: 'Weekend Brunch Promos', icon: '🌅' },
-  { keywords: ['happy hour', 'cocktail', 'drink'], bestFor: 'Happy Hour Specials', icon: '🍸' },
-  { keywords: ['dinner', 'evening', 'night'], bestFor: 'Dinner Service', icon: '🌙' },
-  { keywords: ['lunch', 'midday'], bestFor: 'Lunch Specials', icon: '☀️' },
+  // === HOLIDAY & SEASONAL (Highest Priority) ===
+  { keywords: ['christmas', 'xmas', 'festive', 'holiday season', 'holiday_christmas', 'gingerbread', 'fireplace dining', 'cocoa', 'mulled wine'], bestFor: 'Christmas Promotions', icon: '🎄' },
+  { keywords: ['new year', 'nye', 'countdown', 'midnight', 'champagne toast', 'new_years'], bestFor: 'New Year\'s Celebrations', icon: '🎆' },
+  { keywords: ['thanksgiving', 'turkey', 'harvest feast', 'gratitude'], bestFor: 'Thanksgiving Specials', icon: '🦃' },
+  { keywords: ['valentine', 'romantic', 'date night', 'couples', 'anniversary dinner'], bestFor: 'Valentine\'s Day', icon: '💕' },
+  { keywords: ['fall', 'autumn', 'pumpkin', 'harvest', 'fall harvest'], bestFor: 'Fall Seasonal Menus', icon: '🍂' },
+  { keywords: ['summer', 'patio', 'outdoor', 'sunshine', 'patio season'], bestFor: 'Summer Patio Season', icon: '☀️' },
+  { keywords: ['spring', 'fresh', 'garden', 'spring menu'], bestFor: 'Spring Menu Launch', icon: '🌸' },
+  { keywords: ['winter', 'cozy', 'warm', 'fireplace', 'comfort'], bestFor: 'Winter Comfort Promos', icon: '❄️' },
   
-  // Menu Types
-  { keywords: ['seasonal', 'limited', 'special'], bestFor: 'Limited-Time Offers', icon: '⏰' },
-  { keywords: ['new menu', 'launch', 'introducing'], bestFor: 'New Menu Launches', icon: '🚀' },
-  { keywords: ['tasting', 'prix fixe', 'course'], bestFor: 'Tasting Menus', icon: '🍽️' },
-  { keywords: ['dessert', 'sweet', 'pastry'], bestFor: 'Dessert Features', icon: '🍰' },
+  // === SPORTS & GAME DAY ===
+  { keywords: ['sports', 'game day', 'gameday', 'watch party', 'sports_gameday'], bestFor: 'Sports Watch Parties', icon: '🏈' },
+  { keywords: ['football', 'nfl', 'college football', 'tailgate'], bestFor: 'Football Game Day', icon: '🏈' },
+  { keywords: ['basketball', 'nba', 'march madness', 'hoops'], bestFor: 'Basketball Events', icon: '🏀' },
+  { keywords: ['playoff', 'championship', 'finals', 'big game'], bestFor: 'Playoff Watch Parties', icon: '🏆' },
+  { keywords: ['super bowl', 'big game', 'superbowl'], bestFor: 'Super Bowl Events', icon: '🏈' },
+  { keywords: ['wings', 'bucket', 'pitcher', 'nachos'], bestFor: 'Game Day Specials', icon: '🍗' },
   
-  // Restaurant Types
-  { keywords: ['pizza', 'dough', 'oven'], bestFor: 'Pizzeria Marketing', icon: '🍕' },
-  { keywords: ['coffee', 'latte', 'espresso', 'cafe'], bestFor: 'Coffee Shop Posts', icon: '☕' },
-  { keywords: ['beer', 'brewery', 'tap', 'flight'], bestFor: 'Brewery & Taproom', icon: '🍺' },
-  { keywords: ['steak', 'grill', 'bbq', 'meat'], bestFor: 'Steakhouse & BBQ', icon: '🥩' },
-  { keywords: ['sushi', 'japanese', 'ramen'], bestFor: 'Japanese Cuisine', icon: '🍣' },
-  { keywords: ['mexican', 'taco', 'burrito'], bestFor: 'Mexican Restaurant', icon: '🌮' },
-  { keywords: ['italian', 'pasta', 'risotto'], bestFor: 'Italian Dining', icon: '🍝' },
-  { keywords: ['seafood', 'fish', 'oyster'], bestFor: 'Seafood Restaurant', icon: '🦞' },
-  { keywords: ['bakery', 'bread', 'pastries'], bestFor: 'Bakery & Patisserie', icon: '🥐' },
+  // === TIME-BASED ===
+  { keywords: ['brunch', 'morning', 'breakfast', 'eggs benedict', 'pancake', 'waffle', 'breakfast_brunch'], bestFor: 'Weekend Brunch Promos', icon: '🌅' },
+  { keywords: ['happy hour', 'cocktail', 'drink special', 'happy_hour_drinks'], bestFor: 'Happy Hour Specials', icon: '🍸' },
+  { keywords: ['dinner', 'evening', 'night', 'supper'], bestFor: 'Dinner Service', icon: '🌙' },
+  { keywords: ['lunch', 'midday', 'noon', 'lunch special'], bestFor: 'Lunch Specials', icon: '☀️' },
+  { keywords: ['late night', 'after hours', 'midnight', 'late-night'], bestFor: 'Late Night Cravings', icon: '🌃' },
   
-  // Social Proof
-  { keywords: ['review', 'testimonial', 'customer'], bestFor: 'Customer Testimonials', icon: '⭐' },
-  { keywords: ['award', 'recognition', 'best'], bestFor: 'Awards & Recognition', icon: '🏆' },
+  // === MENU TYPES ===
+  { keywords: ['seasonal', 'limited', 'special', 'lto', 'daily_specials_lto', 'limited time'], bestFor: 'Limited-Time Offers', icon: '⏰' },
+  { keywords: ['new menu', 'launch', 'introducing', 'grand opening'], bestFor: 'New Menu Launches', icon: '🚀' },
+  { keywords: ['tasting', 'prix fixe', 'course', 'omakase', 'chef\'s table'], bestFor: 'Tasting Menus', icon: '🍽️' },
+  { keywords: ['dessert', 'sweet', 'pastry', 'cake', 'cookie', 'chocolate'], bestFor: 'Dessert Features', icon: '🍰' },
   
-  // Hiring
-  { keywords: ['hiring', 'job', 'career', 'team'], bestFor: 'Recruitment Posts', icon: '👥' },
-  { keywords: ['chef', 'cook', 'kitchen'], bestFor: 'Kitchen Staff Hiring', icon: '👨‍🍳' },
+  // === RESTAURANT TYPES ===
+  { keywords: ['pizza', 'dough', 'oven', 'slice', 'cheese pull', 'pizzeria', 'pizza_restaurant'], bestFor: 'Pizzeria Marketing', icon: '🍕' },
+  { keywords: ['coffee', 'latte', 'espresso', 'cafe', 'barista', 'cappuccino'], bestFor: 'Coffee Shop Posts', icon: '☕' },
+  { keywords: ['beer', 'brewery', 'tap', 'flight', 'craft', 'ipa', 'ale'], bestFor: 'Brewery & Taproom', icon: '🍺' },
+  { keywords: ['bbq', 'smokehouse', 'brisket', 'pitmaster', 'smoked', 'ribs', 'bbq_smokehouse'], bestFor: 'BBQ & Smokehouse', icon: '🔥' },
+  { keywords: ['steak', 'grill', 'prime', 'ribeye', 'filet', 'surf and turf'], bestFor: 'Steakhouse Marketing', icon: '🥩' },
+  { keywords: ['sushi', 'japanese', 'omakase', 'sake', 'nigiri', 'sashimi'], bestFor: 'Japanese Cuisine', icon: '🍣' },
+  { keywords: ['ramen', 'noodle', 'asian', 'pho', 'dim sum', 'asian_comfort'], bestFor: 'Asian Comfort Food', icon: '🍜' },
+  { keywords: ['mexican', 'taco', 'burrito', 'margarita', 'taqueria', 'mexican_street_food'], bestFor: 'Mexican Restaurant', icon: '🌮' },
+  { keywords: ['italian', 'pasta', 'risotto', 'trattoria'], bestFor: 'Italian Dining', icon: '🍝' },
+  { keywords: ['seafood', 'fish', 'oyster', 'lobster', 'crab', 'raw bar', 'seafood_fresh_catch'], bestFor: 'Seafood Restaurant', icon: '🦞' },
+  { keywords: ['bakery', 'bread', 'pastries', 'croissant', 'bakery_morning_light'], bestFor: 'Bakery & Patisserie', icon: '🥐' },
+  { keywords: ['diner', 'comfort food', 'classic', 'blue plate', 'all-day breakfast'], bestFor: 'Diner & Comfort Food', icon: '🍳' },
+  { keywords: ['fine dining', 'fine_dining', 'white tablecloth', 'elegant', 'upscale'], bestFor: 'Fine Dining', icon: '🍷' },
+  { keywords: ['fast casual', 'fast_casual', 'counter', 'build your own', 'grab and go'], bestFor: 'Fast Casual', icon: '🍔' },
+  { keywords: ['food truck', 'street food', 'mobile', 'festival'], bestFor: 'Food Truck', icon: '🚚' },
+  { keywords: ['mediterranean', 'mezze', 'kebab', 'hummus', 'falafel'], bestFor: 'Mediterranean', icon: '🫒' },
   
-  // Events
-  { keywords: ['event', 'party', 'celebration'], bestFor: 'Event Announcements', icon: '🎉' },
-  { keywords: ['holiday', 'christmas', 'thanksgiving'], bestFor: 'Holiday Promotions', icon: '🎄' },
-  { keywords: ['live music', 'entertainment'], bestFor: 'Entertainment Nights', icon: '🎵' },
-  { keywords: ['trivia', 'game'], bestFor: 'Trivia & Game Nights', icon: '🎯' },
+  // === SOCIAL PROOF ===
+  { keywords: ['review', 'testimonial', 'customer', 'social_proof', 'five star', '5 star'], bestFor: 'Customer Testimonials', icon: '⭐' },
+  { keywords: ['award', 'recognition', 'best of', 'winner', 'voted'], bestFor: 'Awards & Recognition', icon: '🏆' },
   
-  // New categories for expanded library
-  { keywords: ['delivery', 'takeout', 'pickup', 'to-go'], bestFor: 'Delivery & Takeout', icon: '🚗' },
-  { keywords: ['sports', 'game day', 'football', 'watch party'], bestFor: 'Sports & Game Day', icon: '🏈' },
-  { keywords: ['gift card', 'gift certificate'], bestFor: 'Gift Card Promos', icon: '🎁' },
-  { keywords: ['reward', 'loyalty', 'points'], bestFor: 'Loyalty Programs', icon: '💎' },
-  { keywords: ['new year', 'nye', 'countdown'], bestFor: 'New Year\'s Celebrations', icon: '🎆' },
-  { keywords: ['valentine', 'romantic', 'date night'], bestFor: 'Valentine\'s Day', icon: '💕' },
-  { keywords: ['story', 'stories', 'instagram story'], bestFor: 'Instagram Stories', icon: '📱' },
-  { keywords: ['square', 'feed', 'instagram post'], bestFor: 'Instagram Feed Posts', icon: '📸' },
-  { keywords: ['facebook', 'fb post'], bestFor: 'Facebook Posts', icon: '👍' },
-  { keywords: ['behind the scenes', 'bts', 'kitchen'], bestFor: 'Behind-the-Scenes', icon: '🎬' },
-  { keywords: ['ugc', 'user generated', 'community'], bestFor: 'Community Content', icon: '🤝' },
-  { keywords: ['weather', 'rain', 'snow', 'cold', 'hot'], bestFor: 'Weather-Based Promos', icon: '🌤️' },
-  { keywords: ['catering', 'private event', 'group'], bestFor: 'Catering & Events', icon: '🎊' },
-  { keywords: ['wine', 'sommelier', 'pairing'], bestFor: 'Wine Features', icon: '🍷' },
-  { keywords: ['craft', 'artisan', 'handmade'], bestFor: 'Artisan Features', icon: '✨' },
+  // === HIRING ===
+  { keywords: ['hiring', 'job', 'career', 'team', 'recruit', 'join our team', 'now hiring'], bestFor: 'Recruitment Posts', icon: '👥' },
+  { keywords: ['chef', 'cook', 'kitchen staff', 'line cook', 'sous chef'], bestFor: 'Kitchen Staff Hiring', icon: '👨‍🍳' },
+  
+  // === EVENTS ===
+  { keywords: ['event', 'party', 'celebration', 'special_events'], bestFor: 'Event Announcements', icon: '🎉' },
+  { keywords: ['live music', 'entertainment', 'band', 'dj', 'performer'], bestFor: 'Entertainment Nights', icon: '🎵' },
+  { keywords: ['trivia', 'game night', 'quiz', 'bingo'], bestFor: 'Trivia & Game Nights', icon: '🎯' },
+  { keywords: ['catering', 'private event', 'group dining', 'private dining', 'banquet'], bestFor: 'Catering & Events', icon: '🎊' },
+  { keywords: ['grand opening', 'now open', 'ribbon cutting', 'opening day'], bestFor: 'Grand Opening', icon: '🎊' },
+  
+  // === PROMOTIONS ===
+  { keywords: ['delivery', 'takeout', 'pickup', 'to-go', 'online order', 'delivery_takeout', 'curbside'], bestFor: 'Delivery & Takeout', icon: '🚗' },
+  { keywords: ['gift card', 'gift certificate', 'give the gift', 'giftcard', 'giftcards_rewards'], bestFor: 'Gift Card Promos', icon: '🎁' },
+  { keywords: ['reward', 'loyalty', 'points', 'member', 'vip', 'rewards program'], bestFor: 'Loyalty Programs', icon: '💎' },
+  { keywords: ['weather', 'rain', 'snow', 'cold day', 'hot day', 'rainy day', 'snow day'], bestFor: 'Weather-Based Promos', icon: '🌤️' },
+  
+  // === CONTENT TYPES ===
+  { keywords: ['story', 'stories', 'instagram story', 'vertical', 'instagram_stories', '9:16'], bestFor: 'Instagram Stories', icon: '📱' },
+  { keywords: ['square', 'feed', 'instagram post', '1:1', 'instagram_square'], bestFor: 'Instagram Feed Posts', icon: '📸' },
+  { keywords: ['facebook', 'fb post', 'facebook_post'], bestFor: 'Facebook Posts', icon: '👍' },
+  { keywords: ['behind the scenes', 'bts', 'kitchen action', 'behind_the_scenes'], bestFor: 'Behind-the-Scenes', icon: '🎬' },
+  { keywords: ['ugc', 'user generated', 'community', 'repost', 'ugc_operational'], bestFor: 'Community Content', icon: '🤝' },
+  
+  // === OPERATIONAL ===
+  { keywords: ['hours', 'schedule', 'open', 'closed', 'new hours'], bestFor: 'Hours Updates', icon: '🕐' },
+  { keywords: ['announcement', 'update', 'news', 'alert'], bestFor: 'Announcements', icon: '📢' },
+  { keywords: ['thank you', 'milestone', 'anniversary', 'years of'], bestFor: 'Milestone Celebrations', icon: '🙏' },
+  
+  // === MISC ===
+  { keywords: ['wine', 'sommelier', 'pairing', 'vineyard', 'wine list', 'by the glass'], bestFor: 'Wine Features', icon: '🍷' },
+  { keywords: ['craft', 'artisan', 'handmade', 'small batch', 'house-made'], bestFor: 'Artisan Features', icon: '✨' },
+  { keywords: ['charcuterie', 'cheese board', 'grazing', 'appetizer platter'], bestFor: 'Charcuterie & Boards', icon: '🧀' },
 ];
 
 // ============================================================================

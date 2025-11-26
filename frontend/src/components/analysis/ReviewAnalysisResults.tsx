@@ -1,16 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { PageHeading } from '@/components/layout/PageHeading';
+
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { CompetitorsTable } from './CompetitorsTable';
 import { InsightsGridWrapper } from './InsightsGridWrapper';
@@ -23,11 +17,9 @@ import {
   MapPin,
   Users,
   Sparkles,
-  Clock,
   CheckCircle2,
   AlertCircle,
   FileText,
-  BarChart3,
   TrendingUp,
 } from 'lucide-react';
 
@@ -35,27 +27,24 @@ import {
 interface StatCardProps {
   label: string;
   value: string | number;
-  description?: string;
   icon?: React.ReactNode;
   color?: string;
+  iconBgColor?: string;
 }
 
-function StatCard({ label, value, description, icon, color = 'text-primary-500' }: StatCardProps) {
+function StatCard({ label, value, icon, color = 'text-white', iconBgColor = 'bg-primary-500/10' }: StatCardProps) {
   return (
-    <Card className="bg-card-dark border-white/10">
-      <CardHeader className="pb-1 pt-3 px-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xs font-medium text-slate-300">{label}</CardTitle>
-          {icon && <div className="text-slate-500">{icon}</div>}
+    <div className="bg-card-dark border border-white/10 rounded-lg p-3 flex items-center gap-3">
+      {icon && (
+        <div className={`p-2 rounded-md ${iconBgColor}`}>
+          {icon}
         </div>
-      </CardHeader>
-      <CardContent className="px-4 pb-3 pt-0">
-        <div className={`text-xl font-bold ${color}`}>{value}</div>
-        {description && (
-          <p className="text-[10px] text-slate-500 mt-0.5">{description}</p>
-        )}
-      </CardContent>
-    </Card>
+      )}
+      <div>
+        <div className={`text-lg font-bold ${color}`}>{value}</div>
+        <div className="text-[10px] text-slate-500 uppercase tracking-wide">{label}</div>
+      </div>
+    </div>
   );
 }
 
@@ -113,147 +102,119 @@ export function ReviewAnalysisResults({ analysisId }: ReviewAnalysisResultsProps
   const opportunityCount = analysis.insights.filter(i => i.type === 'opportunity').length;
 
   return (
-    <div className="space-y-6">
-        {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-sm text-slate-400 mb-4">
-          <a href="/dashboard" className="hover:text-white transition-colors">Dashboard</a>
-          <span>/</span>
-          <a href="/analysis" className="hover:text-white transition-colors">Review Analysis</a>
-          <span>/</span>
-          <span className="text-white">Results</span>
-        </nav>
+    <div className="space-y-4">
+        {/* Back link */}
+        <button
+          onClick={() => navigate('/analysis')}
+          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span>Back to Dashboard</span>
+        </button>
 
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <div>
-            <PageHeading className="mb-2">
-              {analysis.restaurant_name}
-            </PageHeading>
-            <div className="flex items-center gap-2 text-slate-400 mb-3">
-              <MapPin className="h-4 w-4" />
-              <span>{analysis.location}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge className="bg-slate-500/10 text-slate-300 border-slate-500/30 border">
-                {analysis.category
-                  .replace('_', ' ')
-                  .replace(/\b\w/g, (l) => l.toUpperCase())}
-              </Badge>
-              <Badge className="bg-primary-500/10 text-primary-500 border-white/10 border">
-                <CheckCircle2 className="h-3 w-3 mr-1" />
-                {analysis.status.charAt(0).toUpperCase() + analysis.status.slice(1)}
-              </Badge>
+        {/* Compact Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div>
+              <h1 className="text-xl font-semibold text-white">{analysis.restaurant_name}</h1>
+              <div className="flex items-center gap-3 mt-1">
+                <span className="flex items-center gap-1 text-xs text-slate-400">
+                  <MapPin className="h-3 w-3" />
+                  {analysis.location}
+                </span>
+                <Badge className="bg-slate-500/10 text-slate-300 border-0 text-[10px] px-1.5 py-0">
+                  {analysis.category.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+                </Badge>
+                <Badge className="bg-success-400/10 text-success-400 border-0 text-[10px] px-1.5 py-0">
+                  <CheckCircle2 className="h-2.5 w-2.5 mr-1" />
+                  Complete
+                </Badge>
+              </div>
             </div>
           </div>
-          
-          <div className="flex gap-3">
-            <Button
-              variant="outline"
-              onClick={() => navigate('/analysis')}
-              className="border-white/10 text-slate-300 hover:bg-white/5"
-            >
-              Back to Dashboard
-            </Button>
+
+          <div className="flex gap-2">
             <Button
               onClick={() => navigate('/analysis/new')}
-              className="bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25"
+              size="sm"
+              className="h-8 bg-primary-500 hover:bg-primary-400 text-white text-xs"
             >
-              <Sparkles className="h-4 w-4 mr-2" />
+              <Sparkles className="h-3.5 w-3.5 mr-1.5" />
               New Analysis
             </Button>
             <ExportButton analysis={analysis} />
           </div>
         </div>
 
-        {/* Executive Summary */}
-        <Card className="bg-card-dark border-white/10 shadow-2xl">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary-500/10">
-                <BarChart3 className="h-5 w-5 text-primary-500" />
-              </div>
-              <div>
-                <CardTitle className="text-white">Analysis Summary</CardTitle>
-                <CardDescription className="text-slate-400 mt-1">
-                  <Clock className="h-3 w-3 inline mr-1" />
-                  Completed on {new Date(analysis.completed_at).toLocaleDateString()} in{' '}
-                  {analysis.processing_time_seconds}s
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              <StatCard
-                label="Competitors Analyzed"
-                value={analysis.competitors.length}
-                description="Nearby restaurants"
-                icon={<Users className="h-5 w-5" />}
-                color="text-primary-500"
-              />
-              <StatCard
-                label="Total Insights"
-                value={analysis.insights.length}
-                description="Generated insights"
-                icon={<Sparkles className="h-5 w-5" />}
-                color="text-accent-400"
-              />
-              <StatCard
-                label="High Confidence"
-                value={highConfidenceInsights}
-                description="Reliable insights"
-                icon={<CheckCircle2 className="h-5 w-5" />}
-                color="text-primary-500"
-              />
-              <StatCard
-                label="Threats / Opportunities"
-                value={`${threatCount} / ${opportunityCount}`}
-                description="Risk vs reward"
-                icon={<TrendingUp className="h-5 w-5" />}
-                color={threatCount > opportunityCount ? 'text-destructive' : 'text-primary-500'}
-              />
-            </div>
-          </CardContent>
-        </Card>
+        {/* Compact Stats Row */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <StatCard
+            label="Competitors"
+            value={analysis.competitors.length}
+            icon={<Users className="h-4 w-4 text-primary-500" />}
+            iconBgColor="bg-primary-500/10"
+          />
+          <StatCard
+            label="Insights"
+            value={analysis.insights.length}
+            icon={<Sparkles className="h-4 w-4 text-accent-400" />}
+            iconBgColor="bg-accent-500/10"
+          />
+          <StatCard
+            label="High Confidence"
+            value={highConfidenceInsights}
+            icon={<CheckCircle2 className="h-4 w-4 text-success-400" />}
+            iconBgColor="bg-success-400/10"
+          />
+          <StatCard
+            label="Threats / Opps"
+            value={`${threatCount} / ${opportunityCount}`}
+            icon={<TrendingUp className="h-4 w-4 text-primary-500" />}
+            iconBgColor="bg-primary-500/10"
+            color={threatCount > opportunityCount ? 'text-destructive' : 'text-white'}
+          />
+        </div>
 
-        {/* Mobile-optimized tabs */}
+        {/* Compact Tabs */}
         <Tabs defaultValue="competitors" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 h-12 bg-obsidian/50 border border-white/10">
+          <TabsList className="grid w-full grid-cols-3 h-9 bg-obsidian/50 border border-white/10">
             <TabsTrigger
               value="competitors"
-              className="text-sm data-[state=active]:bg-primary-500/10 data-[state=active]:text-primary-500"
+              className="text-xs data-[state=active]:bg-primary-500/10 data-[state=active]:text-primary-500"
             >
-              <Users className="h-4 w-4 mr-2" />
+              <Users className="h-3.5 w-3.5 mr-1.5" />
               Competitors
             </TabsTrigger>
             <TabsTrigger
               value="insights"
-              className="text-sm data-[state=active]:bg-accent-500/10 data-[state=active]:text-accent-400"
+              className="text-xs data-[state=active]:bg-accent-500/10 data-[state=active]:text-accent-400"
             >
-              <Sparkles className="h-4 w-4 mr-2" />
-              Insights
+              <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+              Insights ({analysis.insights.length})
             </TabsTrigger>
             <TabsTrigger
               value="evidence"
-              className="text-sm data-[state=active]:bg-slate-500/10 data-[state=active]:text-slate-300"
+              className="text-xs data-[state=active]:bg-slate-500/10 data-[state=active]:text-slate-300"
             >
-              <FileText className="h-4 w-4 mr-2" />
+              <FileText className="h-3.5 w-3.5 mr-1.5" />
               Evidence
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="competitors" className="mt-6">
+          <TabsContent value="competitors" className="mt-4">
             <CompetitorsTable competitors={analysis.competitors} />
           </TabsContent>
 
-          <TabsContent value="insights" className="mt-6">
+          <TabsContent value="insights" className="mt-4">
             <InsightsGridWrapper
               insights={analysis.insights}
               competitors={analysis.competitors}
             />
           </TabsContent>
 
-          <TabsContent value="evidence" className="mt-6">
+          <TabsContent value="evidence" className="mt-4">
             {analysis.evidence_reviews ? (
               <EvidenceReviewsDisplay
                 analysisId={analysisId}

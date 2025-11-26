@@ -12,6 +12,10 @@ export interface InventoryItemSearchResult {
   calculated_unit_cost: number;
   base_unit: string;
   unit_of_measure: string;
+  // Detailed cost breakdown for flexible recipe entry
+  unit_cost_per_weight?: number | null;  // Cost per weight unit (e.g., $/oz)
+  weight_unit?: string | null;           // Weight unit (e.g., "oz", "lb")
+  unit_cost_per_piece?: number | null;   // Cost per piece (e.g., $/ea for cans)
   last_purchase_price: number;
   last_purchase_date: string | null;
   warnings: string[];

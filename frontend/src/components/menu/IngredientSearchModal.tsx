@@ -36,9 +36,9 @@ export function IngredientSearchModal({
 
   const handleSelect = (item: InventoryItemSearchResult) => {
     setSelectedItem(item);
-    // InventoryItemSearchResult only has unit_of_measure (base_unit and pack_size are on MenuItemIngredient)
-    const baseUnit = item.unit_of_measure;
-    setUnit(baseUnit);
+    // Default to weight unit if available (more useful for recipes), otherwise use base_unit
+    const defaultUnit = item.weight_unit || item.base_unit || item.unit_of_measure || 'ea';
+    setUnit(defaultUnit);
   };
 
   const handleAdd = async () => {
@@ -126,16 +126,31 @@ export function IngredientSearchModal({
                       <div className="flex-1">
                         <h4 className="font-semibold text-white mb-1">{item.name}</h4>
                         <div className="flex items-center gap-3 text-sm text-slate-400 flex-wrap">
-                          <span className="font-mono">
-                            ${(item.calculated_unit_cost || 0).toFixed(4)}/{item.base_unit}
-                          </span>
+                          {/* Show per-weight cost (most useful for recipes) */}
+                          {item.unit_cost_per_weight && item.weight_unit && (
+                            <span className="font-mono text-emerald-400">
+                              ${item.unit_cost_per_weight.toFixed(4)}/{item.weight_unit}
+                            </span>
+                          )}
+                          {/* Show per-piece cost if available */}
+                          {item.unit_cost_per_piece && (
+                            <span className="font-mono text-amber-400">
+                              ${item.unit_cost_per_piece.toFixed(2)}/ea
+                            </span>
+                          )}
+                          {/* Fallback to calculated_unit_cost if no breakdown */}
+                          {!item.unit_cost_per_weight && !item.unit_cost_per_piece && (
+                            <span className="font-mono">
+                              ${(item.calculated_unit_cost || 0).toFixed(4)}/{item.base_unit}
+                            </span>
+                          )}
                           {item.pack_size && (
                             <Badge className="bg-primary-700/50 text-primary-300 text-xs">
                               Pack: {item.pack_size}
                             </Badge>
                           )}
                           {item.pack_price && (
-                            <span className="font-mono">${item.pack_price.toFixed(2)}/pack</span>
+                            <span className="font-mono text-slate-500">${item.pack_price.toFixed(2)}/case</span>
                           )}
                           {item.match_confidence && (
                             <Badge className={
@@ -192,12 +207,28 @@ export function IngredientSearchModal({
                   <div className="flex-1">
                     <h4 className="font-semibold text-white mb-1">{selectedItem.name}</h4>
                     <div className="space-y-1">
-                      <p className="text-sm text-slate-400">
-                        ${(selectedItem.calculated_unit_cost || 0).toFixed(4)}/{selectedItem.base_unit}
-                      </p>
+                      {/* Show both costs for clarity */}
+                      {selectedItem.unit_cost_per_weight && selectedItem.weight_unit && (
+                        <p className="text-sm text-emerald-400 font-mono">
+                          ${selectedItem.unit_cost_per_weight.toFixed(4)}/{selectedItem.weight_unit}
+                          <span className="text-slate-500 ml-2">(by weight)</span>
+                        </p>
+                      )}
+                      {selectedItem.unit_cost_per_piece && (
+                        <p className="text-sm text-amber-400 font-mono">
+                          ${selectedItem.unit_cost_per_piece.toFixed(2)}/ea
+                          <span className="text-slate-500 ml-2">(per piece)</span>
+                        </p>
+                      )}
+                      {/* Fallback if no breakdown available */}
+                      {!selectedItem.unit_cost_per_weight && !selectedItem.unit_cost_per_piece && (
+                        <p className="text-sm text-slate-400">
+                          ${(selectedItem.calculated_unit_cost || 0).toFixed(4)}/{selectedItem.base_unit}
+                        </p>
+                      )}
                       {selectedItem.pack_size && (
                         <p className="text-xs text-slate-500">
-                          Pack: {selectedItem.pack_size} @ ${selectedItem.pack_price.toFixed(2)}
+                          Pack: {selectedItem.pack_size} @ ${selectedItem.pack_price.toFixed(2)}/case
                         </p>
                       )}
                     </div>

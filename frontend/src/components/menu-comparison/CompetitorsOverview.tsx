@@ -1,5 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { MapPin, Star, Users, Navigation } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { MapPin, Star, Users, Navigation, ExternalLink } from 'lucide-react'
 
 interface Competitor {
   id: string
@@ -8,6 +9,8 @@ interface Competitor {
   address?: string
   review_count?: number
   distance_miles?: number
+  website?: string
+  menu_items?: Array<{ item_name: string }>
 }
 
 interface CompetitorsOverviewProps {
@@ -16,48 +19,76 @@ interface CompetitorsOverviewProps {
 
 export function CompetitorsOverview({ competitors }: CompetitorsOverviewProps) {
   return (
-    <div className="grid gap-6 md:grid-cols-2">
+    <div className="space-y-3">
       {competitors.map((competitor) => (
         <Card key={competitor.id} className="bg-card-dark border-white/10">
-          <CardHeader>
-            <div className="flex items-start justify-between gap-3">
-              <CardTitle className="text-lg text-white">{competitor.business_name}</CardTitle>
-              {competitor.rating != null && (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-sm font-semibold border bg-primary-500/15 text-primary-500 border-white/10">
-                  <Star className="w-3.5 h-3.5 fill-current" />
-                  {competitor.rating.toFixed(1)}
+          <CardContent className="p-4">
+            <div className="flex items-start justify-between gap-4">
+              {/* Left: Name & Address */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-base font-semibold text-white truncate">
+                    {competitor.business_name}
+                  </h3>
+                  {competitor.rating != null && (
+                    <Badge className="bg-primary-500/15 text-primary-500 border-0 text-xs px-1.5 py-0 flex items-center gap-1">
+                      <Star className="w-3 h-3 fill-current" />
+                      {competitor.rating.toFixed(1)}
+                    </Badge>
+                  )}
                 </div>
-              )}
-            </div>
-            {competitor.address && (
-              <div className="flex items-start gap-2 text-sm text-slate-400">
-                <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>{competitor.address}</span>
+                {competitor.address && (
+                  <div className="flex items-start gap-1.5 text-xs text-slate-400">
+                    <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
+                    <span className="truncate">{competitor.address}</span>
+                  </div>
+                )}
               </div>
-            )}
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-              {competitor.review_count && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Users className="w-4 h-4 text-slate-500" />
-                  <div>
-                    <div className="text-slate-400 text-xs">Reviews</div>
-                    <div className="text-slate-200 font-semibold">
+
+              {/* Right: Stats */}
+              <div className="flex items-center gap-4 flex-shrink-0">
+                {competitor.review_count != null && (
+                  <div className="text-center">
+                    <div className="text-sm font-semibold text-white">
                       {competitor.review_count.toLocaleString()}
                     </div>
+                    <div className="text-[10px] text-slate-500 flex items-center gap-1">
+                      <Users className="w-3 h-3" />
+                      reviews
+                    </div>
                   </div>
-                </div>
-              )}
-              {competitor.distance_miles && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Navigation className="w-4 h-4 text-accent-500" />
-                  <div>
-                    <div className="text-slate-400 text-xs">Distance</div>
-                    <div className="text-accent-400 font-semibold">{competitor.distance_miles.toFixed(1)} mi</div>
+                )}
+                {competitor.distance_miles != null && (
+                  <div className="text-center">
+                    <div className="text-sm font-semibold text-accent-400">
+                      {competitor.distance_miles.toFixed(1)}
+                    </div>
+                    <div className="text-[10px] text-slate-500 flex items-center gap-1">
+                      <Navigation className="w-3 h-3" />
+                      miles
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+                {competitor.menu_items && (
+                  <div className="text-center">
+                    <div className="text-sm font-semibold text-primary-500">
+                      {competitor.menu_items.length}
+                    </div>
+                    <div className="text-[10px] text-slate-500">items</div>
+                  </div>
+                )}
+                {competitor.website && (
+                  <a
+                    href={competitor.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 rounded hover:bg-white/5 text-slate-400 hover:text-white transition-colors"
+                    title="Visit website"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -65,4 +96,3 @@ export function CompetitorsOverview({ competitors }: CompetitorsOverviewProps) {
     </div>
   )
 }
-

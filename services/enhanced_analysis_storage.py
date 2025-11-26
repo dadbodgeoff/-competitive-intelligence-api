@@ -262,15 +262,11 @@ class EnhancedAnalysisStorage:
         """Store analysis metadata"""
         
         try:
+            # Only update columns that exist in the analyses table
             metadata = {
                 "llm_provider": "google_gemini",
                 "tier": tier,
-                "total_reviews_analyzed": analysis_result.get('analysis_summary', {}).get('total_reviews_analyzed', 0),
-                "competitors_analyzed": analysis_result.get('analysis_summary', {}).get('competitors_count', 0),
-                "insights_generated": len(analysis_result.get('actionable_insights', [])) if tier == 'free' else self._count_premium_insights(analysis_result),
-                "completed_at": datetime.utcnow().isoformat(),
-                "processing_time_seconds": analysis_result.get('metadata', {}).get('processing_time_seconds', 0),
-                "estimated_cost": analysis_result.get('metadata', {}).get('target_cost', 0.0)
+                "completed_at": datetime.utcnow().isoformat()
             }
             
             self.supabase.table("analyses").update(metadata).eq("id", analysis_id).execute()

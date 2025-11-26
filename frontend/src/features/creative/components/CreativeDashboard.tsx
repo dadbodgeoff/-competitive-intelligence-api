@@ -40,14 +40,43 @@ const CATEGORY_DESCRIPTIONS: Record<CreativeTab, string> = {
 
 // Sub-categories for better organization within campaigns
 const CAMPAIGN_SUBCATEGORIES: Record<string, { label: string; icon: string; keywords: string[] }> = {
-  seasonal: { label: '🎄 Seasonal & Holidays', icon: '🎄', keywords: ['holiday', 'christmas', 'thanksgiving', 'winter', 'summer', 'spring', 'fall', 'new year', 'valentine', 'easter', 'halloween'] },
-  daily_specials: { label: '📅 Daily Specials & LTOs', icon: '📅', keywords: ['daily', 'special', 'lto', 'limited', 'today', 'weekly'] },
-  happy_hour: { label: '🍸 Happy Hour & Drinks', icon: '🍸', keywords: ['happy hour', 'cocktail', 'drink', 'beer', 'wine', 'bar'] },
-  delivery: { label: '🚗 Delivery & Takeout', icon: '🚗', keywords: ['delivery', 'takeout', 'pickup', 'order online', 'to-go'] },
-  sports: { label: '🏈 Sports & Game Day', icon: '🏈', keywords: ['sports', 'game', 'football', 'basketball', 'watch party'] },
-  rewards: { label: '🎁 Rewards & Gift Cards', icon: '🎁', keywords: ['reward', 'loyalty', 'gift card', 'points'] },
-  brunch: { label: '🥞 Brunch & Breakfast', icon: '🥞', keywords: ['brunch', 'breakfast', 'morning', 'mimosa'] },
-  menu_features: { label: '🍽️ Menu Features', icon: '🍽️', keywords: ['menu', 'dish', 'feature', 'signature', 'chef'] },
+  // Holiday & Seasonal (Top Priority)
+  holiday: { label: '🎄 Holiday & Christmas', icon: '🎄', keywords: ['holiday', 'christmas', 'xmas', 'festive', 'thanksgiving', 'easter', 'gingerbread', 'fireplace', 'cozy', 'feast', 'cocoa', 'mulled wine', 'cookie decorating', 'gift card'] },
+  new_years: { label: '🎆 New Year\'s', icon: '🎆', keywords: ['new year', 'nye', 'countdown', 'midnight', 'resolution', 'champagne', 'toast', 'celebration'] },
+  seasonal: { label: '🍂 Seasonal', icon: '🍂', keywords: ['winter', 'summer', 'spring', 'fall', 'autumn', 'harvest', 'patio', 'seasonal', 'weather', 'rain', 'snow', 'cold day', 'hot day'] },
+  valentine: { label: '💕 Valentine\'s Day', icon: '💕', keywords: ['valentine', 'romantic', 'date night', 'couples', 'love', 'anniversary'] },
+  
+  // Sports & Entertainment
+  sports: { label: '🏈 Sports & Game Day', icon: '🏈', keywords: ['sports', 'game day', 'gameday', 'football', 'basketball', 'playoff', 'championship', 'watch party', 'wings', 'march madness', 'super bowl', 'monday night', 'sunday funday', 'tailgate', 'big game'] },
+  
+  // Promotions & Specials
+  daily_specials: { label: '📅 Daily Specials & LTOs', icon: '📅', keywords: ['daily', 'special', 'lto', 'limited', 'today', 'weekly', 'feature', 'blue plate', 'combo', 'deal'] },
+  happy_hour: { label: '🍸 Happy Hour & Drinks', icon: '🍸', keywords: ['happy hour', 'cocktail', 'drink', 'margarita', 'wine', 'beer flight', 'craft beer', 'tap', 'bar', 'mixology'] },
+  delivery: { label: '🚗 Delivery & Takeout', icon: '🚗', keywords: ['delivery', 'takeout', 'pickup', 'order online', 'to-go', 'curbside', 'grab and go', 'qr code'] },
+  rewards: { label: '🎁 Gift Cards & Rewards', icon: '🎁', keywords: ['reward', 'loyalty', 'gift card', 'giftcard', 'points', 'member', 'bonus', 'give the gift'] },
+  
+  // Time-Based
+  brunch: { label: '🥞 Brunch & Breakfast', icon: '🥞', keywords: ['brunch', 'breakfast', 'morning', 'mimosa', 'pancake', 'waffle', 'eggs', 'benedict', 'avocado toast', 'diner'] },
+  
+  // Content Types
+  stories: { label: '📱 Instagram Stories', icon: '📱', keywords: ['story', 'stories', 'vertical', '9:16', 'instagram story', 'swipe', 'poll', 'countdown'] },
+  ugc: { label: '🤝 UGC & Community', icon: '🤝', keywords: ['ugc', 'user generated', 'community', 'repost', 'customer spotlight', 'review', 'testimonial', 'social proof'] },
+  behind_scenes: { label: '🎬 Behind the Scenes', icon: '🎬', keywords: ['behind', 'bts', 'kitchen action', 'team', 'prep', 'chef', 'meet the'] },
+  
+  // Operational
+  operational: { label: '📋 Operational Updates', icon: '📋', keywords: ['hours', 'closed', 'weather', 'announcement', 'update', 'alert', 'grand opening', 'now open', 'private event'] },
+  
+  // Restaurant Types (for filtering by cuisine)
+  fine_dining: { label: '🍷 Fine Dining', icon: '🍷', keywords: ['fine dining', 'tasting menu', 'prix fixe', 'wine pairing', 'chef\'s table', 'omakase', 'white tablecloth'] },
+  pizza: { label: '🍕 Pizza & Italian', icon: '🍕', keywords: ['pizza', 'pizzeria', 'slice', 'cheese pull', 'wood fired', 'italian', 'pasta'] },
+  bbq: { label: '🔥 BBQ & Smokehouse', icon: '🔥', keywords: ['bbq', 'smokehouse', 'brisket', 'pitmaster', 'smoked', 'ribs', 'butcher paper'] },
+  seafood: { label: '🦞 Seafood', icon: '🦞', keywords: ['seafood', 'fish', 'oyster', 'lobster', 'crab', 'raw bar', 'catch', 'surf'] },
+  mexican: { label: '🌮 Mexican', icon: '🌮', keywords: ['mexican', 'taco', 'burrito', 'margarita', 'taqueria', 'street food'] },
+  asian: { label: '🍜 Asian Cuisine', icon: '🍜', keywords: ['asian', 'ramen', 'sushi', 'dim sum', 'noodle', 'pho', 'korean', 'thai', 'chinese'] },
+  bakery: { label: '🥐 Bakery & Café', icon: '🥐', keywords: ['bakery', 'cafe', 'coffee', 'pastry', 'croissant', 'cake', 'bread', 'latte'] },
+  
+  // Default
+  menu_features: { label: '🍽️ Menu Features', icon: '🍽️', keywords: ['menu', 'dish', 'signature', 'tasting', 'appetizer', 'entree', 'platter'] },
 };
 
 // Helper to determine subcategory from theme
@@ -64,20 +93,41 @@ function getThemeSubcategory(theme: ThemeSummary): string {
 
 // Vertical display names for better UX
 const VERTICAL_DISPLAY_NAMES: Record<string, string> = {
+  // Restaurant Types
   pizza: '🍕 Pizza & Italian',
   bar_grill: '🍺 Bar & Grill',
   fine_dining: '🍷 Fine Dining',
-  fast_casual: '🌮 Fast Casual',
-  bakery: '🥐 Bakery & Cafe',
-  cafe: '☕ Coffee Shop',
+  fast_casual: '🍔 Fast Casual',
+  bakery: '🥐 Bakery & Patisserie',
+  cafe: '☕ Coffee & Cafe',
   bbq: '🔥 BBQ & Smokehouse',
-  seafood: '🦞 Seafood',
+  seafood: '🦞 Seafood & Raw Bar',
   asian: '🍜 Asian Cuisine',
-  mexican: '🌯 Mexican',
+  mexican: '🌮 Mexican & Tacos',
   breakfast: '🥞 Breakfast & Brunch',
   steakhouse: '🥩 Steakhouse',
+  sushi: '🍣 Sushi & Japanese',
+  diner: '☕ Diner & Comfort',
+  southern_comfort: '🍗 Southern Comfort',
+  ice_cream: '🍦 Desserts & Ice Cream',
+  healthy_bowls: '🥗 Healthy & Bowls',
+  mediterranean: '🫒 Mediterranean',
+  food_truck: '🚚 Food Truck',
+  gastropub: '🍻 Gastropub',
+  
+  // Multi-concept
   all_verticals: '🎯 All Restaurant Types',
   cross_vertical: '🎯 Multi-Concept',
+  
+  // Content-focused (not restaurant type)
+  hiring: '👥 Hiring & Recruitment',
+  social_proof: '⭐ Social Proof',
+  events: '🎉 Events & Promotions',
+  
+  // Holiday-specific verticals
+  holiday: '🎄 Holiday Specials',
+  christmas: '🎄 Christmas',
+  new_years: '🎆 New Year\'s',
 };
 
 export function CreativeDashboard() {

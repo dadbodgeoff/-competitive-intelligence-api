@@ -13,16 +13,60 @@ interface TemplateCardProps {
 
 // Map use cases to colors for visual distinction
 const useCaseColors: Record<string, string> = {
+  // Social Media
   'Instagram Post': 'bg-pink-500/20 text-pink-300 border-pink-500/30',
   'Instagram Story': 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-  'Delivery App Hero': 'bg-orange-500/20 text-orange-300 border-orange-500/30',
+  'Instagram Square': 'bg-pink-500/20 text-pink-300 border-pink-500/30',
+  'Facebook Post': 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+  
+  // Food & Menu
   'Menu Photo': 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+  'Daily Feature': 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+  'Daily Menu': 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+  'Signature Item': 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+  'Beverage Menu': 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+  'Beverage Feature': 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+  
+  // Promotions
+  'Delivery App Hero': 'bg-orange-500/20 text-orange-300 border-orange-500/30',
   'Catering Promo': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
   'Holiday Promo': 'bg-red-500/20 text-red-300 border-red-500/30',
   'Promo Graphic': 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+  'Special Event': 'bg-violet-500/20 text-violet-300 border-violet-500/30',
+  'Special Orders': 'bg-violet-500/20 text-violet-300 border-violet-500/30',
+  'Convenience': 'bg-green-500/20 text-green-300 border-green-500/30',
+  
+  // Events & Experiences
   'Event Announcement': 'bg-violet-500/20 text-violet-300 border-violet-500/30',
+  'Experience Promo': 'bg-violet-500/20 text-violet-300 border-violet-500/30',
+  'Premium Experience': 'bg-violet-500/20 text-violet-300 border-violet-500/30',
+  'Celebration Feature': 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+  
+  // Hiring & Team
   'Hiring Post': 'bg-teal-500/20 text-teal-300 border-teal-500/30',
+  'Recruitment': 'bg-teal-500/20 text-teal-300 border-teal-500/30',
+  'Staff Spotlight': 'bg-teal-500/20 text-teal-300 border-teal-500/30',
+  'Kitchen Life': 'bg-teal-500/20 text-teal-300 border-teal-500/30',
+  
+  // Social Proof
   'Social Proof': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+  'Testimonial': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+  'Recognition': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+  'Community': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+  
+  // Seasonal & Holiday
+  'Seasonal': 'bg-orange-500/20 text-orange-300 border-orange-500/30',
+  'Holiday': 'bg-red-500/20 text-red-300 border-red-500/30',
+  'Christmas': 'bg-red-500/20 text-red-300 border-red-500/30',
+  'New Years': 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+  
+  // Restaurant Types
+  'Pitmaster Feature': 'bg-orange-500/20 text-orange-300 border-orange-500/30',
+  'Feast Feature': 'bg-orange-500/20 text-orange-300 border-orange-500/30',
+  'Family Style': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+  'Sharing': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+  
+  // Default
   'Marketing': 'bg-slate-500/20 text-slate-300 border-slate-500/30',
 };
 

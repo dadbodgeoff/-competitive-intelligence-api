@@ -128,7 +128,7 @@ async def run_streaming_analysis(
             yield f"event: analysis_complete\ndata: {json.dumps(completion_data)}\n\n"
             
             # Explicit stream end
-            yield f"event: stream_end\ndata: {json.dumps({{'message': 'Stream closed'}})}\n\n"
+            yield f"event: stream_end\ndata: {json.dumps({'message': 'Stream closed'})}\n\n"
             await asyncio.sleep(0.05)
             
         except Exception as e:

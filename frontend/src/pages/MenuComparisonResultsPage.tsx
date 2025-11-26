@@ -8,12 +8,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AppShell } from '@/components/layout/AppShell';
-import { PageHeading } from '@/components/layout/PageHeading';
 import { InsightsView } from '@/components/menu-comparison/InsightsView';
 import { CompetitorsOverview } from '@/components/menu-comparison/CompetitorsOverview';
 import { MenuItemsView } from '@/components/menu-comparison/MenuItemsView';
@@ -152,7 +150,7 @@ export function MenuComparisonResultsPage() {
 
   return (
     <AppShell maxWidth="wide">
-      <div className="space-y-8">
+      <div className="space-y-4">
         {/* Back link */}
         <button
           onClick={() => navigate('/menu-comparison')}
@@ -164,121 +162,117 @@ export function MenuComparisonResultsPage() {
           <span>Back to Dashboard</span>
         </button>
 
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <PageHeading className="mb-2">{results.restaurant_name}</PageHeading>
-            <div className="flex items-center gap-2 text-slate-400 mb-3">
-              <MapPin className="h-4 w-4" />
-              <span>{results.location}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge className="bg-primary-500/10 text-primary-500 border-white/10 border">
-                <CheckCircle2 className="h-3 w-3 mr-1" />
-                Analysis Complete
-              </Badge>
-              <Badge className="bg-slate-500/10 text-slate-300 border-slate-500/30 border">
-                {results.competitors.length} Competitors
-              </Badge>
+        {/* Compact Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div>
+              <h1 className="text-xl font-semibold text-white">{results.restaurant_name}</h1>
+              <div className="flex items-center gap-3 mt-1">
+                <span className="flex items-center gap-1 text-xs text-slate-400">
+                  <MapPin className="h-3 w-3" />
+                  {results.location}
+                </span>
+                <Badge className="bg-success-400/10 text-success-400 border-0 text-[10px] px-1.5 py-0">
+                  <CheckCircle2 className="h-2.5 w-2.5 mr-1" />
+                  Complete
+                </Badge>
+              </div>
             </div>
           </div>
 
-          <div className="flex gap-3">
-            <Button variant="outline" className="border-white/10 text-slate-300 hover:bg-white/5">
-              <Download className="h-4 w-4 mr-2" />
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" className="h-8 border-white/10 text-slate-300 hover:bg-white/5 text-xs">
+              <Download className="h-3.5 w-3.5 mr-1.5" />
               Export
             </Button>
             <Button
               onClick={() => setShowSaveModal(true)}
-              className="bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25"
+              size="sm"
+              className="h-8 bg-primary-500 hover:bg-primary-400 text-white text-xs"
             >
-              <Save className="h-4 w-4 mr-2" />
-              Save to Account
+              <Save className="h-3.5 w-3.5 mr-1.5" />
+              Save
             </Button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="bg-card-dark border-white/10">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary-500/10">
-                  <Users className="h-5 w-5 text-primary-500" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-primary-500">
-                    {results.competitors.length}
-                  </div>
-                  <div className="text-sm text-slate-400">Competitors Analyzed</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Compact Stats Row */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="bg-card-dark border border-white/10 rounded-lg p-3 flex items-center gap-3">
+            <div className="p-2 rounded-md bg-primary-500/10">
+              <Users className="h-4 w-4 text-primary-500" />
+            </div>
+            <div>
+              <div className="text-lg font-bold text-white">{results.competitors.length}</div>
+              <div className="text-[10px] text-slate-500 uppercase tracking-wide">Competitors</div>
+            </div>
+          </div>
 
-          <Card className="bg-card-dark border-white/10">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-accent-500/10">
-                  <MenuIcon className="h-5 w-5 text-accent-400" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-accent-400">{allMenuItems.length}</div>
-                  <div className="text-sm text-slate-400">Menu Items Found</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="bg-card-dark border border-white/10 rounded-lg p-3 flex items-center gap-3">
+            <div className="p-2 rounded-md bg-accent-500/10">
+              <MenuIcon className="h-4 w-4 text-accent-400" />
+            </div>
+            <div>
+              <div className="text-lg font-bold text-white">{allMenuItems.length}</div>
+              <div className="text-[10px] text-slate-500 uppercase tracking-wide">Menu Items</div>
+            </div>
+          </div>
 
-          <Card className="bg-card-dark border-white/10">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary-500/10">
-                  <DollarSign className="h-5 w-5 text-primary-500" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-primary-500">
-                    {categories.length - 1}
-                  </div>
-                  <div className="text-sm text-slate-400">Menu Categories</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="bg-card-dark border border-white/10 rounded-lg p-3 flex items-center gap-3">
+            <div className="p-2 rounded-md bg-primary-500/10">
+              <DollarSign className="h-4 w-4 text-primary-500" />
+            </div>
+            <div>
+              <div className="text-lg font-bold text-white">{categories.length - 1}</div>
+              <div className="text-[10px] text-slate-500 uppercase tracking-wide">Categories</div>
+            </div>
+          </div>
+
+          <div className="bg-card-dark border border-white/10 rounded-lg p-3 flex items-center gap-3">
+            <div className="p-2 rounded-md bg-success-400/10">
+              <AlertCircle className="h-4 w-4 text-success-400" />
+            </div>
+            <div>
+              <div className="text-lg font-bold text-white">{results.total_insights}</div>
+              <div className="text-[10px] text-slate-500 uppercase tracking-wide">Insights</div>
+            </div>
+          </div>
         </div>
 
         <Tabs defaultValue="insights" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 h-12 bg-obsidian/50 border border-white/10">
+          <TabsList className="grid w-full grid-cols-3 h-9 bg-obsidian/50 border border-white/10">
             <TabsTrigger
               value="insights"
-              className="text-sm data-[state=active]:bg-primary-500/10 data-[state=active]:text-primary-500"
+              className="text-xs data-[state=active]:bg-primary-500/10 data-[state=active]:text-primary-500"
             >
-              <AlertCircle className="h-4 w-4 mr-2" />
+              <AlertCircle className="h-3.5 w-3.5 mr-1.5" />
               Insights ({results.total_insights})
             </TabsTrigger>
             <TabsTrigger
               value="competitors"
-              className="text-sm data-[state=active]:bg-primary-500/10 data-[state=active]:text-primary-500"
+              className="text-xs data-[state=active]:bg-primary-500/10 data-[state=active]:text-primary-500"
             >
-              <Users className="h-4 w-4 mr-2" />
+              <Users className="h-3.5 w-3.5 mr-1.5" />
               Competitors
             </TabsTrigger>
             <TabsTrigger
               value="menus"
-              className="text-sm data-[state=active]:bg-accent-500/10 data-[state=active]:text-accent-400"
+              className="text-xs data-[state=active]:bg-accent-500/10 data-[state=active]:text-accent-400"
             >
-              <MenuIcon className="h-4 w-4 mr-2" />
+              <MenuIcon className="h-3.5 w-3.5 mr-1.5" />
               Menu Items ({allMenuItems.length})
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="insights" className="mt-6">
+          <TabsContent value="insights" className="mt-4">
             <InsightsView insights={results.insights} />
           </TabsContent>
 
-          <TabsContent value="competitors" className="mt-6">
+          <TabsContent value="competitors" className="mt-4">
             <CompetitorsOverview competitors={results.competitors} />
           </TabsContent>
 
-          <TabsContent value="menus" className="mt-6">
+          <TabsContent value="menus" className="mt-4">
             <MenuItemsView
               items={filteredItems}
               searchTerm={searchTerm}

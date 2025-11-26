@@ -124,9 +124,14 @@ class MenuRecipeService:
                 match_confidence = item.get("match_confidence", {})
                 
                 # Calculate unit cost from pack (if available)
+                # Store BOTH per-weight and per-piece costs for flexible recipe entry
+                unit_cost_per_weight = None
+                weight_unit = None
+                unit_cost_per_piece = None
+                
                 if vendor_pack_size and pack_price and pack_price > 0:
                     try:
-                        unit_cost_weight, weight_unit, unit_cost_piece, error = converter.calculate_unit_cost_from_pack(
+                        cost_weight, w_unit, cost_piece, error = converter.calculate_unit_cost_from_pack(
                             Decimal(str(pack_price)),
                             vendor_pack_size
                         )
@@ -134,15 +139,21 @@ class MenuRecipeService:
                             warnings.append(error)
                             logger.warning(f"   Failed to calculate unit cost: {error}")
                         else:
-                            # Prefer per-piece cost if available (for items sold by "ea")
-                            if unit_cost_piece:
-                                calculated_unit_cost = float(unit_cost_piece)
-                                base_unit = "ea"
-                                logger.info(f"   Calculated: ${calculated_unit_cost:.4f}/ea for {item['name']}")
-                            elif unit_cost_weight:
-                                calculated_unit_cost = float(unit_cost_weight)
+                            if cost_weight:
+                                unit_cost_per_weight = float(cost_weight)
+                                weight_unit = w_unit
+                                logger.info(f"   Calculated: ${unit_cost_per_weight:.4f}/{weight_unit} for {item['name']}")
+                            if cost_piece:
+                                unit_cost_per_piece = float(cost_piece)
+                                logger.info(f"   Calculated: ${unit_cost_per_piece:.4f}/ea for {item['name']}")
+                            
+                            # For display, prefer weight-based cost (more useful for recipes)
+                            if unit_cost_per_weight:
+                                calculated_unit_cost = unit_cost_per_weight
                                 base_unit = weight_unit
-                                logger.info(f"   Calculated: ${calculated_unit_cost:.4f}/{base_unit} for {item['name']}")
+                            elif unit_cost_per_piece:
+                                calculated_unit_cost = unit_cost_per_piece
+                                base_unit = "ea"
                     except Exception as e:
                         warnings.append(f"Calculation error: {str(e)}")
                         logger.error(f"   Calculation error: {e}")
@@ -168,6 +179,10 @@ class MenuRecipeService:
                     "calculated_unit_cost": calculated_unit_cost,
                     "base_unit": base_unit,
                     "unit_of_measure": base_unit,  # For compatibility
+                    # Include BOTH costs for flexible recipe entry
+                    "unit_cost_per_weight": unit_cost_per_weight,
+                    "weight_unit": weight_unit,
+                    "unit_cost_per_piece": unit_cost_per_piece,
                     "last_purchase_date": item.get("created_at"),
                     "last_purchase_price": pack_price,
                     "warnings": warnings,

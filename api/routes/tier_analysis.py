@@ -424,6 +424,33 @@ async def invalidate_cache(
         "place_id": place_id
     }
 
+
+# IMPORTANT: This route MUST be defined BEFORE /{analysis_id} routes
+# to prevent "analyses" from being matched as a UUID parameter
+@router.get("/analyses", response_model=list)
+async def get_user_analyses(
+    current_user: str = Depends(get_current_user),
+    supabase = Depends(get_supabase_client)
+):
+    """
+    Get all analyses for the current user
+    Returns list of analyses with basic info including restaurant_name, tier, and insights count
+    """
+    try:
+        service_client = get_supabase_service_client()
+        response = service_client.table('analyses').select(
+            'id, restaurant_name, location, category, tier, competitor_count, status, created_at, updated_at, insights_generated'
+        ).eq('user_id', current_user).order('created_at', desc=True).execute()
+        
+        return response.data
+    except Exception as e:
+        logger.error(f"Failed to fetch analyses: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch analyses"
+        )
+
+
 @router.get("/{analysis_id}/status")
 async def get_analysis_status(
     analysis_id: str,
@@ -654,30 +681,6 @@ async def get_analysis_result(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve analysis"
         )
-
-@router.get("/analyses", response_model=list)
-async def get_user_analyses(
-    current_user: str = Depends(get_current_user),
-    supabase = Depends(get_supabase_client)
-):
-    """
-    Get all analyses for the current user
-    Returns list of analyses with basic info including restaurant_name, tier, and insights count
-    """
-    try:
-        service_client = get_supabase_service_client()
-        response = service_client.table('analyses').select(
-            'id, restaurant_name, location, category, tier, competitor_count, status, created_at, updated_at, insights_generated'
-        ).eq('user_id', current_user).order('created_at', desc=True).execute()
-        
-        return response.data
-    except Exception as e:
-        logger.error(f"Failed to fetch analyses: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to fetch analyses"
-        )
-
 
 @router.delete("/{analysis_id}")
 async def delete_analysis(

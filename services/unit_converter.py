@@ -155,9 +155,19 @@ class UnitConverter:
         
         pack_size = pack_size.lower().strip()
         
-        simple_can_match = re.match(r'^(?P<count>\d+)\s+(?P<can>10|5|2)\s*(?:cs|case)?$', pack_size)
+        simple_can_match = re.match(r'^(?P<count>\d+)\s+(?P<can>10|6|5|3|2|1)\s*(?:cs|case)?$', pack_size)
         if simple_can_match:
-            can_sizes_oz = {'10': 96, '5': 56, '2': 20}
+            # Standard commercial can sizes in ounces (drained/usable weight)
+            # #10 = 96 oz (6 lb), #6 = 104 oz (6.5 lb), #5 = 56 oz (3.5 lb)
+            # #3 = 46 oz (2.875 lb), #2 = 20 oz (1.25 lb), #1 = 16 oz (1 lb)
+            can_sizes_oz = {
+                '10': 96,   # #10 can = 96 oz (6 lb) - most common large can
+                '6': 104,   # #6 can = 104 oz (6.5 lb) - common for tomato products
+                '5': 56,    # #5 can = 56 oz (3.5 lb)
+                '3': 46,    # #3 can = 46 oz (2.875 lb)
+                '2': 20,    # #2 can = 20 oz (1.25 lb)
+                '1': 16,    # #1 can = 16 oz (1 lb)
+            }
             can_num = simple_can_match.group('can')
             weight_oz = can_sizes_oz.get(can_num, 96)
             return {
@@ -178,11 +188,19 @@ class UnitConverter:
                         'type': 'multiply'
                     }
                 elif pattern_type == 'can_size':
-                    # Standard can sizes in ounces (usable product weight)
-                    # #10 = 96 oz (6 lb), #5 = 56 oz (3.5 lb), #2 = 20 oz (1.25 lb)
-                    can_sizes_oz = {'10': 96, '5': 56, '2': 20}
+                    # Standard commercial can sizes in ounces (drained/usable weight)
+                    # #10 = 96 oz (6 lb), #6 = 104 oz (6.5 lb), #5 = 56 oz (3.5 lb)
+                    # #3 = 46 oz (2.875 lb), #2 = 20 oz (1.25 lb), #1 = 16 oz (1 lb)
+                    can_sizes_oz = {
+                        '10': 96,   # #10 can = 96 oz (6 lb)
+                        '6': 104,   # #6 can = 104 oz (6.5 lb)
+                        '5': 56,    # #5 can = 56 oz (3.5 lb)
+                        '3': 46,    # #3 can = 46 oz (2.875 lb)
+                        '2': 20,    # #2 can = 20 oz (1.25 lb)
+                        '1': 16,    # #1 can = 16 oz (1 lb)
+                    }
                     can_num = match.group(2)
-                    weight_oz = can_sizes_oz.get(can_num, 96)  # Default to 96 oz
+                    weight_oz = can_sizes_oz.get(can_num, 96)  # Default to #10 size
                     return {
                         'count': int(match.group(1)),
                         'size': Decimal(str(weight_oz)),  # Keep in oz for accurate conversion

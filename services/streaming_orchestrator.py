@@ -215,31 +215,57 @@ class StreamingOrchestrator:
             insights = analysis_result.get('actionable_insights', [])
             
             for i, insight in enumerate(insights):
+                # Ensure insight values are JSON-serializable (not dicts where strings expected)
+                competitor_id = insight.get('competitor_id')
+                if isinstance(competitor_id, dict):
+                    competitor_id = competitor_id.get('id') or str(competitor_id)
+                
+                competitor_name = insight.get('competitor_source', 'Multiple Sources')
+                if isinstance(competitor_name, dict):
+                    competitor_name = competitor_name.get('name', 'Multiple Sources')
+                
+                proof_quote = insight.get('proof_quote', '')
+                if isinstance(proof_quote, dict):
+                    proof_quote = proof_quote.get('text', str(proof_quote))
+                elif isinstance(proof_quote, list):
+                    proof_quote = '; '.join(str(q) for q in proof_quote)
+                
                 # Store individual insight
                 insight_data = {
                     "analysis_id": analysis_id,
-                    "competitor_id": insight.get('competitor_id'),
-                    "competitor_name": insight.get('competitor_source', 'Multiple Sources'),
+                    "competitor_id": competitor_id,
+                    "competitor_name": str(competitor_name) if competitor_name else 'Multiple Sources',
                     "category": insight.get('category', 'opportunity'),
-                    "title": insight.get('title', ''),
-                    "description": insight.get('description', ''),
+                    "title": str(insight.get('title', '')),
+                    "description": str(insight.get('description', '')),
                     "confidence": insight.get('confidence', 'medium'),
-                    "mention_count": insight.get('mention_count', 0),
-                    "significance": insight.get('significance', 0.0),
-                    "proof_quote": insight.get('proof_quote', ''),
+                    "mention_count": int(insight.get('mention_count', 0) or 0),
+                    "significance": float(insight.get('significance', 0.0) or 0.0),
+                    "proof_quote": str(proof_quote) if proof_quote else '',
                     "created_at": datetime.utcnow().isoformat()
                 }
                 
                 service_client.table("insights").insert(insight_data).execute()
                 
-                # Stream individual insight
+                # Stream individual insight (ensure all values are serializable)
                 progress = 70 + (i + 1) * (25 / len(insights))  # 70-95% for insights
+                
+                # Create a clean copy of insight for streaming
+                clean_insight = {
+                    'category': insight.get('category', 'opportunity'),
+                    'title': str(insight.get('title', '')),
+                    'description': str(insight.get('description', '')),
+                    'confidence': insight.get('confidence', 'medium'),
+                    'mention_count': int(insight.get('mention_count', 0) or 0),
+                    'proof_quote': str(proof_quote) if proof_quote else '',
+                    'competitor_source': str(competitor_name) if competitor_name else 'Multiple Sources'
+                }
                 
                 yield {
                     'type': 'insight_generated',
                     'data': {
-                        'step': f'Generated insight: {insight.get("title", "New insight")}',
-                        'insight': insight,
+                        'step': f'Generated insight: {clean_insight["title"]}',
+                        'insight': clean_insight,
                         'insights_completed': i + 1,
                         'total_insights': len(insights),
                         'progress': int(progress)

@@ -193,7 +193,7 @@ async def analyze_competitors_stream(
                     last_heartbeat = time.time()
             
             # Explicit stream end
-            yield f"event: stream_end\ndata: {json.dumps({{'message': 'Stream closed'}})}\n\n"
+            yield f"event: stream_end\ndata: {json.dumps({'message': 'Stream closed'})}\n\n"
             
         except Exception as e:
             logger.error(f"❌ Streaming analysis failed: {e}")

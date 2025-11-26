@@ -128,7 +128,7 @@ export function OnboardingModal({
             )}
             <Button
               onClick={handleNext}
-              className="flex-1 bg-primary-500 hover:bg-primary-500 text-white"
+              className="flex-1 bg-primary-500 hover:bg-primary-600 text-white"
             >
               {isLastStep ? (
                 <>

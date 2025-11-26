@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+from decimal import Decimal, ROUND_HALF_UP
 from typing import Dict, Iterable, List, Optional
 
 from database.supabase_client import get_supabase_service_client
@@ -166,7 +167,209 @@ class LaborSummaryService:
             totals["actual_labor_percent"] = (
                 (totals["actual_cost_cents"] / 100) / scheduled_sales * 100
             )
+
+        # Calculate overtime breakdown per member
+        overtime_breakdown = self._compute_overtime_for_week(week_id)
+        totals["overtime"] = overtime_breakdown
+        totals["regular_cost_cents"] = overtime_breakdown["total_regular_cost_cents"]
+        totals["overtime_cost_cents"] = overtime_breakdown["total_overtime_cost_cents"]
+        totals["total_with_overtime_cents"] = overtime_breakdown["total_cost_with_overtime_cents"]
+
         return totals
+
+    def _compute_overtime_for_week(self, week_id: str) -> Dict:
+        """
+        Calculate overtime for all members in a week.
+        Overtime = configurable multiplier for hours worked over threshold.
+        Default: 1.5x rate for hours over 40/week.
+        """
+        # Get overtime settings for this account
+        settings = self._get_overtime_settings()
+        
+        if not settings.get("overtime_enabled", True):
+            return self._empty_overtime_result()
+        
+        OVERTIME_THRESHOLD_MINUTES = settings.get("overtime_threshold_minutes", 2400)
+        OVERTIME_MULTIPLIER = Decimal(str(settings.get("overtime_multiplier", 1.5)))
+
+        # Get all clock entries for this week
+        day_ids = self._day_ids_for_week(week_id)
+        if not day_ids:
+            return self._empty_overtime_result()
+
+        shift_ids = []
+        for day_id in day_ids:
+            shift_ids.extend(self._shift_ids_for_day(day_id))
+
+        if not shift_ids:
+            return self._empty_overtime_result()
+
+        # Get completed entries
+        entries = (
+            self.client.table("scheduling_shift_clock_entries")
+            .select("member_user_id, total_minutes, break_minutes, effective_rate_cents, effective_rate_type")
+            .eq("account_id", self.account_id)
+            .in_("shift_id", shift_ids)
+            .execute()
+        )
+
+        # Get live sessions
+        live_sessions = (
+            self.client.table("scheduling_shift_live_sessions")
+            .select("member_user_id, started_at, started_rate_cents, started_rate_type")
+            .eq("account_id", self.account_id)
+            .in_("shift_id", shift_ids)
+            .execute()
+        )
+
+        # Aggregate hours per member
+        member_hours: Dict[str, Dict] = {}  # member_id -> {minutes, rate_cents, rate_type}
+
+        for entry in entries.data or []:
+            member_id = entry.get("member_user_id")
+            if not member_id:
+                continue
+
+            minutes = max(entry.get("total_minutes") or 0, 0)
+            break_mins = max(entry.get("break_minutes") or 0, 0)
+            paid_minutes = max(minutes - break_mins, 0)
+            rate_cents = entry.get("effective_rate_cents") or 0
+            rate_type = entry.get("effective_rate_type") or "hourly"
+
+            if member_id not in member_hours:
+                member_hours[member_id] = {
+                    "minutes": 0,
+                    "rate_cents": rate_cents,
+                    "rate_type": rate_type,
+                }
+            member_hours[member_id]["minutes"] += paid_minutes
+
+        # Add live session time
+        now = datetime.now(timezone.utc)
+        for session in live_sessions.data or []:
+            member_id = session.get("member_user_id")
+            if not member_id:
+                continue
+
+            started_at_raw = session.get("started_at")
+            if not started_at_raw:
+                continue
+
+            try:
+                started_at = datetime.fromisoformat(started_at_raw)
+                if started_at.tzinfo is None:
+                    started_at = started_at.replace(tzinfo=timezone.utc)
+            except ValueError:
+                continue
+
+            elapsed_minutes = max(int((now - started_at).total_seconds() // 60), 0)
+            rate_cents = session.get("started_rate_cents") or 0
+            rate_type = session.get("started_rate_type") or "hourly"
+
+            if member_id not in member_hours:
+                member_hours[member_id] = {
+                    "minutes": 0,
+                    "rate_cents": rate_cents,
+                    "rate_type": rate_type,
+                }
+            member_hours[member_id]["minutes"] += elapsed_minutes
+
+        # Calculate overtime per member
+        total_regular_minutes = 0
+        total_overtime_minutes = 0
+        total_regular_cost = 0
+        total_overtime_cost = 0
+        member_breakdown = []
+
+        for member_id, data in member_hours.items():
+            total_minutes = data["minutes"]
+            rate_cents = data["rate_cents"]
+            rate_type = data["rate_type"]
+
+            # Salary employees don't get overtime in this simple model
+            if rate_type == "salary":
+                regular_minutes = total_minutes
+                overtime_minutes = 0
+                regular_cost = 0  # Salary is fixed
+                overtime_cost = 0
+            else:
+                if total_minutes <= OVERTIME_THRESHOLD_MINUTES:
+                    regular_minutes = total_minutes
+                    overtime_minutes = 0
+                else:
+                    regular_minutes = OVERTIME_THRESHOLD_MINUTES
+                    overtime_minutes = total_minutes - OVERTIME_THRESHOLD_MINUTES
+
+                # Calculate costs
+                regular_cost = int(
+                    (Decimal(rate_cents) * Decimal(regular_minutes) / Decimal(60)).quantize(
+                        Decimal("1"), rounding=ROUND_HALF_UP
+                    )
+                )
+                overtime_cost = int(
+                    (Decimal(rate_cents) * OVERTIME_MULTIPLIER * Decimal(overtime_minutes) / Decimal(60)).quantize(
+                        Decimal("1"), rounding=ROUND_HALF_UP
+                    )
+                )
+
+            total_regular_minutes += regular_minutes
+            total_overtime_minutes += overtime_minutes
+            total_regular_cost += regular_cost
+            total_overtime_cost += overtime_cost
+
+            member_breakdown.append({
+                "member_user_id": member_id,
+                "total_minutes": total_minutes,
+                "regular_minutes": regular_minutes,
+                "overtime_minutes": overtime_minutes,
+                "rate_cents": rate_cents,
+                "regular_cost_cents": regular_cost,
+                "overtime_cost_cents": overtime_cost,
+                "total_cost_cents": regular_cost + overtime_cost,
+            })
+
+        return {
+            "threshold_minutes": OVERTIME_THRESHOLD_MINUTES,
+            "overtime_multiplier": float(OVERTIME_MULTIPLIER),
+            "total_regular_minutes": total_regular_minutes,
+            "total_overtime_minutes": total_overtime_minutes,
+            "total_regular_cost_cents": total_regular_cost,
+            "total_overtime_cost_cents": total_overtime_cost,
+            "total_cost_with_overtime_cents": total_regular_cost + total_overtime_cost,
+            "members": member_breakdown,
+        }
+
+    def _empty_overtime_result(self) -> Dict:
+        settings = self._get_overtime_settings()
+        return {
+            "threshold_minutes": settings.get("overtime_threshold_minutes", 2400),
+            "overtime_multiplier": float(settings.get("overtime_multiplier", 1.5)),
+            "overtime_enabled": settings.get("overtime_enabled", True),
+            "total_regular_minutes": 0,
+            "total_overtime_minutes": 0,
+            "total_regular_cost_cents": 0,
+            "total_overtime_cost_cents": 0,
+            "total_cost_with_overtime_cents": 0,
+            "members": [],
+        }
+
+    def _get_overtime_settings(self) -> Dict:
+        """Get overtime configuration for this account."""
+        result = (
+            self.client.table("scheduling_settings")
+            .select("overtime_threshold_minutes, overtime_multiplier, overtime_enabled")
+            .eq("account_id", self.account_id)
+            .limit(1)
+            .execute()
+        )
+        if result.data:
+            return result.data[0]
+        # Return defaults if no settings exist
+        return {
+            "overtime_threshold_minutes": 2400,  # 40 hours
+            "overtime_multiplier": 1.5,
+            "overtime_enabled": True,
+        }
 
     # ------------------------------------------------------------------#
     # Internal helpers
@@ -192,7 +395,10 @@ class LaborSummaryService:
 
             hourly_rate_cents = self._resolve_shift_rate(shift)
             if hourly_rate_cents:
-                total_cost += int(hourly_rate_cents * (paid_minutes / 60))
+                cost = (Decimal(hourly_rate_cents) * Decimal(paid_minutes) / Decimal(60)).quantize(
+                    Decimal("1"), rounding=ROUND_HALF_UP
+                )
+                total_cost += int(cost)
 
         return total_minutes, total_cost
 
@@ -237,8 +443,16 @@ class LaborSummaryService:
             rate_cents = entry.get("effective_rate_cents") or 0
 
             completed_minutes += paid_minutes
-            completed_cost += int(rate_cents * (paid_minutes / 60))
+            # Use Decimal for consistent rounding with clock_service
+            cost = (Decimal(rate_cents) * Decimal(paid_minutes) / Decimal(60)).quantize(
+                Decimal("1"), rounding=ROUND_HALF_UP
+            )
+            completed_cost += int(cost)
 
+        # Get shifts that have completed entries to avoid double-counting
+        # (live sessions should be deleted on clock-out, but guard against data issues)
+        completed_shift_ids = {entry.get("shift_id") for entry in entries.data or []}
+        
         live_sessions = (
             self.client.table("scheduling_shift_live_sessions")
             .select("started_at, started_rate_cents, started_rate_type, shift_id")
@@ -251,11 +465,21 @@ class LaborSummaryService:
         live_cost = 0
         now = datetime.now(timezone.utc)
         for session in live_sessions.data or []:
+            # Skip if this shift already has a completed entry (data corruption guard)
+            if session.get("shift_id") in completed_shift_ids:
+                logger.warning(
+                    "Shift %s has both live session and completed entry - skipping live session",
+                    session.get("shift_id"),
+                )
+                continue
             started_at_raw = session.get("started_at")
             if not started_at_raw:
                 continue
             try:
                 started_at = datetime.fromisoformat(started_at_raw)
+                # Ensure timezone-aware comparison
+                if started_at.tzinfo is None:
+                    started_at = started_at.replace(tzinfo=timezone.utc)
             except ValueError:
                 continue
             elapsed_minutes = max(int((now - started_at).total_seconds() // 60), 0)
@@ -264,7 +488,11 @@ class LaborSummaryService:
 
             live_minutes += elapsed_minutes
             if rate_type != "salary":
-                live_cost += int(rate_cents * (elapsed_minutes / 60))
+                # Use Decimal for consistent rounding
+                cost = (Decimal(rate_cents) * Decimal(elapsed_minutes) / Decimal(60)).quantize(
+                    Decimal("1"), rounding=ROUND_HALF_UP
+                )
+                live_cost += int(cost)
 
         total_minutes = completed_minutes + live_minutes
         total_cost = completed_cost + live_cost
@@ -344,5 +572,8 @@ class LaborSummaryService:
         start = datetime.strptime(start_time, "%H:%M:%S")
         end = datetime.strptime(end_time, "%H:%M:%S")
         delta = end - start
+        # Handle overnight shifts (e.g., 10PM to 6AM)
+        if delta.total_seconds() < 0:
+            delta = delta + timedelta(days=1)
         return max(int(delta.total_seconds() // 60), 0)
 

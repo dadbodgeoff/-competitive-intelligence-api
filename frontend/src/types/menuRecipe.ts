@@ -64,6 +64,7 @@ export interface MenuItemRecipe {
   menu_price: number;
   gross_profit: number;
   food_cost_percent: number;
+  warnings?: string[];
 }
 
 export interface AddIngredientRequest {

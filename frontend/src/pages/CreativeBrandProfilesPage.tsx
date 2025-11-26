@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { AppShell } from '@/components/layout/AppShell';
+import { ModulePageHeader } from '@/components/layout/ModulePageHeader';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, Plus, Palette, AlertCircle } from 'lucide-react';
+import { Plus, Palette, AlertCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui';
 import { useToast } from '@/hooks/use-toast';
@@ -22,7 +22,6 @@ import {
 } from '@/components/ui/dialog';
 
 export function CreativeBrandProfilesPage() {
-  const navigate = useNavigate();
   const { toast } = useToast();
   const [isCreating, setIsCreating] = useState(false);
   const [editingProfile, setEditingProfile] = useState<BrandProfileSummary | undefined>();
@@ -105,34 +104,19 @@ export function CreativeBrandProfilesPage() {
     <AppShell maxWidth="wide">
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/creative')}
-              className="text-slate-400 hover:text-white"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Studio
-            </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-white flex items-center gap-2">
-                <Palette className="h-8 w-8 text-primary-500" />
-                Brand Profiles
-              </h1>
-              <p className="text-slate-400 mt-1">
-                Manage your brand colors, typography, and styling preferences
-              </p>
-            </div>
-          </div>
-          {!showForm && (
-            <Button onClick={handleCreate} className="bg-primary-500 hover:bg-primary-500">
-              <Plus className="h-4 w-4 mr-2" />
-              Create Profile
-            </Button>
-          )}
-        </div>
+        <ModulePageHeader
+          icon={Palette}
+          title="Brand Profiles"
+          description="Manage your brand colors, typography, and styling preferences"
+          actions={
+            !showForm ? (
+              <Button onClick={handleCreate} size="sm" className="bg-primary-500 hover:bg-primary-600 h-8 text-xs">
+                <Plus className="h-3.5 w-3.5 mr-1.5" />
+                Create Profile
+              </Button>
+            ) : undefined
+          }
+        />
 
         {/* Form */}
         {showForm && (

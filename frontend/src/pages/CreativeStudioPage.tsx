@@ -37,7 +37,7 @@ export function CreativeStudioPage() {
         <Button
           onClick={handleShowHelp}
           size="lg"
-          className="rounded-full h-14 w-14 shadow-lg bg-primary-500 hover:bg-primary-500 text-white"
+          className="rounded-full h-14 w-14 shadow-lg bg-primary-500 hover:bg-primary-600 text-white"
           title="Show help tour"
         >
           <HelpCircle className="h-6 w-6" />

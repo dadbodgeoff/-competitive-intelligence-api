@@ -10,7 +10,7 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException, Request, Depends, Header
 from pydantic import BaseModel
 
-from api.dependencies import get_current_user
+from api.middleware.auth import get_current_user
 from services.stripe_service import stripe_service
 from services.email_service import email_service
 
@@ -281,7 +281,7 @@ async def get_pricing_plans():
     """
     Get available pricing plans (public endpoint).
     """
-    from services.supabase_client import get_supabase_service_client
+    from database.supabase_client import get_supabase_service_client
     
     client = get_supabase_service_client()
     

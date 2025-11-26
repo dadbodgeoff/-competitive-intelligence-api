@@ -28,10 +28,23 @@ import type {
 const SETTINGS_KEY = ['scheduling', 'settings']
 const WEEKS_KEY = ['scheduling', 'weeks']
 
+/**
+ * Standard error handler for mutations
+ * Logs errors in development and can be extended for error tracking
+ */
+function handleMutationError(error: Error, context?: string) {
+  if (import.meta.env.DEV) {
+    console.error(`[Scheduling${context ? ` - ${context}` : ''}]`, error.message)
+  }
+  // Error is re-thrown to be handled by the component's onError or error state
+}
+
 export function useSchedulingSettings(options?: UseQueryOptions<SchedulingSettingsResponse>) {
   return useQuery<SchedulingSettingsResponse>({
     queryKey: SETTINGS_KEY,
     queryFn: () => getSchedulingSettings(),
+    staleTime: 5 * 60 * 1000, // Settings rarely change, cache for 5 minutes
+    gcTime: 10 * 60 * 1000,
     ...options,
   })
 }
@@ -43,6 +56,7 @@ export function useUpdateSchedulingSettings() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: SETTINGS_KEY })
     },
+    onError: (error: Error) => handleMutationError(error, 'updateSettings'),
   })
 }
 
@@ -53,7 +67,8 @@ export function useSchedulingWeeks(
   return useQuery<SchedulingWeeksResponse>({
     queryKey: [...WEEKS_KEY, params],
     queryFn: () => getSchedulingWeeks(params),
-    staleTime: 60 * 1000,
+    staleTime: 2 * 60 * 1000, // Cache weeks list for 2 minutes
+    gcTime: 5 * 60 * 1000,
     ...options,
   })
 }
@@ -65,6 +80,7 @@ export function useCreateSchedulingWeek() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: WEEKS_KEY })
     },
+    onError: (error: Error) => handleMutationError(error, 'createWeek'),
   })
 }
 
@@ -76,6 +92,7 @@ export function useUpdateSchedulingWeek() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: WEEKS_KEY })
     },
+    onError: (error: Error) => handleMutationError(error, 'updateWeek'),
   })
 }
 
@@ -92,6 +109,7 @@ export function useUpdateSchedulingDayForecast() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: WEEKS_KEY })
     },
+    onError: (error: Error) => handleMutationError(error, 'updateDayForecast'),
   })
 }
 
@@ -102,6 +120,7 @@ export function useCreateSchedulingShift() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: WEEKS_KEY })
     },
+    onError: (error: Error) => handleMutationError(error, 'createShift'),
   })
 }
 
@@ -118,6 +137,7 @@ export function useUpdateSchedulingShift() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: WEEKS_KEY })
     },
+    onError: (error: Error) => handleMutationError(error, 'updateShift'),
   })
 }
 
@@ -134,6 +154,7 @@ export function useAssignSchedulingShift() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: WEEKS_KEY })
     },
+    onError: (error: Error) => handleMutationError(error, 'assignShift'),
   })
 }
 
@@ -145,6 +166,7 @@ export function useUnassignSchedulingShift() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: WEEKS_KEY })
     },
+    onError: (error: Error) => handleMutationError(error, 'unassignShift'),
   })
 }
 
@@ -155,6 +177,7 @@ export function useClockInShift() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: WEEKS_KEY })
     },
+    onError: (error: Error) => handleMutationError(error, 'clockIn'),
   })
 }
 
@@ -170,6 +193,7 @@ export function useClockOutShift() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: WEEKS_KEY })
     },
+    onError: (error: Error) => handleMutationError(error, 'clockOut'),
   })
 }
 
@@ -203,7 +227,9 @@ export function useSchedulerGrid(weekId?: string) {
       return getSchedulerGrid(weekId)
     },
     enabled: Boolean(weekId),
-    staleTime: 30 * 1000,
+    staleTime: 60 * 1000, // Cache grid for 1 minute
+    gcTime: 5 * 60 * 1000,
+    placeholderData: (previousData) => previousData, // Show previous data while fetching
   })
 }
 

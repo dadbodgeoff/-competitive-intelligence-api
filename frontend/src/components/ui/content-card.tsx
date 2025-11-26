@@ -5,8 +5,8 @@ import { ChevronRight } from 'lucide-react';
 interface ContentCardProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Card title */
   title: string;
-  /** Optional description/subtitle */
-  description?: string;
+  /** Optional description/subtitle - can be string or ReactNode for rich content */
+  description?: React.ReactNode;
   /** Optional badge/tag element */
   badge?: React.ReactNode;
   /** Optional icon on the left */
@@ -72,14 +72,15 @@ const ContentCard = React.forwardRef<HTMLDivElement, ContentCardProps>(
             {badge}
           </div>
           {description && (
-            <p
+            <div
               className={cn(
-                'text-slate-400 truncate',
-                variant === 'compact' ? 'text-xs' : 'text-sm'
+                'text-slate-400',
+                variant === 'compact' ? 'text-xs' : 'text-sm',
+                typeof description === 'string' && 'truncate'
               )}
             >
               {description}
-            </p>
+            </div>
           )}
         </div>
 

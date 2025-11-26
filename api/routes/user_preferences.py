@@ -27,6 +27,7 @@ class PreferencesUpdate(BaseModel):
     group_by_vendor: Optional[bool] = None
     default_category_order: Optional[List[str]] = None
     hidden_categories: Optional[List[str]] = None
+    forecast_buffer: Optional[float] = None  # 0.5 = 50% buffer on forecasts
 
 
 @router.get("/")

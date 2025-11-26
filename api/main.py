@@ -199,6 +199,7 @@ from api.routes.price_analytics import router as price_analytics_router
 from api.routes.alert_management import router as alert_management_router
 from api.routes.dashboard_analytics import router as dashboard_analytics_router
 from api.routes.competitive_intelligence_summary import router as competitive_intelligence_router
+from api.routes.invoice_analytics import router as invoice_analytics_router
 from api.routes import csp_report
 from api.routes.nano_banana import router as nano_banana_router
 from api.routes.nano_banana_demo import router as nano_banana_demo_router
@@ -227,6 +228,7 @@ app.include_router(preferences_router, tags=["User Preferences"])
 app.include_router(price_analytics_router, tags=["Price Analytics"])
 app.include_router(alert_management_router, tags=["Alert Management"])
 app.include_router(dashboard_analytics_router, tags=["Dashboard Analytics"])
+app.include_router(invoice_analytics_router, tags=["Invoice Analytics"])
 app.include_router(competitive_intelligence_router, tags=["Competitive Intelligence"])
 # Menu operations (modular)
 app.include_router(menu_upload.router, tags=["Menu Operations"])

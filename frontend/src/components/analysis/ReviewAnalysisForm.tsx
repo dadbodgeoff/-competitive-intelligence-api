@@ -46,7 +46,7 @@ import { useToast } from '@/hooks/use-toast';
 import { analytics } from '@/lib/monitoring';
 import { ReviewAnalysisRequest } from '@/types/analysis';
 import { useState } from 'react';
-import { PageLayout } from '../layout/PageLayout';
+import { AppShell } from '../layout/AppShell';
 
 const reviewAnalysisSchema = z.object({
   restaurant_name: z.string().min(1, 'Restaurant name is required'),
@@ -184,27 +184,23 @@ export function ReviewAnalysisForm() {
   ];
 
   return (
-    <PageLayout
-      breadcrumbs={[
-        { label: 'Dashboard', href: '/dashboard' },
-        { label: 'Analysis', href: '/analysis' },
-        { label: 'New' },
-      ]}
-    >
+    <AppShell>
       <div className="max-w-3xl mx-auto">
         <Card className="bg-card-dark border-white/10 shadow-2xl">
           <CardHeader className="space-y-3 pb-8">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-primary-500/10">
-                <Search className="h-6 w-6 text-primary-500" />
-              </div>
-              <div>
-                <CardTitle className="text-3xl font-bold text-white">
-                  Analyze Competitors
-                </CardTitle>
-                <CardDescription className="text-slate-400 text-base mt-1">
-                  Discover insights from competitor reviews in minutes
-                </CardDescription>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-xl bg-primary-500/10">
+                  <Search className="h-6 w-6 text-primary-500" />
+                </div>
+                <div>
+                  <CardTitle className="text-3xl font-bold text-white">
+                    Analyze Competitors
+                  </CardTitle>
+                  <CardDescription className="text-slate-400 text-base mt-1">
+                    Discover insights from competitor reviews in minutes
+                  </CardDescription>
+                </div>
               </div>
             </div>
           </CardHeader>
@@ -360,6 +356,6 @@ export function ReviewAnalysisForm() {
           </CardContent>
         </Card>
       </div>
-    </PageLayout>
+    </AppShell>
   );
 }

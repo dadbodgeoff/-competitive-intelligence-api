@@ -236,3 +236,53 @@
   60% { content: '..'; }
   80%, 100% { content: '...'; }
 }
+
+/* Confetti animation for celebrations */
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-150px) rotate(720deg) scale(0);
+    opacity: 0;
+  }
+}
+
+.animate-confetti {
+  animation: confetti 1s ease-out forwards;
+}
+
+/* Bounce once animation */
+@keyframes bounceOnce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-10px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-bounce-once {
+  animation: bounceOnce 0.6s ease-out;
+}
+
+/* Progress ring animation */
+@keyframes progressRing {
+  from {
+    stroke-dashoffset: var(--circumference);
+  }
+  to {
+    stroke-dashoffset: var(--offset);
+  }
+}
+
+.animate-progress-ring {
+  animation: progressRing 1s ease-out forwards;
+}

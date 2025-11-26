@@ -46,12 +46,21 @@ class ClockService:
         rate_info = self._resolve_compensation(member_user_id)
         now = datetime.now(timezone.utc).isoformat()
 
+        # Warn if rate is zero (but allow clock-in)
+        if rate_info.rate_cents == 0:
+            logger.warning(
+                "Clock-in for shift %s user %s has zero rate - compensation may not be configured",
+                shift_id,
+                member_user_id,
+            )
+
         payload = {
             "account_id": self.account_id,
             "shift_id": shift_id,
             "member_user_id": member_user_id,
             "started_at": now,
             "last_heartbeat_at": now,
+            "clock_in_source": source,
             "started_rate_cents": rate_info.rate_cents,
             "started_rate_type": rate_info.rate_type,
             "started_rate_currency": rate_info.currency,
@@ -151,8 +160,13 @@ class ClockService:
         )
         return result.data[0] if result.data else None
 
-    def find_shift_for_member(self, member_user_id: str) -> str:
-        """Resolve the best shift to clock into for a member using heuristics."""
+    def find_shift_for_member(self, member_user_id: str) -> Tuple[str, bool]:
+        """Resolve the best shift to clock into for a member using heuristics.
+        
+        Returns:
+            Tuple of (shift_id, is_unscheduled) where is_unscheduled indicates
+            if an ad-hoc shift was created because the member wasn't scheduled.
+        """
         assignments = (
             self.client.table("scheduling_shift_assignments")
             .select("shift_id")
@@ -164,7 +178,7 @@ class ClockService:
         shift_ids = [row["shift_id"] for row in assignments if row.get("shift_id")]
         if not shift_ids:
             logger.info("No scheduled shifts assigned to user %s; creating ad-hoc shift", member_user_id)
-            return self._create_ad_hoc_shift(member_user_id)
+            return self._create_ad_hoc_shift(member_user_id), True
 
         shifts = (
             self.client.table("scheduling_shifts")
@@ -229,8 +243,8 @@ class ClockService:
         chosen = best_active[1] if best_active else (best_upcoming[1] if best_upcoming else None)
         if not chosen:
             logger.info("No eligible scheduled shift window for user %s; creating ad-hoc shift", member_user_id)
-            return self._create_ad_hoc_shift(member_user_id)
-        return chosen["id"]
+            return self._create_ad_hoc_shift(member_user_id), True
+        return chosen["id"], False
 
     # ------------------------------------------------------------------#
     # Helpers

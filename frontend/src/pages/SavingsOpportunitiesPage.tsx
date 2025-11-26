@@ -7,7 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs'
 import { useSavingsAlerts, useDismissAlert } from '@/hooks/useAlerts';
 import type { SavingsAlert } from '../types/alerts';
 import { AppShell } from '@/components/layout/AppShell';
-import { PageHeading } from '@/components/layout/PageHeading';
+import { ModulePageHeader } from '@/components/layout/ModulePageHeader';
 
 export function SavingsOpportunitiesPage() {
   const navigate = useNavigate();
@@ -24,26 +24,22 @@ export function SavingsOpportunitiesPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <PageHeading className="flex items-center gap-2">
-                <TrendingDown className="h-8 w-8 text-success-400" />
-                Savings Opportunities
-              </PageHeading>
-              <p className="text-slate-400 mt-2">
-                {alerts?.total_count || 0} items with price decreases
-              </p>
-            </div>
-
-            <Button
-              variant="outline"
-              onClick={() => navigate('/settings/alerts')}
-              className="flex items-center gap-2"
-            >
-              <Settings className="h-4 w-4" />
-              Adjust Thresholds
-            </Button>
-          </div>
+          <ModulePageHeader
+            icon={TrendingDown}
+            title="Savings Opportunities"
+            description={`${alerts?.total_count || 0} items with price decreases`}
+            actions={
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/settings/alerts')}
+                className="border-white/10 text-slate-300 hover:bg-white/5 h-8 text-xs"
+              >
+                <Settings className="h-3.5 w-3.5 mr-1.5" />
+                Adjust Thresholds
+              </Button>
+            }
+          />
 
           <Tabs value={filter} onValueChange={(v) => setFilter(v as any)} className="w-full">
             <TabsList className="bg-obsidian-light border border-obsidian-border">

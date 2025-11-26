@@ -8,6 +8,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { AppShell } from '@/components/layout/AppShell';
+import { ModulePageHeader } from '@/components/layout/ModulePageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -79,35 +80,34 @@ export function DashboardPageNew() {
         animate="visible"
         className="space-y-5"
       >
-        {/* Compact Header */}
-        <motion.div variants={itemVariants} className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-white">
-              {greeting}, {user?.first_name || 'there'}
-            </h1>
-            <p className="text-sm text-slate-400">
-              Your restaurant overview
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              onClick={() => navigate('/invoices/upload')}
-              size="sm"
-              className="bg-primary-500 hover:bg-primary-600 text-white"
-            >
-              <Upload className="h-4 w-4 mr-1.5" />
-              Upload Invoice
-            </Button>
-            <Button
-              onClick={() => navigate('/creative')}
-              size="sm"
-              variant="outline"
-              className="border-white/10 text-white hover:bg-white/5"
-            >
-              <Sparkles className="h-4 w-4 mr-1.5" />
-              Creative Studio
-            </Button>
-          </div>
+        {/* Header with ModulePageHeader */}
+        <motion.div variants={itemVariants}>
+          <ModulePageHeader
+            icon={BarChart3}
+            title={`${greeting}, ${user?.first_name || 'there'}`}
+            description="Your restaurant overview"
+            actions={
+              <>
+                <Button
+                  onClick={() => navigate('/invoices/upload')}
+                  size="sm"
+                  className="bg-primary-500 hover:bg-primary-600 text-white h-8 text-xs"
+                >
+                  <Upload className="h-3.5 w-3.5 mr-1.5" />
+                  Upload Invoice
+                </Button>
+                <Button
+                  onClick={() => navigate('/creative')}
+                  size="sm"
+                  variant="outline"
+                  className="border-white/10 text-white hover:bg-white/5 h-8 text-xs"
+                >
+                  <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                  Creative Studio
+                </Button>
+              </>
+            }
+          />
         </motion.div>
 
         {/* Compact KPI Cards */}

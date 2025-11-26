@@ -3,7 +3,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -21,6 +21,9 @@ import {
   RectangleHorizontal,
   Smartphone,
   Zap,
+  Shield,
+  Image as ImageIcon,
+  Palette,
 } from 'lucide-react';
 import {
   Select,
@@ -286,6 +289,48 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
 
   const formValues = watch();
 
+  // Get default brand profile for display
+  const defaultBrandProfile = useMemo(
+    () => brandProfiles.find((p) => p.is_default),
+    [brandProfiles]
+  );
+
+  // Generate preview of what will be created
+  const generatedPromptPreview = useMemo(() => {
+    if (!template) return '';
+    
+    const parts: string[] = [];
+    const templateName = template.display_name || template.slug;
+    
+    // Add template context
+    parts.push(`Professional ${templateName.toLowerCase()} image`);
+    
+    // Add user inputs preview
+    const filledFields = requiredFields.filter(
+      (f) => formValues.userInputs[f]?.trim()
+    );
+    if (filledFields.length > 0) {
+      const fieldPreviews = filledFields
+        .slice(0, 2)
+        .map((f) => formValues.userInputs[f])
+        .join(', ');
+      parts.push(`featuring ${fieldPreviews}`);
+    }
+    
+    // Add style context
+    const atmosphere = ATMOSPHERE_OPTIONS.find((o) => o.value === formValues.atmosphere);
+    const lighting = LIGHTING_OPTIONS.find((o) => o.value === formValues.lighting);
+    
+    if (atmosphere) {
+      parts.push(`${atmosphere.label.toLowerCase()} atmosphere`);
+    }
+    if (lighting) {
+      parts.push(`${lighting.label.toLowerCase()} lighting`);
+    }
+    
+    return parts.join('. ') + '. Magazine-quality, professional composition.';
+  }, [template, formValues, requiredFields]);
+
   const onSubmit = handleSubmit(async (values) => {
     if (!theme || !template) return;
     const sanitized: Record<string, string> = {};
@@ -374,32 +419,32 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="text-center space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 text-primary-300 text-sm">
-          <Wand2 className="h-4 w-4" />
-          AI-Powered
+    <Card className="border-white/10 bg-white/5">
+      <CardContent className="p-6 space-y-6">
+        {/* Header - Inside the card now */}
+        <div className="text-center space-y-2 pb-4 border-b border-white/10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 text-primary-300 text-sm">
+            <Wand2 className="h-4 w-4" />
+            AI-Powered
+          </div>
+          <h2 className="text-2xl font-bold text-white">Customize Your Asset</h2>
+          <p className="text-slate-400 text-sm">
+            Fill in the details below to generate your custom creative asset
+          </p>
         </div>
-        <h2 className="text-2xl font-bold text-white">Customize Your Asset</h2>
-        <p className="text-slate-400 text-sm">
-          Fill in the details below to generate your custom creative asset
-        </p>
-      </div>
 
-      <form onSubmit={onSubmit} className="space-y-6">
-        {/* Template Fields Card */}
-        <Card className="border-white/10 bg-white/5">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base text-white flex items-center gap-2">
+        <form onSubmit={onSubmit} className="space-y-6">
+          {/* Template Fields Section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-primary-400" />
-              Customize "{template.display_name ?? template.slug}"
-            </CardTitle>
-            <CardDescription className="text-xs">
+              <h3 className="text-base font-semibold text-white">
+                Customize "{template.display_name ?? template.slug}"
+              </h3>
+            </div>
+            <p className="text-xs text-slate-400">
               Fill in the required fields for your template
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+            </p>
             <div className="grid gap-4 sm:grid-cols-2">
               {requiredFields.map((field) => renderField(field, true))}
             </div>
@@ -408,18 +453,16 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
                 {optionalFields.map((field) => renderField(field, false))}
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Visual Style Card */}
-        <Card className="border-white/10 bg-white/5">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base text-white">Visual Style</CardTitle>
-            <CardDescription className="text-xs">
-              Choose "Text Only" for specials boards. Choose "With Food" for hero shots.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+          {/* Visual Style Section */}
+          <div className="space-y-4 pt-4 border-t border-white/10">
+            <div>
+              <h3 className="text-base font-semibold text-white">Visual Style</h3>
+              <p className="text-xs text-slate-400 mt-1">
+                Choose "Text Only" for specials boards. Choose "With Food" for hero shots.
+              </p>
+            </div>
             <div className="flex flex-wrap gap-3">
               {VISUAL_STYLE_OPTIONS.map((option) => (
                 <button
@@ -444,21 +487,18 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
                 </button>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Look & Feel Card */}
-        <Card className="border-white/10 bg-white/5">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base text-white flex items-center gap-2">
+          {/* Look & Feel Section */}
+          <div className="space-y-4 pt-4 border-t border-white/10">
+            <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-primary-400" />
-              Look & Feel
-            </CardTitle>
-            <CardDescription className="text-xs">
+              <h3 className="text-base font-semibold text-white">Look & Feel</h3>
+            </div>
+            <p className="text-xs text-slate-400">
               Pick the vibe — we'll handle the technical details
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-5">
+            </p>
+            <div className="space-y-5">
             {/* Atmosphere */}
             <div className="space-y-2">
               <Label className="text-xs text-slate-400 uppercase tracking-wide">Mood</Label>
@@ -528,21 +568,20 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
               </div>
             </div>
 
-            {/* More Options Toggle */}
-            <button
-              type="button"
-              onClick={() => setShowMoreOptions(!showMoreOptions)}
-              className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors"
-            >
-              <ChevronDown className={cn('h-3 w-3 transition-transform', showMoreOptions && 'rotate-180')} />
-              {showMoreOptions ? 'Fewer options' : 'More options'}
-            </button>
-          </CardContent>
-        </Card>
+              {/* More Options Toggle */}
+              <button
+                type="button"
+                onClick={() => setShowMoreOptions(!showMoreOptions)}
+                className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors"
+              >
+                <ChevronDown className={cn('h-3 w-3 transition-transform', showMoreOptions && 'rotate-180')} />
+                {showMoreOptions ? 'Fewer options' : 'More options'}
+              </button>
+            </div>
+          </div>
 
-        {/* Output Settings Card */}
-        <Card className="border-white/10 bg-white/5">
-          <CardContent className="p-5">
+          {/* Output Settings Section */}
+          <div className="pt-4 border-t border-white/10">
             <div className="flex flex-col sm:flex-row gap-6">
               {/* How many */}
               <div className="space-y-2">
@@ -597,24 +636,22 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Advanced Options - Collapsible */}
-        <Collapsible>
-          <CollapsibleTrigger asChild>
-            <button
-              type="button"
-              className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors w-full justify-center py-2"
-            >
-              <ChevronDown className="h-4 w-4" />
-              Advanced options
-            </button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="space-y-4 pt-4">
-            {/* Style Notes */}
-            <Card className="border-white/10 bg-white/5">
-              <CardContent className="p-4 space-y-3">
+          {/* Advanced Options - Collapsible */}
+          <Collapsible>
+            <CollapsibleTrigger asChild>
+              <button
+                type="button"
+                className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors w-full justify-center py-2"
+              >
+                <ChevronDown className="h-4 w-4" />
+                Advanced options
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-4 pt-4">
+              {/* Style Notes */}
+              <div className="space-y-3">
                 <Label className="text-sm text-slate-200">Style Preferences (optional)</Label>
                 <Textarea
                   rows={3}
@@ -649,12 +686,10 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
                     ))}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
 
-            {/* Brand Profile */}
-            <Card className="border-white/10 bg-white/5">
-              <CardContent className="p-4 space-y-3">
+              {/* Brand Profile */}
+              <div className="space-y-3">
                 <Label className="text-sm text-slate-200">Brand Styling</Label>
                 <Controller
                   control={control}
@@ -715,10 +750,57 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
                     </div>
                   </div>
                 )}
-              </CardContent>
-            </Card>
-          </CollapsibleContent>
-        </Collapsible>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+
+        {/* Brand Profile Badge - Show if user has a default */}
+        {defaultBrandProfile && selectedBrandProfileId === 'auto' && (
+          <div className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
+            <div className="flex items-center gap-2 text-sm text-slate-300">
+              <Palette className="h-4 w-4 text-primary-400" />
+              <span>Using brand: <strong>{defaultBrandProfile.brand_name}</strong></span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setValue('brandProfileId', 'custom')}
+              className="text-xs text-primary-400 hover:text-primary-300 hover:underline"
+            >
+              Change
+            </button>
+          </div>
+        )}
+
+        {/* Prompt Preview - What AI will create */}
+        {generatedPromptPreview && requiredFields.some((f) => formValues.userInputs[f]?.trim()) && (
+          <div className="p-4 rounded-lg bg-gradient-to-r from-primary-500/10 to-transparent border border-primary-500/20">
+            <div className="flex items-start gap-3">
+              <div className="rounded-full bg-primary-500/20 p-2 mt-0.5">
+                <ImageIcon className="h-4 w-4 text-primary-400" />
+              </div>
+              <div className="flex-1 space-y-1">
+                <p className="text-xs text-primary-300 font-medium">What we'll create:</p>
+                <p className="text-sm text-slate-300 leading-relaxed">
+                  {generatedPromptPreview}
+                </p>
+                <p className="text-xs text-slate-500 mt-2">
+                  ✨ We add professional lighting, composition & quality enhancements automatically
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Quality Guarantee Badge */}
+        <div className="flex items-center gap-3 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+          <Shield className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-emerald-300">Quality Guaranteed</p>
+            <p className="text-xs text-slate-400">
+              Every image is validated for clarity, composition, text readability & food appeal
+            </p>
+          </div>
+        </div>
 
         {/* Usage Warning */}
         {usage.limit && (
@@ -744,12 +826,13 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
           )}
         </Button>
 
-        {formState.errors.desiredOutputs && (
-          <p className="text-sm text-red-400 text-center">
-            {formState.errors.desiredOutputs.message ?? 'Please check output settings.'}
-          </p>
-        )}
-      </form>
-    </div>
+          {formState.errors.desiredOutputs && (
+            <p className="text-sm text-red-400 text-center">
+              {formState.errors.desiredOutputs.message ?? 'Please check output settings.'}
+            </p>
+          )}
+        </form>
+      </CardContent>
+    </Card>
   );
 }

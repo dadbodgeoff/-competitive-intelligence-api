@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppShell } from '@/components/layout/AppShell';
+import { ModulePageHeader } from '@/components/layout/ModulePageHeader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Plus, Sparkles } from 'lucide-react';
+import { Plus, History } from 'lucide-react';
 import { CreativeHistoryTable } from '@/features/creative/components/CreativeHistoryTable';
 import { CreativeJobDetailPanel } from '@/features/creative/components/CreativeJobDetailPanel';
 import { JobFilters } from '@/features/creative/components/JobFilters';
@@ -46,35 +47,21 @@ export function CreativeHistoryPage() {
     <AppShell maxWidth="wide">
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <ModulePageHeader
+          icon={History}
+          title="Generation History"
+          description="View and manage your creative asset generations"
+          actions={
             <Button
-              variant="ghost"
-              size="sm"
               onClick={() => navigate('/creative')}
-              className="text-slate-400 hover:text-white"
+              size="sm"
+              className="bg-primary-500 hover:bg-primary-600 h-8 text-xs"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Studio
+              <Plus className="h-3.5 w-3.5 mr-1.5" />
+              Create New
             </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-white flex items-center gap-2">
-                <Sparkles className="h-8 w-8 text-primary-500" />
-                Generation History
-              </h1>
-              <p className="text-slate-400 mt-1">
-                View and manage your creative asset generations
-              </p>
-            </div>
-          </div>
-          <Button
-            onClick={() => navigate('/creative/generate')}
-            className="bg-primary-500 hover:bg-primary-500"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Generate New
-          </Button>
-        </div>
+          }
+        />
 
         {/* Filters */}
         <Card className="bg-card-dark border-white/10">

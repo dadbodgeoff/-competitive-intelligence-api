@@ -86,7 +86,7 @@ export function AssetCard({ asset, filename, onClick }: AssetCardProps) {
             </Button>
             <Button
               size="sm"
-              className="bg-primary-500 hover:bg-primary-500 text-white"
+              className="bg-primary-500 hover:bg-primary-600 text-white"
               onClick={(e) => {
                 e.stopPropagation();
                 handleDownload();

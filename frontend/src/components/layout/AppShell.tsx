@@ -1,12 +1,13 @@
 /**
  * AppShell Component
  * Unified layout wrapper for all authenticated pages
- * Provides consistent sidebar, breadcrumbs, and page structure
+ * Provides consistent sidebar and page structure
+ * 
+ * 2025 Update: Breadcrumbs and user email moved into ModulePageHeader for unified header experience
  */
 
 import { ReactNode } from 'react';
 import { AppSidebar } from './AppSidebar';
-import { AppBreadcrumbs } from './AppBreadcrumbs';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 
 interface AppShellProps {
@@ -34,13 +35,10 @@ export function AppShell({
         
         {/* Main Content Area - BRAND STANDARD: 32px gap from sidebar on desktop, none on mobile */}
         <div className="flex-1 flex flex-col min-w-0 ml-0 md:ml-8">
-          {/* Header with Breadcrumbs - BRAND STANDARD: 64px height */}
-          <div className="sticky top-0 z-10 border-b border-white/10 backdrop-blur-sm" style={{ height: '64px', backgroundColor: '#1E1E1E' }}>
-            <div className={containerClass}>
-              <div className="flex items-center gap-6 h-16">
-                <SidebarTrigger className="hover:text-white" style={{ color: '#A8B1B9' }} />
-                <AppBreadcrumbs />
-              </div>
+          {/* Minimal top bar - just sidebar trigger for mobile */}
+          <div className="sticky top-0 z-10 md:hidden" style={{ backgroundColor: '#121212' }}>
+            <div className="flex items-center h-12 px-4">
+              <SidebarTrigger className="hover:text-white" style={{ color: '#A8B1B9' }} />
             </div>
           </div>
           

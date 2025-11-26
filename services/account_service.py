@@ -189,6 +189,7 @@ class AccountService:
         ).eq("id", user_id).execute()
 
     def lookup_user_by_pin(self, pin: str) -> Optional[Dict]:
+        """Global PIN lookup (legacy - may have collisions across accounts)."""
         normalized = self._normalize_pin(pin)
         lookup_hash = self._build_lookup_hash(normalized)
         result = (
@@ -206,6 +207,72 @@ class AccountService:
                 row.pop("clock_pin_hash", None)
                 row.pop("clock_pin_salt", None)
                 return row
+        return None
+
+    def lookup_user_by_pin_in_account(self, pin: str, account_id: str) -> Optional[Dict]:
+        """Look up user by PIN, scoped to a specific account (no collisions)."""
+        normalized = self._normalize_pin(pin)
+        lookup_hash = self._build_lookup_hash(normalized)
+        
+        # Get all members of this account
+        members_result = (
+            self.client.table("account_members")
+            .select("user_id")
+            .eq("account_id", account_id)
+            .eq("status", "active")
+            .execute()
+        )
+        member_user_ids = [m["user_id"] for m in (members_result.data or [])]
+        
+        if not member_user_ids:
+            return None
+        
+        # Look up users with matching PIN hash who are members of this account
+        result = (
+            self.client.table("users")
+            .select(
+                "id, primary_account_id, default_account_role, first_name, last_name, clock_pin_hash, clock_pin_salt, clock_pin_updated_at"
+            )
+            .eq("clock_pin_lookup", lookup_hash)
+            .in_("id", member_user_ids)
+            .execute()
+        )
+        
+        for row in result.data or []:
+            if self._verify_pin_hash(normalized, row.get("clock_pin_hash"), row.get("clock_pin_salt")):
+                self.client.table("users").update({"clock_pin_failed_attempts": 0}).eq("id", row["id"]).execute()
+                row.pop("clock_pin_hash", None)
+                row.pop("clock_pin_salt", None)
+                return row
+        return None
+
+    def get_account_by_location_code(self, location_code: str) -> Optional[Dict]:
+        """Look up an account by its 4-digit location code."""
+        if not location_code or len(location_code) != 4 or not location_code.isdigit():
+            return None
+        
+        result = (
+            self.client.table("accounts")
+            .select("id, name, plan, clock_location_code")
+            .eq("clock_location_code", location_code)
+            .limit(1)
+            .execute()
+        )
+        
+        return result.data[0] if result.data else None
+
+    def get_account_location_code(self, account_id: str) -> Optional[str]:
+        """Get the location code for an account."""
+        result = (
+            self.client.table("accounts")
+            .select("clock_location_code")
+            .eq("id", account_id)
+            .limit(1)
+            .execute()
+        )
+        
+        if result.data:
+            return result.data[0].get("clock_location_code")
         return None
 
     def _normalize_pin(self, pin: Optional[str]) -> str:

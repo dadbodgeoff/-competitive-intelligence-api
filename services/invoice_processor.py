@@ -15,6 +15,7 @@ from services.vendor_item_mapper import VendorItemMapper
 from services.inventory_transaction_service import InventoryTransactionService
 from services.price_tracking_service import PriceTrackingService
 from services.invoice_storage_service import InvoiceStorageService
+from services.ordering.tasks import run_full_ordering_pipeline
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -197,6 +198,21 @@ class InvoiceProcessor:
             if failed_items:
                 logger.warning(f"⚠️  {len(failed_items)} items failed processing")
             
+            # Trigger ordering pipeline after successful invoice processing
+            ordering_result = None
+            if items_processed > 0:
+                try:
+                    # Get the invoice item IDs that were successfully processed
+                    processed_item_ids = [
+                        item["id"] for item in line_items
+                        if item["id"] not in {f["item_number"] for f in failed_items}
+                    ]
+                    ordering_result = run_full_ordering_pipeline(user_id, processed_item_ids)
+                    logger.info(f"📊 Ordering pipeline completed: {ordering_result.get('status')}")
+                except Exception as ordering_exc:
+                    logger.warning(f"⚠️  Ordering pipeline failed (non-blocking): {ordering_exc}")
+                    ordering_result = {"status": "error", "error": str(ordering_exc)}
+            
             return {
                 "status": status,
                 "invoice_id": invoice_id,
@@ -207,7 +223,8 @@ class InvoiceProcessor:
                 "fuzzy_matches": fuzzy_matches,
                 "exact_matches": exact_matches,
                 "price_alerts": price_alerts,
-                "failed_items": failed_items if failed_items else None
+                "failed_items": failed_items if failed_items else None,
+                "ordering_pipeline": ordering_result,
             }
             
         except Exception as e:

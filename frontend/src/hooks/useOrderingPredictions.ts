@@ -1,12 +1,22 @@
 import { useMutation, useQuery, useQueryClient, type UseQueryOptions } from '@tanstack/react-query'
-import { detectDeliveryPatterns, getDeliveryPatterns, getOrderingPredictions } from '@/services/api/orderingApi'
+import {
+  detectDeliveryPatterns,
+  getDeliveryPatterns,
+  getOrderingPredictions,
+  type OrderingPredictionsParams,
+} from '@/services/api/orderingApi'
 import type { DeliveryPatternResponse, OrderingPredictionsResponse } from '@/types/ordering'
 
 const QUERY_KEY = ['ordering', 'predictions']
 const PATTERN_KEY = ['ordering', 'delivery-patterns']
 
-interface OrderingPredictionsParams {
-  itemIds?: string[]
+/**
+ * Standard error handler for mutations
+ */
+function handleMutationError(error: Error, context?: string) {
+  if (import.meta.env.DEV) {
+    console.error(`[Ordering${context ? ` - ${context}` : ''}]`, error.message)
+  }
 }
 
 export function useOrderingPredictions(
@@ -39,6 +49,7 @@ export function useDetectDeliveryPatterns() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: PATTERN_KEY })
     },
+    onError: (error: Error) => handleMutationError(error, 'detectPatterns'),
   })
 }
 

@@ -43,7 +43,7 @@ export function CreativeCustomizePage() {
   // Redirect if no theme/template specified
   useEffect(() => {
     if (!themeId || !templateId) {
-      navigate('/creative/generate');
+      navigate('/creative');
     }
   }, [themeId, templateId, navigate]);
 
@@ -112,7 +112,7 @@ export function CreativeCustomizePage() {
   }, [toast]);
 
   const handleStartNew = useCallback(() => {
-    navigate('/creative/generate');
+    navigate('/creative');
   }, [navigate]);
 
   const isGenerating = Boolean(currentJobId);
@@ -146,7 +146,7 @@ export function CreativeCustomizePage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate('/creative/generate')}
+              onClick={() => navigate('/creative')}
               className="text-slate-400 hover:text-white"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -156,7 +156,7 @@ export function CreativeCustomizePage() {
           {hasCompletedJob && (
             <Button
               onClick={handleStartNew}
-              className="bg-primary-500 hover:bg-primary-500"
+              className="bg-primary-500 hover:bg-primary-600"
             >
               Generate Another
             </Button>

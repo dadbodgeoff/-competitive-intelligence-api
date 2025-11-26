@@ -4,18 +4,15 @@
  */
 
 import { useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
-import { PageHeader } from '@/components/layout/PageHeader';
-import { PageHeading } from '@/components/layout/PageHeading';
+import { ModulePageHeader } from '@/components/layout/ModulePageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
-  ArrowLeft,
   TrendingUp,
   Package,
   Calendar,
@@ -42,7 +39,6 @@ import { StatCard, EmptyState, ExportButton } from '@/components/analytics';
 
 export function ItemDetailPage() {
   const { itemDescription } = useParams<{ itemDescription: string }>();
-  const navigate = useNavigate();
   const decodedDescription = decodeURIComponent(itemDescription || '');
 
   // Fetch price comparison across vendors
@@ -104,50 +100,15 @@ export function ItemDetailPage() {
   return (
     <AppShell maxWidth="wide">
       <div className="space-y-6">
-        <PageHeader
-          breadcrumbs={[
-            { label: 'Dashboard', href: '/dashboard' },
-            { label: 'Price Analytics', href: '/analytics' },
-            { label: 'Item Detail' },
-          ]}
+        {/* Header */}
+        <ModulePageHeader
+          icon={Package}
+          title={decodedDescription}
+          description="Complete price history and vendor comparison"
         />
 
-        {/* Back Button & Title */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4 }}
-          className="flex items-center gap-4"
-        >
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/analytics')}
-            className="text-slate-400 hover:text-white"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Analytics
-          </Button>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-        >
-          <PageHeading className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-primary-500/10 flex items-center justify-center">
-              <Package className="h-6 w-6 text-primary-400" />
-            </div>
-            {decodedDescription}
-          </PageHeading>
-          <p className="text-slate-400 mt-2 ml-15">
-            Complete price history and vendor comparison
-          </p>
-        </motion.div>
-
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <StatCard
             title="Current Best Price"
             value={stats?.bestVendor ? formatCurrency(stats.bestVendor.current_price) : '-'}
@@ -157,6 +118,7 @@ export function ItemDetailPage() {
             isLoading={isLoading}
             tooltip="Lowest current price across all vendors"
             delay={0}
+            compact
           />
           <StatCard
             title="Price Range"
@@ -167,6 +129,7 @@ export function ItemDetailPage() {
             isLoading={isLoading}
             tooltip="Min and max prices seen in the period"
             delay={1}
+            compact
           />
           <StatCard
             title="Vendors"
@@ -177,6 +140,7 @@ export function ItemDetailPage() {
             isLoading={isLoading}
             tooltip="Number of vendors you've purchased this item from"
             delay={2}
+            compact
           />
           <StatCard
             title="Total Purchases"
@@ -187,6 +151,7 @@ export function ItemDetailPage() {
             isLoading={isLoading}
             tooltip="Total number of times you've purchased this item"
             delay={3}
+            compact
           />
         </div>
 
@@ -231,20 +196,20 @@ export function ItemDetailPage() {
                   <AreaChart data={chartData}>
                     <defs>
                       <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#B08968" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#B08968" stopOpacity={0} />
+                        <stop offset="5%" stopColor="#C9A87C" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#C9A87C" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
-                    <XAxis dataKey="date" stroke="#A8B1B9" fontSize={12} />
+                    <XAxis dataKey="date" stroke="#94a3b8" fontSize={12} />
                     <YAxis
-                      stroke="#A8B1B9"
+                      stroke="#94a3b8"
                       fontSize={12}
                       tickFormatter={(v) => `$${v.toFixed(2)}`}
                     />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: '#1E1E1E',
+                        backgroundColor: '#0f172a',
                         border: '1px solid rgba(255, 255, 255, 0.1)',
                         borderRadius: '12px',
                         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
@@ -255,7 +220,7 @@ export function ItemDetailPage() {
                     <Area
                       type="monotone"
                       dataKey="price"
-                      stroke="#B08968"
+                      stroke="#C9A87C"
                       strokeWidth={2}
                       fill="url(#priceGradient)"
                     />

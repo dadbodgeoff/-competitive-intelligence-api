@@ -32,6 +32,17 @@ const TEMPLATE_DETAIL_KEY = (id: string) => [...TEMPLATE_KEY, id]
 const DAY_LIST_KEY = ['prep', 'days']
 const DAY_DETAIL_KEY = (id: string) => [...DAY_LIST_KEY, id]
 
+/**
+ * Standard error handler for mutations
+ * Logs errors in development and can be extended for error tracking
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function handleMutationError(error: Error, context?: string) {
+  if (import.meta.env.DEV) {
+    console.error(`[Prep${context ? ` - ${context}` : ''}]`, error.message)
+  }
+}
+
 export function usePrepTemplates() {
   return useQuery<PrepTemplatesResponse>({
     queryKey: TEMPLATE_KEY,
@@ -60,6 +71,7 @@ export function useCreatePrepTemplate() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: TEMPLATE_KEY })
     },
+    onError: (error: Error) => handleMutationError(error, 'createTemplate'),
   })
 }
 
@@ -72,6 +84,7 @@ export function useUpdatePrepTemplate() {
       queryClient.invalidateQueries({ queryKey: TEMPLATE_KEY })
       queryClient.invalidateQueries({ queryKey: TEMPLATE_DETAIL_KEY(variables.templateId) })
     },
+    onError: (error: Error) => handleMutationError(error, 'updateTemplate'),
   })
 }
 
@@ -82,6 +95,7 @@ export function useDeletePrepTemplate() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: TEMPLATE_KEY })
     },
+    onError: (error: Error) => handleMutationError(error, 'deleteTemplate'),
   })
 }
 
@@ -92,6 +106,7 @@ export function useCreatePrepTemplateItem(templateId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: TEMPLATE_DETAIL_KEY(templateId) })
     },
+    onError: (error: Error) => handleMutationError(error, 'createTemplateItem'),
   })
 }
 
@@ -103,6 +118,7 @@ export function useUpdatePrepTemplateItem(templateId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: TEMPLATE_DETAIL_KEY(templateId) })
     },
+    onError: (error: Error) => handleMutationError(error, 'updateTemplateItem'),
   })
 }
 
@@ -113,6 +129,7 @@ export function useDeletePrepTemplateItem(templateId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: TEMPLATE_DETAIL_KEY(templateId) })
     },
+    onError: (error: Error) => handleMutationError(error, 'deleteTemplateItem'),
   })
 }
 
@@ -123,6 +140,7 @@ export function useImportMenuItems(templateId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: TEMPLATE_DETAIL_KEY(templateId) })
     },
+    onError: (error: Error) => handleMutationError(error, 'importMenuItems'),
   })
 }
 
@@ -155,6 +173,7 @@ export function useCreatePrepDay() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: DAY_LIST_KEY })
     },
+    onError: (error: Error) => handleMutationError(error, 'createPrepDay'),
   })
 }
 
@@ -167,6 +186,7 @@ export function useUpdatePrepDay() {
       queryClient.invalidateQueries({ queryKey: DAY_LIST_KEY })
       queryClient.invalidateQueries({ queryKey: DAY_DETAIL_KEY(variables.prepDayId) })
     },
+    onError: (error: Error) => handleMutationError(error, 'updatePrepDay'),
   })
 }
 
@@ -177,6 +197,7 @@ export function useAddPrepDayItem(prepDayId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: DAY_DETAIL_KEY(prepDayId) })
     },
+    onError: (error: Error) => handleMutationError(error, 'addPrepDayItem'),
   })
 }
 
@@ -189,6 +210,7 @@ export function useUpdatePrepDayItem(prepDayId: string) {
       queryClient.invalidateQueries({ queryKey: DAY_LIST_KEY })
       queryClient.invalidateQueries({ queryKey: DAY_DETAIL_KEY(prepDayId) })
     },
+    onError: (error: Error) => handleMutationError(error, 'updatePrepDayItem'),
   })
 }
 
@@ -199,6 +221,7 @@ export function useDeletePrepDayItem(prepDayId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: DAY_DETAIL_KEY(prepDayId) })
     },
+    onError: (error: Error) => handleMutationError(error, 'deletePrepDayItem'),
   })
 }
 
@@ -210,6 +233,7 @@ export function useAssignPrepDayItem(prepDayId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: DAY_DETAIL_KEY(prepDayId) })
     },
+    onError: (error: Error) => handleMutationError(error, 'assignPrepDayItem'),
   })
 }
 
@@ -221,6 +245,7 @@ export function useCompletePrepDayItem(prepDayId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: DAY_DETAIL_KEY(prepDayId) })
     },
+    onError: (error: Error) => handleMutationError(error, 'completePrepDayItem'),
   })
 }
 
@@ -231,6 +256,7 @@ export function useReopenPrepDayItem(prepDayId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: DAY_DETAIL_KEY(prepDayId) })
     },
+    onError: (error: Error) => handleMutationError(error, 'reopenPrepDayItem'),
   })
 }
 

@@ -1,5 +1,9 @@
 import { ReactNode } from 'react';
-import { TabGroup, TabGroupList, TabGroupTrigger, TabGroupContent, SectionHeader } from '@/components/ui';
+import { useNavigate } from 'react-router-dom';
+import { Sparkles, History, Palette, Wand2 } from 'lucide-react';
+import { TabGroup, TabGroupList, TabGroupTrigger, TabGroupContent } from '@/components/ui';
+import { ModulePageHeader } from '@/components/layout/ModulePageHeader';
+import { Button } from '@/components/ui/button';
 
 export type CreativeTab = 'campaigns' | 'social-proof' | 'hiring' | 'events';
 
@@ -20,12 +24,44 @@ const TAB_LABELS: Record<CreativeTab, string> = {
 };
 
 export function CreativeLayout({ activeTab, onTabChange, children, tabCounts, filterSlot }: CreativeLayoutProps) {
+  const navigate = useNavigate();
+
   return (
-    <div className="space-y-8">
-      <SectionHeader
+    <div className="space-y-6">
+      <ModulePageHeader
+        icon={Sparkles}
         title="Creative Studio"
-        subtitle="Generate on-brand Nano Banana assets for campaigns, social proof, hiring, and events. Choose a theme, customize the variables, and publish stunning creative in minutes."
-        size="lg"
+        description="Generate professional marketing assets with AI"
+        actions={
+          <>
+            <Button
+              onClick={() => navigate('/creative/history')}
+              variant="outline"
+              size="sm"
+              className="border-white/10 text-slate-300 hover:bg-white/5 h-8 text-xs"
+            >
+              <History className="h-3.5 w-3.5 mr-1.5" />
+              History
+            </Button>
+            <Button
+              onClick={() => navigate('/creative/brands')}
+              variant="outline"
+              size="sm"
+              className="border-white/10 text-slate-300 hover:bg-white/5 h-8 text-xs"
+            >
+              <Palette className="h-3.5 w-3.5 mr-1.5" />
+              Brands
+            </Button>
+            <Button
+              onClick={() => navigate('/creative/custom')}
+              size="sm"
+              className="bg-gradient-to-r from-primary-500 to-purple-500 hover:from-primary-600 hover:to-purple-600 text-white h-8 text-xs shadow-lg shadow-primary-500/20"
+            >
+              <Wand2 className="h-3.5 w-3.5 mr-1.5" />
+              Custom Prompt
+            </Button>
+          </>
+        }
       />
 
       <TabGroup

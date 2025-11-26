@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Clock, MapPin, Sparkles } from 'lucide-react';
 import { apiClient } from '@/services/api/client';
 import { AppShell } from '@/components/layout/AppShell';
-import { ContentCard, ListContainer, EmptyState, CategoryBadge, SectionHeader } from '@/components/ui';
+import { ModulePageHeader } from '@/components/layout/ModulePageHeader';
+import { ContentCard, ListContainer, EmptyState, CategoryBadge } from '@/components/ui';
 
 interface SavedAnalysis {
   id: string;
@@ -64,14 +65,14 @@ export function SavedAnalysesPage() {
   return (
     <AppShell>
       <div className="space-y-6">
-        <SectionHeader
+        <ModulePageHeader
+          icon={Clock}
           title="Saved Analyses"
-          subtitle="Review your past competitive analyses"
-          size="lg"
+          description="Review your past competitive analyses"
           actions={
             <Link to="/analysis/new">
-              <Button className="bg-primary-500 hover:bg-primary-600 text-white">
-                <Sparkles className="h-4 w-4 mr-2" />
+              <Button size="sm" className="bg-primary-500 hover:bg-primary-600 text-white h-8 text-xs">
+                <Sparkles className="h-3.5 w-3.5 mr-1.5" />
                 New Analysis
               </Button>
             </Link>

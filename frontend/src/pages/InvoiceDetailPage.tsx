@@ -1,20 +1,25 @@
 /**
  * Invoice Detail Page
- * RestaurantIQ Platform
+ * RestaurantIQ Platform - Enhanced with Analytics
  */
 
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
-import { PageHeading } from '@/components/layout/PageHeading';
+import { ModulePageHeader } from '@/components/layout/ModulePageHeader';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { InvoiceCard, InvoiceCardHeader, InvoiceCardContent, InvoiceStatusBadge } from '@/design-system/components';
 import { Button } from '@/components/ui/button';
 import { InvoiceReviewTable } from '@/components/invoice/InvoiceReviewTable';
 import { apiClient } from '@/services/api/client';
 import { useToast } from '@/hooks/use-toast';
 import { parseDataLoadError, parseDeleteError } from '@/utils/errorMessages';
-import { Download, Trash2, Loader2 } from 'lucide-react';
+import { useInvoiceInsights } from '@/hooks/useInvoiceAnalytics';
+import { Download, Trash2, Loader2, AlertTriangle, Lightbulb } from 'lucide-react';
 import { attachConversionToLineItem, type PackConversionResult } from '@/utils/invoiceUnits';
+import { formatCurrency } from '@/types/analytics';
+import { TrendBadge } from '@/components/analytics';
 
 interface InvoiceData {
   invoice_number: string;
@@ -49,34 +54,20 @@ export function InvoiceDetailPage() {
   const [invoice, setInvoice] = useState<InvoiceData | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Fetch price insights for this invoice
+  const { data: insights, isLoading: insightsLoading } = useInvoiceInsights(invoiceId, !loading && !!invoice);
+
   useEffect(() => {
-    console.log('🔵 [DETAIL] InvoiceDetailPage mounted, invoiceId:', invoiceId);
     if (invoiceId) {
       fetchInvoice();
     }
   }, [invoiceId]);
 
   const fetchInvoice = async () => {
-    console.log('📥 [DETAIL] Fetching invoice:', invoiceId);
     try {
       const endpoint = `/api/v1/invoices/${invoiceId}`;
-      console.log('📤 [DETAIL] GET request to:', endpoint);
-      
       const response = await apiClient.get(endpoint);
-      console.log('✅ [DETAIL] Response received:', {
-        status: response.status,
-        hasData: !!response.data,
-        success: response.data?.success
-      });
-      
       const data = response.data;
-      
-      console.log('📦 [DETAIL] Invoice data:', {
-        hasInvoice: !!data.invoice,
-        hasItems: !!data.items,
-        itemsCount: data.items?.length,
-        invoice_number: data.invoice?.invoice_number
-      });
       
       const rawLineItems = (data.items || []) as InvoiceLineItem[];
       const lineItems = rawLineItems.map((item) => attachConversionToLineItem(item));
@@ -85,15 +76,7 @@ export function InvoiceDetailPage() {
         ...data.invoice,
         line_items: lineItems,
       });
-      
-      console.log('✅ [DETAIL] Invoice state updated successfully');
     } catch (error) {
-      console.error('❌ [DETAIL] Error fetching invoice:', error);
-      console.error('❌ [DETAIL] Error details:', {
-        message: error instanceof Error ? error.message : 'Unknown',
-        response: (error as any)?.response?.data
-      });
-      
       const errorDetails = parseDataLoadError(error, 'invoice');
       toast({
         title: errorDetails.title,
@@ -103,7 +86,6 @@ export function InvoiceDetailPage() {
       navigate('/invoices');
     } finally {
       setLoading(false);
-      console.log('🏁 [DETAIL] Fetch complete, loading:', false);
     }
   };
 
@@ -151,31 +133,100 @@ export function InvoiceDetailPage() {
     <AppShell>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <PageHeading className="mb-1">Invoice Details</PageHeading>
-            <p className="text-slate-400">
-              {invoice.vendor_name} • #{invoice.invoice_number}
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <Button
-              variant="outline"
-              className="border-white/10 text-slate-300 hover:bg-white/5"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleDelete}
-              className="border-red-500/30 text-destructive hover:bg-destructive/10"
-            >
-              <Trash2 className="h-4 w-4 mr-2" />
-              Delete
-            </Button>
-          </div>
-        </div>
+        <ModulePageHeader
+          icon={Download}
+          title="Invoice Details"
+          description={`${invoice.vendor_name} • #${invoice.invoice_number}`}
+          actions={
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-white/10 text-slate-300 hover:bg-white/5 h-8 text-xs"
+              >
+                <Download className="h-3.5 w-3.5 mr-1.5" />
+                Export
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleDelete}
+                className="border-red-500/30 text-destructive hover:bg-destructive/10 h-8 text-xs"
+              >
+                <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                Delete
+              </Button>
+            </>
+          }
+        />
+
+        {/* Price Insights Cards */}
+        {!insightsLoading && insights && (insights.alerts > 0 || insights.potential_savings > 0) && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          >
+            {/* Price Alerts Card */}
+            {insights.alerts > 0 && (
+              <Card className="bg-card-dark border-amber-500/30">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-white flex items-center gap-2 text-base">
+                    <AlertTriangle className="h-5 w-5 text-amber-400" />
+                    Price Alerts
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-amber-400 mb-2">
+                    {insights.alerts} items
+                  </div>
+                  <p className="text-sm text-slate-400 mb-3">
+                    Items with significant price changes from average
+                  </p>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {insights.items.filter(i => i.is_alert).slice(0, 3).map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between text-sm bg-white/5 rounded px-2 py-1">
+                        <span className="text-slate-300 truncate flex-1 mr-2">{item.description}</span>
+                        <TrendBadge value={item.price_change_percent} size="sm" />
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Savings Opportunities Card */}
+            {insights.potential_savings > 0 && (
+              <Card className="bg-card-dark border-success-500/30">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-white flex items-center gap-2 text-base">
+                    <Lightbulb className="h-5 w-5 text-success-400" />
+                    Savings Opportunities
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-success-400 mb-2">
+                    {formatCurrency(insights.potential_savings)}
+                  </div>
+                  <p className="text-sm text-slate-400 mb-3">
+                    Potential savings by switching to best prices
+                  </p>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {insights.items.filter(i => i.potential_savings > 0).slice(0, 3).map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between text-sm bg-white/5 rounded px-2 py-1">
+                        <span className="text-slate-300 truncate flex-1 mr-2">{item.description}</span>
+                        <span className="text-success-400 font-medium">
+                          Save {formatCurrency(item.potential_savings)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </motion.div>
+        )}
 
         {/* Invoice Header */}
         <InvoiceCard variant="elevated">

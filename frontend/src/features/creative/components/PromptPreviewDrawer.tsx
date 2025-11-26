@@ -27,6 +27,24 @@ interface PromptPreviewDrawerProps {
 function sanitizePromptForDisplay(text: string): string {
   if (!text) return '';
   
+  // Technical jargon improvements
+  const improvements: Record<string, string> = {
+    'dough artistry': 'artisan dough craftsmanship',
+    'fermentation flex': 'perfectly fermented dough',
+    'flour explosions': 'flour-dusted details',
+    'Latte art POV': 'stunning latte art close-ups',
+    'cocoa dust text': 'cocoa powder designs',
+    'cafe hustle': 'bustling cafe atmosphere',
+    'chalk marker labels': 'hand-written chalk labels',
+    'vibrant liquid': 'golden beer tones',
+    'brick wall chalkboard': 'rustic brick wall backdrop',
+    'multi-course events': 'special tasting menus',
+    'Macro': 'Close-up',
+    'POV': 'perspective',
+    'hero shot': 'eye-catching centerpiece',
+    'bokeh': 'soft background blur',
+  };
+  
   // Remove technical prompt instructions and visual cues
   let sanitized = text
     // Remove "Visual cues:" section and everything after
@@ -54,6 +72,11 @@ function sanitizePromptForDisplay(text: string): string {
       return friendlyNames[content] || `your ${content.replace(/_/g, ' ')}`;
     })
     .trim();
+  
+  // Apply improvements
+  Object.entries(improvements).forEach(([old, replacement]) => {
+    sanitized = sanitized.replace(new RegExp(old, 'gi'), replacement);
+  });
   
   // Split into sentences and take only the first 2-3 sentences (the descriptive part)
   const sentences = sanitized.split(/\.\s+/);

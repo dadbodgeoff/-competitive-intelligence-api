@@ -37,10 +37,10 @@ export function DashboardPage() {
     <AppShell maxWidth="wide">
         {/* Welcome section - BRAND STANDARD: 32px Dashboard Header */}
         <div className="mb-6">
-          <h1 className="text-[32px] font-bold leading-[38px] mb-2" style={{ color: '#E0E0E0' }}>
+          <h1 className="text-[32px] font-bold leading-[38px] mb-2 text-white">
             Welcome back, {user?.first_name || 'there'}! 👋
           </h1>
-          <p className="text-base" style={{ color: '#A8B1B9' }}>
+          <p className="text-base text-slate-400">
             Your command center for competitive intelligence and operational insights
           </p>
         </div>
@@ -60,7 +60,7 @@ export function DashboardPage() {
 
         {/* ZONE 2: ACTION - Primary Features - BRAND STANDARD: 24px gutters */}
         <section className="mb-6">
-          <h2 className="text-2xl font-bold leading-[30px] mb-6" style={{ color: '#E0E0E0' }}>
+          <h2 className="text-2xl font-bold leading-[30px] mb-6 text-white">
             Quick Actions
           </h2>
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
@@ -145,7 +145,7 @@ export function DashboardPage() {
 
         {/* ZONE 3: INSIGHTS - Secondary Features & Profile */}
         <section>
-          <h2 className="text-2xl font-bold leading-[30px] mb-6" style={{ color: '#E0E0E0' }}>
+          <h2 className="text-2xl font-bold leading-[30px] mb-6 text-white">
             Reports & Account
           </h2>
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">

@@ -183,12 +183,20 @@ export function BillingSettingsPage() {
                   <div className="flex items-start gap-3">
                     <Sparkles className="h-5 w-5 text-primary-400 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-primary-300">
-                        Upgrade to Premium
-                      </p>
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="text-sm font-medium text-primary-300">
+                          Upgrade to Premium
+                        </p>
+                        <span className="px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 text-xs font-medium">
+                          🚀 50% Off
+                        </span>
+                      </div>
                       <p className="text-sm text-slate-400 mt-1">
                         Get unlimited invoice uploads, 50 AI generations/month,
-                        and priority support for $99/month.
+                        and priority support.{' '}
+                        <span className="text-slate-500 line-through">$199</span>{' '}
+                        <span className="text-white font-semibold">$99/month</span>{' '}
+                        <span className="text-green-400">— Launch special!</span>
                       </p>
                       <Button
                         size="sm"
@@ -200,7 +208,7 @@ export function BillingSettingsPage() {
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
                           <>
-                            Upgrade Now
+                            Lock In Launch Price
                             <ArrowRight className="h-4 w-4 ml-2" />
                           </>
                         )}

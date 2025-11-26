@@ -134,15 +134,55 @@ class FuzzyItemMatcher:
         """
         PostgreSQL trigram similarity search
         
-        Uses pg_trgm extension for fast pre-filtering
+        Uses pg_trgm extension via Supabase RPC for fast pre-filtering
+        with GIN index support
         """
         try:
-            # Use Supabase client methods only (no raw SQL to prevent injection)
-            # Note: Supabase client doesn't support similarity() directly
-            # We'll fetch more results and filter in Python
+            # Use Supabase RPC to call the PostgreSQL function
+            # This leverages the GIN trigram index for O(log n) performance
+            result = self.client.rpc('find_similar_items', {
+                'target_name': normalized_name,
+                'target_user_id': user_id,
+                'similarity_threshold': threshold,
+                'result_limit': limit
+            }).execute()
             
-            # Execute via Supabase RPC (if available) or direct query
-            # For now, use table query with ilike as fallback
+            if not result.data:
+                logger.debug(f"No trigram matches found for: {normalized_name}")
+                return []
+            
+            candidates = []
+            for item in result.data:
+                # Optionally filter by category if specified
+                if category and item.get('category') != category:
+                    continue
+                    
+                item['trigram_similarity'] = item.get('similarity_score', 0)
+                candidates.append(item)
+            
+            logger.debug(f"Trigram search returned {len(candidates)} candidates")
+            return candidates
+            
+        except Exception as e:
+            logger.error(f"Trigram RPC search failed: {e}")
+            # Fallback to Python-based search if RPC fails
+            return self._trigram_search_fallback(normalized_name, user_id, category, threshold, limit)
+    
+    def _trigram_search_fallback(
+        self,
+        normalized_name: str,
+        user_id: str,
+        category: Optional[str],
+        threshold: float,
+        limit: int
+    ) -> List[Dict]:
+        """
+        Fallback Python-based similarity search
+        Used only if RPC function is unavailable
+        """
+        try:
+            logger.warning("Using fallback Python-based trigram search (slower)")
+            
             result = self.client.table("inventory_items").select(
                 "id, name, normalized_name, category, unit_of_measure, current_quantity, last_purchase_price"
             ).eq("user_id", user_id)
@@ -150,28 +190,23 @@ class FuzzyItemMatcher:
             if category:
                 result = result.eq("category", category)
             
-            # Note: Supabase client doesn't support similarity() directly
-            # We'll fetch more results and filter in Python
             result = result.limit(limit * 3).execute()
             
-            # Filter by simple similarity
             candidates = []
             for item in result.data:
                 sim = self.calculator.calculate_simple_similarity(
                     normalized_name,
-                    item['normalized_name']
+                    item.get('normalized_name', '')
                 )
                 if sim > threshold:
                     item['trigram_similarity'] = sim
                     candidates.append(item)
             
-            # Sort by similarity
             candidates.sort(key=lambda x: x.get('trigram_similarity', 0), reverse=True)
-            
             return candidates[:limit]
             
         except Exception as e:
-            logger.error(f"Trigram search failed: {e}")
+            logger.error(f"Fallback trigram search failed: {e}")
             return []
     
     def calculate_similarity(self, target_item: Dict, candidate_item: Dict) -> float:

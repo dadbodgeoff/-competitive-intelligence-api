@@ -207,7 +207,7 @@ export function SavedComparisonsPage() {
               </p>
               <Button
                 onClick={() => navigate('/menu-comparison')}
-                className="bg-primary-500 hover:bg-primary-500"
+                className="bg-primary-500 hover:bg-primary-600"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Start First Analysis
@@ -311,7 +311,7 @@ export function SavedComparisonsPage() {
               onClick={confirmDelete}
               disabled={archiveMutation.isPending || deleteMutation.isPending}
               className={deleteConfirmation?.type === 'saved_comparison' 
-                ? "bg-primary-500 hover:bg-primary-500" 
+                ? "bg-primary-500 hover:bg-primary-600" 
                 : "bg-destructive hover:bg-red-600"
               }
             >

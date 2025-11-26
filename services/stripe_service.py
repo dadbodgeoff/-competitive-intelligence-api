@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 import stripe
 from supabase import Client
 
-from services.supabase_client import get_supabase_service_client
+from database.supabase_client import get_supabase_service_client
 
 logger = logging.getLogger(__name__)
 

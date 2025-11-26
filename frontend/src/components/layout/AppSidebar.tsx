@@ -22,7 +22,10 @@ import {
   Calendar,
   ClipboardList,
   Palette,
+  CreditCard,
+  Sparkles,
 } from 'lucide-react';
+import { SidebarClockIn } from './SidebarClockIn';
 import {
   Sidebar,
   SidebarContent,
@@ -72,16 +75,22 @@ const mainNavItems: NavItem[] = [
   },
   {
     title: 'Invoices',
-    href: '/invoices',
+    href: '/invoices/dashboard',
     icon: FileText,
     module: 'invoices',
   },
   
   // 💰 Financial Intelligence
   {
-    title: 'COGS Tracker',
+    title: 'Cost of Goods',
     href: '/cogs',
     icon: DollarSign,
+    module: 'dashboard',
+  },
+  {
+    title: 'Daily Sales',
+    href: '/cogs/sales',
+    icon: TrendingUp,
     module: 'dashboard',
   },
   {
@@ -94,7 +103,7 @@ const mainNavItems: NavItem[] = [
   // 🔍 Competitive Intelligence
   {
     title: 'Review Analysis',
-    href: '/analysis/new',
+    href: '/analysis',
     icon: Search,
   },
   {
@@ -132,26 +141,20 @@ const mainNavItems: NavItem[] = [
   },
 ];
 
-const reportsNavItems: NavItem[] = [
-  {
-    title: 'Saved Analyses',
-    href: '/analysis/saved',
-    icon: Search,
-    module: 'dashboard',
-  },
-  {
-    title: 'Saved Comparisons',
-    href: '/menu-comparison/saved',
-    icon: Menu,
-    module: 'menu_comparison',
-  },
-];
+// Reports section removed - Saved Comparisons now integrated into Menu Comparison dashboard
+const reportsNavItems: NavItem[] = [];
 
 const accountNavItems: NavItem[] = [
   {
     title: 'Team & Modules',
     href: '/settings/team',
     icon: Users,
+    module: 'dashboard',
+  },
+  {
+    title: 'Billing',
+    href: '/settings/billing',
+    icon: CreditCard,
     module: 'dashboard',
   },
 ];
@@ -224,7 +227,8 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
         
-        {/* Reports */}
+        {/* Reports - Only show if there are items */}
+        {reportsNavItems.length > 0 && (
         <SidebarGroup>
           <SidebarGroupLabel>Reports</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -249,6 +253,7 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        )}
 
         {/* Account */}
         {hasModule('dashboard') && user?.account_role === 'owner' && (
@@ -277,22 +282,45 @@ export function AppSidebar() {
         )}
       </SidebarContent>
       
-      <SidebarFooter className="border-t p-6" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 text-sm mb-2" style={{ color: '#A8B1B9' }}>
-            <User className="h-4 w-4" />
-            <span className="truncate">{user?.email}</span>
+      <SidebarFooter className="border-t p-4" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+        <div className="space-y-3">
+          {/* Upgrade CTA for free users */}
+          {!isPremium && (
+            <Link to="/settings/billing" className="block">
+              <div className="p-3 rounded-lg bg-gradient-to-r from-primary-500/20 to-green-500/20 border border-primary-500/30 hover:border-primary-500/50 transition-colors">
+                <div className="flex items-center gap-2 mb-1">
+                  <Sparkles className="h-4 w-4 text-primary-400" />
+                  <span className="text-sm font-semibold text-white">Upgrade to Premium</span>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-xs text-slate-500 line-through">$199</span>
+                  <span className="text-sm font-bold text-white">$99/mo</span>
+                  <span className="text-xs text-green-400">50% off</span>
+                </div>
+                <p className="text-xs text-slate-400 mt-1">Launch special — lock in this rate</p>
+              </div>
+            </Link>
+          )}
+          
+          {/* Clock In/Out Widget */}
+          <SidebarClockIn />
+          
+          <div className="border-t pt-3" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+            <div className="flex items-center gap-2 text-sm mb-2 px-3" style={{ color: '#A8B1B9' }}>
+              <User className="h-4 w-4" />
+              <span className="truncate">{user?.email}</span>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={logout}
+              className="w-full"
+              style={{ borderColor: 'rgba(255, 255, 255, 0.1)', color: '#A8B1B9' }}
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </Button>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={logout}
-            className="w-full"
-            style={{ borderColor: 'rgba(255, 255, 255, 0.1)', color: '#A8B1B9' }}
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Sign Out
-          </Button>
         </div>
       </SidebarFooter>
     </Sidebar>

@@ -5,6 +5,7 @@ import { GoogleAnalytics } from './components/GoogleAnalytics';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { featureFlags } from './config/featureFlags';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { OfflineBanner } from './components/common/OfflineBanner';
 import { Toaster } from './components/ui/toaster';
 import { PageLoader } from './components/common/PageLoader';
 import './App.css';
@@ -30,28 +31,34 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage').then(m => ({ de
 const DashboardPageNew = lazy(() => import('./pages/DashboardPageNew').then(m => ({ default: m.DashboardPageNew })));
 
 // Analysis
+const ReviewAnalysisDashboard = lazy(() => import('./pages/ReviewAnalysisDashboard').then(m => ({ default: m.ReviewAnalysisDashboard })));
 const NewAnalysisPage = lazy(() => import('./pages/NewAnalysisPage').then(m => ({ default: m.NewAnalysisPage })));
 const AnalysisProgressPage = lazy(() => import('./pages/AnalysisProgressPage').then(m => ({ default: m.AnalysisProgressPage })));
 const AnalysisResultsPage = lazy(() => import('./pages/AnalysisResultsPage').then(m => ({ default: m.AnalysisResultsPage })));
-const SavedAnalysesPage = lazy(() => import('./pages/SavedAnalysesPage').then(m => ({ default: m.SavedAnalysesPage })));
+// SavedAnalysesPage deprecated - redirects to ReviewAnalysisDashboard
 
 // Invoices
 const InvoiceListPage = lazy(() => import('./pages/InvoiceListPage').then(m => ({ default: m.InvoiceListPage })));
 const InvoiceUploadPage = lazy(() => import('./pages/InvoiceUploadPage').then(m => ({ default: m.InvoiceUploadPage })));
 const InvoiceDetailPage = lazy(() => import('./pages/InvoiceDetailPage').then(m => ({ default: m.InvoiceDetailPage })));
+const InvoiceDashboardPage = lazy(() => import('./pages/InvoiceDashboardPage').then(m => ({ default: m.InvoiceDashboardPage })));
+const InvoicesByVendorPage = lazy(() => import('./pages/InvoicesByVendorPage').then(m => ({ default: m.InvoicesByVendorPage })));
 
 // Menu
 const MenuUploadPage = lazy(() => import('./pages/MenuUploadPage').then(m => ({ default: m.MenuUploadPage })));
-const MenuDashboard = lazy(() => import('./pages/MenuDashboard').then(m => ({ default: m.MenuDashboard })));
+const MenuDashboard = lazy(() => import('./pages/MenuDashboardNew').then(m => ({ default: m.MenuDashboard })));
 const MenuItemRecipePage = lazy(() => import('./pages/MenuItemRecipePage').then(m => ({ default: m.MenuItemRecipePage })));
+
+// COGS (Cost of Goods Sold)
 const COGSDashboardPage = lazy(() => import('./pages/COGSDashboardPage').then(m => ({ default: m.COGSDashboardPage })));
+const DailySalesPage = lazy(() => import('./pages/DailySalesPage').then(m => ({ default: m.DailySalesPage })));
 
 // Menu Comparison
+const MenuComparisonDashboard = lazy(() => import('./pages/MenuComparisonDashboard').then(m => ({ default: m.MenuComparisonDashboard })));
 const MenuComparisonPage = lazy(() => import('./pages/MenuComparisonPage').then(m => ({ default: m.MenuComparisonPage })));
 const CompetitorSelectionPage = lazy(() => import('./pages/CompetitorSelectionPage').then(m => ({ default: m.CompetitorSelectionPage })));
 const MenuParsingProgressPage = lazy(() => import('./pages/MenuParsingProgressPage').then(m => ({ default: m.MenuParsingProgressPage })));
 const MenuComparisonResultsPage = lazy(() => import('./pages/MenuComparisonResultsPage').then(m => ({ default: m.MenuComparisonResultsPage })));
-const SavedComparisonsPage = lazy(() => import('./pages/SavedComparisonsPage').then(m => ({ default: m.SavedComparisonsPage })));
 
 // Analytics
 const PriceAnalyticsDashboard = lazy(() => import('./pages/PriceAnalyticsDashboard').then(m => ({ default: m.PriceAnalyticsDashboard })));
@@ -63,8 +70,14 @@ const PriceTrendsPage = lazy(() => import('./pages/PriceTrendsPage').then(m => (
 const AlertSettingsPage = lazy(() => import('./pages/AlertSettingsPage').then(m => ({ default: m.AlertSettingsPage })));
 
 // Operations
-const OrderingPredictionsPage = lazy(() => import('./pages/OrderingPredictionsPage').then(m => ({ default: m.OrderingPredictionsPage })));
-const SchedulingDashboardPage = lazy(() => import('./pages/SchedulingDashboardPage').then(m => ({ default: m.SchedulingDashboardPage })));
+// Modernized Ordering Dashboard (2025 standards)
+const OrderingDashboard = lazy(() => import('./features/ordering').then(m => ({ default: m.OrderingDashboard })));
+// Legacy ordering page (kept for reference)
+const OrderingPredictionsPageLegacy = lazy(() => import('./pages/OrderingPredictionsPage').then(m => ({ default: m.OrderingPredictionsPage })));
+// Modernized Schedule Dashboard (2025 standards)
+const ScheduleDashboard = lazy(() => import('./features/scheduling').then(m => ({ default: m.ScheduleDashboard })));
+// Legacy schedule page (kept for reference)
+const SchedulingDashboardPageLegacy = lazy(() => import('./pages/SchedulingDashboardPage').then(m => ({ default: m.SchedulingDashboardPage })));
 const PrepDashboardPage = lazy(() => import('./pages/PrepDashboardPage').then(m => ({ default: m.PrepDashboardPage })));
 const PrepTemplatesPage = lazy(() => import('./pages/PrepTemplatesPage').then(m => ({ default: m.PrepTemplatesPage })));
 
@@ -77,7 +90,7 @@ const CreativeBrandProfilesPage = lazy(() => import('./pages/CreativeBrandProfil
 const CreativeCustomPage = lazy(() => import('./pages/CreativeCustomPage').then(m => ({ default: m.CreativeCustomPage })));
 
 // Settings
-const TeamSettingsPage = lazy(() => import('./pages/TeamSettingsPage').then(m => ({ default: m.TeamSettingsPage })));
+const TeamSettingsPage = lazy(() => import('./pages/TeamSettingsPageNew').then(m => ({ default: m.TeamSettingsPage })));
 const BillingSettingsPage = lazy(() => import('./pages/BillingSettingsPage').then(m => ({ default: m.BillingSettingsPage })));
 const BillingSuccessPage = lazy(() => import('./pages/BillingSuccessPage').then(m => ({ default: m.BillingSuccessPage })));
 
@@ -103,6 +116,7 @@ function App() {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <GoogleAnalytics measurementId={import.meta.env.VITE_GA_MEASUREMENT_ID} />
+        <OfflineBanner />
         <BrowserRouter>
           <Suspense fallback={<PageLoader />}>
             <Routes>
@@ -123,21 +137,29 @@ function App() {
               <Route path="/dashboard/old" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
 
               {/* Analysis */}
+              <Route path="/analysis" element={<ProtectedRoute><ReviewAnalysisDashboard /></ProtectedRoute>} />
               <Route path="/analysis/new" element={<ProtectedRoute><NewAnalysisPage /></ProtectedRoute>} />
               <Route path="/analysis/:analysisId/progress" element={<ProtectedRoute><AnalysisProgressPage /></ProtectedRoute>} />
               <Route path="/analysis/:analysisId/results" element={<ProtectedRoute><AnalysisResultsPage /></ProtectedRoute>} />
-              <Route path="/analysis/saved" element={<ProtectedRoute><SavedAnalysesPage /></ProtectedRoute>} />
+              <Route path="/analysis/saved" element={<ProtectedRoute><ReviewAnalysisDashboard /></ProtectedRoute>} /> {/* Redirect to dashboard */}
 
               {/* Invoices */}
               <Route path="/invoices" element={<ProtectedRoute><InvoiceListPage /></ProtectedRoute>} />
+              <Route path="/invoices/dashboard" element={<ProtectedRoute><InvoiceDashboardPage /></ProtectedRoute>} />
+              <Route path="/invoices/vendors" element={<ProtectedRoute><InvoicesByVendorPage /></ProtectedRoute>} />
               <Route path="/invoices/upload" element={<ProtectedRoute><InvoiceUploadPage /></ProtectedRoute>} />
               <Route path="/invoices/:invoiceId" element={<ProtectedRoute><InvoiceDetailPage /></ProtectedRoute>} />
 
-              {/* Menu */}
+              {/* Menu Management */}
               <Route path="/menu/upload" element={<ProtectedRoute><MenuUploadPage /></ProtectedRoute>} />
               <Route path="/menu/dashboard" element={<ProtectedRoute><MenuDashboard /></ProtectedRoute>} />
-              <Route path="/menu/items/:menuItemId/recipe" element={<ProtectedRoute><MenuItemRecipePage /></ProtectedRoute>} />
+
+              {/* COGS (Cost of Goods Sold) */}
               <Route path="/cogs" element={<ProtectedRoute><COGSDashboardPage /></ProtectedRoute>} />
+              <Route path="/cogs/sales" element={<ProtectedRoute><DailySalesPage /></ProtectedRoute>} />
+              <Route path="/cogs/items/:menuItemId" element={<ProtectedRoute><MenuItemRecipePage /></ProtectedRoute>} />
+              {/* Legacy route - redirect to new COGS path */}
+              <Route path="/menu/items/:menuItemId/recipe" element={<ProtectedRoute><MenuItemRecipePage /></ProtectedRoute>} />
 
               {/* Analytics */}
               <Route path="/analytics" element={<ProtectedRoute><PriceAnalyticsDashboard /></ProtectedRoute>} />
@@ -148,8 +170,10 @@ function App() {
               <Route path="/analytics/trends" element={<ProtectedRoute><PriceTrendsPage /></ProtectedRoute>} />
 
               {/* Operations */}
-              <Route path="/ordering" element={<ProtectedRoute><OrderingPredictionsPage /></ProtectedRoute>} />
-              <Route path="/scheduling" element={<ProtectedRoute><SchedulingDashboardPage /></ProtectedRoute>} />
+              <Route path="/ordering" element={<ProtectedRoute><OrderingDashboard /></ProtectedRoute>} />
+              <Route path="/ordering/legacy" element={<ProtectedRoute><OrderingPredictionsPageLegacy /></ProtectedRoute>} />
+              <Route path="/scheduling" element={<ProtectedRoute><ScheduleDashboard /></ProtectedRoute>} />
+              <Route path="/scheduling/legacy" element={<ProtectedRoute><SchedulingDashboardPageLegacy /></ProtectedRoute>} />
               <Route path="/prep" element={<ProtectedRoute><PrepDashboardPage /></ProtectedRoute>} />
               <Route path="/prep/templates" element={<ProtectedRoute><PrepTemplatesPage /></ProtectedRoute>} />
 
@@ -165,12 +189,14 @@ function App() {
               <Route path="/settings/team" element={<ProtectedRoute><TeamSettingsPage /></ProtectedRoute>} />
               <Route path="/settings/alerts" element={<ProtectedRoute><AlertSettingsPage /></ProtectedRoute>} />
 
-              {/* Menu Comparison */}
-              <Route path="/menu-comparison" element={<ProtectedRoute><MenuComparisonPage /></ProtectedRoute>} />
+              {/* Menu Comparison - Unified Dashboard */}
+              <Route path="/menu-comparison" element={<ProtectedRoute><MenuComparisonDashboard /></ProtectedRoute>} />
+              <Route path="/menu-comparison/new" element={<ProtectedRoute><MenuComparisonPage /></ProtectedRoute>} />
               <Route path="/menu-comparison/:analysisId/select" element={<ProtectedRoute><CompetitorSelectionPage /></ProtectedRoute>} />
               <Route path="/menu-comparison/:analysisId/parse" element={<ProtectedRoute><MenuParsingProgressPage /></ProtectedRoute>} />
               <Route path="/menu-comparison/:analysisId/results" element={<ProtectedRoute><MenuComparisonResultsPage /></ProtectedRoute>} />
-              <Route path="/menu-comparison/saved" element={<ProtectedRoute><SavedComparisonsPage /></ProtectedRoute>} />
+              {/* Legacy route - redirect to dashboard */}
+              <Route path="/menu-comparison/saved" element={<Navigate to="/menu-comparison" replace />} />
 
               {/* Billing - feature flagged */}
               {featureFlags.BILLING_ENABLED && (

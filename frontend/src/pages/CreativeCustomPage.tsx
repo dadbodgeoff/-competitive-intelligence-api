@@ -179,17 +179,20 @@ export function CreativeCustomPage() {
                   {/* Header */}
                   <div>
                     <div className="flex items-center gap-2 mb-3">
-                      <div className="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500/30 to-purple-500/30 flex items-center justify-center border border-primary-500/20">
                         <Wand2 className="h-5 w-5 text-primary-400" />
                       </div>
                       <div>
                         <h2 className="text-lg font-bold text-white">Custom Prompt</h2>
-                        <p className="text-xs text-slate-400">AI-powered creation</p>
+                        <span className="px-2 py-0.5 rounded-full bg-primary-500/20 text-primary-300 text-xs font-medium">
+                          ✨ 3x Quality Boost
+                        </span>
                       </div>
                     </div>
                     <p className="text-sm text-slate-300 leading-relaxed">
-                      Create unique marketing images by describing exactly what you want. 
-                      Our AI handles the professional photography techniques.
+                      Type anything you want and get professional-quality results. 
+                      Our AI automatically adds expert photography techniques, lighting, 
+                      and composition that would take hours to describe manually.
                     </p>
                   </div>
 
@@ -243,6 +246,19 @@ export function CreativeCustomPage() {
                         Optional text overlays
                       </li>
                     </ul>
+                  </div>
+
+                  {/* Quality Guarantee */}
+                  <div className="border-t border-white/10 pt-4">
+                    <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Sparkles className="h-4 w-4 text-emerald-400" />
+                        <h3 className="text-sm font-semibold text-emerald-300">Quality Guaranteed</h3>
+                      </div>
+                      <p className="text-xs text-slate-400">
+                        Every image is validated for clarity, composition, text readability & food appeal before delivery.
+                      </p>
+                    </div>
                   </div>
 
                   {/* Brand Profile Note */}

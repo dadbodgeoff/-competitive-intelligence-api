@@ -8,10 +8,9 @@ decoupled from the invoice source-of-truth.
 from __future__ import annotations
 
 import logging
-from collections import defaultdict
 from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
-from typing import Dict, Iterable, Optional
+from typing import Dict, Iterable, List, Optional
 
 from database.supabase_client import get_supabase_service_client
 from services.price_analytics_service import normalize_item_name
@@ -78,7 +77,10 @@ class OrderingNormalizationService:
             return
 
         try:
-            self.client.table("inventory_item_facts").upsert(facts_payload).execute()
+            self.client.table("inventory_item_facts").upsert(
+                facts_payload,
+                on_conflict="user_id,invoice_item_id",
+            ).execute()
             logger.info(
                 "[Ordering] Normalized %s invoice items for user=%s",
                 len(facts_payload),
@@ -89,7 +91,10 @@ class OrderingNormalizationService:
 
         if mappings_payload:
             try:
-                self.client.table("ingredient_mappings").upsert(mappings_payload).execute()
+                self.client.table("ingredient_mappings").upsert(
+                    mappings_payload,
+                    on_conflict="invoice_item_id",
+                ).execute()
                 logger.info(
                     "[Ordering] Upserted %s ingredient mappings for user=%s",
                     len(mappings_payload),
@@ -100,7 +105,10 @@ class OrderingNormalizationService:
 
         if price_history_payload:
             try:
-                self.client.table("ingredient_price_history").upsert(price_history_payload).execute()
+                self.client.table("ingredient_price_history").upsert(
+                    price_history_payload,
+                    on_conflict="invoice_item_id",
+                ).execute()
                 logger.info(
                     "[Ordering] Upserted %s ingredient price records for user=%s",
                     len(price_history_payload),
@@ -262,6 +270,25 @@ class OrderingNormalizationService:
             self._ingredient_cache[canonical_name] = ingredient_id
             return ingredient_id
         except Exception as exc:  # pylint: disable=broad-except
+            # Handle race condition: another request may have inserted the same ingredient
+            error_str = str(exc).lower()
+            if "duplicate" in error_str or "unique" in error_str or "23505" in error_str:
+                # Retry the select
+                try:
+                    retry_result = (
+                        self.client.table("normalized_ingredients")
+                        .select("id")
+                        .eq("user_id", self.user_id)
+                        .eq("canonical_name", canonical_name)
+                        .limit(1)
+                        .execute()
+                    )
+                    if retry_result.data:
+                        ingredient_id = retry_result.data[0]["id"]
+                        self._ingredient_cache[canonical_name] = ingredient_id
+                        return ingredient_id
+                except Exception:
+                    pass
             logger.exception("[Ordering] Failed to insert normalized_ingredients for user=%s: %s", self.user_id, exc)
             return None
 

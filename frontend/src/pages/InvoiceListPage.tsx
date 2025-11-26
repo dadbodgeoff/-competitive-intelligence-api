@@ -6,7 +6,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppShell } from '@/components/layout/AppShell';
-import { PageHeading } from '@/components/layout/PageHeading';
+import { ModulePageHeader } from '@/components/layout/ModulePageHeader';
 import { InvoiceCard, InvoiceCardHeader, InvoiceCardContent, InvoiceStatusBadge } from '@/design-system/components';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,9 +21,9 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { parseDataLoadError } from '@/utils/errorMessages';
-import { Plus, Search, FileText, Calendar, DollarSign, Loader2, Filter, X } from 'lucide-react';
+import { Plus, Search, Calendar, DollarSign, Loader2, Filter, X, LayoutDashboard, Building2 } from 'lucide-react';
 import { useInvoices } from '@/hooks/useInvoices';
-import { EmptyState } from '@/components/ui';
+import { EmptyState, ExportButton } from '@/components/analytics';
 
 export function InvoiceListPage() {
   const navigate = useNavigate();
@@ -98,25 +98,64 @@ export function InvoiceListPage() {
     setSelectedStatus('all');
   };
 
+  // Prepare export data
+  const exportData = filteredInvoices.map(inv => ({
+    vendor_name: inv.vendor_name,
+    invoice_number: inv.invoice_number,
+    date: inv.invoice_date,
+    total: inv.total,
+    status: inv.status,
+  }));
+
+  const exportColumns = [
+    { key: 'vendor_name', header: 'Vendor' },
+    { key: 'invoice_number', header: 'Invoice #' },
+    { key: 'date', header: 'Date' },
+    { key: 'total', header: 'Total' },
+    { key: 'status', header: 'Status' },
+  ];
+
   return (
     <AppShell>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <PageHeading>Invoices</PageHeading>
-            <p className="text-slate-400">
-              Manage and review your uploaded invoices
-            </p>
-          </div>
-          <Button
-            onClick={() => navigate('/invoices/upload')}
-            className="btn-primary shadow-primary"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Upload Invoice
-          </Button>
-        </div>
+        <ModulePageHeader
+          icon={DollarSign}
+          title="All Invoices"
+          description="Manage and review your uploaded invoices"
+          actions={
+            <>
+              <Button
+                onClick={() => navigate('/invoices/dashboard')}
+                variant="outline"
+                className="border-white/10 text-white hover:bg-white/5 h-8 text-xs"
+              >
+                <LayoutDashboard className="h-3.5 w-3.5 mr-1.5" />
+                Dashboard
+              </Button>
+              <Button
+                onClick={() => navigate('/invoices/vendors')}
+                variant="outline"
+                className="border-white/10 text-white hover:bg-white/5 h-8 text-xs"
+              >
+                <Building2 className="h-3.5 w-3.5 mr-1.5" />
+                By Vendor
+              </Button>
+              <ExportButton
+                data={exportData}
+                filename="invoices"
+                columns={exportColumns}
+              />
+              <Button
+                onClick={() => navigate('/invoices/upload')}
+                className="bg-primary-500 hover:bg-primary-600 text-white h-8 text-xs"
+              >
+                <Plus className="h-3.5 w-3.5 mr-1.5" />
+                Upload Invoice
+              </Button>
+            </>
+          }
+        />
 
         {/* Filters */}
         <Card className="bg-card-dark border-white/10">
@@ -219,18 +258,13 @@ export function InvoiceListPage() {
         {/* Empty State */}
         {!isLoading && invoices.length === 0 && (
           <EmptyState
-            icon={<FileText className="h-6 w-6" />}
+            variant="no-history"
             title="No invoices yet"
             description="Upload your first invoice to get started tracking prices"
-            action={
-              <Button
-                onClick={() => navigate('/invoices/upload')}
-                className="bg-primary-500 hover:bg-primary-600"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Upload Invoice
-              </Button>
-            }
+            action={{
+              label: 'Upload Invoice',
+              onClick: () => navigate('/invoices/upload'),
+            }}
           />
         )}
 

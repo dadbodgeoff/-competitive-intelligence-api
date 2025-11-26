@@ -4,6 +4,9 @@ export interface SchedulingSettings {
   timezone: string
   auto_publish: boolean
   default_shift_length_minutes: number
+  overtime_threshold_minutes?: number
+  overtime_multiplier?: number
+  overtime_enabled?: boolean
 }
 
 export interface SchedulingShiftAssignment {
@@ -189,6 +192,28 @@ export interface SchedulerMember {
   } | null
 }
 
+export interface OvertimeMemberBreakdown {
+  member_user_id: string
+  total_minutes: number
+  regular_minutes: number
+  overtime_minutes: number
+  rate_cents: number
+  regular_cost_cents: number
+  overtime_cost_cents: number
+  total_cost_cents: number
+}
+
+export interface OvertimeBreakdown {
+  threshold_minutes: number
+  overtime_multiplier: number
+  total_regular_minutes: number
+  total_overtime_minutes: number
+  total_regular_cost_cents: number
+  total_overtime_cost_cents: number
+  total_cost_with_overtime_cents: number
+  members: OvertimeMemberBreakdown[]
+}
+
 export interface SchedulerTotals {
   scheduled_minutes?: number | null
   scheduled_labor_cents?: number | null
@@ -203,6 +228,11 @@ export interface SchedulerTotals {
   completed_cost_cents?: number | null
   variance_minutes?: number | null
   variance_cost_cents?: number | null
+  // Overtime fields
+  overtime?: OvertimeBreakdown | null
+  regular_cost_cents?: number | null
+  overtime_cost_cents?: number | null
+  total_with_overtime_cents?: number | null
 }
 
 export interface SchedulerGridResponse {

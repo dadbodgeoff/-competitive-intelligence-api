@@ -114,7 +114,7 @@ export function AssetLightbox({
               </span>
               <Button
                 onClick={() => onDownload(currentAsset)}
-                className="bg-primary-500 hover:bg-primary-500"
+                className="bg-primary-500 hover:bg-primary-600"
               >
                 <Download className="h-4 w-4 mr-2" />
                 Download

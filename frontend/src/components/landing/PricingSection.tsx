@@ -110,19 +110,23 @@ export const PricingSection: React.FC = () => {
           <Card className="rounded-2xl border-2 border-primary-500/50 bg-[#1E1E1E] relative overflow-hidden lg:scale-105">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-400 to-primary-600" />
             <div className="absolute top-4 right-4">
-              <Badge className="bg-primary-500 text-white border-0 text-xs">
-                Most Popular
+              <Badge className="bg-green-500 text-white border-0 text-xs animate-pulse">
+                🚀 Launch Special
               </Badge>
             </div>
             <CardContent className="p-6 md:p-8">
               <div className="mb-6">
                 <h3 className="text-xl font-bold text-white mb-1">Premium</h3>
-                <div className="flex items-baseline gap-1">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-lg text-slate-500 line-through">$199</span>
                   <span className="text-4xl font-black text-white">$99</span>
                   <span className="text-[#A8B1B9]">/mo</span>
                 </div>
-                <p className="text-[#A8B1B9] text-sm mt-2">
-                  For serious operators who want unlimited access
+                <p className="text-green-400 text-sm font-medium mt-1">
+                  50% off — Limited time launch pricing
+                </p>
+                <p className="text-[#A8B1B9] text-sm mt-1">
+                  Lock in this rate before we raise prices
                 </p>
               </div>
 

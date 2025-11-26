@@ -8,8 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
-import { PageHeader } from '@/components/layout/PageHeader';
-import { PageHeading } from '@/components/layout/PageHeading';
+import { ModulePageHeader } from '@/components/layout/ModulePageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -213,87 +212,72 @@ export function PriceAnalyticsDashboard() {
 
   return (
     <AppShell maxWidth="wide">
-      <div className="space-y-8">
-        <PageHeader
-          breadcrumbs={[
-            { label: 'Dashboard', href: '/dashboard' },
-            { label: 'Price Analytics' },
-          ]}
+      <div className="space-y-4">
+        {/* Header with actions */}
+        <ModulePageHeader
+          icon={TrendingUp}
+          title="Price Analytics"
+          description="Track pricing trends and discover savings opportunities"
+          actions={
+            <>
+              <Button
+                onClick={() => navigate('/analytics/trends')}
+                className="bg-primary-500 hover:bg-primary-600 text-white h-8 text-xs"
+              >
+                <TrendingUp className="h-3.5 w-3.5 mr-1.5" />
+                Price Trends
+              </Button>
+              <Button
+                onClick={() => navigate('/analytics/vendors')}
+                variant="outline"
+                className="border-white/10 text-white hover:bg-white/5 h-8 text-xs"
+              >
+                <Building2 className="h-3.5 w-3.5 mr-1.5" />
+                Vendors
+              </Button>
+              <Button
+                onClick={() => navigate('/analytics/opportunities')}
+                variant="outline"
+                className="border-primary-500/30 text-primary-400 hover:bg-primary-500/10 h-8 text-xs"
+              >
+                <Lightbulb className="h-3.5 w-3.5 mr-1.5" />
+                Savings
+              </Button>
+              <Button
+                onClick={() => navigate('/analytics/alerts')}
+                variant="outline"
+                className="border-white/10 text-white hover:bg-white/5 h-8 text-xs"
+              >
+                <Bell className="h-3.5 w-3.5 mr-1.5" />
+                Alerts
+              </Button>
+            </>
+          }
         />
 
-        {/* Header with actions */}
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <PageHeading>Price Analytics</PageHeading>
-            <p className="text-slate-400 mt-1">
-              Track pricing trends and discover savings opportunities
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="flex flex-wrap gap-3"
-          >
-            <Button
-              onClick={() => navigate('/analytics/trends')}
-              className="bg-primary-500 hover:bg-primary-600 text-white"
-            >
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Price Trends
-            </Button>
-            <Button
-              onClick={() => navigate('/analytics/vendors')}
-              variant="outline"
-              className="border-white/10 text-white hover:bg-white/5"
-            >
-              <Building2 className="h-4 w-4 mr-2" />
-              Vendors
-            </Button>
-            <Button
-              onClick={() => navigate('/analytics/opportunities')}
-              className="bg-success-600 hover:bg-success-700 text-white"
-            >
-              <Lightbulb className="h-4 w-4 mr-2" />
-              Savings
-            </Button>
-            <Button
-              onClick={() => navigate('/analytics/alerts')}
-              variant="outline"
-              className="border-white/10 text-white hover:bg-white/5"
-            >
-              <Bell className="h-4 w-4 mr-2" />
-              Alerts
-            </Button>
-          </motion.div>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Stats Grid - Compact */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <StatCard
             title="Items Tracked"
             value={summary?.unique_items_tracked || 0}
             subtitle="Unique inventory items"
             icon={Package}
-            iconColor="text-accent-400"
+            iconColor="text-primary-400"
             isLoading={summaryLoading}
             tooltip="Total number of unique items from your invoices"
             delay={0}
+            compact
           />
           <StatCard
             title="Active Vendors"
             value={summary?.active_vendors || 0}
             subtitle="Suppliers tracked"
             icon={Building2}
-            iconColor="text-success-400"
+            iconColor="text-primary-400"
             isLoading={summaryLoading}
             tooltip="Number of vendors you've purchased from"
             delay={1}
+            compact
           />
           <StatCard
             title="Total Purchases"
@@ -304,16 +288,18 @@ export function PriceAnalyticsDashboard() {
             isLoading={summaryLoading}
             tooltip="Total line items across all invoices"
             delay={2}
+            compact
           />
           <StatCard
             title="Total Spend"
             value={formatCurrency(summary?.total_spend || 0)}
             subtitle={`Last ${daysBack} days`}
             icon={DollarSign}
-            iconColor="text-success-400"
+            iconColor="text-primary-400"
             isLoading={summaryLoading}
             tooltip="Total amount spent on inventory"
             delay={3}
+            compact
           />
         </div>
 
@@ -437,3 +423,6 @@ export function PriceAnalyticsDashboard() {
     </AppShell>
   );
 }
+
+
+

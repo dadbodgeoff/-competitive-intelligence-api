@@ -9,8 +9,6 @@ import { useQuery } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { PageHeading } from '@/components/layout/PageHeading';
 
@@ -24,11 +22,28 @@ import {
   CheckCircle2,
   AlertCircle,
   Clock,
-  Menu as MenuIcon,
   Loader2,
   FileText,
   Zap,
+  RefreshCw,
 } from 'lucide-react';
+import { SuccessAnimation } from '@/components/streaming/SuccessAnimation';
+
+// Milestone configuration for menu parsing
+const MENU_MILESTONES = [
+  { progress: 0, label: 'Initializing', icon: '🚀' },
+  { progress: 25, label: 'Fetching competitor 1', icon: '🍽️' },
+  { progress: 50, label: 'Fetching competitor 2', icon: '🍔' },
+  { progress: 75, label: 'Analyzing differences', icon: '📊' },
+  { progress: 100, label: 'Insights ready', icon: '💡' },
+];
+
+const CONTEXT_STEPS = [
+  '• Accessing competitor website and menu pages',
+  '• Extracting menu items, descriptions, and pricing',
+  '• Organizing data by categories and sizes',
+  '• Generating comparison insights',
+];
 
 interface ParseStep {
   id: string;
@@ -57,6 +72,20 @@ export function MenuParsingProgressPage() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [showLongWait, setShowLongWait] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  // Find current milestone based on progress
+  const currentMilestone = MENU_MILESTONES.reduce((prev, curr) =>
+    overallProgress >= curr.progress ? curr : prev
+  );
+
+  // Show "taking longer than expected" after 45 seconds
+  useEffect(() => {
+    if (!isComplete && !hasError && elapsedTime > 45000) {
+      setShowLongWait(true);
+    }
+  }, [elapsedTime, isComplete, hasError]);
 
   // Poll analysis status
   const { data: analysisStatus } = useQuery({
@@ -92,11 +121,13 @@ export function MenuParsingProgressPage() {
       setOverallProgress(100);
       setCurrentMessage('Analysis complete! Redirecting to results...');
       setIsComplete(true);
+      setShowSuccess(true);
       
-      // Redirect to results after a short delay
+      // Redirect to results after success animation
       setTimeout(() => {
+        setShowSuccess(false);
         navigate(`/menu-comparison/${analysisId}/results`);
-      }, 2000);
+      }, 2500);
     } else if (analysisStatus.status === 'failed') {
       setHasError(true);
       setCurrentMessage(analysisStatus.error_message || 'Analysis failed');
@@ -222,28 +253,35 @@ export function MenuParsingProgressPage() {
     return (
       <div className="min-h-screen bg-obsidian">
         <div className="container mx-auto px-4 py-12 max-w-2xl">
-          <Alert variant="destructive" className="bg-destructive/10 border-red-500/50 text-destructive">
-            <AlertCircle className="h-5 w-5" />
-            <AlertDescription>
-              <p className="font-semibold mb-2">Analysis Failed</p>
-              <p className="mb-4">{currentMessage}</p>
-              <div className="flex gap-2">
+          <Card className="bg-card-dark border-red-500/50">
+            <CardContent className="p-6 space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-full bg-red-500/10">
+                  <AlertCircle className="h-6 w-6 text-red-500" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-white">Analysis Failed</h3>
+                  <p className="text-sm text-red-400 mt-1">{currentMessage}</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
                 <Button
                   onClick={() => navigate(`/menu-comparison/${analysisId}/select`)}
-                  className="bg-destructive hover:bg-red-600"
+                  className="bg-primary-500 hover:bg-primary-600"
                 >
+                  <RefreshCw className="h-4 w-4 mr-2" />
                   Try Again
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => navigate('/menu-comparison')}
-                  className="border-red-500/50 text-destructive hover:bg-destructive/10"
+                  className="border-white/10 text-slate-300 hover:bg-white/5"
                 >
                   Start Over
                 </Button>
               </div>
-            </AlertDescription>
-          </Alert>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
@@ -251,6 +289,15 @@ export function MenuParsingProgressPage() {
 
   return (
     <div className="min-h-screen bg-obsidian">
+      {/* Success Animation */}
+      <SuccessAnimation
+        show={showSuccess}
+        message="Menu analysis complete!"
+        count={2}
+        countLabel="competitors analyzed"
+        icon="🍽️"
+      />
+
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-accent-500/5 pointer-events-none" />
 
@@ -278,30 +325,44 @@ export function MenuParsingProgressPage() {
 
       {/* Main content */}
       <div className="relative container mx-auto px-4 py-8 max-w-4xl">
-        {/* Header */}
+        {/* Header with milestone emoji */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="p-3 rounded-xl bg-accent-500/10">
-              <MenuIcon className="h-8 w-8 text-accent-400" />
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="relative">
+              <span className="text-5xl">{currentMilestone.icon}</span>
+              <div className="absolute -inset-2 bg-accent-500/20 rounded-full blur-xl animate-pulse" />
             </div>
-            <div>
-              <PageHeading>Parsing Competitor Menus</PageHeading>
+            <div className="text-left">
+              <PageHeading>{currentMilestone.label}</PageHeading>
               <p className="text-slate-400 mt-1">
-                Extracting menu items and pricing from selected competitors
+                {overallProgress}% complete • {formatElapsedTime(elapsedTime)}
               </p>
             </div>
           </div>
 
-          {/* Overall progress */}
-          <div className="max-w-md mx-auto">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-slate-400">Overall Progress</span>
-              <span className="text-sm text-accent-400 font-semibold">{overallProgress}%</span>
+          {/* Overall progress with milestone markers */}
+          <div className="max-w-md mx-auto space-y-2">
+            <div className="relative h-3 bg-card-dark rounded-full overflow-hidden">
+              <div 
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-accent-500 to-primary-500 transition-all duration-500 ease-out"
+                style={{ width: `${overallProgress}%` }}
+              >
+                <div className="absolute inset-0 bg-white/20 animate-pulse" />
+              </div>
             </div>
-            <Progress 
-              value={overallProgress} 
-              className="h-3 bg-card-dark [&>div]:bg-gradient-to-r [&>div]:from-accent-500 [&>div]:to-primary-500"
-            />
+            {/* Milestone indicators */}
+            <div className="flex justify-between text-xs text-slate-500">
+              {MENU_MILESTONES.map((milestone) => (
+                <div
+                  key={milestone.progress}
+                  className={`transition-colors duration-300 ${
+                    overallProgress >= milestone.progress ? 'text-primary-500 font-semibold' : ''
+                  }`}
+                >
+                  {milestone.progress}%
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -369,6 +430,15 @@ export function MenuParsingProgressPage() {
           </CardContent>
         </Card>
 
+        {/* Long wait warning */}
+        {showLongWait && (
+          <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 mb-6">
+            <p className="text-sm text-amber-400">
+              ⏳ This is taking longer than expected. Menu parsing can take up to 2 minutes for complex menus. Please wait...
+            </p>
+          </div>
+        )}
+
         {/* Info cards */}
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="bg-slate-500/5 border-slate-500/20">
@@ -379,22 +449,14 @@ export function MenuParsingProgressPage() {
               </div>
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-slate-400">
-              <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary-400 mt-2 flex-shrink-0" />
-                <span>Accessing competitor websites and menu pages</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-accent-400 mt-2 flex-shrink-0" />
-                <span>Extracting menu items, descriptions, and pricing</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary-400 mt-2 flex-shrink-0" />
-                <span>Organizing data by categories and sizes</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary-400 mt-2 flex-shrink-0" />
-                <span>Preparing comparison analysis</span>
-              </div>
+              {CONTEXT_STEPS.map((step, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <div className={`w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0 ${
+                    i % 2 === 0 ? 'bg-primary-400' : 'bg-accent-400'
+                  }`} />
+                  <span>{step.replace('• ', '')}</span>
+                </div>
+              ))}
             </CardContent>
           </Card>
 

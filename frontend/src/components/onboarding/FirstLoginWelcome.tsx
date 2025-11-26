@@ -346,7 +346,7 @@ export const FirstLoginWelcome: React.FC<FirstLoginWelcomeProps> = ({
   const handleNext = () => {
     if (isLastStep) {
       // Go to Creative Studio
-      navigate('/creative/generate');
+      navigate('/creative');
       onClose();
     } else {
       setCurrentStep(currentStep + 1);

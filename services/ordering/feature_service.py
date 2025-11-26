@@ -77,7 +77,7 @@ class OrderingFeatureService:
                     {
                         "user_id": self.user_id,
                         "normalized_item_id": group["slug"],
-                        "normalized_ingredient_id": ingredient_id if ingredient_id != group["slug"] else None,
+                        "normalized_ingredient_id": ingredient_id,  # Always set for FK integrity
                         "average_weekly_usage": usage["weekly_usage"],
                         "average_reorder_interval_days": usage["reorder_interval"],
                         "deliveries_per_week": usage["deliveries_per_week"],

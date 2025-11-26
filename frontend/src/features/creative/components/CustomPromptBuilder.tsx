@@ -23,6 +23,7 @@ import {
   RectangleVertical,
   RectangleHorizontal,
   Smartphone,
+  Shield,
 } from 'lucide-react';
 import {
   Select,
@@ -311,15 +312,31 @@ export function CustomPromptBuilder({ isSubmitting, onGenerate }: CustomPromptBu
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
       {/* Header */}
-      <div className="text-center space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-500/10 text-primary-300 text-sm">
+      <div className="text-center space-y-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-primary-500/20 to-purple-500/20 text-primary-300 text-sm border border-primary-500/20">
           <Wand2 className="h-4 w-4" />
-          AI-Powered
+          AI-Powered Custom Creation
         </div>
         <h2 className="text-2xl font-bold text-white">Create Your Image</h2>
-        <p className="text-slate-400 text-sm">
-          Describe what you want, we'll handle the photography magic
+        <p className="text-slate-400 text-sm max-w-md mx-auto">
+          Describe what you want in plain English — our AI adds professional lighting, 
+          composition, and quality enhancements automatically
         </p>
+        {/* Value proposition chips */}
+        <div className="flex flex-wrap justify-center gap-2 pt-1">
+          <span className="px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs border border-emerald-500/20">
+            <Shield className="h-3 w-3 inline mr-1" />
+            Quality Validated
+          </span>
+          <span className="px-2 py-1 rounded-full bg-amber-500/10 text-amber-300 text-xs border border-amber-500/20">
+            <Sparkles className="h-3 w-3 inline mr-1" />
+            Pro Enhancements
+          </span>
+          <span className="px-2 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs border border-blue-500/20">
+            <ImageIcon className="h-3 w-3 inline mr-1" />
+            Magazine Quality
+          </span>
+        </div>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-6">
@@ -694,6 +711,17 @@ export function CustomPromptBuilder({ isSubmitting, onGenerate }: CustomPromptBu
             </div>
           </div>
         )}
+
+        {/* Quality Guarantee Badge */}
+        <div className="flex items-center gap-3 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+          <Shield className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-emerald-300">Quality Guaranteed</p>
+            <p className="text-xs text-slate-400">
+              Every image is validated for clarity, composition, text readability & food appeal
+            </p>
+          </div>
+        </div>
 
         {/* Usage Warning */}
         {usage.limit && (

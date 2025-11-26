@@ -662,11 +662,12 @@ async def get_user_analyses(
 ):
     """
     Get all analyses for the current user
-    Returns list of analyses with basic info
+    Returns list of analyses with basic info including restaurant_name, tier, and insights count
     """
     try:
-        response = supabase.table('analyses').select(
-            'id, location, category, competitor_count, status, created_at, updated_at'
+        service_client = get_supabase_service_client()
+        response = service_client.table('analyses').select(
+            'id, restaurant_name, location, category, tier, competitor_count, status, created_at, updated_at, insights_generated'
         ).eq('user_id', current_user).order('created_at', desc=True).execute()
         
         return response.data
@@ -675,4 +676,52 @@ async def get_user_analyses(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to fetch analyses"
+        )
+
+
+@router.delete("/{analysis_id}")
+async def delete_analysis(
+    analysis_id: str,
+    current_user: str = Depends(get_current_user)
+):
+    """
+    Delete an analysis and all related data
+    Cascades to: insights, analysis_competitors, evidence_reviews
+    """
+    try:
+        service_client = get_supabase_service_client()
+        
+        # Verify ownership
+        analysis = service_client.table("analyses").select("id").eq("id", analysis_id).eq("user_id", current_user).execute()
+        
+        if not analysis.data:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Analysis not found"
+            )
+        
+        # Delete related data first (cascade)
+        # Delete insights
+        service_client.table("insights").delete().eq("analysis_id", analysis_id).execute()
+        
+        # Delete analysis_competitors
+        service_client.table("analysis_competitors").delete().eq("analysis_id", analysis_id).execute()
+        
+        # Delete evidence_reviews
+        service_client.table("evidence_reviews").delete().eq("analysis_id", analysis_id).execute()
+        
+        # Delete the analysis itself
+        service_client.table("analyses").delete().eq("id", analysis_id).execute()
+        
+        logger.info(f"analysis_deleted: analysis_id={analysis_id}, user_id={current_user}")
+        
+        return {"message": "Analysis deleted successfully", "analysis_id": analysis_id}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to delete analysis {analysis_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to delete analysis"
         )

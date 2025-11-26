@@ -26,25 +26,34 @@ export const breadcrumbConfig: Record<string, BreadcrumbConfig> = {
     parent: '/dashboard',
     icon: DollarSign
   },
+  '/cogs/sales': {
+    label: 'Daily Sales',
+    parent: '/cogs',
+  },
+  '/cogs/items/:menuItemId': {
+    label: 'Recipe Builder',
+    parent: '/cogs',
+    dynamic: true
+  },
   
   // Review Analysis Module
+  '/analysis': {
+    label: 'Review Analysis',
+    parent: '/dashboard',
+    icon: Search
+  },
   '/analysis/new': { 
     label: 'New Analysis', 
-    parent: '/dashboard',
+    parent: '/analysis',
     icon: Search
   },
   '/analysis/:analysisId/progress': { 
     label: 'Analysis Progress', 
-    parent: '/analysis/new' 
+    parent: '/analysis' 
   },
   '/analysis/:analysisId/results': { 
     label: 'Results', 
-    parent: '/analysis/new' 
-  },
-  '/analysis/saved': { 
-    label: 'Saved Analyses', 
-    parent: '/dashboard',
-    icon: Search
+    parent: '/analysis' 
   },
   
   // Invoice Management Module

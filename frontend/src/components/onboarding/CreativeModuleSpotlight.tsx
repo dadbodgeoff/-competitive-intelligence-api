@@ -34,13 +34,13 @@ export const CreativeModuleSpotlight: React.FC<CreativeModuleSpotlightProps> = (
   };
 
   const handleTryDemo = () => {
-    navigate('/creative/generate');
+    navigate('/creative');
     handleClose();
   };
 
   const handleViewExample = () => {
     // Open demo modal or navigate to examples
-    navigate('/creative/generate?demo=true');
+    navigate('/creative');
     handleClose();
   };
 

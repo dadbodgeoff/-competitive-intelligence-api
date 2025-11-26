@@ -68,7 +68,7 @@ export function MenuComparisonResultsPage() {
         description: "Your competitor menu comparison has been saved to your account.",
       });
       setShowSaveModal(false);
-      navigate('/menu-comparison/saved');
+      navigate('/menu-comparison');
     },
     onError: (error) => {
       toast({
@@ -153,6 +153,17 @@ export function MenuComparisonResultsPage() {
   return (
     <AppShell maxWidth="wide">
       <div className="space-y-8">
+        {/* Back link */}
+        <button
+          onClick={() => navigate('/menu-comparison')}
+          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span>Back to Dashboard</span>
+        </button>
+
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <PageHeading className="mb-2">{results.restaurant_name}</PageHeading>

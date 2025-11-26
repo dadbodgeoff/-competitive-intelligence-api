@@ -20,8 +20,8 @@ export function BillingSuccessPage() {
   }, [queryClient]);
 
   return (
-    <div className="min-h-screen bg-[#121212] flex items-center justify-center p-4">
-      <Card className="max-w-lg w-full border-primary-500/30 bg-[#1E1E1E]">
+    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+      <Card className="max-w-lg w-full border-primary-500/30 bg-slate-900">
         <CardContent className="p-8 text-center">
           {/* Success Icon */}
           <div className="mx-auto w-16 h-16 rounded-full bg-primary-500/20 flex items-center justify-center mb-6">

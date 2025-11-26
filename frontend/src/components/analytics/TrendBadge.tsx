@@ -47,13 +47,13 @@ export function TrendBadge({
     if (isDecreasing) {
       return {
         icon: TrendingDown,
-        className: 'bg-success-500/20 text-success-400 border-success-500/30',
+        className: 'bg-primary-500/20 text-primary-400 border-primary-500/30',
         prefix: '',
       };
     }
     return {
       icon: Minus,
-      className: 'bg-accent-500/20 text-accent-400 border-accent-500/30',
+      className: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
       prefix: '',
     };
   };

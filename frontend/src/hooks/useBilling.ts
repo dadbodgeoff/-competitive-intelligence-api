@@ -124,6 +124,11 @@ export function useCheckout() {
       // Redirect to Stripe Checkout
       window.location.href = data.checkout_url;
     },
+    onError: (error: Error) => {
+      if (import.meta.env.DEV) {
+        console.error('[Billing - checkout]', error.message);
+      }
+    },
   });
 }
 
@@ -136,6 +141,11 @@ export function useCustomerPortal() {
     onSuccess: (data) => {
       // Redirect to Stripe Portal
       window.location.href = data.portal_url;
+    },
+    onError: (error: Error) => {
+      if (import.meta.env.DEV) {
+        console.error('[Billing - portal]', error.message);
+      }
     },
   });
 }
@@ -151,6 +161,11 @@ export function useCancelSubscription() {
     onSuccess: () => {
       // Invalidate subscription query to refetch
       queryClient.invalidateQueries({ queryKey: ['subscription'] });
+    },
+    onError: (error: Error) => {
+      if (import.meta.env.DEV) {
+        console.error('[Billing - cancel]', error.message);
+      }
     },
   });
 }

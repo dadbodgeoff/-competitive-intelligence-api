@@ -392,7 +392,7 @@ export function MenuReviewTable({
                                     className="btn-secondary text-xs"
                                   >
                                     <UtensilsCrossed className="h-3 w-3 mr-1" />
-                                    Recipe
+                                    View COGS
                                   </Button>
                                 )
                               )}

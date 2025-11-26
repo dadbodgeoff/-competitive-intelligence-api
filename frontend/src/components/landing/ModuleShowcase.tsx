@@ -255,18 +255,21 @@ export const ModuleShowcase: React.FC = () => {
   const currentModule = modules.find((m) => m.id === activeModule) || modules[0];
 
   return (
-    <section className="py-10 md:py-14 px-4 bg-[#121212]">
+    <section className="py-8 md:py-10 px-4 bg-[#121212]">
       <div className="max-w-6xl mx-auto">
-        {/* Callout + Creative Marketing Images */}
-        <div className="text-center mb-6">
-          <p className="text-slate-300 text-base md:text-lg">
-            See how our <span className="text-primary-400 font-semibold">Creative Marketing</span> module saves you time and money
+        {/* Hero CTA - Above Images */}
+        <div className="text-center mb-6 md:mb-8">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 tracking-tight">
+            Marketing That <span className="text-primary-400">Sells</span>
+          </h2>
+          <p className="text-slate-400 text-sm md:text-base max-w-2xl mx-auto">
+            Generate scroll-stopping content in seconds. No designer needed.
           </p>
         </div>
 
-        {/* Creative Marketing Images - Staggered layout with label above center card */}
-        <div className="mb-8 md:mb-10 grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto items-center">
-          <div className="rounded-xl overflow-hidden border border-white/10 hover:border-primary-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary-500/10 aspect-video bg-[#1E1E1E] sm:translate-y-3">
+        {/* Creative Marketing Images - Clean staggered layout */}
+        <div className="mb-6 md:mb-8 grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 max-w-4xl mx-auto items-center">
+          <div className="rounded-xl overflow-hidden border border-white/10 hover:border-primary-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary-500/10 aspect-video bg-[#1E1E1E] sm:translate-y-2">
             <img
               src="/examples/creative-example-1.jpg"
               alt="AI-generated Taco Tuesday marketing creative"
@@ -274,26 +277,16 @@ export const ModuleShowcase: React.FC = () => {
               loading="lazy"
             />
           </div>
-          {/* Center card with label positioned ABOVE the card */}
-          <div className="flex flex-col items-center sm:-translate-y-1">
-            {/* Creative Marketing label - positioned above the card */}
-            <div className="mb-2">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/30">
-                <Icon icon={Sparkles} size="xs" variant="primary" />
-                <span className="text-xs font-semibold text-primary-300">Creative Marketing</span>
-              </div>
-            </div>
-            <div className="w-full rounded-xl overflow-hidden border-2 border-primary-500/30 hover:border-primary-500/60 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-primary-500/20 aspect-video bg-[#1E1E1E] relative">
-              <img
-                src="/examples/creative-example-2.jpg"
-                alt="AI-generated live music event marketing creative"
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-xl" />
-            </div>
+          <div className="rounded-xl overflow-hidden border-2 border-primary-500/30 hover:border-primary-500/60 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:shadow-primary-500/20 aspect-video bg-[#1E1E1E] relative">
+            <img
+              src="/examples/creative-example-2.jpg"
+              alt="AI-generated live music event marketing creative"
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-xl" />
           </div>
-          <div className="rounded-xl overflow-hidden border border-white/10 hover:border-primary-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary-500/10 aspect-video bg-[#1E1E1E] sm:translate-y-3">
+          <div className="rounded-xl overflow-hidden border border-white/10 hover:border-primary-500/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary-500/10 aspect-video bg-[#1E1E1E] sm:translate-y-2">
             <img
               src="/examples/creative-example-3.jpg"
               alt="AI-generated sashimi special marketing creative"
@@ -304,7 +297,7 @@ export const ModuleShowcase: React.FC = () => {
         </div>
 
         {/* Mobile Dropdown */}
-        <div className="md:hidden mb-10 relative">
+        <div className="md:hidden mb-4 relative">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="w-full flex items-center justify-between px-4 py-3 bg-[#1E1E1E] border border-white/10 rounded-xl text-white font-medium"
@@ -339,14 +332,14 @@ export const ModuleShowcase: React.FC = () => {
           )}
         </div>
 
-        {/* Desktop Tab Navigation - Bolder styling */}
-        <div className="hidden md:block mb-10">
+        {/* Desktop Tab Navigation */}
+        <div className="hidden md:block">
           <div className="flex justify-center gap-1 p-1.5 bg-white/5 rounded-xl max-w-fit mx-auto">
             {modules.map((module) => (
               <button
                 key={module.id}
                 onClick={() => setActiveModule(module.id)}
-                className={`px-4 lg:px-5 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 whitespace-nowrap ${
+                className={`px-3 lg:px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-200 whitespace-nowrap ${
                   activeModule === module.id
                     ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
@@ -358,26 +351,26 @@ export const ModuleShowcase: React.FC = () => {
           </div>
         </div>
 
-        {/* Content */}
-        <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 max-w-5xl mx-auto">
-          {currentModule.features.map((feature, index) => (
-            <div key={index} className="flex gap-5 group">
-              <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-primary-500/10 flex items-center justify-center transition-all duration-300 group-hover:bg-primary-500/20 group-hover:scale-105">
-                <Icon icon={feature.icon} size="lg" variant="primary" />
+        {/* Module Features Grid - 4 Key Points */}
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+          {currentModule.features.map((feature, idx) => {
+            const FeatureIcon = feature.icon;
+            return (
+              <div
+                key={idx}
+                className="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-primary-500/30 transition-all duration-300"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 rounded-lg bg-primary-500/10">
+                    <FeatureIcon className="w-4 h-4 text-primary-400" />
+                  </div>
+                  <h4 className="text-sm font-semibold text-white">{feature.title}</h4>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">{feature.description}</p>
               </div>
-              <div className="flex-1 pt-1">
-                <h3 className="text-lg font-semibold text-white mb-2 tracking-tight">
-                  {feature.title}
-                </h3>
-                <p className="text-[15px] text-[#A8B1B9] leading-relaxed">
-                  {feature.description}
-                </p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
-
-
       </div>
     </section>
   );

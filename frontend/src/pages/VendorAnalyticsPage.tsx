@@ -7,8 +7,7 @@ import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
-import { PageHeader } from '@/components/layout/PageHeader';
-import { PageHeading } from '@/components/layout/PageHeading';
+import { ModulePageHeader } from '@/components/layout/ModulePageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -102,32 +101,14 @@ export function VendorAnalyticsPage() {
   return (
     <AppShell maxWidth="wide">
       <div className="space-y-6">
-        <PageHeader
-          breadcrumbs={[
-            { label: 'Dashboard', href: '/dashboard' },
-            { label: 'Price Analytics', href: '/analytics' },
-            { label: 'Vendor Analytics' },
-          ]}
+        <ModulePageHeader
+          icon={Building2}
+          title="Vendor Analytics"
+          description="Compare vendor performance, pricing, and reliability"
         />
 
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <PageHeading className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-primary-500/10 flex items-center justify-center">
-              <Building2 className="h-6 w-6 text-primary-400" />
-            </div>
-            Vendor Analytics
-          </PageHeading>
-          <p className="text-slate-400 mt-2 ml-15">
-            Compare vendor performance, pricing, and reliability
-          </p>
-        </motion.div>
-
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <StatCard
             title="Active Vendors"
             value={totals.vendorCount}
@@ -137,6 +118,7 @@ export function VendorAnalyticsPage() {
             isLoading={itemsLoading}
             tooltip="Number of unique vendors you've purchased from"
             delay={0}
+            compact
           />
           <StatCard
             title="Total Spend"
@@ -147,6 +129,7 @@ export function VendorAnalyticsPage() {
             isLoading={itemsLoading}
             tooltip="Total estimated spend based on purchase history"
             delay={1}
+            compact
           />
           <StatCard
             title="Items Tracked"
@@ -157,6 +140,18 @@ export function VendorAnalyticsPage() {
             isLoading={itemsLoading}
             tooltip="Total unique items across all vendors"
             delay={2}
+            compact
+          />
+          <StatCard
+            title="Avg per Vendor"
+            value={formatCurrency(totals.vendorCount > 0 ? totals.totalSpend / totals.vendorCount : 0)}
+            subtitle="Average spend"
+            icon={BarChart3}
+            iconColor="text-primary-400"
+            isLoading={itemsLoading}
+            tooltip="Average spend per vendor"
+            delay={3}
+            compact
           />
         </div>
 

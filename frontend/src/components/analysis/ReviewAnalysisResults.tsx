@@ -42,15 +42,17 @@ interface StatCardProps {
 
 function StatCard({ label, value, description, icon, color = 'text-primary-500' }: StatCardProps) {
   return (
-    <Card className="bg-obsidian/50 border-white/10">
-      <CardContent className="p-5">
-        <div className="flex items-start justify-between mb-2">
-          <div className={`text-3xl font-bold ${color}`}>{value}</div>
+    <Card className="bg-card-dark border-white/10">
+      <CardHeader className="pb-1 pt-3 px-4">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-xs font-medium text-slate-300">{label}</CardTitle>
           {icon && <div className="text-slate-500">{icon}</div>}
         </div>
-        <p className="text-sm font-medium text-white">{label}</p>
+      </CardHeader>
+      <CardContent className="px-4 pb-3 pt-0">
+        <div className={`text-xl font-bold ${color}`}>{value}</div>
         {description && (
-          <p className="text-xs text-slate-500 mt-1">{description}</p>
+          <p className="text-[10px] text-slate-500 mt-0.5">{description}</p>
         )}
       </CardContent>
     </Card>
@@ -112,6 +114,15 @@ export function ReviewAnalysisResults({ analysisId }: ReviewAnalysisResultsProps
 
   return (
     <div className="space-y-6">
+        {/* Breadcrumbs */}
+        <nav className="flex items-center gap-2 text-sm text-slate-400 mb-4">
+          <a href="/dashboard" className="hover:text-white transition-colors">Dashboard</a>
+          <span>/</span>
+          <a href="/analysis" className="hover:text-white transition-colors">Review Analysis</a>
+          <span>/</span>
+          <span className="text-white">Results</span>
+        </nav>
+
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
@@ -136,6 +147,13 @@ export function ReviewAnalysisResults({ analysisId }: ReviewAnalysisResultsProps
           </div>
           
           <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => navigate('/analysis')}
+              className="border-white/10 text-slate-300 hover:bg-white/5"
+            >
+              Back to Dashboard
+            </Button>
             <Button
               onClick={() => navigate('/analysis/new')}
               className="bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25"
@@ -165,7 +183,7 @@ export function ReviewAnalysisResults({ analysisId }: ReviewAnalysisResultsProps
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               <StatCard
                 label="Competitors Analyzed"
                 value={analysis.competitors.length}

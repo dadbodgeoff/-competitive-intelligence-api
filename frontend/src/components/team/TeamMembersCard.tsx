@@ -109,7 +109,7 @@ export function TeamMembersCard({ members, compensationLookup, isOwner, onAssign
                     type="submit"
                     size="sm"
                     disabled={assigning}
-                    className="bg-primary-500 hover:bg-primary-500"
+                    className="bg-primary-500 hover:bg-primary-600"
                   >
                     Save
                   </Button>

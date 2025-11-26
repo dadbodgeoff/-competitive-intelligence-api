@@ -1,22 +1,25 @@
 """
 OrderingForecastService
 -----------------------
-Provides lightweight forecasting backed by rolling averages until a more
-advanced model is integrated. Forecasts are stored in
-`inventory_item_forecasts` and cached for fast retrieval.
+Orchestrates forecast generation using UsageCalculator and ForecastCalculator.
+
+Key Rules:
+1. Items need at least 2 orders to be forecasted
+2. Uses 28-day window, falls back to 60 days
+3. Items only appear on their vendor's delivery dates
+4. Provides confidence score and chain-of-thought explanation
 """
 from __future__ import annotations
 
 import logging
-import math
-from collections import defaultdict
 from datetime import date, datetime, timedelta
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple
-from uuid import UUID
+from typing import Dict, Iterable, List, Optional
 
 from database.supabase_client import get_supabase_service_client
 from services.ordering.cache_service import OrderingCacheService
 from services.ordering.delivery_pattern_service import DeliveryPatternService
+from services.ordering.usage_calculator import UsageCalculator
+from services.ordering.forecast_calculator import ForecastCalculator
 
 logger = logging.getLogger(__name__)
 
@@ -24,572 +27,185 @@ logger = logging.getLogger(__name__)
 class OrderingForecastService:
     """Generate and retrieve predictive ordering forecasts."""
 
-    DEFAULT_HORIZON_DAYS = 7
+    DEFAULT_BUFFER = 0.5
+    FORECAST_COUNT = 4
 
     def __init__(self) -> None:
         self.client = get_supabase_service_client()
         self.cache = OrderingCacheService()
-        self.delivery_patterns = DeliveryPatternService()
+        self.patterns = DeliveryPatternService()
+        self.usage_calc = UsageCalculator()
+        self.forecast_calc = ForecastCalculator()
 
     def get_predictions(
         self,
         user_id: str,
         normalized_item_ids: Optional[Iterable[str]] = None,
     ) -> List[dict]:
-        """
-        Return forecast records for the given user (optionally filtered by
-        normalized item).
-        """
+        """Return stored forecasts for the user."""
         query = (
             self.client.table("inventory_item_forecasts")
             .select("*, normalized_ingredients(canonical_name)")
             .eq("user_id", user_id)
-            .order("forecast_date", desc=True)
+            .order("vendor_name")
+            .order("forecast_date")
+            .order("order_index")
         )
+
         if normalized_item_ids:
-            ingredient_ids, slug_ids = self._split_identifiers(normalized_item_ids)
-            if ingredient_ids:
-                query = query.in_("normalized_ingredient_id", ingredient_ids)
-            elif slug_ids:
-                query = query.in_("normalized_item_id", slug_ids)
+            ids = list(normalized_item_ids)
+            query = query.in_("normalized_item_id", ids)
 
-        result = query.execute()
-        forecasts = result.data or []
+        forecasts = query.execute().data or []
 
-        ingredient_ids = {
-            forecast.get("normalized_ingredient_id") for forecast in forecasts if forecast.get("normalized_ingredient_id")
-        }
-        price_map: Dict[str, Dict] = {}
-        if ingredient_ids:
-            try:
-                price_result = (
-                    self.client.table("ingredient_price_history")
-                    .select("normalized_ingredient_id, vendor_name, base_unit, invoice_date")
-                    .in_("normalized_ingredient_id", list(ingredient_ids))
-                    .order("invoice_date", desc=True)
-                    .execute()
-                )
-                for row in price_result.data or []:
-                    ingredient_id = row["normalized_ingredient_id"]
-                    if ingredient_id not in price_map:
-                        price_map[ingredient_id] = row
-            except Exception as exc:  # pylint: disable=broad-except
-                logger.debug("[Ordering] Failed to fetch price history for enrichment: %s", exc)
-
-        # Augment with base_unit from metadata when present.
-        for forecast in forecasts:
-            normalized_ingredient = forecast.pop("normalized_ingredients", None) or {}
-            if normalized_ingredient:
-                forecast["canonical_name"] = normalized_ingredient.get("canonical_name")
-
-            params = forecast.get("model_params") or {}
-            forecast["base_unit"] = params.get("base_unit")
-            self._inject_usage_metadata(forecast, params)
-
-            if not forecast.get("item_name"):
-                forecast["item_name"] = forecast.get("canonical_name") or forecast.get("normalized_item_id")
-
-            ingredient_id = forecast.get("normalized_ingredient_id")
-
-            price_info = price_map.get(ingredient_id) if ingredient_id else None
-            if price_info:
-                forecast.setdefault("vendor_name", price_info.get("vendor_name"))
-                if not forecast.get("base_unit"):
-                    forecast["base_unit"] = price_info.get("base_unit")
-
-            if forecast.get("vendor_name"):
-                continue
-
-            # Fallback enrichment via invoice lineage when price history is missing
-            try:
-                # Get the most recent fact for this normalized item to get names
-                fact_query = (
-                    self.client.table("inventory_item_facts")
-                    .select("invoice_item_id")
-                    .eq("user_id", user_id)
-                    .order("delivery_date", desc=True)
-                    .limit(1)
-                )
-                if ingredient_id:
-                    fact_query = fact_query.eq("normalized_ingredient_id", ingredient_id)
-                else:
-                    fact_query = fact_query.eq("normalized_item_id", forecast["normalized_item_id"])
-
-                fact_result = fact_query.execute()
-                if fact_result.data:
-                    fact = fact_result.data[0]
-                    invoice_item_id = fact.get("invoice_item_id")
-
-                    # Get the original invoice item to extract names
-                    item_result = self.client.table("invoice_items").select(
-                        "description, invoice_id"
-                    ).eq("id", invoice_item_id).execute()
-
-                    if item_result.data:
-                        item = item_result.data[0]
-                        forecast["item_name"] = item.get("description", forecast["normalized_item_id"])
-
-                        # Get vendor name from invoice
-                        invoice_result = self.client.table("invoices").select(
-                            "vendor_name"
-                        ).eq("id", item.get("invoice_id")).execute()
-
-                        if invoice_result.data:
-                            forecast["vendor_name"] = invoice_result.data[0].get("vendor_name")
-            except Exception as e:
-                logger.debug(f"Could not enrich forecast {forecast['id']} with names: {e}")
-                forecast.setdefault("item_name", forecast.get("normalized_item_id"))
-
-        # Warm cache so subsequent calls are instant.
-        try:
-            self.cache.warm_forecasts(user_id, forecasts)
-        except Exception as exc:  # pylint: disable=broad-except
-            logger.warning("[Ordering] Failed to warm forecast cache for user=%s: %s", user_id, exc)
+        # Enrich with names
+        for f in forecasts:
+            ingredient = f.pop("normalized_ingredients", None) or {}
+            f["canonical_name"] = ingredient.get("canonical_name")
+            if not f.get("item_name"):
+                f["item_name"] = f.get("canonical_name") or f.get("normalized_item_id")
 
         return forecasts
+
+    def get_user_buffer(self, user_id: str) -> float:
+        """Get user's forecast buffer setting."""
+        try:
+            result = (
+                self.client.table("user_inventory_preferences")
+                .select("forecast_buffer")
+                .eq("user_id", user_id)
+                .execute()
+            )
+            if result.data and result.data[0].get("forecast_buffer") is not None:
+                return float(result.data[0]["forecast_buffer"])
+        except Exception:
+            pass
+        return self.DEFAULT_BUFFER
 
     def generate_forecasts(
         self,
         user_id: str,
         normalized_item_ids: Optional[Iterable[str]] = None,
     ) -> None:
-        """
-        Generate baseline forecasts using rolling averages and persist them in
-        the forecasts table.
-        """
-        features = self._fetch_latest_features(user_id, normalized_item_ids)
-        if not features:
-            logger.info("[Ordering] No features available for forecasting (user=%s)", user_id)
-            return
+        """Generate forecasts for all qualifying items."""
+        buffer = self.get_user_buffer(user_id)
+        vendor_patterns = self._get_vendor_patterns(user_id)
+        item_usage = self.usage_calc.calculate(user_id, normalized_item_ids)
 
-        latest_units = self._fetch_latest_units(user_id, normalized_item_ids)
-        usage_metrics = self._fetch_usage_metrics(user_id, normalized_item_ids)
-        vendor_map = self._resolve_vendor_map(
-            user_id,
-            [
-                info["invoice_item_id"]
-                for info in latest_units.values()
-                if info.get("invoice_item_id")
-            ],
-        )
-        vendor_weekdays, vendor_confidence = self._build_vendor_pattern_map(user_id)
+        if not item_usage:
+            logger.info(f"[Ordering] No items with sufficient history for user={user_id}")
+            return
 
         today = date.today()
         payload = []
 
-        for feature in features:
-            ingredient_id = feature.get("normalized_ingredient_id")
-            slug = feature.get("normalized_item_id")
-            item_key = ingredient_id or slug
-
-            baseline_quantity, source = self._coalesce_forecast_value(feature)
-            forecast_quantity = baseline_quantity
-
-            latest_info = latest_units.get(item_key) or {}
-            base_unit = latest_info.get("base_unit")
-            invoice_item_id = latest_info.get("invoice_item_id")
-            vendor_name = vendor_map.get(invoice_item_id)
-            pattern_weekdays = vendor_weekdays.get(vendor_name or "", [])
-            pattern_confidence = vendor_confidence.get(vendor_name or "")
-
-            usage = usage_metrics.get(slug)
-            if not usage:
-                logger.debug("[Ordering] Skipping %s: insufficient usage history for user=%s", slug, user_id)
+        for item_key, usage in item_usage.items():
+            vendor = usage.get("vendor_name")
+            if not vendor:
                 continue
 
-            model_usage_params: Dict[str, Optional[float | str | int]] = {}
-            weekly_usage_units = None
-            deliveries_per_week = None
-            per_delivery_units = None
-            window_used: Optional[str] = None
+            # Get delivery dates for this vendor only
+            pattern = vendor_patterns.get(vendor, {})
+            weekdays = pattern.get("weekdays", [])
+            pattern_conf = pattern.get("confidence", 0.5)
 
-            orders_last_28d = self._safe_int(usage.get("orders_last_28d"))
-            orders_last_90d = self._safe_int(usage.get("orders_last_90d"))
-            counts_available = (orders_last_28d is not None) or (orders_last_90d is not None)
-            safe_orders_28d = orders_last_28d or 0
-            safe_orders_90d = orders_last_90d or 0
-            if counts_available and safe_orders_28d < 2 and safe_orders_90d < 2:
-                logger.debug(
-                    "[Ordering] Skipping %s: fewer than two invoices detected (user=%s)",
-                    slug,
-                    user_id,
-                )
-                continue
-
-            total_quantity_28d = self._safe_float(usage.get("total_quantity_28d"))
-            if safe_orders_28d >= 2 and total_quantity_28d is not None:
-                weekly_usage_units = total_quantity_28d / 4
-                deliveries_per_week = safe_orders_28d / 4
-                window_used = "28d"
-
-            total_quantity_90d = self._safe_float(usage.get("total_quantity_90d"))
-            if weekly_usage_units is None and safe_orders_90d >= 2 and total_quantity_90d is not None:
-                weekly_usage_units = total_quantity_90d / 13
-                deliveries_per_week = safe_orders_90d / 13
-                window_used = window_used or "90d"
-
-            if weekly_usage_units is None:
-                weekly_usage_units = self._safe_float(usage.get("average_weekly_usage"))
-            if deliveries_per_week is None:
-                deliveries_per_week = self._safe_float(usage.get("deliveries_per_week"))
-            if deliveries_per_week and deliveries_per_week <= 0:
-                deliveries_per_week = None
-            if not deliveries_per_week and pattern_weekdays:
-                deliveries_per_week = float(len(pattern_weekdays))
-            if not deliveries_per_week or deliveries_per_week <= 0:
-                deliveries_per_week = 1.0
-
-            per_delivery_units = self._safe_float(usage.get("units_per_delivery"))
-            if per_delivery_units is None and weekly_usage_units is not None and deliveries_per_week:
-                per_delivery_units = weekly_usage_units / deliveries_per_week
-            if per_delivery_units is not None and per_delivery_units > 0:
-                forecast_quantity = per_delivery_units
-                source = "usage_per_delivery"
-
-            pack_units = self._safe_float(usage.get("pack_units_per_case")) or per_delivery_units
-            suggested_boxes = None
-            if pack_units and pack_units > 0 and per_delivery_units:
-                suggested_boxes = max(1, math.ceil(per_delivery_units / pack_units))
-
-            model_usage_params.update(
-                {
-                    "avg_weekly_usage": weekly_usage_units,
-                    "deliveries_per_week": deliveries_per_week,
-                    "units_per_delivery": per_delivery_units,
-                    "pack_units_per_case": pack_units,
-                    "suggested_boxes": suggested_boxes,
-                    "pack_label": usage.get("suggested_case_label"),
-                    "last_ordered_at": usage.get("last_delivery_date"),
-                    "orders_last_28d": safe_orders_28d,
-                    "orders_last_90d": safe_orders_90d,
-                    "window_used": window_used or ("90d" if safe_orders_90d >= 2 else "historical"),
-                    "weekly_usage_units": weekly_usage_units,
-                    "delivery_pattern_confidence": pattern_confidence,
-                    "avg_quantity_7d": feature.get("avg_quantity_7d"),
-                }
-            )
-
-            last_delivery_dt = self._safe_date(usage.get("last_delivery_date"))
-            delivery_dates = self._next_delivery_dates(pattern_weekdays, today=today)
+            delivery_dates = self.forecast_calc.get_delivery_dates(weekdays, today, self.FORECAST_COUNT)
             if not delivery_dates:
-                delivery_dates = self._fallback_delivery_dates(
-                    deliveries_per_week,
-                    today=today,
-                    last_delivery=last_delivery_dt,
+                delivery_dates = self.forecast_calc.estimate_delivery_dates(
+                    usage.get("deliveries_per_week", 1.0), today, self.FORECAST_COUNT
                 )
 
-            for order_index, delivery_date in enumerate(delivery_dates):
-                days_ahead = (delivery_date - today).days
-                lower_bound, upper_bound = self._compute_bounds(feature, forecast_quantity)
-                record = {
-                    "user_id": user_id,
-                    "normalized_item_id": slug,
-                    "normalized_ingredient_id": ingredient_id,
-                    "forecast_date": delivery_date.isoformat(),
-                    "delivery_date": delivery_date.isoformat(),
-                    "horizon_days": max(days_ahead, 0),
-                    "lead_time_days": max(days_ahead, 0),
-                    "forecast_quantity": float(forecast_quantity),
-                    "lower_bound": float(lower_bound) if lower_bound is not None else None,
-                    "upper_bound": float(upper_bound) if upper_bound is not None else None,
-                    "vendor_name": vendor_name,
-                    "delivery_window_label": self._format_delivery_label(delivery_date, vendor_name),
-                    "order_index": order_index,
-                    "model_version": "baseline_v1",
-                    "model_params": {
-                        "method": "rolling_average",
-                        "source": source,
-                        "base_unit": base_unit,
-                        **{k: v for k, v in model_usage_params.items() if v is not None},
-                    },
-                    "generated_at": datetime.utcnow().isoformat(),
-                    "updated_at": datetime.utcnow().isoformat(),
-                }
-                payload.append(record)
+            # Calculate forecast
+            weekly_usage = usage.get("weekly_case_usage", 0)
+            deliveries_per_week = usage.get("deliveries_per_week", 1.0)
+            forecast_qty = self.forecast_calc.calculate_quantity(weekly_usage, deliveries_per_week, buffer)
+            confidence = self.forecast_calc.calculate_confidence(
+                usage.get("window_days", 28), usage.get("order_count", 0), pattern_conf
+            )
+            explanation = self.forecast_calc.build_explanation(usage, buffer, forecast_qty)
+
+            # Create records for each delivery date
+            for idx, delivery_date in enumerate(delivery_dates):
+                payload.append(self._build_record(
+                    user_id, usage, vendor, delivery_date, idx, today,
+                    forecast_qty, confidence, explanation, buffer
+                ))
+
+        self._save_forecasts(user_id, payload, today)
+
+    def _get_vendor_patterns(self, user_id: str) -> Dict[str, Dict]:
+        """Get vendor delivery patterns as lookup."""
+        patterns = self.patterns.get_patterns(user_id)
+        return {
+            p["vendor_name"]: {
+                "weekdays": p.get("delivery_weekdays", []),
+                "confidence": p.get("confidence_score", 0.5),
+            }
+            for p in patterns
+        }
+
+    def _build_record(
+        self,
+        user_id: str,
+        usage: Dict,
+        vendor: str,
+        delivery_date: date,
+        order_index: int,
+        today: date,
+        forecast_qty: int,
+        confidence: float,
+        explanation: Dict,
+        buffer: float,
+    ) -> Dict:
+        """Build a single forecast record."""
+        days_ahead = (delivery_date - today).days
+        return {
+            "user_id": user_id,
+            "normalized_item_id": usage.get("normalized_item_id"),
+            "normalized_ingredient_id": usage.get("normalized_ingredient_id"),
+            "forecast_date": delivery_date.isoformat(),
+            "delivery_date": delivery_date.isoformat(),
+            "horizon_days": max(days_ahead, 0),
+            "lead_time_days": max(days_ahead, 0),
+            "forecast_quantity": float(forecast_qty),
+            "vendor_name": vendor,
+            "delivery_window_label": self.forecast_calc.format_delivery_label(delivery_date, vendor),
+            "order_index": order_index,
+            "item_name": usage.get("item_name"),
+            "base_unit": usage.get("base_unit", "case"),
+            "confidence_score": confidence,
+            "forecast_explanation": explanation,
+            "data_window_days": usage.get("window_days"),
+            "order_count_in_window": usage.get("order_count"),
+            "total_cases_in_window": usage.get("total_cases"),
+            "weekly_case_usage": usage.get("weekly_case_usage"),
+            "buffer_applied": buffer,
+            "model_version": "v2_case_based",
+            "model_params": {
+                "method": "case_based_weekly_average",
+                "window_days": usage.get("window_days"),
+                "order_count": usage.get("order_count"),
+                "buffer": buffer,
+            },
+            "generated_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+
+    def _save_forecasts(self, user_id: str, payload: List[Dict], today: date) -> None:
+        """Save forecasts to database."""
         if not payload:
-            logger.info("[Ordering] Forecast generation produced no records (user=%s)", user_id)
+            logger.info(f"[Ordering] No forecasts generated for user={user_id}")
             return
 
         try:
-            self.client.table("inventory_item_forecasts").upsert(
-                payload,
-                on_conflict="user_id,normalized_item_id,forecast_date,horizon_days",
-            ).execute()
-            logger.info("[Ordering] Generated %s forecasts for user=%s", len(payload), user_id)
+            # Clean old forecasts
+            stale = (today - timedelta(days=30)).isoformat()
+            self.client.table("inventory_item_forecasts").delete().eq("user_id", user_id).lt("forecast_date", stale).execute()
+            self.client.table("inventory_item_forecasts").delete().eq("user_id", user_id).gte("forecast_date", today.isoformat()).execute()
+
+            # Insert new
+            self.client.table("inventory_item_forecasts").insert(payload).execute()
+            logger.info(f"[Ordering] Generated {len(payload)} forecasts for user={user_id}")
             self.cache.warm_forecasts(user_id, payload)
-        except Exception as exc:  # pylint: disable=broad-except
-            logger.exception("[Ordering] Failed to upsert inventory_item_forecasts for user=%s: %s", user_id, exc)
-
-    # ------------------------------------------------------------------#
-    # Internal helpers
-    # ------------------------------------------------------------------#
-    def _fetch_latest_features(
-        self,
-        user_id: str,
-        normalized_item_ids: Optional[Iterable[str]],
-    ) -> List[Dict]:
-        today = date.today().isoformat()
-        query = (
-            self.client.table("inventory_item_features")
-            .select("*")
-            .eq("user_id", user_id)
-            .eq("feature_date", today)
-        )
-        if normalized_item_ids:
-            ingredient_ids, slug_ids = self._split_identifiers(normalized_item_ids)
-            if ingredient_ids:
-                query = query.in_("normalized_ingredient_id", ingredient_ids)
-            elif slug_ids:
-                query = query.in_("normalized_item_id", slug_ids)
-
-        result = query.execute()
-        return result.data or []
-
-    def _fetch_latest_units(
-        self,
-        user_id: str,
-        normalized_item_ids: Optional[Iterable[str]],
-    ) -> Dict[str, Dict[str, Optional[str]]]:
-        """Return the most recent base_unit and lineage info for each normalized item."""
-        query = (
-            self.client.table("inventory_item_facts")
-            .select("normalized_item_id, normalized_ingredient_id, base_unit, delivery_date, invoice_item_id")
-            .eq("user_id", user_id)
-            .order("delivery_date", desc=True)
-        )
-        if normalized_item_ids:
-            ingredient_ids, slug_ids = self._split_identifiers(normalized_item_ids)
-            if ingredient_ids:
-                query = query.in_("normalized_ingredient_id", ingredient_ids)
-            elif slug_ids:
-                query = query.in_("normalized_item_id", slug_ids)
-
-        result = query.execute()
-        rows = result.data or []
-
-        latest_units: Dict[str, Dict[str, Optional[str]]] = {}
-        for row in rows:
-            ingredient_id = row.get("normalized_ingredient_id")
-            slug = row.get("normalized_item_id")
-            key = ingredient_id or slug
-            if key and key not in latest_units:
-                latest_units[key] = {
-                    "base_unit": row.get("base_unit"),
-                    "invoice_item_id": row.get("invoice_item_id"),
-                }
-        return latest_units
-
-    @staticmethod
-    def _coalesce_forecast_value(feature: Dict) -> (float, str):
-        """Select the best available rolling average for forecasting."""
-        for key in ("avg_quantity_28d", "avg_quantity_90d", "avg_quantity_7d"):
-            value = feature.get(key)
-            if value is not None:
-                return float(value), key
-        return 0.0, "fallback_zero"
-
-    @staticmethod
-    def _compute_bounds(feature: Dict, forecast_quantity: float) -> (Optional[float], Optional[float]):
-        variance = feature.get("variance_28d")
-        if variance is None or variance < 0:
-            return None, None
-
-        std_dev = math.sqrt(variance)
-        lower = max(forecast_quantity - 1.96 * std_dev, 0)
-        upper = forecast_quantity + 1.96 * std_dev
-        return lower, upper
-
-    @staticmethod
-    def _split_identifiers(values: Sequence[str]) -> Tuple[List[str], List[str]]:
-        uuid_values: List[str] = []
-        slug_values: List[str] = []
-        for value in values:
-            try:
-                UUID(str(value))
-            except (ValueError, TypeError):
-                slug_values.append(value)
-            else:
-                uuid_values.append(value)
-        return uuid_values, slug_values
-
-    def _resolve_vendor_map(self, user_id: str, invoice_item_ids: Sequence[str]) -> Dict[str, Optional[str]]:
-        if not invoice_item_ids:
-            return {}
-
-        result = {}
-        ids = [value for value in invoice_item_ids if value]
-        if not ids:
-            return result
-
-        for chunk_start in range(0, len(ids), 200):
-            chunk = ids[chunk_start : chunk_start + 200]
-            items_result = (
-                self.client.table("invoice_items")
-                .select("id, invoice_id")
-                .in_("id", chunk)
-                .execute()
-            )
-            invoice_ids = [row["invoice_id"] for row in items_result.data or [] if row.get("invoice_id")]
-            if not invoice_ids:
-                continue
-
-            invoice_map = {}
-            for invoice_chunk_start in range(0, len(invoice_ids), 200):
-                invoice_chunk = invoice_ids[invoice_chunk_start : invoice_chunk_start + 200]
-                invoices_result = (
-                    self.client.table("invoices")
-                    .select("id, vendor_name")
-                    .eq("user_id", user_id)
-                    .in_("id", invoice_chunk)
-                    .execute()
-                )
-                for invoice in invoices_result.data or []:
-                    invoice_map[invoice["id"]] = invoice.get("vendor_name")
-
-            for row in items_result.data or []:
-                vendor = invoice_map.get(row.get("invoice_id"))
-                result[row["id"]] = vendor
-        return result
-
-    def _build_vendor_pattern_map(self, user_id: str) -> Tuple[Dict[str, List[int]], Dict[str, Optional[float]]]:
-        try:
-            patterns = self.delivery_patterns.get_patterns(user_id)
-        except Exception:  # pylint: disable=broad-except
-            return {}, {}
-
-        pattern_map: Dict[str, List[int]] = {}
-        confidence_map: Dict[str, Optional[float]] = {}
-        for row in patterns or []:
-            vendor_name = (row.get("vendor_name") or "").strip()
-            if not vendor_name:
-                continue
-            weekdays = row.get("delivery_weekdays") or []
-            pattern_map[vendor_name] = [int(day) for day in weekdays if isinstance(day, int)]
-            confidence_map[vendor_name] = self._safe_float(row.get("confidence_score"))
-        return pattern_map, confidence_map
-
-    def _fetch_usage_metrics(
-        self,
-        user_id: str,
-        normalized_item_ids: Optional[Iterable[str]],
-    ) -> Dict[str, Dict]:
-        query = (
-            self.client.table("inventory_item_usage_metrics")
-            .select("*")
-            .eq("user_id", user_id)
-        )
-        if normalized_item_ids:
-            ingredient_ids, slug_ids = self._split_identifiers(normalized_item_ids)
-            if slug_ids:
-                query = query.in_("normalized_item_id", slug_ids)
-            elif ingredient_ids:
-                query = query.in_("normalized_ingredient_id", ingredient_ids)
-
-        result = query.execute()
-        rows = result.data or []
-        return {row["normalized_item_id"]: row for row in rows if row.get("normalized_item_id")}
-
-    @staticmethod
-    def _next_delivery_dates(weekdays: Sequence[int], *, today: date, count: int = 4) -> List[date]:
-        if not weekdays:
-            return []
-
-        weekdays_set = {day % 7 for day in weekdays}
-        dates: List[date] = []
-        cursor = today
-        while len(dates) < count and (cursor - today).days <= 60:
-            if cursor.weekday() in weekdays_set:
-                dates.append(cursor)
-            cursor += timedelta(days=1)
-        return dates
-
-    @staticmethod
-    def _fallback_delivery_dates(
-        deliveries_per_week: Optional[float],
-        *,
-        today: date,
-        last_delivery: Optional[date],
-        count: int = 4,
-    ) -> List[date]:
-        cadence = deliveries_per_week if deliveries_per_week and deliveries_per_week > 0 else 1.0
-        interval_days = max(1, int(round(7 / cadence)))
-        anchor = last_delivery if last_delivery and last_delivery >= today else today
-        cursor = anchor
-        dates: List[date] = []
-        while len(dates) < count:
-            cursor = cursor + timedelta(days=interval_days)
-            dates.append(cursor)
-        return dates
-
-    @staticmethod
-    def _format_delivery_label(delivery_date: date, vendor_name: Optional[str]) -> str:
-        label = delivery_date.strftime("%A, %b %d").replace(" 0", " ")
-        if vendor_name:
-            return f"{vendor_name} • {label}"
-        return label
-
-    @staticmethod
-    def _safe_int(value) -> Optional[int]:
-        try:
-            return int(value)
-        except (TypeError, ValueError):
-            return None
-
-    @staticmethod
-    def _safe_date(value) -> Optional[date]:
-        if isinstance(value, date):
-            return value
-        if not value:
-            return None
-        try:
-            return date.fromisoformat(str(value))
-        except (TypeError, ValueError):
-            return None
-
-    @staticmethod
-    def _safe_float(value) -> Optional[float]:
-        try:
-            return float(value)
-        except (TypeError, ValueError):
-            return None
-
-    @staticmethod
-    def _inject_usage_metadata(forecast: Dict, params: Dict) -> None:
-        usage_fields = (
-            "avg_weekly_usage",
-            "suggested_boxes",
-            "pack_label",
-            "last_ordered_at",
-            "units_per_delivery",
-            "deliveries_per_week",
-            "avg_quantity_7d",
-            "orders_last_28d",
-            "orders_last_90d",
-            "window_used",
-            "weekly_usage_units",
-            "delivery_pattern_confidence",
-        )
-        for field in usage_fields:
-            value = params.get(field)
-            if value is None:
-                continue
-            if field in {"suggested_boxes", "orders_last_28d", "orders_last_90d"}:
-                try:
-                    value = int(value)
-                except (TypeError, ValueError):
-                    continue
-            elif field in {
-                "avg_weekly_usage",
-                "units_per_delivery",
-                "deliveries_per_week",
-                "avg_quantity_7d",
-                "weekly_usage_units",
-                "delivery_pattern_confidence",
-            }:
-                try:
-                    value = float(value)
-                except (TypeError, ValueError):
-                    continue
-            forecast[field] = value
-
-
+        except Exception as e:
+            logger.exception(f"[Ordering] Failed to save forecasts: {e}")

@@ -8,8 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppShell } from '@/components/layout/AppShell';
-import { PageHeader } from '@/components/layout/PageHeader';
-import { PageHeading } from '@/components/layout/PageHeading';
+import { ModulePageHeader } from '@/components/layout/ModulePageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -106,29 +105,11 @@ export function PriceTrendsPage() {
   return (
     <AppShell maxWidth="wide">
       <div className="space-y-6">
-        <PageHeader
-          breadcrumbs={[
-            { label: 'Dashboard', href: '/dashboard' },
-            { label: 'Price Analytics', href: '/analytics' },
-            { label: 'Price Trends' },
-          ]}
+        <ModulePageHeader
+          icon={BarChart3}
+          title="Price Trends"
+          description="Track price movements and identify anomalies across your inventory"
         />
-
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <PageHeading className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-primary-500/10 flex items-center justify-center">
-              <BarChart3 className="h-6 w-6 text-primary-400" />
-            </div>
-            Price Trends
-          </PageHeading>
-          <p className="text-slate-400 mt-2 ml-15">
-            Track price movements and identify anomalies across your inventory
-          </p>
-        </motion.div>
 
         {/* Search & Filters */}
         <motion.div
@@ -237,16 +218,16 @@ export function PriceTrendsPage() {
                       <AreaChart data={chartData}>
                         <defs>
                           <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#B08968" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="#B08968" stopOpacity={0} />
+                            <stop offset="5%" stopColor="#C9A87C" stopOpacity={0.3} />
+                            <stop offset="95%" stopColor="#C9A87C" stopOpacity={0} />
                           </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
-                        <XAxis dataKey="date" stroke="#A8B1B9" fontSize={12} />
-                        <YAxis stroke="#A8B1B9" fontSize={12} tickFormatter={(v) => `$${v.toFixed(2)}`} />
+                        <XAxis dataKey="date" stroke="#94a3b8" fontSize={12} />
+                        <YAxis stroke="#94a3b8" fontSize={12} tickFormatter={(v) => `$${v.toFixed(2)}`} />
                         <Tooltip
                           contentStyle={{ 
-                            backgroundColor: '#1E1E1E', 
+                            backgroundColor: '#0f172a', 
                             border: '1px solid rgba(255, 255, 255, 0.1)', 
                             borderRadius: '12px',
                             boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)'
@@ -260,7 +241,7 @@ export function PriceTrendsPage() {
                         <Area
                           type="monotone"
                           dataKey="price"
-                          stroke="#B08968"
+                          stroke="#C9A87C"
                           strokeWidth={2}
                           fill="url(#priceGradient)"
                         />

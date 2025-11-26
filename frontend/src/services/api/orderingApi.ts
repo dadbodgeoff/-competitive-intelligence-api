@@ -3,16 +3,49 @@ import { parseResponse } from './validation'
 import { deliveryPatternResponseSchema, orderingPredictionsResponseSchema } from './schemas'
 import type { DeliveryPatternResponse, OrderingPredictionsResponse } from '@/types/ordering'
 
-export async function getOrderingPredictions(params?: { itemIds?: string[] }) {
+export interface OrderingPredictionsParams {
+  itemIds?: string[]
+  limit?: number
+  offset?: number
+  fromDate?: string
+  toDate?: string
+}
+
+export async function getOrderingPredictions(params?: OrderingPredictionsParams) {
+  const queryParams: Record<string, string | string[] | number | undefined> = {}
+
+  if (params?.itemIds?.length) {
+    queryParams.item = params.itemIds
+  }
+  if (params?.limit !== undefined) {
+    queryParams.limit = params.limit
+  }
+  if (params?.offset !== undefined) {
+    queryParams.offset = params.offset
+  }
+  if (params?.fromDate) {
+    queryParams.from_date = params.fromDate
+  }
+  if (params?.toDate) {
+    queryParams.to_date = params.toDate
+  }
+
   const result = await safeRequest<OrderingPredictionsResponse>(() =>
     apiClient.get('/api/v1/ordering/predictions', {
-      params: params?.itemIds ? { item: params.itemIds } : undefined,
+      params: Object.keys(queryParams).length > 0 ? queryParams : undefined,
       paramsSerializer: (query) => {
-        const values = query.item
-        if (!values) return ''
-        return (Array.isArray(values) ? values : [values])
-          .map((value) => `item=${encodeURIComponent(value)}`)
-          .join('&')
+        const parts: string[] = []
+        for (const [key, value] of Object.entries(query)) {
+          if (value === undefined) continue
+          if (Array.isArray(value)) {
+            for (const v of value) {
+              parts.push(`${key}=${encodeURIComponent(v)}`)
+            }
+          } else {
+            parts.push(`${key}=${encodeURIComponent(String(value))}`)
+          }
+        }
+        return parts.join('&')
       },
     })
   )

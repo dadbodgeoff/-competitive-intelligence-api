@@ -216,6 +216,9 @@ export const orderingPredictionSchema = z.object({
 
 export const orderingPredictionsResponseSchema = z.object({
   predictions: z.array(orderingPredictionSchema),
+  total: z.number().optional(),
+  limit: z.number().optional(),
+  offset: z.number().optional(),
 });
 
 export const deliveryPatternSchema = z.object({
@@ -238,6 +241,9 @@ export const schedulingSettingsSchema = z.object({
   timezone: z.string(),
   auto_publish: z.boolean(),
   default_shift_length_minutes: z.number(),
+  overtime_threshold_minutes: z.number().optional(),
+  overtime_multiplier: z.number().optional(),
+  overtime_enabled: z.boolean().optional(),
 });
 
 export const schedulingSettingsResponseSchema = z.object({

@@ -27,7 +27,19 @@ async def get_scheduler_grid(week_id: str, current_user: str = Depends(get_curre
         raise HTTPException(status_code=404, detail="Week not found")
 
     labor_summary = LaborSummaryService(account_id)
-    labor_summary.recompute_week(week_id)
+    
+    # Only recompute if there are live sessions (active clock-ins)
+    # This avoids expensive recomputation on every page load
+    has_live_sessions = any(
+        len(shift.get("live_sessions", [])) > 0
+        for day in week.get("days", [])
+        for shift in day.get("shifts", [])
+    )
+    
+    if has_live_sessions:
+        # Recompute to get accurate live labor costs
+        labor_summary.recompute_week(week_id)
+    
     totals = labor_summary.get_week_totals(week_id)
     members = account_service.list_members_with_compensation(account_id)
     member_lookup = {member["user_id"]: member for member in members}
@@ -62,7 +74,11 @@ def shift_duration_minutes(shift: dict) -> int:
     fmt = "%H:%M:%S"
     start_dt = datetime.strptime(start, fmt)
     end_dt = datetime.strptime(end, fmt)
-    delta = int((end_dt - start_dt).total_seconds() // 60)
+    delta_seconds = (end_dt - start_dt).total_seconds()
+    # Handle overnight shifts (e.g., 10PM to 6AM)
+    if delta_seconds < 0:
+        delta_seconds += 24 * 60 * 60  # Add 24 hours
+    delta = int(delta_seconds // 60)
     return max(delta - break_minutes, 0)
 
 

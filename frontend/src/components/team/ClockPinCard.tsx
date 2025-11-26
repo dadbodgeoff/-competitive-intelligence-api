@@ -94,7 +94,7 @@ export function ClockPinCard({ status, onSave, onRemove, saving, removing }: Clo
             />
           </div>
           <div className="col-span-full flex flex-wrap gap-3">
-            <Button type="submit" className="bg-primary-500 hover:bg-primary-500" disabled={saving}>
+            <Button type="submit" className="bg-primary-500 hover:bg-primary-600" disabled={saving}>
               Save PIN
             </Button>
             <Button

@@ -23,9 +23,9 @@ interface FilterChipsProps {
 
 const colorClasses = {
   primary: 'bg-primary-500/20 text-primary-400 border-primary-500/30',
-  success: 'bg-success-500/20 text-success-400 border-success-500/30',
+  success: 'bg-primary-500/20 text-primary-400 border-primary-500/30',
   destructive: 'bg-destructive/20 text-destructive border-red-500/30',
-  accent: 'bg-accent-500/20 text-accent-400 border-accent-500/30',
+  accent: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
   default: 'bg-white/10 text-slate-300 border-white/20',
 };
 

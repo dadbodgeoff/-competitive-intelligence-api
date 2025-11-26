@@ -83,11 +83,15 @@ export function UpgradeModal({
 
           {/* Price */}
           <div className="text-center">
-            <div className="flex items-baseline justify-center gap-1">
+            <div className="inline-block px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-xs font-medium mb-2">
+              🚀 Launch Special — 50% Off
+            </div>
+            <div className="flex items-baseline justify-center gap-2">
+              <span className="text-lg text-slate-500 line-through">$199</span>
               <span className="text-4xl font-black text-white">$99</span>
               <span className="text-slate-400">/month</span>
             </div>
-            <p className="text-sm text-slate-400 mt-1">Cancel anytime</p>
+            <p className="text-sm text-slate-400 mt-1">Lock in this rate • Cancel anytime</p>
           </div>
 
           {/* Features */}

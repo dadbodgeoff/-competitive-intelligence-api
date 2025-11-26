@@ -24,3 +24,6 @@ export { SectionHeader } from './section-header';
 export type { SectionHeaderProps } from './section-header';
 export { ActionBar } from './action-bar';
 export type { ActionBarProps } from './action-bar';
+
+// Popover
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor } from './popover';

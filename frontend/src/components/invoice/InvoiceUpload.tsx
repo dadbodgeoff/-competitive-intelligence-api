@@ -27,16 +27,18 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+// Alert components removed - not currently used
 import { useToast } from '@/hooks/use-toast';
 import { useInvoiceParseStream } from '@/hooks/useInvoiceParseStream';
 import { InvoiceReviewTable } from './InvoiceReviewTable';
+import { SuccessAnimation } from '@/components/streaming/SuccessAnimation';
 import {
   CheckCircle,
   AlertCircle,
   Save,
   X,
   Loader2,
+  RefreshCw,
 } from 'lucide-react';
 import { uploadInvoiceFile } from '@/services/api/invoicesApi';
 
@@ -50,6 +52,7 @@ export function InvoiceUpload({ onSuccess, className }: InvoiceUploadProps) {
   const { toast } = useToast();
   const [uploadingFile, setUploadingFile] = useState(false);
   const [vendorHint, setVendorHint] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
   
   const {
     state,
@@ -137,17 +140,23 @@ export function InvoiceUpload({ onSuccess, className }: InvoiceUploadProps) {
     try {
       const invoiceId = await saveToDatabase();
       
+      // Show success animation
+      setShowSuccess(true);
+      
       toast({
         title: 'Invoice saved!',
         description: 'Invoice has been saved to database',
       });
       
-      // Call success callback or navigate
-      if (onSuccess) {
-        onSuccess(invoiceId);
-      } else {
-        navigate(`/invoices/${invoiceId}`);
-      }
+      // Navigate after animation
+      setTimeout(() => {
+        setShowSuccess(false);
+        if (onSuccess) {
+          onSuccess(invoiceId);
+        } else {
+          navigate(`/invoices/${invoiceId}`);
+        }
+      }, 2500);
       
     } catch (error) {
       toast({
@@ -165,6 +174,15 @@ export function InvoiceUpload({ onSuccess, className }: InvoiceUploadProps) {
 
   return (
     <div className={cn('min-h-screen bg-obsidian', className)}>
+      {/* Success Animation */}
+      <SuccessAnimation
+        show={showSuccess}
+        message="Invoice saved successfully!"
+        count={state.invoiceData?.line_items?.length}
+        countLabel="line items"
+        icon="📄"
+      />
+
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-glow pointer-events-none" />
 
@@ -242,7 +260,7 @@ export function InvoiceUpload({ onSuccess, className }: InvoiceUploadProps) {
         )}
 
         {/* Parsing Progress */}
-        {(state.status === 'parsing' || state.status === 'validating') && (
+        {(state.status === 'starting' || state.status === 'parsing' || state.status === 'validating') && (
           <InvoiceCard variant="elevated">
             <InvoiceCardContent className="pt-6">
               <ParseProgress
@@ -252,6 +270,8 @@ export function InvoiceUpload({ onSuccess, className }: InvoiceUploadProps) {
                 elapsedSeconds={state.elapsedSeconds}
                 isConnected={isConnected}
                 onCancel={stopParsing}
+                onRetry={() => state.fileUrl && startParsing(state.fileUrl, vendorHint)}
+                error={state.error}
               />
             </InvoiceCardContent>
           </InvoiceCard>
@@ -425,29 +445,37 @@ export function InvoiceUpload({ onSuccess, className }: InvoiceUploadProps) {
 
         {/* Error State */}
         {state.status === 'error' && (
-          <Alert variant="destructive" className="bg-destructive/10 border-red-500/50">
-            <AlertCircle className="h-5 w-5" />
-            <AlertDescription>
-              <div className="space-y-4">
-                <p className="font-semibold text-destructive">Processing failed: {state.error}</p>
-                <div className="flex gap-3">
-                  <Button
-                    onClick={() => window.location.reload()}
-                    className="bg-destructive hover:bg-red-600 text-white"
-                  >
-                    Try Again
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={handleCancel}
-                    className="border-white/10 text-white hover:bg-white/5"
-                  >
-                    Cancel
-                  </Button>
+          <InvoiceCard variant="elevated" className="border-red-500/50">
+            <InvoiceCardContent className="pt-6">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 rounded-full bg-red-500/10">
+                  <AlertCircle className="h-6 w-6 text-red-500" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-white">Processing Failed</h3>
+                  <p className="text-sm text-red-400 mt-1">{state.error}</p>
                 </div>
               </div>
-            </AlertDescription>
-          </Alert>
+              <div className="flex gap-3">
+                {state.fileUrl && (
+                  <Button
+                    onClick={() => startParsing(state.fileUrl!, vendorHint)}
+                    className="bg-primary-500 hover:bg-primary-600 text-white"
+                  >
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Try Again
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  onClick={handleCancel}
+                  className="border-white/10 text-slate-300 hover:bg-white/5"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </InvoiceCardContent>
+          </InvoiceCard>
         )}
       </div>
     </div>

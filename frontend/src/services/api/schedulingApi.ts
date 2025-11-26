@@ -37,6 +37,9 @@ export async function updateSchedulingSettings(payload: {
   timezone: string
   auto_publish: boolean
   default_shift_length_minutes: number
+  overtime_threshold_minutes?: number
+  overtime_multiplier?: number
+  overtime_enabled?: boolean
 }) {
   const result = await safeRequest<SchedulingSettingsResponse>(() =>
     apiClient.put('/api/v1/scheduling/settings', payload)

@@ -41,7 +41,7 @@ interface ParseMetadata {
 }
 
 interface ParseState {
-  status: 'idle' | 'uploading' | 'parsing' | 'validating' | 'ready' | 'saving' | 'saved' | 'error';
+  status: 'idle' | 'starting' | 'uploading' | 'parsing' | 'validating' | 'ready' | 'saving' | 'saved' | 'error';
   invoiceData?: InvoiceData;
   parseMetadata?: ParseMetadata;
   progress: number;
@@ -94,11 +94,12 @@ export function useInvoiceParseStream(): UseInvoiceParseStreamReturn {
   const startParsing = useCallback((fileUrl: string, vendorHint?: string) => {
     stopParsing();
 
+    // Immediately show "starting" state for instant feedback
     setState(prev => ({
       ...prev,
-      status: 'parsing',
+      status: 'starting',
       progress: 0,
-      currentStep: 'Connecting...',
+      currentStep: 'Preparing your document...',
       invoiceData: undefined,
       parseMetadata: undefined,
       error: undefined,
@@ -119,8 +120,9 @@ export function useInvoiceParseStream(): UseInvoiceParseStreamReturn {
           case 'parsing_started':
             setState(prev => ({
               ...prev,
+              status: 'parsing', // Transition from 'starting' to 'parsing'
               currentStep: data.message || 'Processing your invoice...',
-              progress: 5,
+              progress: 10,
             }));
             break;
 

@@ -773,7 +773,7 @@ export function BrandProfileForm({
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="bg-primary-500 hover:bg-primary-500"
+          className="bg-primary-500 hover:bg-primary-600"
         >
           {isSubmitting ? 'Saving...' : profile ? 'Update Profile' : 'Create Profile'}
         </Button>

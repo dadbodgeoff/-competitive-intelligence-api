@@ -144,7 +144,7 @@ export function ThemeCard({
                         {showUseTemplateButton && (
                           <Button
                             size="sm"
-                            className="flex-1 text-xs bg-primary-500 hover:bg-primary-500 text-white"
+                            className="flex-1 text-xs bg-primary-500 hover:bg-primary-600 text-white"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleUseTemplate(template);

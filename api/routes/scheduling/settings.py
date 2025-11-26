@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field, validator
 
@@ -15,6 +17,9 @@ class SettingsUpdateRequest(BaseModel):
     timezone: str
     auto_publish: bool = False
     default_shift_length_minutes: int = Field(gt=0)
+    overtime_threshold_minutes: Optional[int] = Field(default=None, ge=60)
+    overtime_multiplier: Optional[float] = Field(default=None, ge=1.0, le=3.0)
+    overtime_enabled: Optional[bool] = None
 
 
 def _get_account_id(user_id: str) -> str:
@@ -45,6 +50,9 @@ async def update_scheduling_settings(
         timezone=payload.timezone,
         auto_publish=payload.auto_publish,
         default_shift_length_minutes=payload.default_shift_length_minutes,
+        overtime_threshold_minutes=payload.overtime_threshold_minutes,
+        overtime_multiplier=payload.overtime_multiplier,
+        overtime_enabled=payload.overtime_enabled,
     )
     return {"settings": settings}
 

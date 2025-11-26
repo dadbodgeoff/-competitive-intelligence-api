@@ -266,10 +266,10 @@ export function StreamingAnalysisResults({
                 <>
                   <Button
                     variant="outline"
-                    onClick={() => navigate('/saved-analyses')}
+                    onClick={() => navigate('/analysis')}
                     className="border-white/10 text-slate-300 hover:bg-white/5"
                   >
-                    View Saved Analyses
+                    Back to Dashboard
                   </Button>
                   <Button
                     onClick={() =>
@@ -286,7 +286,7 @@ export function StreamingAnalysisResults({
                   variant="outline"
                   onClick={() => {
                     stopAnalysis();
-                    onCancel ? onCancel() : navigate('/dashboard');
+                    onCancel ? onCancel() : navigate('/analysis');
                   }}
                   className="border-white/10 text-slate-300 hover:bg-destructive/10 hover:text-destructive hover:border-red-500/30"
                 >

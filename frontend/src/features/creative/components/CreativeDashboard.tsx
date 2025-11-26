@@ -1,30 +1,27 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Filter } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Filter, Wand2, Sparkles, Shield, ArrowRight, Search, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { CreativeLayout, type CreativeTab } from './CreativeLayout';
 import { ThemeCardImproved } from './ThemeCardImproved';
 import { ListContainer } from '@/components/ui';
 import { PromptPreviewDrawer } from './PromptPreviewDrawer';
-import { GenerationWizard } from './GenerationWizard';
-import { CreativeHistoryTable } from './CreativeHistoryTable';
-import { CreativeJobDetailPanel } from './CreativeJobDetailPanel';
-import { previewTemplate, startGeneration, type StartGenerationRequest } from '../api/nanoBananaClient';
+import { UsageQuotaBadge } from './UsageQuotaBadge';
+import { previewTemplate } from '../api/nanoBananaClient';
 import type {
-  CreativeJobDetail,
-  CreativeJobSummary,
   TemplatePreviewResponse,
   TemplateSummary,
   ThemeSummary,
 } from '../api/types';
 import { useNanoThemes } from '../hooks/useNanoThemes';
 import { useNanoTemplates } from '../hooks/useNanoTemplates';
-import { useNanoJobs } from '../hooks/useNanoJobs';
-import { useNanoJob } from '../hooks/useNanoJob';
-import { useNanoStream } from '../hooks/useNanoStream';
+import { enhanceThemeDescription } from '@/utils/creativeDescriptions';
 
 const CATEGORY_ORDER: CreativeTab[] = ['campaigns', 'social-proof', 'hiring', 'events'];
 const CATEGORY_LABELS: Record<CreativeTab, string> = {
@@ -34,38 +31,62 @@ const CATEGORY_LABELS: Record<CreativeTab, string> = {
   events: 'Events & Promotions',
 };
 
-// Helper function to improve theme descriptions for better customer appeal
-const enhanceThemeDescription = (theme: ThemeSummary): string => {
-  if (!theme.description) return '';
+const CATEGORY_DESCRIPTIONS: Record<CreativeTab, string> = {
+  campaigns: 'Promote seasonal menus, limited-time offers, and special dishes with eye-catching visuals.',
+  'social-proof': 'Showcase customer reviews, testimonials, and social media buzz to build trust.',
+  hiring: 'Attract top talent with professional job postings and team culture highlights.',
+  events: 'Announce special events, live music, trivia nights, and celebrations.',
+};
+
+// Sub-categories for better organization within campaigns
+const CAMPAIGN_SUBCATEGORIES: Record<string, { label: string; icon: string; keywords: string[] }> = {
+  seasonal: { label: '🎄 Seasonal & Holidays', icon: '🎄', keywords: ['holiday', 'christmas', 'thanksgiving', 'winter', 'summer', 'spring', 'fall', 'new year', 'valentine', 'easter', 'halloween'] },
+  daily_specials: { label: '📅 Daily Specials & LTOs', icon: '📅', keywords: ['daily', 'special', 'lto', 'limited', 'today', 'weekly'] },
+  happy_hour: { label: '🍸 Happy Hour & Drinks', icon: '🍸', keywords: ['happy hour', 'cocktail', 'drink', 'beer', 'wine', 'bar'] },
+  delivery: { label: '🚗 Delivery & Takeout', icon: '🚗', keywords: ['delivery', 'takeout', 'pickup', 'order online', 'to-go'] },
+  sports: { label: '🏈 Sports & Game Day', icon: '🏈', keywords: ['sports', 'game', 'football', 'basketball', 'watch party'] },
+  rewards: { label: '🎁 Rewards & Gift Cards', icon: '🎁', keywords: ['reward', 'loyalty', 'gift card', 'points'] },
+  brunch: { label: '🥞 Brunch & Breakfast', icon: '🥞', keywords: ['brunch', 'breakfast', 'morning', 'mimosa'] },
+  menu_features: { label: '🍽️ Menu Features', icon: '🍽️', keywords: ['menu', 'dish', 'feature', 'signature', 'chef'] },
+};
+
+// Helper to determine subcategory from theme
+function getThemeSubcategory(theme: ThemeSummary): string {
+  const searchText = [theme.name, theme.description, theme.theme_slug].join(' ').toLowerCase();
   
-  // Map of keywords to more customer-friendly alternatives
-  const improvements: Record<string, string> = {
-    'dough artistry': 'artisan dough craftsmanship',
-    'fermentation flex': 'perfectly fermented dough',
-    'flour explosions': 'flour-dusted details',
-    'Latte art POV': 'stunning latte art close-ups',
-    'cocoa dust text': 'cocoa powder designs',
-    'cafe hustle': 'bustling cafe atmosphere',
-    'chalk marker labels': 'hand-written chalk labels',
-    'vibrant liquid': 'golden beer tones',
-    'brick wall chalkboard': 'rustic brick wall backdrop',
-    'multi-course events': 'special tasting menus',
-    'Macro': 'Close-up',
-    'POV': 'perspective',
-  };
-  
-  let enhanced = theme.description;
-  Object.entries(improvements).forEach(([old, replacement]) => {
-    enhanced = enhanced.replace(new RegExp(old, 'gi'), replacement);
-  });
-  
-  return enhanced;
+  for (const [key, config] of Object.entries(CAMPAIGN_SUBCATEGORIES)) {
+    if (config.keywords.some(kw => searchText.includes(kw))) {
+      return key;
+    }
+  }
+  return 'menu_features'; // default
+}
+
+// Vertical display names for better UX
+const VERTICAL_DISPLAY_NAMES: Record<string, string> = {
+  pizza: '🍕 Pizza & Italian',
+  bar_grill: '🍺 Bar & Grill',
+  fine_dining: '🍷 Fine Dining',
+  fast_casual: '🌮 Fast Casual',
+  bakery: '🥐 Bakery & Cafe',
+  cafe: '☕ Coffee Shop',
+  bbq: '🔥 BBQ & Smokehouse',
+  seafood: '🦞 Seafood',
+  asian: '🍜 Asian Cuisine',
+  mexican: '🌯 Mexican',
+  breakfast: '🥞 Breakfast & Brunch',
+  steakhouse: '🥩 Steakhouse',
+  all_verticals: '🎯 All Restaurant Types',
+  cross_vertical: '🎯 Multi-Concept',
 };
 
 export function CreativeDashboard() {
-  const { toast } = useToast();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<CreativeTab>('campaigns');
   const [restaurantVerticalFilter, setRestaurantVerticalFilter] = useState<string>('all');
+  const [subcategoryFilter, setSubcategoryFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [showAllThemes, setShowAllThemes] = useState(false);
   const [selectedThemeId, setSelectedThemeId] = useState<string>();
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>();
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -73,14 +94,12 @@ export function CreativeDashboard() {
   const [previewData, setPreviewData] = useState<TemplatePreviewResponse>();
   const [previewError, setPreviewError] = useState<string>();
   const [previewingTemplate, setPreviewingTemplate] = useState<TemplateSummary | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [activeJobId, setActiveJobId] = useState<string>();
 
   const themesQuery = useNanoThemes();
   const templatesQuery = useNanoTemplates(selectedThemeId);
-  const jobsQuery = useNanoJobs({ page: 1, perPage: 10 });
-  const jobDetailQuery = useNanoJob(activeJobId);
-  const streamState = useNanoStream(activeJobId);
+  
+  // Initial display limit for themes
+  const INITIAL_THEME_LIMIT = 12;
 
   const themesByCategory = useMemo(() => {
     const base: Record<CreativeTab, ThemeSummary[]> = {
@@ -112,16 +131,60 @@ export function CreativeDashboard() {
     });
   }, [themesByCategory.campaigns]);
 
-  // Filter themes by category and restaurant vertical (for campaigns only)
+  // Get subcategory counts for campaigns
+  const subcategoryCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    themesByCategory.campaigns.forEach((theme) => {
+      const subcat = getThemeSubcategory(theme);
+      counts.set(subcat, (counts.get(subcat) || 0) + 1);
+    });
+    return counts;
+  }, [themesByCategory.campaigns]);
+
+  // Filter themes by category, vertical, subcategory, and search
   const filteredThemes = useMemo(() => {
-    const categoryThemes = themesByCategory[activeTab] ?? [];
+    let categoryThemes = themesByCategory[activeTab] ?? [];
+    
+    // Apply restaurant vertical filter (campaigns only)
     if (activeTab === 'campaigns' && restaurantVerticalFilter !== 'all') {
-      return categoryThemes.filter(
+      categoryThemes = categoryThemes.filter(
         (theme) => theme.restaurant_vertical === restaurantVerticalFilter
       );
     }
+    
+    // Apply subcategory filter (campaigns only)
+    if (activeTab === 'campaigns' && subcategoryFilter !== 'all') {
+      categoryThemes = categoryThemes.filter(
+        (theme) => getThemeSubcategory(theme) === subcategoryFilter
+      );
+    }
+    
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      categoryThemes = categoryThemes.filter((theme) => {
+        const searchText = [
+          theme.name,
+          theme.description,
+          theme.theme_slug,
+          theme.restaurant_vertical,
+        ].join(' ').toLowerCase();
+        return searchText.includes(query);
+      });
+    }
+    
     return categoryThemes;
-  }, [themesByCategory, activeTab, restaurantVerticalFilter]);
+  }, [themesByCategory, activeTab, restaurantVerticalFilter, subcategoryFilter, searchQuery]);
+
+  // Themes to display (with "show more" logic)
+  const displayedThemes = useMemo(() => {
+    if (showAllThemes || searchQuery.trim() || filteredThemes.length <= INITIAL_THEME_LIMIT) {
+      return filteredThemes;
+    }
+    return filteredThemes.slice(0, INITIAL_THEME_LIMIT);
+  }, [filteredThemes, showAllThemes, searchQuery]);
+
+
 
   const tabCounts = useMemo(
     () =>
@@ -132,18 +195,12 @@ export function CreativeDashboard() {
     [themesByCategory],
   );
 
-  useEffect(() => {
-    if (!streamState.error) return;
-    toast({
-      variant: 'destructive',
-      title: 'Streaming interrupted',
-      description: streamState.error,
-    });
-  }, [streamState.error, toast]);
-
-  // Reset vertical filter when changing tabs
+  // Reset filters when changing tabs
   useEffect(() => {
     setRestaurantVerticalFilter('all');
+    setSubcategoryFilter('all');
+    setSearchQuery('');
+    setShowAllThemes(false);
   }, [activeTab]);
 
   useEffect(() => {
@@ -162,34 +219,13 @@ export function CreativeDashboard() {
       return;
     }
     setSelectedThemeId((previous) => {
-      if (!previous) return filteredThemes[0].id;
+      if (!previous) return undefined;
       const stillExists = filteredThemes.some((theme) => theme.id === previous);
-      return stillExists ? previous : filteredThemes[0].id;
+      return stillExists ? previous : undefined;
     });
   }, [filteredThemes]);
 
-  const selectedTheme = useMemo(
-    () => filteredThemes.find((theme) => theme.id === selectedThemeId),
-    [filteredThemes, selectedThemeId],
-  );
-
   const templates = templatesQuery.data ?? [];
-  const selectedTemplate = useMemo(
-    () => templates.find((template) => template.id === selectedTemplateId),
-    [templates, selectedTemplateId],
-  );
-
-  // Scroll to generation form when template is selected
-  useEffect(() => {
-    if (selectedTemplateId) {
-      setTimeout(() => {
-        document.getElementById('generation-form')?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
-      }, 100);
-    }
-  }, [selectedTemplateId]);
 
   const [expandedThemeId, setExpandedThemeId] = useState<string>();
 
@@ -223,33 +259,14 @@ export function CreativeDashboard() {
     [],
   );
 
-  const handleGenerate = useCallback(
-    async (payload: StartGenerationRequest) => {
-      setIsGenerating(true);
-      try {
-        const response = await startGeneration(payload);
-        setActiveJobId(response.job_id);
-        toast({
-          title: 'Generation started',
-          description: 'We are streaming progress from Nano Banana in real-time.',
-        });
-        jobsQuery.refetch();
-      } catch (error) {
-        toast({
-          title: 'Unable to start job',
-          description: error instanceof Error ? error.message : 'Unknown error',
-          variant: 'destructive',
-        });
-      } finally {
-        setIsGenerating(false);
-      }
-    },
-    [toast, jobsQuery],
-  );
+  // Clear all filters
+  const clearFilters = () => {
+    setRestaurantVerticalFilter('all');
+    setSubcategoryFilter('all');
+    setSearchQuery('');
+  };
 
-  const handleSelectJob = useCallback((job: CreativeJobSummary) => {
-    setActiveJobId(job.id);
-  }, []);
+  const hasActiveFilters = restaurantVerticalFilter !== 'all' || subcategoryFilter !== 'all' || searchQuery.trim();
 
   const themeSection = themesQuery.isLoading ? (
     <div className="space-y-3">
@@ -259,89 +276,258 @@ export function CreativeDashboard() {
     </div>
   ) : filteredThemes.length === 0 ? (
     <Alert className="bg-white/5 text-slate-200">
-      <AlertTitle>No themes in {CATEGORY_LABELS[activeTab]}</AlertTitle>
+      <AlertTitle>
+        {hasActiveFilters ? 'No matching themes' : `No themes in ${CATEGORY_LABELS[activeTab]}`}
+      </AlertTitle>
       <AlertDescription>
-        Switch to another tab to browse available creative content.
+        {hasActiveFilters ? (
+          <span>
+            Try adjusting your filters or{' '}
+            <button onClick={clearFilters} className="text-primary-400 hover:text-primary-300 underline">
+              clear all filters
+            </button>{' '}
+            to see more options.
+          </span>
+        ) : (
+          'Switch to another tab to browse available creative content.'
+        )}
       </AlertDescription>
     </Alert>
   ) : null;
 
-  // Restaurant vertical filter component
-  const verticalFilterSlot = activeTab === 'campaigns' && restaurantVerticals.length > 0 ? (
-    <div className="flex items-center gap-3 mb-4">
-      <Filter className="h-4 w-4 text-slate-400" />
-      <span className="text-sm text-slate-400">Filter by restaurant type:</span>
-      <Select
-        value={restaurantVerticalFilter}
-        onValueChange={setRestaurantVerticalFilter}
-      >
-        <SelectTrigger className="w-[200px] bg-obsidian/50 border-white/10 text-white">
-          <SelectValue placeholder="All Types" />
-        </SelectTrigger>
-        <SelectContent className="bg-obsidian border-white/10">
-          <SelectItem value="all" className="text-white hover:bg-white/10">
-            All Types ({themesByCategory.campaigns.length})
-          </SelectItem>
-          {restaurantVerticals.map((vertical) => {
-            const count = themesByCategory.campaigns.filter(
-              (t) => t.restaurant_vertical === vertical
-            ).length;
-            return (
-              <SelectItem
-                key={vertical}
-                value={vertical}
-                className="text-white hover:bg-white/10"
-              >
-                {vertical} ({count})
+  // Enhanced filter component with search, subcategory, and vertical filters
+  const verticalFilterSlot = activeTab === 'campaigns' ? (
+    <div className="space-y-4 mb-4">
+      {/* Search bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <Input
+          placeholder="Search themes by name, style, or cuisine..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10 pr-10 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+
+      {/* Filter row */}
+      <div className="flex flex-wrap items-center gap-3">
+        <Filter className="h-4 w-4 text-slate-400" />
+        
+        {/* Subcategory filter */}
+        <Select
+          value={subcategoryFilter}
+          onValueChange={setSubcategoryFilter}
+        >
+          <SelectTrigger className="w-[200px] bg-obsidian/50 border-white/10 text-white text-sm">
+            <SelectValue placeholder="All Categories" />
+          </SelectTrigger>
+          <SelectContent className="bg-obsidian border-white/10 max-h-[300px]">
+            <SelectItem value="all" className="text-white hover:bg-white/10">
+              📋 All Categories
+            </SelectItem>
+            {Object.entries(CAMPAIGN_SUBCATEGORIES).map(([key, config]) => {
+              const count = subcategoryCounts.get(key) || 0;
+              if (count === 0) return null;
+              return (
+                <SelectItem
+                  key={key}
+                  value={key}
+                  className="text-white hover:bg-white/10"
+                >
+                  {config.label} ({count})
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
+
+        {/* Restaurant type filter */}
+        {restaurantVerticals.length > 0 && (
+          <Select
+            value={restaurantVerticalFilter}
+            onValueChange={setRestaurantVerticalFilter}
+          >
+            <SelectTrigger className="w-[200px] bg-obsidian/50 border-white/10 text-white text-sm">
+              <SelectValue placeholder="All Restaurant Types" />
+            </SelectTrigger>
+            <SelectContent className="bg-obsidian border-white/10 max-h-[300px]">
+              <SelectItem value="all" className="text-white hover:bg-white/10">
+                🎯 All Restaurant Types
               </SelectItem>
-            );
-          })}
-        </SelectContent>
-      </Select>
+              {restaurantVerticals.map((vertical) => {
+                const count = themesByCategory.campaigns.filter(
+                  (t) => t.restaurant_vertical === vertical
+                ).length;
+                const displayName = VERTICAL_DISPLAY_NAMES[vertical] || vertical;
+                return (
+                  <SelectItem
+                    key={vertical}
+                    value={vertical}
+                    className="text-white hover:bg-white/10"
+                  >
+                    {displayName} ({count})
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
+        )}
+
+        {/* Clear filters button */}
+        {hasActiveFilters && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={clearFilters}
+            className="text-slate-400 hover:text-white hover:bg-white/5 h-8 text-xs"
+          >
+            <X className="h-3 w-3 mr-1" />
+            Clear filters
+          </Button>
+        )}
+
+        {/* Results count */}
+        <span className="text-xs text-slate-500 ml-auto">
+          {filteredThemes.length} theme{filteredThemes.length !== 1 ? 's' : ''} found
+        </span>
+      </div>
+
+      {/* Active filter badges */}
+      {hasActiveFilters && (
+        <div className="flex flex-wrap gap-2">
+          {subcategoryFilter !== 'all' && (
+            <Badge variant="secondary" className="bg-primary-500/20 text-primary-300 border-0">
+              {CAMPAIGN_SUBCATEGORIES[subcategoryFilter]?.label || subcategoryFilter}
+              <button onClick={() => setSubcategoryFilter('all')} className="ml-1.5 hover:text-white">
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          )}
+          {restaurantVerticalFilter !== 'all' && (
+            <Badge variant="secondary" className="bg-purple-500/20 text-purple-300 border-0">
+              {VERTICAL_DISPLAY_NAMES[restaurantVerticalFilter] || restaurantVerticalFilter}
+              <button onClick={() => setRestaurantVerticalFilter('all')} className="ml-1.5 hover:text-white">
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          )}
+          {searchQuery.trim() && (
+            <Badge variant="secondary" className="bg-amber-500/20 text-amber-300 border-0">
+              Search: "{searchQuery}"
+              <button onClick={() => setSearchQuery('')} className="ml-1.5 hover:text-white">
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          )}
+        </div>
+      )}
     </div>
-  ) : null;
+  ) : (
+    // Simple search for non-campaigns tabs
+    <div className="mb-4">
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <Input
+          placeholder={`Search ${CATEGORY_LABELS[activeTab].toLowerCase()}...`}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10 pr-10 bg-obsidian/50 border-white/10 text-white placeholder:text-slate-500"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+      {searchQuery.trim() && (
+        <div className="flex items-center gap-2 mt-2">
+          <span className="text-xs text-slate-500">
+            {filteredThemes.length} result{filteredThemes.length !== 1 ? 's' : ''} found
+          </span>
+          <Badge variant="secondary" className="bg-amber-500/20 text-amber-300 border-0 text-xs">
+            "{searchQuery}"
+            <button onClick={() => setSearchQuery('')} className="ml-1.5 hover:text-white">
+              <X className="h-3 w-3" />
+            </button>
+          </Badge>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <CreativeLayout activeTab={activeTab} onTabChange={setActiveTab} tabCounts={tabCounts} filterSlot={verticalFilterSlot}>
-      <div className="space-y-10">
-        {/* Quick Action Buttons */}
-        <div className="flex flex-col sm:flex-row sm:flex-wrap sm:justify-end gap-3">
-          <Button
-            onClick={() => window.location.href = '/creative/brands'}
-            variant="outline"
-            className="border-white/10 text-slate-300 hover:bg-white/5"
-          >
-            Brand Profiles
-          </Button>
-          <Button
-            onClick={() => window.location.href = '/creative/history'}
-            variant="outline"
-            className="border-white/10 text-slate-300 hover:bg-white/5"
-          >
-            View History
-          </Button>
-          <Button
-            onClick={() => window.location.href = '/creative/custom'}
-            variant="outline"
-            className="border-primary-500/50 text-primary-300 hover:bg-primary-500/10"
-          >
-            <span className="mr-2">🎨</span>
-            Custom Prompt
-          </Button>
-          <Button
-            onClick={() => window.location.href = '/creative/generate'}
-            className="bg-gradient-to-r bg-primary-500 hover:bg-primary-400 text-white shadow-lg shadow-primary-500/25"
-          >
-            <span className="mr-2">✨</span>
-            Use Templates
-          </Button>
+      <div className="space-y-6">
+        {/* PROMINENT Custom Prompt Card - The Hidden Gem */}
+        <Card className="relative overflow-hidden border-primary-500/30 bg-gradient-to-r from-primary-500/10 via-purple-500/10 to-primary-500/5">
+          {/* Animated background effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-500/5 to-transparent animate-pulse" />
+          
+          <CardContent className="relative p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-500/30 to-purple-500/30 flex items-center justify-center border border-primary-500/20 shadow-lg shadow-primary-500/10">
+                  <Wand2 className="h-7 w-7 text-primary-300" />
+                </div>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-white">Create with Custom Prompt</h3>
+                    <span className="px-2 py-0.5 rounded-full bg-primary-500/20 text-primary-300 text-xs font-medium">
+                      ✨ 3x Quality Boost
+                    </span>
+                  </div>
+                  <p className="text-sm text-slate-300">
+                    Describe anything you want — our AI adds professional photography magic automatically
+                  </p>
+                  <div className="flex items-center gap-4 text-xs text-slate-400 pt-1">
+                    <span className="flex items-center gap-1">
+                      <Shield className="h-3 w-3 text-emerald-400" />
+                      Quality validated
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Sparkles className="h-3 w-3 text-amber-400" />
+                      Pro lighting & composition
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <Button 
+                onClick={() => navigate('/creative/custom')} 
+                className="bg-primary-500 hover:bg-primary-600 text-white shadow-lg shadow-primary-500/25 group"
+                size="lg"
+              >
+                <Wand2 className="h-4 w-4 mr-2" />
+                Start Creating
+                <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Usage quota and category description */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <UsageQuotaBadge />
+          <p className="text-sm text-slate-400">
+            {CATEGORY_DESCRIPTIONS[activeTab]}
+          </p>
         </div>
 
         {themeSection}
 
         {/* Theme Cards with Expandable Templates */}
         <ListContainer gap="sm" animated>
-          {filteredThemes.map((theme) => {
+          {displayedThemes.map((theme) => {
             // Create enhanced theme with better description
             const enhancedTheme = {
               ...theme,
@@ -358,8 +544,8 @@ export function CreativeDashboard() {
                 selectedTemplateId={selectedTemplateId}
                 onToggle={() => handleThemeClick(theme.id)}
                 onSelectTemplate={(template) => {
-                  setSelectedTemplateId(template.id);
-                  setSelectedThemeId(theme.id);
+                  // Navigate directly to customize page
+                  navigate(`/creative/customize?theme=${theme.id}&template=${template.id}`);
                 }}
                 onPreviewTemplate={handlePreviewTemplate}
                 showUseTemplateButton={true}
@@ -368,33 +554,28 @@ export function CreativeDashboard() {
           })}
         </ListContainer>
 
-        {/* Generation Wizard - Only show when template is selected */}
-        {selectedTemplate && (
-          <div id="generation-form" className="scroll-mt-8">
-            <div className="rounded-lg border-2 border-primary-500/50 bg-primary-500/5 p-1">
-              <GenerationWizard
-                theme={selectedTheme}
-                template={selectedTemplate}
-                isSubmitting={isGenerating}
-                onGenerate={handleGenerate}
-              />
-            </div>
+        {/* Show More / Show Less button */}
+        {filteredThemes.length > INITIAL_THEME_LIMIT && (
+          <div className="flex justify-center pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setShowAllThemes(!showAllThemes)}
+              className="border-white/10 text-slate-300 hover:bg-white/5 hover:text-white"
+            >
+              {showAllThemes ? (
+                <>
+                  <ChevronUp className="h-4 w-4 mr-2" />
+                  Show Less
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-4 w-4 mr-2" />
+                  Show All {filteredThemes.length} Themes
+                </>
+              )}
+            </Button>
           </div>
         )}
-
-        <CreativeHistoryTable
-          jobs={jobsQuery.data?.data}
-          isLoading={jobsQuery.isLoading}
-          error={jobsQuery.error instanceof Error ? jobsQuery.error.message : undefined}
-          onSelectJob={handleSelectJob}
-        />
-
-        <CreativeJobDetailPanel
-          job={jobDetailQuery.data as CreativeJobDetail | undefined}
-          isLoading={jobDetailQuery.isLoading && Boolean(activeJobId)}
-          error={jobDetailQuery.error instanceof Error ? jobDetailQuery.error.message : undefined}
-          onClose={() => setActiveJobId(undefined)}
-        />
       </div>
 
       <PromptPreviewDrawer
@@ -407,12 +588,10 @@ export function CreativeDashboard() {
         onUseTemplate={() => {
           // Redirect to customize page with template pre-selected
           if (previewingTemplate && selectedThemeId) {
-            window.location.href = `/creative/customize?theme=${selectedThemeId}&template=${previewingTemplate.id}`;
+            navigate(`/creative/customize?theme=${selectedThemeId}&template=${previewingTemplate.id}`);
           }
         }}
       />
     </CreativeLayout>
   );
 }
-
-

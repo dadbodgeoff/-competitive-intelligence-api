@@ -14,6 +14,7 @@ import { ModuleAccessCard } from '@/components/team/ModuleAccessCard';
 import { TeamMembersCard } from '@/components/team/TeamMembersCard';
 import { InviteMemberCard } from '@/components/team/InviteMemberCard';
 import { ClockPinCard } from '@/components/team/ClockPinCard';
+import { LocationCodeCard } from '@/components/team/LocationCodeCard';
 import { AppShell } from '@/components/layout/AppShell';
 import { PageHeading } from '@/components/layout/PageHeading';
 
@@ -186,6 +187,14 @@ export function TeamSettingsPage() {
         isUpdating={moduleMutation.isPending}
         onToggle={(slug, enabled) => moduleMutation.mutate({ slug, enabled })}
       />
+
+      {/* Location Code - visible to owners/admins */}
+      {(isOwner || user?.account_role === 'admin') && (
+        <LocationCodeCard
+          locationCode={data.account.clock_location_code ?? undefined}
+          accountName={data.account.name ?? undefined}
+        />
+      )}
 
       <ClockPinCard
         status={pinStatus}

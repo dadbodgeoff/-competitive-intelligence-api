@@ -35,6 +35,7 @@ from services.nano_banana_orchestrator import (
     NanoBananaImageOrchestrator,
     UsageLimitExceededError,
 )
+from services.sequential_generation_orchestrator import SequentialGenerationOrchestrator
 
 load_dotenv()
 
@@ -363,6 +364,81 @@ async def get_usage_quota(
         raise HTTPException(
             status_code=500,
             detail="Failed to retrieve usage quota"
+        ) from exc
+
+
+@router.post("/generate-sequential")
+@rate_limit("analysis")
+async def generate_sequential(
+    request: Request,
+    current_user: str = Depends(get_current_user),
+):
+    """
+    Generate multiple images sequentially with different prompts.
+    
+    Streams results back as each image completes, providing a smooth UX
+    where users see images appear one by one.
+    
+    Request body:
+    {
+        "prompts": [
+            {"template_id": "...", "user_inputs": {...}, "label": "Image 1"},
+            {"template_id": "...", "user_inputs": {...}, "label": "Image 2"},
+            ...
+        ],
+        "shared_config": {
+            "theme_id": "...",
+            "brand_profile_id": "...",
+            "style_preferences": {...},
+            "desired_outputs": {"dimensions": "1024x1024", "format": "png"}
+        }
+    }
+    """
+    try:
+        raw_body = await request.json()
+        prompts = raw_body.get("prompts", [])
+        shared_config = raw_body.get("shared_config", {})
+        
+        if not prompts:
+            raise HTTPException(status_code=400, detail="At least one prompt is required")
+        
+        if len(prompts) > 10:
+            raise HTTPException(status_code=400, detail="Maximum 10 images per batch")
+        
+        sequential_orchestrator = SequentialGenerationOrchestrator()
+        
+        async def event_generator() -> AsyncGenerator[str, None]:
+            try:
+                async for event in sequential_orchestrator.generate_sequential(
+                    user_id=current_user,
+                    prompts=prompts,
+                    shared_config=shared_config,
+                ):
+                    event_type = event.get("type", "message")
+                    data: Dict = event.get("data", {})
+                    yield f"event: {event_type}\ndata: {json.dumps(data)}\n\n"
+            except UsageLimitExceededError as exc:
+                yield f"event: error\ndata: {json.dumps({'error': 'Usage limit exceeded', 'details': exc.details})}\n\n"
+            except Exception as exc:
+                logger.error("Sequential generation failed: %s", exc, exc_info=True)
+                safe_error = ErrorSanitizer.sanitize_error(exc, "Generation failed")
+                yield f"event: error\ndata: {json.dumps({'error': safe_error})}\n\n"
+        
+        return StreamingResponse(
+            event_generator(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no",
+            },
+        )
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.error("Sequential generation setup failed: %s", exc, exc_info=True)
+        raise ErrorSanitizer.create_http_exception(
+            exc, status_code=500, user_message="Failed to start sequential generation"
         ) from exc
 
 

@@ -32,6 +32,9 @@ export interface OrderingPrediction {
 
 export interface OrderingPredictionsResponse {
   predictions: OrderingPrediction[]
+  total?: number
+  limit?: number
+  offset?: number
 }
 
 export interface DeliveryPattern {

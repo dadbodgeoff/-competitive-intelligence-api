@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { AppShell } from '@/components/layout/AppShell';
-import { PageHeading } from '@/components/layout/PageHeading';
+import { ModulePageHeader } from '@/components/layout/ModulePageHeader';
 import { useNavigate } from 'react-router-dom';
-import { Settings, Save, ArrowLeft } from 'lucide-react';
+import { Settings, Save } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -54,28 +54,14 @@ export function AlertSettingsPage() {
   
   return (
     <AppShell>
-      <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back
-        </Button>
-        <div>
-          <PageHeading className="flex items-center gap-2">
-            <Settings className="h-8 w-8 text-accent-400" />
-            Alert Settings
-          </PageHeading>
-          <p className="text-slate-400 mt-2">
-            Configure when you want to be notified about price changes
-          </p>
-        </div>
-      </div>
+      <div className="space-y-6">
+        <ModulePageHeader
+          icon={Settings}
+          title="Alert Settings"
+          description="Configure when you want to be notified about price changes"
+        />
       
-      <Card className="p-6 bg-card-dark border-white/10">
+        <Card className="p-6 bg-card-dark border-white/10">
         <div className="space-y-6">
           <div>
             <h2 className="text-xl font-semibold text-white mb-4">
@@ -201,6 +187,7 @@ export function AlertSettingsPage() {
           </div>
         </div>
       </Card>
+      </div>
     </AppShell>
   );
 }

@@ -29,6 +29,7 @@ interface StatCardProps {
   isLoading?: boolean;
   className?: string;
   delay?: number;
+  compact?: boolean;
 }
 
 export function StatCard({
@@ -42,6 +43,7 @@ export function StatCard({
   isLoading,
   className,
   delay = 0,
+  compact = false,
 }: StatCardProps) {
   const getTrendColor = (trendValue: number) => {
     if (trendValue > 0) return 'text-destructive';
@@ -62,14 +64,21 @@ export function StatCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: delay * 0.1, ease: 'easeOut' }}
+      className="h-full"
     >
-      <Card className={cn('bg-card-dark border-white/10 overflow-hidden relative group', className)}>
+      <Card className={cn('bg-obsidian-400 border-white/10 overflow-hidden relative group h-full', className)}>
         {/* Subtle gradient overlay on hover */}
         <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative">
+        <CardHeader className={cn(
+          "flex flex-row items-center justify-between space-y-0 relative",
+          compact ? "pb-1 pt-3 px-4" : "pb-2"
+        )}>
           <div className="flex items-center gap-2">
-            <CardTitle className="text-sm font-medium text-slate-300">
+            <CardTitle className={cn(
+              "font-medium text-slate-300",
+              compact ? "text-xs" : "text-sm"
+            )}>
               {title}
             </CardTitle>
             {tooltip && (
@@ -89,13 +98,13 @@ export function StatCard({
             whileHover={{ scale: 1.1, rotate: 5 }}
             transition={{ type: 'spring', stiffness: 400 }}
           >
-            <Icon className={cn('h-4 w-4', iconColor)} />
+            <Icon className={cn(compact ? 'h-3.5 w-3.5' : 'h-4 w-4', iconColor)} />
           </motion.div>
         </CardHeader>
         
-        <CardContent className="relative">
+        <CardContent className={cn("relative", compact && "px-4 pb-3 pt-0")}>
           {isLoading ? (
-            <Skeleton className="h-8 w-24 bg-white/10" />
+            <Skeleton className={cn(compact ? "h-6 w-20" : "h-8 w-24", "bg-white/10")} />
           ) : (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -103,7 +112,10 @@ export function StatCard({
               transition={{ duration: 0.3, delay: delay * 0.1 + 0.2 }}
             >
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-white">{value}</span>
+                <span className={cn(
+                  "font-bold text-white",
+                  compact ? "text-xl" : "text-2xl"
+                )}>{value}</span>
                 {trend && TrendIcon && (
                   <span className={cn('flex items-center text-sm', getTrendColor(trend.value))}>
                     <TrendIcon className="h-3 w-3 mr-0.5" />
@@ -115,7 +127,10 @@ export function StatCard({
           )}
           
           {subtitle && (
-            <p className="text-xs text-slate-400 mt-1">{subtitle}</p>
+            <p className={cn(
+              "text-slate-400 mt-0.5",
+              compact ? "text-[10px]" : "text-xs mt-1"
+            )}>{subtitle}</p>
           )}
           
           {trend?.label && (

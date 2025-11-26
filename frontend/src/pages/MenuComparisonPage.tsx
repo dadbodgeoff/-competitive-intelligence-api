@@ -184,6 +184,17 @@ export function MenuComparisonPage({ onStateChange }: MenuComparisonPageProps) {
   return (
     <AppShell>
       <div className="max-w-3xl mx-auto">
+        {/* Back link */}
+        <button
+          onClick={() => navigate('/menu-comparison')}
+          className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-6"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span>Back to Dashboard</span>
+        </button>
+
         <Card className="bg-card-dark border-white/10 shadow-2xl">
           <CardHeader className="space-y-3 pb-8">
             <div className="flex items-center gap-3">
@@ -192,7 +203,7 @@ export function MenuComparisonPage({ onStateChange }: MenuComparisonPageProps) {
               </div>
               <div>
                 <CardTitle className="text-3xl font-bold text-white">
-                  Compare Competitor Menus
+                  New Competitor Analysis
                 </CardTitle>
                 <CardDescription className="text-slate-400 text-base mt-1">
                   Discover nearby competitors and analyze their menu pricing

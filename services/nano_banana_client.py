@@ -145,6 +145,10 @@ class NanoBananaClient:
             "You are the Chief Creative Officer of the world's most prestigious marketing agency. "
             "Your work has won countless awards and sets industry standards. You must honor all "
             "client specifications, brand guidelines, and creative requirements exactly as provided. "
+            "\n\n🎯 PRIORITY #1 - USER CONTENT IS SACRED:"
+            "\nThe user's inputs (headline, event name, date, time, special offer, prices) are the MOST IMPORTANT "
+            "elements. These must be prominently displayed, perfectly legible, and be the visual hero of the image. "
+            "Everything else (background, styling, effects) exists to SUPPORT and HIGHLIGHT the user's content."
             "\n\nCRITICAL RULES YOU MUST FOLLOW:"
             "\n1. NEVER modify, rephrase, or enhance any user-provided business content including menu item names, "
             "special offers, pricing, headlines, dates, or promotional text. These are the client's exact words."
@@ -208,7 +212,11 @@ class NanoBananaClient:
         if visual_style == "text_only":
             full_prompt += f"Generate a promotional graphic for {brand_name} with TEXT AND GRAPHICS ONLY. "
             full_prompt += "DO NOT include any food photography, product shots, or physical items. "
-            full_prompt += "Create a stylish background with the promotional text as the main visual element. "
+            full_prompt += "BACKGROUND TECHNIQUE: Use EXTREME shallow depth of field (f/1.4) so any background scene is heavily blurred into beautiful bokeh. "
+            full_prompt += "The background should be atmospheric lights, colors, and textures - but so out of focus that you cannot identify the specific venue type. "
+            full_prompt += "Think: warm ambient light bokeh, soft color washes, elegant fabric or curtain textures in foreground, sparkle effects. "
+            full_prompt += "The promotional text/graphic must be TACK SHARP and the clear focal point, with the dreamy blurred atmosphere behind it. "
+            full_prompt += "This creates a premium look that works for ANY restaurant - the vibe is universal because the background is beautifully indistinct. "
         else:
             full_prompt += f"Generate a professional marketing image for {brand_name}. "
         
@@ -227,7 +235,11 @@ class NanoBananaClient:
         # Add negative prompt guidance
         full_prompt += "\n\nAvoid: blurry text, illegible writing, "
         if visual_style == "text_only":
-            full_prompt += "food photography, product shots, physical items, "
+            full_prompt += (
+                "food photography, product shots, physical items, "
+                "sharp in-focus backgrounds that show identifiable venue details, "
+                "recognizable restaurant interiors, people in focus, "
+            )
         else:
             full_prompt += "random items not mentioned, "
         full_prompt += (
@@ -242,7 +254,7 @@ class NanoBananaClient:
         aspect_ratio = f"{width}:{height}" if width != height else "1:1"
 
         # Gemini API format (generateContent)
-        # Note: Gemini 3 Pro Image Preview uses a simpler format
+        # Note: gemini-3-pro-image-preview handles image generation natively
         gemini_payload = {
             "contents": [{
                 "parts": [{

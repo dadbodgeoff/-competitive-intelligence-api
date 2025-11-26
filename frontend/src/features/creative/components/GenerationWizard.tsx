@@ -582,58 +582,34 @@ export function GenerationWizard({ theme, template, isSubmitting, onGenerate }: 
 
           {/* Output Settings Section */}
           <div className="pt-4 border-t border-white/10">
-            <div className="flex flex-col sm:flex-row gap-6">
-              {/* How many */}
-              <div className="space-y-2">
-                <Label className="text-xs text-slate-400 uppercase tracking-wide">How many?</Label>
-                <div className="flex gap-2">
-                  {[1, 2, 3, 4].map((num) => (
-                    <button
-                      key={num}
-                      type="button"
-                      onClick={() => setValue('desiredOutputs.variants', num)}
-                      className={cn(
-                        'w-10 h-10 rounded-lg text-sm font-medium transition-all',
-                        formValues.desiredOutputs.variants === num
-                          ? 'bg-primary-500 text-white'
-                          : 'bg-white/5 text-slate-400 hover:bg-white/10 border border-white/10'
-                      )}
-                    >
-                      {num}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Shape */}
-              <div className="space-y-2 flex-1">
-                <Label className="text-xs text-slate-400 uppercase tracking-wide">Shape</Label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  <ShapeOption
-                    label="Square"
-                    icon={Square}
-                    isSelected={formValues.desiredOutputs.dimensions === '1024x1024'}
-                    onSelect={() => setValue('desiredOutputs.dimensions', '1024x1024')}
-                  />
-                  <ShapeOption
-                    label="Portrait"
-                    icon={RectangleVertical}
-                    isSelected={formValues.desiredOutputs.dimensions === '1024x1280'}
-                    onSelect={() => setValue('desiredOutputs.dimensions', '1024x1280')}
-                  />
-                  <ShapeOption
-                    label="Landscape"
-                    icon={RectangleHorizontal}
-                    isSelected={formValues.desiredOutputs.dimensions === '1280x1024'}
-                    onSelect={() => setValue('desiredOutputs.dimensions', '1280x1024')}
-                  />
-                  <ShapeOption
-                    label="Story"
-                    icon={Smartphone}
-                    isSelected={formValues.desiredOutputs.dimensions === '1080x1920'}
-                    onSelect={() => setValue('desiredOutputs.dimensions', '1080x1920')}
-                  />
-                </div>
+            {/* Shape - Full width now that "How many" is removed */}
+            <div className="space-y-2">
+              <Label className="text-xs text-slate-400 uppercase tracking-wide">Shape</Label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <ShapeOption
+                  label="Square"
+                  icon={Square}
+                  isSelected={formValues.desiredOutputs.dimensions === '1024x1024'}
+                  onSelect={() => setValue('desiredOutputs.dimensions', '1024x1024')}
+                />
+                <ShapeOption
+                  label="Portrait"
+                  icon={RectangleVertical}
+                  isSelected={formValues.desiredOutputs.dimensions === '1024x1280'}
+                  onSelect={() => setValue('desiredOutputs.dimensions', '1024x1280')}
+                />
+                <ShapeOption
+                  label="Landscape"
+                  icon={RectangleHorizontal}
+                  isSelected={formValues.desiredOutputs.dimensions === '1280x1024'}
+                  onSelect={() => setValue('desiredOutputs.dimensions', '1280x1024')}
+                />
+                <ShapeOption
+                  label="Story"
+                  icon={Smartphone}
+                  isSelected={formValues.desiredOutputs.dimensions === '1080x1920'}
+                  onSelect={() => setValue('desiredOutputs.dimensions', '1080x1920')}
+                />
               </div>
             </div>
           </div>

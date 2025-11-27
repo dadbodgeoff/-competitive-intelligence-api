@@ -51,34 +51,41 @@ class StripeService:
         Get existing Stripe customer or create new one.
         Returns stripe_customer_id.
         """
-        # Check if user already has a Stripe customer ID
-        result = self.client.table("users").select("stripe_customer_id, email, first_name, last_name").eq("id", user_id).single().execute()
+        # Check if user already has a Stripe customer ID in subscriptions table
+        # (We don't have a users table with stripe_customer_id, so check subscriptions)
+        sub_result = self.client.table("subscriptions").select("stripe_customer_id").eq("user_id", user_id).limit(1).execute()
         
-        if not result.data:
-            raise ValueError(f"User {user_id} not found")
+        if sub_result.data and sub_result.data[0].get("stripe_customer_id"):
+            return sub_result.data[0]["stripe_customer_id"]
         
-        user = result.data
+        # Also check if customer exists in Stripe by email
+        existing_customers = stripe.Customer.list(email=email, limit=1)
+        if existing_customers.data:
+            logger.info(f"Found existing Stripe customer for email {email}")
+            return existing_customers.data[0].id
         
-        if user.get("stripe_customer_id"):
-            return user["stripe_customer_id"]
+        # Get user info from Supabase Auth for name
+        customer_name = name
+        if not customer_name:
+            try:
+                user_response = self.client.auth.admin.get_user_by_id(user_id)
+                if user_response.user:
+                    metadata = user_response.user.user_metadata or {}
+                    first_name = metadata.get("first_name", "")
+                    last_name = metadata.get("last_name", "")
+                    customer_name = f"{first_name} {last_name}".strip()
+            except Exception as e:
+                logger.warning(f"Could not get user metadata for {user_id}: {e}")
         
         # Create new Stripe customer
-        customer_name = name or f"{user.get('first_name', '')} {user.get('last_name', '')}".strip()
-        
         customer = stripe.Customer.create(
-            email=email or user.get("email"),
+            email=email,
             name=customer_name or None,
             metadata={
                 "user_id": user_id,
                 "source": "restaurantiq"
             }
         )
-        
-        # Save customer ID to user record
-        self.client.table("users").update({
-            "stripe_customer_id": customer.id,
-            "updated_at": datetime.now(timezone.utc).isoformat()
-        }).eq("id", user_id).execute()
         
         logger.info(f"Created Stripe customer {customer.id} for user {user_id}")
         
@@ -163,13 +170,13 @@ class StripeService:
         Create a Stripe Customer Portal session for managing subscription.
         Returns portal URL.
         """
-        # Get customer ID
-        result = self.client.table("users").select("stripe_customer_id").eq("id", user_id).single().execute()
+        # Get customer ID from subscriptions table
+        result = self.client.table("subscriptions").select("stripe_customer_id").eq("user_id", user_id).limit(1).execute()
         
-        if not result.data or not result.data.get("stripe_customer_id"):
+        if not result.data or not result.data[0].get("stripe_customer_id"):
             raise ValueError(f"User {user_id} has no Stripe customer")
         
-        customer_id = result.data["stripe_customer_id"]
+        customer_id = result.data[0]["stripe_customer_id"]
         
         session = stripe.billing_portal.Session.create(
             customer=customer_id,
@@ -321,11 +328,11 @@ class StripeService:
         user_id = subscription.get("metadata", {}).get("user_id")
         
         if not user_id:
-            # Try to find user by customer ID
+            # Try to find user by customer ID from existing subscriptions
             customer_id = subscription["customer"]
-            user_result = self.client.table("users").select("id").eq("stripe_customer_id", customer_id).single().execute()
+            user_result = self.client.table("subscriptions").select("user_id").eq("stripe_customer_id", customer_id).limit(1).execute()
             if user_result.data:
-                user_id = user_result.data["id"]
+                user_id = user_result.data[0]["user_id"]
         
         if not user_id:
             logger.error(f"Could not find user for subscription {subscription['id']}")
@@ -390,9 +397,9 @@ class StripeService:
         """Handle successful payment."""
         customer_id = invoice["customer"]
         
-        # Find user
-        user_result = self.client.table("users").select("id").eq("stripe_customer_id", customer_id).single().execute()
-        user_id = user_result.data["id"] if user_result.data else None
+        # Find user from subscriptions table
+        user_result = self.client.table("subscriptions").select("user_id").eq("stripe_customer_id", customer_id).limit(1).execute()
+        user_id = user_result.data[0]["user_id"] if user_result.data else None
         
         # Find subscription
         sub_result = self.client.table("subscriptions").select("id").eq("stripe_subscription_id", invoice.get("subscription")).single().execute()
@@ -420,9 +427,9 @@ class StripeService:
         """Handle failed payment."""
         customer_id = invoice["customer"]
         
-        # Find user
-        user_result = self.client.table("users").select("id").eq("stripe_customer_id", customer_id).single().execute()
-        user_id = user_result.data["id"] if user_result.data else None
+        # Find user from subscriptions table
+        user_result = self.client.table("subscriptions").select("user_id").eq("stripe_customer_id", customer_id).limit(1).execute()
+        user_id = user_result.data[0]["user_id"] if user_result.data else None
         
         # Record failed payment
         self.client.table("payment_history").upsert({

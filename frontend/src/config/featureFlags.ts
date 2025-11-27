@@ -8,9 +8,8 @@
 export const featureFlags = {
   /**
    * Billing Module - Stripe integration for subscriptions
-   * Set to true when Stripe API keys are configured
    */
-  BILLING_ENABLED: import.meta.env.VITE_FEATURE_BILLING_ENABLED === 'true',
+  BILLING_ENABLED: true,
 
   /**
    * Creative Studio - AI image generation

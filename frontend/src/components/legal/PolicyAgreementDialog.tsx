@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { FileText, Calendar } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { FileText, Calendar, Check } from 'lucide-react';
 
 import {
   Dialog,
@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/design-system/shadcn/components/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   type PolicyAcceptance,
   type PolicyKey,
@@ -29,7 +30,11 @@ function renderContent(content: string) {
   const parts = content.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i} className="text-white font-semibold">{part.slice(2, -2)}</strong>;
+      return (
+        <strong key={i} className="text-white font-semibold">
+          {part.slice(2, -2)}
+        </strong>
+      );
     }
     return <span key={i}>{part}</span>;
   });
@@ -44,33 +49,15 @@ export function PolicyAgreementDialog({
   const metadata = useMemo(() => POLICY_METADATA[policy], [policy]);
   const { content } = metadata;
 
-  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
-  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [hasAgreed, setHasAgreed] = useState(false);
 
-  useEffect(() => {
-    if (!open) {
-      setHasScrolledToBottom(false);
-      return;
+  // Reset checkbox when dialog closes
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen) {
+      setHasAgreed(false);
     }
-  }, [open]);
-
-  useEffect(() => {
-    const element = scrollRef.current;
-    if (!element || !open) return;
-
-    const handleScroll = () => {
-      if (element.scrollTop + element.clientHeight >= element.scrollHeight - 48) {
-        setHasScrolledToBottom(true);
-      }
-    };
-
-    element.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check initial state
-
-    return () => {
-      element.removeEventListener('scroll', handleScroll);
-    };
-  }, [open]);
+    onOpenChange(newOpen);
+  };
 
   const handleAccept = () => {
     const acceptance: PolicyAcceptance = {
@@ -85,7 +72,7 @@ export function PolicyAgreementDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className="max-w-4xl border border-slate-800 bg-slate-950/95 text-slate-100"
         aria-describedby={undefined}
@@ -109,10 +96,7 @@ export function PolicyAgreementDialog({
           </div>
         </DialogHeader>
 
-        <div
-          ref={scrollRef}
-          className="max-h-[60vh] overflow-y-auto rounded-xl border border-slate-800 bg-slate-950/60 p-6 space-y-6"
-        >
+        <div className="max-h-[50vh] overflow-y-auto rounded-xl border border-slate-800 bg-slate-950/60 p-6 space-y-6">
           {content.sections.map((section, index) => (
             <section key={index} className="space-y-3">
               <h3 className="text-lg font-semibold text-white flex items-center gap-2">
@@ -128,30 +112,41 @@ export function PolicyAgreementDialog({
           ))}
         </div>
 
-        <DialogFooter className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="text-xs text-slate-500">
-            {hasScrolledToBottom 
-              ? 'You have reviewed the document. Click to accept.'
-              : 'Please scroll to the end of the document to continue.'}
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              className="border-slate-700 text-slate-300 hover:text-white"
-              onClick={() => onOpenChange(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              className="bg-primary-500 text-slate-950 hover:bg-primary-400"
-              disabled={!hasScrolledToBottom}
-              onClick={handleAccept}
-            >
-              {hasScrolledToBottom ? 'Agree and Continue' : 'Scroll to the end to agree'}
-            </Button>
-          </div>
+        {/* Checkbox agreement */}
+        <div className="flex items-start gap-3 p-4 rounded-lg border border-slate-800 bg-slate-900/50">
+          <Checkbox
+            id="policy-agreement"
+            checked={hasAgreed}
+            onCheckedChange={(checked) => setHasAgreed(checked === true)}
+            className="mt-0.5 border-slate-600 data-[state=checked]:bg-primary-500 data-[state=checked]:border-primary-500"
+          />
+          <label
+            htmlFor="policy-agreement"
+            className="text-sm text-slate-300 cursor-pointer leading-relaxed"
+          >
+            I have read and agree to the {metadata.title}. I understand and accept the terms
+            outlined in this document.
+          </label>
+        </div>
+
+        <DialogFooter className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            className="border-slate-700 text-slate-300 hover:text-white"
+            onClick={() => handleOpenChange(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            className="bg-primary-500 text-slate-950 hover:bg-primary-400 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={!hasAgreed}
+            onClick={handleAccept}
+          >
+            <Check className="h-4 w-4 mr-2" />
+            Agree and Continue
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -74,15 +74,18 @@ async def create_checkout_session(
     Create a Stripe Checkout session for subscription upgrade.
     Returns URL to redirect user to Stripe Checkout.
     """
-    from api.middleware.auth import get_auth_context
     from database.supabase_client import get_supabase_service_client
     
     user_id = current_user  # get_current_user returns user_id string
     
-    # Get email from database
+    # Get email from Supabase Auth (email is in auth.users, not public.users)
     service_client = get_supabase_service_client()
-    user_result = service_client.table("users").select("email").eq("id", user_id).single().execute()
-    email = user_result.data.get("email") if user_result.data else None
+    try:
+        user_response = service_client.auth.admin.get_user_by_id(user_id)
+        email = user_response.user.email if user_response.user else None
+    except Exception as e:
+        logger.error(f"Failed to get user email for {user_id}: {e}")
+        email = None
     
     if not email:
         raise HTTPException(status_code=400, detail="User email not found")
@@ -191,18 +194,24 @@ async def cancel_subscription(
     try:
         stripe_service.cancel_subscription(user_id, at_period_end=True)
         
-        # Get user details for email
+        # Get user details from Supabase Auth
         service_client = get_supabase_service_client()
-        user_result = service_client.table("users").select("email, first_name").eq("id", user_id).single().execute()
-        user_data = user_result.data or {}
+        try:
+            user_response = service_client.auth.admin.get_user_by_id(user_id)
+            user_email = user_response.user.email if user_response.user else None
+            user_metadata = user_response.user.user_metadata or {} if user_response.user else {}
+            first_name = user_metadata.get("first_name", "there")
+        except Exception:
+            user_email = None
+            first_name = "there"
         
         # Get subscription details for email
         subscription = stripe_service.get_subscription(user_id)
-        if subscription and user_data.get("email"):
+        if subscription and user_email:
             email_service.send_subscription_canceled(
                 user_id=user_id,
-                email=user_data.get("email"),
-                first_name=user_data.get("first_name", "there"),
+                email=user_email,
+                first_name=first_name,
                 end_date=subscription.get("current_period_end", "your billing period end")
             )
         

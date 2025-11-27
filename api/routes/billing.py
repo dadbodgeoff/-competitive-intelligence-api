@@ -66,26 +66,37 @@ class InvoicesResponse(BaseModel):
 
 @router.post("/checkout", response_model=CheckoutResponse)
 async def create_checkout_session(
-    request: CheckoutRequest,
-    current_user: dict = Depends(get_current_user)
+    request_body: CheckoutRequest,
+    req: Request,
+    current_user: str = Depends(get_current_user)
 ):
     """
     Create a Stripe Checkout session for subscription upgrade.
     Returns URL to redirect user to Stripe Checkout.
     """
-    user_id = current_user["id"]
-    email = current_user["email"]
+    from api.middleware.auth import get_auth_context
+    from database.supabase_client import get_supabase_service_client
+    
+    user_id = current_user  # get_current_user returns user_id string
+    
+    # Get email from database
+    service_client = get_supabase_service_client()
+    user_result = service_client.table("users").select("email").eq("id", user_id).single().execute()
+    email = user_result.data.get("email") if user_result.data else None
+    
+    if not email:
+        raise HTTPException(status_code=400, detail="User email not found")
     
     # Default URLs if not provided
     base_url = os.getenv("FRONTEND_URL", "https://app.restaurantiq.us")
-    success_url = request.success_url or f"{base_url}/settings/billing/success"
-    cancel_url = request.cancel_url or f"{base_url}/settings/billing"
+    success_url = request_body.success_url or f"{base_url}/settings/billing/success"
+    cancel_url = request_body.cancel_url or f"{base_url}/settings/billing"
     
     try:
         result = stripe_service.create_checkout_session(
             user_id=user_id,
             email=email,
-            plan_slug=request.plan_slug,
+            plan_slug=request_body.plan_slug,
             success_url=success_url,
             cancel_url=cancel_url,
         )
@@ -108,13 +119,13 @@ async def create_checkout_session(
 
 @router.post("/portal", response_model=PortalResponse)
 async def create_portal_session(
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """
     Create a Stripe Customer Portal session.
     Returns URL to redirect user to manage their subscription.
     """
-    user_id = current_user["id"]
+    user_id = current_user  # get_current_user returns user_id string
     
     base_url = os.getenv("FRONTEND_URL", "https://app.restaurantiq.us")
     return_url = f"{base_url}/settings/billing"
@@ -140,12 +151,12 @@ async def create_portal_session(
 
 @router.get("/subscription", response_model=SubscriptionResponse)
 async def get_subscription_status(
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """
     Get current user's subscription status.
     """
-    user_id = current_user["id"]
+    user_id = current_user  # get_current_user returns user_id string
     
     try:
         subscription = stripe_service.get_subscription(user_id)
@@ -168,23 +179,30 @@ async def get_subscription_status(
 
 @router.post("/subscription/cancel")
 async def cancel_subscription(
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """
     Cancel current subscription at end of billing period.
     """
-    user_id = current_user["id"]
+    from database.supabase_client import get_supabase_service_client
+    
+    user_id = current_user  # get_current_user returns user_id string
     
     try:
         stripe_service.cancel_subscription(user_id, at_period_end=True)
         
+        # Get user details for email
+        service_client = get_supabase_service_client()
+        user_result = service_client.table("users").select("email, first_name").eq("id", user_id).single().execute()
+        user_data = user_result.data or {}
+        
         # Get subscription details for email
         subscription = stripe_service.get_subscription(user_id)
-        if subscription:
+        if subscription and user_data.get("email"):
             email_service.send_subscription_canceled(
                 user_id=user_id,
-                email=current_user["email"],
-                first_name=current_user.get("first_name", "there"),
+                email=user_data.get("email"),
+                first_name=user_data.get("first_name", "there"),
                 end_date=subscription.get("current_period_end", "your billing period end")
             )
         
@@ -204,12 +222,12 @@ async def cancel_subscription(
 @router.get("/invoices", response_model=InvoicesResponse)
 async def get_invoices(
     limit: int = 10,
-    current_user: dict = Depends(get_current_user)
+    current_user: str = Depends(get_current_user)
 ):
     """
     Get user's payment history / invoices.
     """
-    user_id = current_user["id"]
+    user_id = current_user  # get_current_user returns user_id string
     
     try:
         invoices = stripe_service.get_invoices(user_id, limit=limit)

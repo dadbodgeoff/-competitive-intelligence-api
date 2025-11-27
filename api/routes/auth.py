@@ -331,6 +331,33 @@ async def login_user(
                             )
                         if activation:
                             account_id, account_role = activation
+                    
+                    # If still no account, create one (user verified email after registration)
+                    if not account_id:
+                        logger.info("🔵 No account found for verified user %s, creating one...", user.email)
+                        user_metadata = user.user_metadata or {}
+                        first_name = user_metadata.get("first_name", "")
+                        last_name = user_metadata.get("last_name", "")
+                        account_name = f"{first_name} {last_name}".strip() or user.email.split("@")[0]
+                        
+                        try:
+                            account_result = service_client.rpc(
+                                "create_account_with_owner",
+                                {
+                                    "p_owner_user_id": user_id,
+                                    "p_account_name": account_name
+                                }
+                            ).execute()
+                            
+                            if account_result.data:
+                                if isinstance(account_result.data, str):
+                                    account_id = account_result.data
+                                elif isinstance(account_result.data, list) and account_result.data:
+                                    account_id = account_result.data[0]
+                                account_role = "owner"
+                                logger.info("✅ Created account %s for user %s on first login", account_id, user_id)
+                        except Exception as create_exc:
+                            logger.error("❌ Failed to create account for user %s: %s", user_id, create_exc)
 
             if account_id:
                 module_access = account_service.get_account_module_access(account_id)

@@ -1,19 +1,19 @@
 import React from 'react';
 import { LandingNav } from '@/components/landing/LandingNav';
-import { StreamlinedHero } from '@/components/landing/StreamlinedHero';
+import { PremiumHero } from '@/components/landing/PremiumHero';
 import { ModuleShowcase } from '@/components/landing/ModuleShowcase';
-import { DualDemoSection } from '@/components/landing/DualDemoSection';
+import { PremiumDemoSection } from '@/components/landing/PremiumDemoSection';
 import { PricingSection } from '@/components/landing/PricingSection';
 import { LandingFooter } from '@/components/landing/LandingFooter';
 
 export const LandingPage: React.FC = () => {
   return (
-    <div className="text-white min-h-screen bg-slate-950">
+    <div className="text-white min-h-screen bg-[#0A0A0A]">
       <LandingNav />
       
-      <StreamlinedHero />
+      <PremiumHero />
       <ModuleShowcase />
-      <DualDemoSection />
+      <PremiumDemoSection />
       <PricingSection />
       <LandingFooter />
     </div>

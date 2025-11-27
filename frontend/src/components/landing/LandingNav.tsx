@@ -18,8 +18,8 @@ export const LandingNav: React.FC = () => {
 
   const headerClasses = `fixed top-0 w-full h-16 z-50 transition-all duration-300 ${
     isScrolled
-      ? 'bg-[#121212]/90 backdrop-blur-2xl border-b shadow-[0_10px_40px_-25px_rgba(176,137,104,0.65)]'
-      : 'bg-[#121212]/60 backdrop-blur-xl border-b'
+      ? 'bg-[#0A0A0A]/95 backdrop-blur-2xl border-b border-white/5 shadow-[0_10px_40px_-25px_rgba(176,137,104,0.5)]'
+      : 'bg-[#0A0A0A]/60 backdrop-blur-xl border-b border-transparent'
   }`;
 
   return (

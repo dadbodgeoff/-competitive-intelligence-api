@@ -6,11 +6,21 @@ export const LandingFooter: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-white/10 bg-[#121212]">
+    <footer className="border-t border-white/10 bg-[#0A0A0A] relative overflow-hidden">
+      {/* Subtle gradient accent */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] rounded-full blur-[180px] opacity-5 pointer-events-none bg-[#B08968]" />
+
       {/* CTA Banner */}
-      <div className="py-16 px-4 border-b border-white/10">
+      <div className="py-16 px-4 border-b border-white/10 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-primary-500/10 text-primary-400 px-4 py-2 rounded-full text-sm font-medium mb-6">
+          <div 
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6"
+            style={{
+              background: 'linear-gradient(135deg, rgba(176, 137, 104, 0.15) 0%, rgba(176, 137, 104, 0.05) 100%)',
+              border: '1px solid rgba(176, 137, 104, 0.25)',
+              color: '#B08968',
+            }}
+          >
             <Sparkles className="w-4 h-4" />
             Try Creative Studio Free
           </div>
@@ -23,7 +33,11 @@ export const LandingFooter: React.FC = () => {
           </p>
           <Link
             to="/register"
-            className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-400 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors"
+            className="inline-flex items-center gap-2 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105"
+            style={{
+              backgroundColor: '#B08968',
+              boxShadow: '0 10px 40px -10px rgba(176, 137, 104, 0.4)',
+            }}
           >
             Get Started Free
             <ArrowRight className="w-5 h-5" />
@@ -32,7 +46,7 @@ export const LandingFooter: React.FC = () => {
       </div>
 
       {/* Footer Links */}
-      <div className="py-12 px-4">
+      <div className="py-12 px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             <div>

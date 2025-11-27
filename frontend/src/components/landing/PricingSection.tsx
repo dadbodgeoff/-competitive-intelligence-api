@@ -56,12 +56,38 @@ export const PricingSection: React.FC = () => {
   };
 
   return (
-    <section id="pricing" className="py-20 md:py-32 relative bg-[#121212]">
-      <div className="max-w-6xl mx-auto px-4">
+    <section id="pricing" className="py-20 md:py-32 relative bg-[#0A0A0A] overflow-hidden">
+      {/* Subtle floating particles */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 rounded-full bg-[#B08968]/15"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animation: `floatParticle ${14 + Math.random() * 10}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 8}s`,
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Gradient accent */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] rounded-full blur-[180px] opacity-8 pointer-events-none bg-[#B08968]" />
+
+      <div className="max-w-6xl mx-auto px-4 relative z-10">
         <div className="text-center mb-14">
-          <Badge className="bg-primary-500/20 text-primary-400 border-primary-500/30 mb-4">
+          <Badge 
+            className="mb-4"
+            style={{
+              background: 'linear-gradient(135deg, rgba(176, 137, 104, 0.15) 0%, rgba(176, 137, 104, 0.05) 100%)',
+              border: '1px solid rgba(176, 137, 104, 0.3)',
+              color: '#B08968',
+            }}
+          >
             <Sparkles className="w-3 h-3 mr-1" />
-            Now with AI Creative Studio
+            Now with Creative Studio
           </Badge>
           <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">
             Simple pricing. Serious results.
@@ -73,7 +99,14 @@ export const PricingSection: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {/* Free Plan */}
-          <Card className="rounded-2xl border border-white/10 bg-[#1E1E1E]">
+          <Card 
+            className="rounded-2xl transition-all duration-500 hover:scale-[1.02]"
+            style={{
+              background: 'linear-gradient(145deg, rgba(176, 137, 104, 0.03) 0%, rgba(30, 30, 30, 0.8) 100%)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.4)',
+            }}
+          >
             <CardContent className="p-6 md:p-8">
               <div className="mb-6">
                 <h3 className="text-xl font-bold text-white mb-1">Free</h3>
@@ -107,7 +140,14 @@ export const PricingSection: React.FC = () => {
           </Card>
 
           {/* Premium Plan - Featured */}
-          <Card className="rounded-2xl border-2 border-primary-500/50 bg-[#1E1E1E] relative overflow-hidden lg:scale-105">
+          <Card 
+            className="rounded-2xl relative overflow-hidden lg:scale-105 transition-all duration-500 hover:scale-[1.07]"
+            style={{
+              background: 'linear-gradient(145deg, rgba(176, 137, 104, 0.08) 0%, rgba(30, 30, 30, 0.9) 100%)',
+              border: '2px solid rgba(176, 137, 104, 0.4)',
+              boxShadow: '0 20px 60px -15px rgba(176, 137, 104, 0.25), 0 8px 32px -8px rgba(0, 0, 0, 0.5)',
+            }}
+          >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-400 to-primary-600" />
             <div className="absolute top-4 right-4">
               <Badge className="bg-green-500 text-white border-0 text-xs animate-pulse">
@@ -164,7 +204,14 @@ export const PricingSection: React.FC = () => {
           </Card>
 
           {/* Enterprise Plan */}
-          <Card className="rounded-2xl border border-white/10 bg-[#1E1E1E]">
+          <Card 
+            className="rounded-2xl transition-all duration-500 hover:scale-[1.02]"
+            style={{
+              background: 'linear-gradient(145deg, rgba(176, 137, 104, 0.03) 0%, rgba(30, 30, 30, 0.8) 100%)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              boxShadow: '0 8px 32px -8px rgba(0, 0, 0, 0.4)',
+            }}
+          >
             <CardContent className="p-6 md:p-8">
               <div className="mb-6">
                 <h3 className="text-xl font-bold text-white mb-1">Enterprise</h3>
@@ -204,6 +251,14 @@ export const PricingSection: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {/* Animation keyframes */}
+      <style>{`
+        @keyframes floatParticle {
+          0%, 100% { transform: translateY(0) translateX(0); opacity: 0.2; }
+          50% { transform: translateY(-15px) translateX(8px); opacity: 0.5; }
+        }
+      `}</style>
     </section>
   );
 };

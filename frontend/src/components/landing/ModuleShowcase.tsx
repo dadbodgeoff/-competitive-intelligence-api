@@ -255,14 +255,33 @@ export const ModuleShowcase: React.FC = () => {
   const currentModule = modules.find((m) => m.id === activeModule) || modules[0];
 
   return (
-    <section className="py-8 md:py-10 px-4 bg-[#121212]">
-      <div className="max-w-6xl mx-auto">
+    <section className="relative py-16 md:py-20 px-4 bg-[#0A0A0A] overflow-hidden">
+      {/* Subtle floating particles */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {Array.from({ length: 15 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 rounded-full bg-[#B08968]/20"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animation: `floatParticle ${12 + Math.random() * 10}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 8}s`,
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Gradient accent */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full blur-[150px] opacity-10 pointer-events-none bg-[#B08968]" />
+
+      <div className="max-w-6xl mx-auto relative z-10">
         {/* Hero CTA - Above Images */}
-        <div className="text-center mb-6 md:mb-8">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 tracking-tight">
-            Marketing That <span className="text-primary-400">Sells</span>
+        <div className="text-center mb-8 md:mb-12">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 tracking-tight">
+            Marketing That <span className="text-[#B08968]">Sells</span>
           </h2>
-          <p className="text-slate-400 text-sm md:text-base max-w-2xl mx-auto">
+          <p className="text-[#A8B1B9] text-base md:text-lg max-w-2xl mx-auto">
             Generate scroll-stopping content in seconds. No designer needed.
           </p>
         </div>
@@ -351,27 +370,46 @@ export const ModuleShowcase: React.FC = () => {
           </div>
         </div>
 
-        {/* Module Features Grid - 4 Key Points */}
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+        {/* Module Features Grid - 4 Key Points with glassmorphism */}
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
           {currentModule.features.map((feature, idx) => {
             const FeatureIcon = feature.icon;
             return (
               <div
                 key={idx}
-                className="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-primary-500/30 transition-all duration-300"
+                className="group p-5 rounded-2xl backdrop-blur-sm transition-all duration-500 hover:scale-[1.02]"
+                style={{
+                  background: 'linear-gradient(145deg, rgba(176, 137, 104, 0.05) 0%, rgba(30, 30, 30, 0.6) 100%)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  boxShadow: '0 4px 24px -8px rgba(0, 0, 0, 0.3)',
+                }}
               >
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 rounded-lg bg-primary-500/10">
-                    <FeatureIcon className="w-4 h-4 text-primary-400" />
+                <div className="flex items-center gap-3 mb-3">
+                  <div 
+                    className="p-2.5 rounded-xl transition-all duration-300 group-hover:scale-110"
+                    style={{ 
+                      background: 'linear-gradient(135deg, rgba(176, 137, 104, 0.15) 0%, rgba(176, 137, 104, 0.05) 100%)',
+                      border: '1px solid rgba(176, 137, 104, 0.2)',
+                    }}
+                  >
+                    <FeatureIcon className="w-4 h-4 text-[#B08968]" />
                   </div>
                   <h4 className="text-sm font-semibold text-white">{feature.title}</h4>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">{feature.description}</p>
+                <p className="text-xs text-[#A8B1B9] leading-relaxed">{feature.description}</p>
               </div>
             );
           })}
         </div>
       </div>
+
+      {/* Animation keyframes */}
+      <style>{`
+        @keyframes floatParticle {
+          0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+          50% { transform: translateY(-20px) translateX(10px); opacity: 0.6; }
+        }
+      `}</style>
     </section>
   );
 };

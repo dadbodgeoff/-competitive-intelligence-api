@@ -204,10 +204,8 @@ from api.routes import csp_report
 from api.routes.nano_banana import router as nano_banana_router
 from api.routes.nano_banana_demo import router as nano_banana_demo_router
 
-# Feature flag for billing module
-BILLING_ENABLED = os.getenv("FEATURE_BILLING_ENABLED", "false").lower() == "true"
-if BILLING_ENABLED:
-    from api.routes.billing import router as billing_router
+# Billing module
+from api.routes.billing import router as billing_router
 
 # DISABLED: Inventory processing removed - invoices are source of truth only
 # Initialize background workers (registers event handlers)
@@ -242,9 +240,8 @@ app.include_router(scheduling_router)
 app.include_router(prep_router)
 app.include_router(nano_banana_router, tags=["Nano Banana"])
 app.include_router(nano_banana_demo_router, tags=["Nano Banana Demo"])
-# Billing routes - only enabled when FEATURE_BILLING_ENABLED=true
-if BILLING_ENABLED:
-    app.include_router(billing_router, prefix="/api/v1", tags=["Billing"])
+# Billing routes
+app.include_router(billing_router, prefix="/api/v1", tags=["Billing"])
 app.include_router(csp_report.router, tags=["Security"])
 
 # Health check endpoint (used by Docker healthcheck)
